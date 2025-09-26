@@ -1,0 +1,2290 @@
+---
+import rosterJson from '../../data/roster.json';
+import {
+  calculateRosterStats,
+  getRolePercentage,
+  getRoleColor,
+  getRoleName,
+} from '../../utils/rosterStats';
+import { validatePublicNote } from '../../utils/rosterUtils';
+import { ROLES, STATUS, PROFESSIONS, RAIDS, DIFFICULTIES } from '../../types/roster';
+
+// Calcular estadísticas del roster
+const rosterStats = calculateRosterStats(rosterJson);
+
+// Mapeo de roles a nombres completos y colores
+const roleNames: Record<Role, { name: string; color: string; bgColor: string }> = {
+  T: { name: 'Tanque', color: 'text-blue-300', bgColor: 'bg-blue-500/20' },
+  H: { name: 'Sanador', color: 'text-green-300', bgColor: 'bg-green-500/20' },
+  D: { name: 'DPS', color: 'text-red-300', bgColor: 'bg-red-500/20' },
+};
+
+// Mapeo de profesiones a colores
+const professionColors: Record<string, string> = {
+  AL: 'bg-green-500/20 text-green-300',
+  HB: 'bg-green-500/20 text-green-300',
+  TL: 'bg-pink-500/20 text-pink-300',
+  EN: 'bg-purple-500/20 text-purple-300',
+  EG: 'bg-blue-500/20 text-blue-300',
+  JC: 'bg-yellow-500/20 text-yellow-300',
+  BS: 'bg-gray-500/20 text-gray-300',
+  IN: 'bg-indigo-500/20 text-indigo-300',
+  MN: 'bg-gray-600/20 text-gray-400',
+  SK: 'bg-orange-500/20 text-orange-300',
+};
+
+// Mapeo de dificultades a colores
+const difficultyColors: Record<string, string> = {
+  '10N': 'bg-blue-500/20 text-blue-300',
+  '25N': 'bg-purple-500/20 text-purple-300',
+  '25H': 'bg-red-500/20 text-red-300',
+};
+
+// Función para obtener el color de fondo basado en la clase del personaje
+function getClassColor(className: string): string {
+  const classColors: Record<string, string> = {
+    Guerrero: 'bg-[#C79C6E]',
+    Paladín: 'bg-[#F58CBA]',
+    Cazador: 'bg-[#ABD473]',
+    Pícaro: 'bg-[#FFF569]',
+    Sacerdote: 'bg-[#FFFFFF]',
+    'Caballero de la Muerte': 'bg-[#C41F3B]',
+    Chamán: 'bg-[#0070DE]',
+    Mago: 'bg-[#69CCF0]',
+    Brujo: 'bg-[#9482C9]',
+    Monje: 'bg-[#00FF96]',
+    Druida: 'bg-[#FF7D0A]',
+    'Cazador de demonios': 'bg-[#A330C9]',
+  };
+  return classColors[className] || 'bg-gray-500';
+}
+
+// Función para obtener el color de la profesión
+function getProfessionColor(profCode: ProfessionCode): string {
+  const professionColors = {
+    JC: { light: 'bg-yellow-500/20', dark: 'text-yellow-300' },
+    BS: { light: 'bg-gray-500/20', dark: 'text-gray-300' },
+    EN: { light: 'bg-purple-500/20', dark: 'text-purple-300' },
+    EG: { light: 'bg-blue-500/20', dark: 'text-blue-300' },
+    LW: { light: 'bg-amber-500/20', dark: 'text-amber-300' },
+    AL: { light: 'bg-green-500/20', dark: 'text-green-300' },
+    TL: { light: 'bg-pink-500/20', dark: 'text-pink-300' },
+    IN: { light: 'bg-indigo-500/20', dark: 'text-indigo-300' },
+    HB: { light: 'bg-green-500/20', dark: 'text-green-300' },
+    MN: { light: 'bg-gray-600/20', dark: 'text-gray-400' },
+    SK: { light: 'bg-orange-500/20', dark: 'text-orange-300' },
+  };
+
+  const color = professionColors[profCode] || { light: 'bg-gray-500/20', dark: 'text-gray-400' };
+  return `${color.light} ${color.dark}`;
+}
+
+// Define RosterMember interface
+interface RosterMember {
+  name: string;
+  class: ClassName;
+  rank: string;
+  publicNote?: string;
+  noteValidation: ReturnType<typeof validatePublicNote>;
+  [key: string]: any; // For other properties that might exist
+}
+
+// Procesar datos del roster con prioridad para Guild Master y Oficiales
+const rosterMembers: RosterMember[] = rosterJson
+  .map((member: any) => ({
+    ...member,
+    class: member.class as ClassName,
+    noteValidation: validatePublicNote(member.publicNote),
+    // Agregar campo de prioridad para ordenación inicial
+    _priority: member.rank === 'Guild Master' ? 0 : member.rank === 'Oficial' ? 1 : 2,
+  }))
+  // Ordenar por prioridad (Guild Master -> Oficiales -> Resto) y luego por nombre
+  .sort((a, b) => {
+    if (a._priority !== b._priority) {
+      return a._priority - b._priority;
+    }
+    return a.name.localeCompare(b.name);
+  });
+
+// Definir la estructura de rosterData
+const rosterData: RosterData = {
+  members: rosterMembers,
+  classInfo: {
+    Guerrero: { color: 'C79C6E', name: 'Guerrero' },
+    Paladín: { color: 'F58CBA', name: 'Paladín' },
+    Cazador: { color: 'ABD473', name: 'Cazador' },
+    Pícaro: { color: 'FFF569', name: 'Pícaro' },
+    Sacerdote: { color: 'FFFFFF', name: 'Sacerdote' },
+    'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
+    Chamán: { color: '0070DE', name: 'Chamán' },
+    Mago: { color: '69CCF0', name: 'Mago' },
+    Brujo: { color: '9482C9', name: 'Brujo' },
+    Monje: { color: '00FF96', name: 'Monje' },
+    Druida: { color: 'FF7D0A', name: 'Druida' },
+    'Cazador de demonios': { color: 'A330C9', name: 'Cazador de demonios' },
+  },
+  ranks: [],
+  classes: [],
+  totalMembers: rosterMembers.length,
+  rankInfo: {}
+};
+
+// Calcular distribución de roles (separando roles únicos, duales y dobles)
+const roleDistribution: RoleDistributionItem[] = [
+  // Roles únicos
+  { role: 'T', name: 'Tanque', count: 0, percentage: 0 },
+  { role: 'H', name: 'Sanador', count: 0, percentage: 0 },
+  { role: 'D', name: 'DPS', count: 0, percentage: 0 },
+  // Roles duales
+  { role: 'TH', name: 'Tanque/Sanador', count: 0, percentage: 0 },
+  { role: 'TD', name: 'Tanque/DPS', count: 0, percentage: 0 },
+  { role: 'HD', name: 'Sanador/DPS', count: 0, percentage: 0 },
+  // Roles dobles
+  { role: 'TT', name: 'Doble Tanque', count: 0, percentage: 0 },
+  { role: 'HH', name: 'Doble Sanador', count: 0, percentage: 0 },
+  { role: 'DD', name: 'Doble DPS', count: 0, percentage: 0 },
+];
+
+// Contar roles únicos, duales y dobles
+rosterData.members.forEach((member) => {
+  const validation = member.noteValidation;
+
+  if (validation?.isValid && validation.role) {
+    // Asegurarse de que los roles estén en mayúsculas
+    const mainRoleUpper = validation.role.toUpperCase() as Role;
+    const dualRoleUpper = validation.dualRole?.toUpperCase() as Role | undefined;
+    
+    // Contar rol principal
+    const mainRole = roleDistribution.find((r) => r.role === mainRoleUpper);
+    if (mainRole) {
+      mainRole.count++;
+    }
+
+    // Si tiene rol dual, contarlo como rol dual (combinación de ambos roles)
+    if (dualRoleUpper) {
+      // Ordenar los roles alfabéticamente para asegurar consistencia (ej: 'HT' se convierte en 'TH')
+      const roles = [mainRoleUpper, dualRoleUpper].sort().join('');
+
+      // Buscar el rol dual en la distribución (comparación insensible a mayúsculas/minúsculas)
+      const roleCombo = roleDistribution.find((r) => r.role === roles);
+      
+      if (roleCombo) {
+        roleCombo.count++;
+      } else {
+        // Si no se encuentra, intentar con el orden inverso
+        const reversedRoles = roles.split('').reverse().join('');
+        const reversedCombo = roleDistribution.find((r) => r.role === reversedRoles);
+        if (reversedCombo) {
+          reversedCombo.count++;
+        }
+      }
+    }
+  }
+});
+
+// Calcular porcentajes basados en el total de roles (no de miembros)
+const totalRoles = roleDistribution.reduce(
+  (sum: number, role: { count: number }) => sum + role.count,
+  0
+);
+roleDistribution.forEach((role: { count: number; percentage?: number }) => {
+  role.percentage = totalRoles > 0 ? Math.round((role.count / totalRoles) * 100) : 0;
+});
+
+// Filtrar solo roles con conteo mayor a 0
+const filteredRoleDistribution = roleDistribution.filter((r) => r.count > 0);
+
+// Inicializamos las variables que se usan más adelante
+let totalMains = 0;
+let totalAlts = 0;
+let totalUnspecified = 0;
+
+// Calcular estadísticas de gear score
+const gearScores = rosterData.members
+  .map((m) => {
+    const gs = m.noteValidation?.gearScore ? parseFloat(m.noteValidation.gearScore) : 0;
+    return isNaN(gs) ? 0 : gs;
+  })
+  .filter((gs) => gs > 0);
+
+const gearScoreStats = {
+  min: gearScores.length > 0 ? Math.min(...gearScores) : 0,
+  max: gearScores.length > 0 ? Math.max(...gearScores) : 0,
+  avg:
+    gearScores.length > 0
+      ? Math.round((gearScores.reduce((a, b) => a + b, 0) / gearScores.length) * 10) / 10
+      : 0,
+  total: gearScores.length,
+};
+
+// Contar raid leaders
+const raidLeaders = rosterData.members.filter((m) => m.noteValidation?.isRaidLeader).length;
+
+// Expresiones regulares comunes
+const REGEX = {
+  GEAR_SCORE: /(\d+\.\d+)/,
+  HOUR: /(\d{1,2})h/gi,
+  PROFESSIONS: new RegExp(
+    `(${Object.keys(PROFESSIONS).join('|')})\s*[\/\s]\s*(${Object.keys(PROFESSIONS).join('|')})`,
+    'i'
+  ),
+  // Ajustada para capturar raids con o sin espacio antes de la dificultad
+  RAID_WITH_DIFFICULTY: new RegExp(
+    `(${Object.keys(RAIDS).join('|')})\s*(${Object.keys(DIFFICULTIES).join('|')}|H)`,
+    'gi'
+  ),
+  // Añadida para capturar raids seguidas de dificultad sin espacio
+  RAID_WITH_DIFFICULTY_NO_SPACE: new RegExp(
+    `(${Object.keys(RAIDS).join('|')})(${Object.keys(DIFFICULTIES).join('|')}|H)`,
+    'gi'
+  ),
+  RAID_ONLY: new RegExp(`(${Object.keys(RAIDS).join('|')})(?![0-9A-Za-z])`, 'gi'), // Negative lookahead para evitar falsos positivos
+};
+
+// ==========================================
+// TIPOS
+// ==========================================
+
+type ClassName =
+  | 'Guerrero'
+  | 'Paladín'
+  | 'Cazador'
+  | 'Pícaro'
+  | 'Sacerdote'
+  | 'Caballero de la Muerte'
+  | 'Chamán'
+  | 'Mago'
+  | 'Brujo'
+  | 'Druida';
+
+type Role = keyof typeof ROLES;
+type MainAlt = keyof typeof STATUS;
+type ProfessionCode = keyof typeof PROFESSIONS;
+type RaidCode = keyof typeof RAIDS;
+type DifficultyCode = keyof typeof DIFFICULTIES;
+
+interface RaidInfo {
+  name: string;
+  difficulty?: string;
+  code: string;
+  difficultyCode?: string;
+}
+
+interface PublicNoteValidation {
+  isValid: boolean;
+  mainAlt?: MainAlt;
+  role?: Role;
+  dualRole?: Role;
+  gearScore?: string;
+  professions?: string[];
+  schedules?: string[];
+  raids?: RaidInfo[];
+  isRaidLeader?: boolean;
+  error?: string;
+  missingFields?: string[];
+}
+
+interface ClassInfo {
+  color: string;
+  name: string;
+}
+
+interface RosterData {
+  members: RosterMember[];
+  classInfo: Record<string, ClassInfo>;
+  rankInfo: Record<string, { name: string; order: number }>;
+}
+
+// Class info is already defined in the RosterData interface
+
+// Validar nota pública según el formato requerido
+function validatePublicNote(note: string | undefined): PublicNoteValidation {
+  const errors: string[] = [];
+  const missingFields: string[] = [];
+  const result: PublicNoteValidation = {
+    isValid: false,
+    raids: [],
+  };
+
+  if (!note?.trim()) {
+    return { ...result, error: 'La nota pública no puede estar vacía' };
+  }
+
+  const trimmedNote = note.trim();
+  const parts = trimmedNote.split(/\s+/); // Dividir por cualquier espacio en blanco
+
+  // 1. Intentar detectar Main/Alt (opcional)
+  // Primero verificar si comienza con A o M seguido de un rol (ej: AD, MT)
+  const altMainRoleMatch = trimmedNote.match(/^([MA])([THD])\b/i);
+  if (altMainRoleMatch) {
+    result.mainAlt = altMainRoleMatch[1].toUpperCase() as MainAlt;
+    result.role = altMainRoleMatch[2].toUpperCase() as Role;
+  } else {
+    // Si no, buscar M o A solos
+    const mainAltMatch = trimmedNote.match(/(?:^|[|\s])([MA])(?=[|\s]|$)/i);
+    if (mainAltMatch) {
+      result.mainAlt = mainAltMatch[1].toUpperCase() as MainAlt;
+    } else {
+      // Si no encuentra M o A explícito, verificar si está en formato MTH, MHD, etc.
+      const mainAltWithRole = trimmedNote.match(/^M?([THD])([THD]?)\b/i);
+      if (mainAltWithRole?.[0].startsWith('M')) {
+        result.mainAlt = 'M';
+      }
+    }
+  }
+
+  // 2. Buscar si es Raid Leader (RL)
+  result.isRaidLeader = /\bRL\b/i.test(trimmedNote);
+
+  // 3. Buscar roles (T, H, D) y rol dual
+  // Primero buscar formato de 3 letras que comience con A o M (ej: MDT, AHT, etc.)
+  const threeLetterRoleMatch = trimmedNote.match(/\b([MA]?)([THD])([THD]?)\b/i);
+
+  if (threeLetterRoleMatch) {
+    const [, mainAlt, primaryRole, dualRole] = threeLetterRoleMatch;
+    
+    // Si hay un prefijo M o A, establecer mainAlt
+    if (mainAlt) {
+      result.mainAlt = mainAlt.toUpperCase() as MainAlt;
+    } else if (!result.mainAlt && threeLetterRoleMatch[0].startsWith('M')) {
+      // Si no hay mainAlt pero el match empieza con M, asumir que es Main
+      result.mainAlt = 'M';
+    }
+    
+    // Establecer rol principal
+    result.role = primaryRole.toUpperCase() as Role;
+    
+    // Si hay un rol dual, establecerlo
+    if (dualRole) {
+      const dual = dualRole.toUpperCase() as Role;
+      if (dual !== result.role) {
+        result.dualRole = dual;
+      } else {
+        errors.push('El rol secundario no puede ser igual al principal');
+      }
+    }
+  }
+  
+  // Si no se encontró un rol dual, buscar cualquier otro rol en la nota
+  if (!result.dualRole) {
+    // Buscar cualquier letra T, H o D que no sea parte de otra palabra
+    const roleMatches = [...trimmedNote.matchAll(/\b([THD])\b/gi)];
+    const roles = Array.from(new Set(roleMatches.map((m) => m[1].toUpperCase())));
+    
+    // Si hay más de un rol, establecer el segundo como dual
+    if (roles.length > 1) {
+      const primary = result.role || roles[0];
+      const secondary = roles.find(r => r !== primary) as Role;
+      
+      if (secondary) {
+        if (!result.role) result.role = primary as Role;
+        result.dualRole = secondary;
+      }
+    } else if (roles.length === 1 && !result.role) {
+      // Si solo hay un rol y no se ha establecido, usarlo como principal
+      result.role = roles[0] as Role;
+    }
+  }
+  
+  // Si aún no se ha encontrado un rol, buscar en otros formatos
+  if (!result.role) {
+    // Último intento: buscar cualquier combinación de roles (ej: TH, HD, DT, etc.)
+    const dualRoleMatch = trimmedNote.match(/\b([THD]{2,})\b/i);
+    if (dualRoleMatch) {
+      const rolesStr = dualRoleMatch[1].toUpperCase();
+      result.role = rolesStr[0] as Role;
+      if (rolesStr.length > 1 && rolesStr[1] !== rolesStr[0]) {
+        result.dualRole = rolesStr[1] as Role;
+      }
+    }
+  }
+
+  if (!result.role) {
+    missingFields.push(`Rol principal (${Object.keys(ROLES).join(', ')})`);
+  }
+
+  // 2. Extraer Gear Score - formatos: X.X, X,X o XXXX (4 dígitos)
+  const gsMatch = trimmedNote.match(/(?:^|[\s|])(\d{4}|\d[.,]\d)(?=$|[\s|])/);
+  if (gsMatch) {
+    let gsValue = gsMatch[1]; // Usar el grupo capturado
+    // Si es un número de 4 dígitos, convertirlo a formato decimal (ej: 5585 -> 5.5)
+    if (/^\d{4}$/.test(gsValue)) {
+      const num = parseInt(gsValue);
+      gsValue = (num / 1000).toFixed(1);
+    } else {
+      // Reemplazar coma por punto para estandarizar
+      gsValue = gsValue.replace(',', '.');
+    }
+    const gsNumber = parseFloat(gsValue);
+    if (gsNumber >= 0.1 && gsNumber <= 10) {
+      result.gearScore = gsValue;
+    } else {
+      errors.push('El Gear Score debe estar entre 0.1 y 10');
+    }
+  } else if (!trimmedNote.includes('GS:')) {
+    // Solo marcar como faltante si no hay un intento de especificar GS
+    missingFields.push('Gear Score (ej: 5.9, 6.2)');
+  }
+
+  // 3. Extraer Profesiones - Opcionales pero recomendadas
+  const profCodes = Object.keys(PROFESSIONS).join('|');
+  console.log('Profession codes:', profCodes); // Debug
+  
+  // Primero buscamos cualquier código de profesión en la nota (incluyendo pares separados por / o espacio)
+  const profRegex = new RegExp(`(?:^|\\s)(${profCodes})(?:\\s*[\\/\\s]\\s*(${profCodes}))?(?=\\s|$)`, 'gi');
+  const matches = Array.from(trimmedNote.matchAll(profRegex));
+  
+  console.log('Profession matches:', matches); // Debug
+  
+  const foundProfs = new Set<string>();
+  
+  // Procesamos todos los matches
+  for (const match of matches) {
+    // El primer grupo de captura es la primera profesión
+    if (match[1]) {
+      const code = match[1].toUpperCase() as ProfessionCode;
+      if (PROFESSIONS[code]) {
+        foundProfs.add(code);
+      }
+    }
+    
+    // El segundo grupo de captura es la segunda profesión (si existe)
+    if (match[2]) {
+      const code = match[2].toUpperCase() as ProfessionCode;
+      if (PROFESSIONS[code]) {
+        foundProfs.add(code);
+      }
+    }
+    
+    // Si ya encontramos 2 profesiones, no necesitamos seguir buscando
+    if (foundProfs.size >= 2) break;
+  }
+  
+  // Convertimos a array y tomamos las dos primeras profesiones únicas
+  const uniqueProfs = Array.from(foundProfs);
+  console.log('Found professions:', uniqueProfs); // Debug
+  
+  if (uniqueProfs.length >= 2) {
+    const prof1 = uniqueProfs[0] as ProfessionCode;
+    const prof2 = uniqueProfs[1] as ProfessionCode;
+    
+    if (prof1 !== prof2) {
+      result.professions = [PROFESSIONS[prof1], PROFESSIONS[prof2]];
+    } else {
+      errors.push('Las profesiones no pueden ser iguales');
+    }
+  } else if (uniqueProfs.length === 1) {
+    const prof = uniqueProfs[0] as ProfessionCode;
+    result.professions = [PROFESSIONS[prof]];
+  }
+
+  // 4. Extraer horarios (pueden ser individuales o rangos con formato HHX-HHX)
+  const uniqueHours = new Set<string>();
+
+  // Primero buscamos rangos completos (ej: 20X-23X, 20X-23X, 20-23X, etc.)
+  // Excluimos que estén pegados a números (para evitar confusión con GS o dificultades)
+  const rangeRegex =
+    /(?:^|[^\d])(\d{1,2})(?::(\d{2}))?X?\s*-\s*(\d{1,2})(?::(\d{2}))?X(?:$|[^\d])/gi;
+  const rangeMatches = [];
+  let rangeMatch;
+
+  // Usamos un bucle para evitar problemas con el flag /g
+  while ((rangeMatch = rangeRegex.exec(trimmedNote)) !== null) {
+    rangeMatches.push(rangeMatch);
+  }
+
+  // Procesar rangos de horas (ej: 20X-23X, 20-23X, 20X-23, 20-23)
+  rangeMatches.forEach((match) => {
+    const startHour = parseInt(match[1], 10);
+    const startMinutes = match[2] ? parseInt(match[2], 10) : 0;
+    const endHour = parseInt(match[3], 10);
+    const endMinutes = match[4] ? parseInt(match[4], 10) : 0;
+
+    // Validar que las horas y minutos estén en rango
+    if (
+      startHour >= 0 &&
+      startHour <= 23 &&
+      endHour >= 0 &&
+      endHour <= 23 &&
+      startMinutes >= 0 &&
+      startMinutes <= 59 &&
+      endMinutes >= 0 &&
+      endMinutes <= 59
+    ) {
+      const formattedStart = `${startHour.toString().padStart(2, '0')}${startMinutes > 0 ? ':' + startMinutes.toString().padStart(2, '0') : ''}X`;
+      const formattedEnd = `${endHour.toString().padStart(2, '0')}${endMinutes > 0 ? ':' + endMinutes.toString().padStart(2, '0') : ''}X`;
+
+      uniqueHours.add(formattedStart);
+      uniqueHours.add(formattedEnd);
+      hasSchedule = true;
+    }
+  });
+
+  // Luego buscamos horas individuales (que no sean parte de un rango)
+  // Ahora detecta con o sin espacios alrededor de la X, pero evita falsos positivos
+  const hourRegex = /(?:^|[^\d])(\d{1,2})(?::(\d{2}))?X(?:$|[^\d-])/gi;
+  const hourMatches = [];
+  let hourMatch;
+
+  // Usamos un bucle para evitar problemas con el flag /g
+  while ((hourMatch = hourRegex.exec(trimmedNote)) !== null) {
+    hourMatches.push(hourMatch);
+  }
+
+  hourMatches.forEach((match) => {
+    const hour = parseInt(match[1], 10);
+    const minutes = match[2] ? parseInt(match[2], 10) : 0;
+
+    if (hour >= 0 && hour <= 23 && minutes >= 0 && minutes <= 59) {
+      const formattedHour = hour.toString().padStart(2, '0');
+      const formattedMinutes = minutes > 0 ? `:${minutes.toString().padStart(2, '0')}` : '';
+      uniqueHours.add(`${formattedHour}${formattedMinutes}X`);
+    }
+  });
+
+  if (uniqueHours.size > 0) {
+    result.schedules = Array.from(uniqueHours).sort();
+  } else if (!trimmedNote.match(/\d{1,2}(?::\d{2})?X/)) {
+    // Solo agregar el mensaje si no hay ningún formato de horario en la nota
+    missingFields.push('Horario de conexión (ej: 18X, 21:30X)');
+  }
+
+  // 5. Extraer raids y dificultades
+  result.raids = [];
+  const usedRaids = new Set<string>();
+
+  // Primero, buscar todas las dificultades en la nota (independientemente de las bandas)
+  console.log('Nota completa:', trimmedNote);
+  const difficultyMatches = [];
+  const usedIndices = new Set();
+
+  // Función para validar y agregar dificultad
+  const addValidDifficulty = (match) => {
+    const key = `${match.index}-${match[0].length}`;
+    if (usedIndices.has(key)) return;
+
+    const number = parseInt(match[1]);
+    const letter = match[2].toUpperCase();
+    const validDifficulties = ['10N', '10H', '25N', '25H'];
+    const difficulty = `${number}${letter}`;
+
+    // Solo agregar si es una dificultad válida
+    if (validDifficulties.includes(difficulty)) {
+      usedIndices.add(key);
+      difficultyMatches.push({
+        1: number.toString(),
+        2: letter,
+        index: match.index,
+      });
+      console.log('Dificultad válida encontrada:', difficulty);
+    } else {
+      console.log('Dificultad ignorada (no válida):', match[0]);
+    }
+  };
+
+  // Buscar patrones de dificultad válidos (10N, 10H, 25N, 25H)
+  const patterns = [
+    /\b(10|25)([NH])\b/gi, // Formato estándar (10N, 10H, 25N, 25H)
+    /(10|25)([NH])(?![\dNH])/gi, // Formato sin límite de palabra al final (ej: 25n18x)
+  ];
+
+  patterns.forEach((pattern) => {
+    const regex = new RegExp(pattern);
+    let match;
+
+    while ((match = regex.exec(trimmedNote)) !== null) {
+      // Extraer solo la parte de la dificultad
+      const cleanMatch = match[0].match(/(10|25)([NH])/i);
+      if (cleanMatch) {
+        addValidDifficulty({
+          0: match[0],
+          1: cleanMatch[1],
+          2: cleanMatch[2],
+          index: match.index,
+        });
+      }
+
+      // Evitar bucle infinito si la regex no avanza
+      if (match.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+    }
+  });
+
+  // Ordenar por posición en el texto (de izquierda a derecha)
+  difficultyMatches.sort((a, b) => a.index - b.index);
+
+  const difficulties = difficultyMatches.map(
+    (m) => `${m[1]}${m[2].toUpperCase()}` as DifficultyCode
+  );
+  console.log('Dificultades extraídas:', difficulties);
+
+  // Buscar raids mencionados en la nota
+  const raidMentions = [
+    ...trimmedNote.matchAll(/\b(ICC|TOC|ULD|NAX|OS|RS|EOE|VOA|ONY|MALY|SAP)\b/gi),
+  ];
+
+  // Si hay dificultades encontradas, asignarlas a los raids mencionados
+  if (difficulties.length > 0) {
+    // Si no hay raids mencionados, usar 'ICC' por defecto
+    const raidCodes =
+      raidMentions.length > 0
+        ? raidMentions.map((m) => m[0].toUpperCase() as RaidCode)
+        : ['ICC' as RaidCode];
+
+    raidCodes.forEach((raidCode) => {
+      difficulties.forEach((difficulty) => {
+        const raidKey = `${raidCode}${difficulty}`;
+        if (!usedRaids.has(raidKey)) {
+          result.raids.push({
+            code: raidCode,
+            difficultyCode: difficulty,
+            difficulty: difficulty.endsWith('N') ? 'Normal' : 'Heroic',
+            name: RAIDS[raidCode] || raidCode,
+          });
+          usedRaids.add(raidKey);
+        }
+      });
+    });
+  }
+
+  // Buscar raids sin dificultad (solo si no encontramos ninguna con dificultad)
+  if (result.raids.length === 0) {
+    const raidOnlyRegex = new RegExp(`\\b(${Object.keys(RAIDS).join('|')})\\b`, 'gi');
+    let raidMatch: RegExpExecArray | null;
+
+    while ((raidMatch = raidOnlyRegex.exec(trimmedNote)) !== null) {
+      const raidCode = raidMatch[1].toUpperCase() as RaidCode;
+
+      if (!usedRaids.has(raidCode)) {
+        result.raids.push({
+          code: raidCode,
+          difficultyCode: undefined,
+          difficulty: undefined,
+          name: RAIDS[raidCode] || raidCode,
+        });
+        usedRaids.add(raidCode);
+      }
+
+      if (raidMatch.index === raidOnlyRegex.lastIndex) {
+        raidOnlyRegex.lastIndex++; // Evitar bucle infinito
+      }
+    }
+  }
+
+  // Verificar si faltan raids o su dificultad (solo como advertencia, no invalida)
+  if (result.raids.length === 0) {
+    // Verificar si hay algún código de raid sin dificultad
+    const raidCodes = Object.keys(RAIDS).join('|');
+    const hasRaidWithoutDiff = new RegExp(`\\b(${raidCodes})\\b`, 'i').test(trimmedNote);
+
+    if (hasRaidWithoutDiff) {
+      // Solo agregar el mensaje de dificultad faltante si no está ya en el array
+      if (!missingFields.some((mf) => mf.includes('Dificultad'))) {
+        missingFields.push('Dificultad (ej: 10N, 25H)');
+      }
+    } else {
+      missingFields.push('Raids que busca/arma (ej: ICC, TOC)');
+    }
+  } else if (result.raids.some((raid) => !raid.difficultyCode)) {
+    // Solo agregar el mensaje de dificultad faltante si no está ya en el array
+    if (!missingFields.some((mf) => mf.includes('Dificultad'))) {
+      missingFields.push('Dificultad (ej: 10N, 25H)');
+    }
+  }
+
+  // 6. Verificar campos faltantes en el orden especificado
+  const orderedMissingFields: string[] = [];
+
+  // 1. Main/Alt
+  if (!result.mainAlt) {
+    orderedMissingFields.push('Main/Alt (M/A)');
+  }
+
+  // 2. Rol principal
+  if (!result.role) {
+    orderedMissingFields.push('Rol (T/H/D)');
+  }
+
+  // 3. Dual - Solo mostrar si no se ha detectado un rol dual
+  if (!result.dualRole) {
+    orderedMissingFields.push('Dual (T/H/D)');
+  }
+
+  // 4. Gear Score
+  if (!result.gearScore) {
+    orderedMissingFields.push('Gear Score (ej: 6.2)');
+  }
+
+  // 5. Profesiones
+  if (!result.professions || result.professions.length === 0) {
+    orderedMissingFields.push('Profesiones (ej: JC/BS)');
+  }
+
+  // 6. Horario de juego
+  if (!result.schedules || result.schedules.length === 0) {
+    orderedMissingFields.push('Horario de juego (ej: 18X, 21:30X)');
+  }
+
+  // 7. Raid que busca
+  const hasAnyRaid = /\b(ICC|TOC|ULD|NAX|OS|RS|EOE|VOA|ONY|MALY|SAP)\b/i.test(trimmedNote);
+  if (!hasAnyRaid) {
+    orderedMissingFields.push('Raids que busca (ej: ICC 25H)');
+  } else if (!result.raids || result.raids.length === 0) {
+    orderedMissingFields.push('Formato de raid (ej: ICC 25H)');
+  } else {
+    // Verificar dificultad para cada raid
+    const raidsWithoutDifficulty = result.raids.filter((raid) => !raid.difficultyCode);
+    if (raidsWithoutDifficulty.length > 0) {
+      orderedMissingFields.push('Dificultad (ej: 10N, 25H)');
+    }
+  }
+
+  // 8. Raid Leader (opcional, solo si se especifica RL pero no está marcado)
+  const hasRLNotation = /\bRL\b/i.test(trimmedNote);
+  if (hasRLNotation && !result.isRaidLeader) {
+    orderedMissingFields.push('RaidLeader (RL) - No se pudo marcar como líder');
+  }
+
+  // Agregar cualquier otro campo faltante que no esté en la lista ordenada
+  const otherMissingFields = missingFields.filter(
+    (field) => !orderedMissingFields.some((omf) => field.includes(omf.split(' ')[0]))
+  );
+
+  // Combinar los campos ordenados con los demás campos faltantes
+  const allMissingFields = [...orderedMissingFields, ...otherMissingFields];
+  const missingFieldsSet = new Set(allMissingFields);
+
+  // Actualizar el array de missingFields
+  result.missingFields = Array.from(missingFieldsSet);
+
+  // 7. Determinar si la nota es válida
+  // La nota es válida si tiene al menos un campo válido
+  result.isValid = true;
+
+  // Si no hay ningún campo válido, marcar como inválido
+  const hasAnyValidField =
+    result.role ||
+    result.mainAlt ||
+    result.gearScore ||
+    (result.professions && result.professions.length > 0) ||
+    (result.schedules && result.schedules.length > 0) ||
+    (result.raids && result.raids.length > 0);
+
+  if (!hasAnyValidField) {
+    result.isValid = false;
+    errors.push('Formato inválido - No se detectaron campos válidos');
+  }
+
+  // Verificar si es un formato simple (MT, MTH, etc.)
+  const isSimpleFormat = /^[MA]?[THD]+$/i.test(trimmedNote) || /^[MA]$/i.test(trimmedNote);
+
+  // Si es un formato simple o tiene los campos requeridos, es válido
+  const finalIsValid = isSimpleFormat || (errors.length === 0 && hasAnyValidField);
+
+  if (!finalIsValid) {
+    return {
+      ...result,
+      isValid: false,
+      error: [
+        ...(missingFields.length > 0 ? [`Falta: ${missingFields.join(', ')}`] : []),
+        ...errors,
+      ].join('\n'),
+      missingFields,
+    };
+  }
+
+  return {
+    ...result,
+    isValid: true,
+    mainAlt: result.mainAlt as MainAlt,
+    role: result.role as Role,
+    dualRole: result.dualRole as Role | undefined,
+    gearScore: result.gearScore,
+    professions: result.professions,
+    schedules: result.schedules,
+    raids: result.raids || [],
+  };
+}
+
+// Mapeo de nombres de profesiones para mostrar
+const professionNames = {
+  JC: 'Joyería',
+  BS: 'Herrería',
+  EN: 'Encantamiento',
+  EG: 'Ingeniería',
+  TL: 'Peletería',
+  AL: 'Alquimia',
+  IN: 'Inscripción',
+  HB: 'Herrería Sagrada',
+  MN: 'Minería',
+  SK: 'Desuello',
+} as const;
+
+// Mapeo de profesiones a nombres completos y colores
+const professionInfo: Record<ProfessionCode, { name: string; color: string; bgColor: string }> = {
+  JC: { name: 'Joyería', color: 'text-yellow-300', bgColor: 'bg-yellow-500/20' },
+  BS: { name: 'Herrería', color: 'text-gray-300', bgColor: 'bg-gray-500/20' },
+  EN: { name: 'Encantamiento', color: 'text-purple-300', bgColor: 'bg-purple-500/20' },
+  EG: { name: 'Ingeniería', color: 'text-blue-200', bgColor: 'bg-blue-500/20' },
+  AL: { name: 'Alquimia', color: 'text-green-200', bgColor: 'bg-green-500/20' },
+  TL: { name: 'Peletería', color: 'text-pink-300', bgColor: 'bg-pink-500/20' },
+  IN: { name: 'Inscripción', color: 'text-indigo-300', bgColor: 'bg-indigo-500/20' },
+  HB: { name: 'Herrería Sagrada', color: 'text-lime-300', bgColor: 'bg-lime-500/20' },
+  MN: { name: 'Minería', color: 'text-gray-400', bgColor: 'bg-gray-600/20' },
+  SK: { name: 'Desuello', color: 'text-orange-300', bgColor: 'bg-orange-500/20' },
+} as const;
+
+const totalMembers = rosterMembers.length;
+
+// Calcular estadísticas de roles individuales y combinaciones de roles duales
+const roleStats = rosterMembers.reduce(
+  (acc, member) => {
+    const validation = member.noteValidation;
+    if (validation?.isValid) {
+      // Contar rol principal
+      if (validation.role) {
+        acc[validation.role] = (acc[validation.role] || 0) + 1;
+      }
+      // Contar rol secundario si existe
+      if (validation.dualRole) {
+        acc[validation.dualRole] = (acc[validation.dualRole] || 0) + 1;
+      }
+    }
+    return acc;
+  },
+  {} as Record<Role, number>
+);
+
+// Usar roleDistribution para obtener los conteos de roles duales
+const dualRoleStats = [
+  {
+    combo: 'TH',
+    label: 'Tank / Heal',
+    count: roleDistribution.find(r => r.role === 'TH')?.count || 0,
+    color: 'bg-blue-400/20',
+    textColor: 'text-blue-400'
+  },
+  {
+    combo: 'TD',
+    label: 'Tank / DPS',
+    count: roleDistribution.find(r => r.role === 'TD')?.count || 0,
+    color: 'bg-purple-400/20',
+    textColor: 'text-purple-400'
+  },
+  {
+    combo: 'HD',
+    label: 'Heal / DPS',
+    count: roleDistribution.find(r => r.role === 'HD')?.count || 0,
+    color: 'bg-green-400/20',
+    textColor: 'text-green-400'
+  }
+];
+
+// Ordenar por cantidad (de mayor a menor)
+const sortedDualRoles = [...dualRoleStats].sort((a, b) => b.count - a.count);
+
+// Calcular estadísticas de mains/alts
+const mainAltStats = rosterMembers.reduce(
+  (acc, member) => {
+    const validation = member.noteValidation;
+    if (validation?.isValid && validation.mainAlt) {
+      acc[validation.mainAlt] = (acc[validation.mainAlt] || 0) + 1;
+    } else {
+      // Si no está especificado, asumir que es main
+      acc['M'] = (acc['M'] || 0) + 1;
+    }
+    return acc;
+  },
+  {} as Record<MainAlt, number>
+);
+
+// Usamos gearScoreStats ya definido anteriormente
+
+// Contar líderes de raid
+const raidLeaderCount = rosterData.members.filter(
+  (member) => member.noteValidation?.isRaidLeader
+).length;
+
+// Obtener lista de rangos únicos
+const ranks = [...new Set(rosterData.members.map((member) => member.rank))].sort();
+
+// Obtener lista de clases únicas
+const rosterClassInfo = rosterData?.classInfo || {};
+const classList = Object.keys(rosterClassInfo) as ClassName[];
+
+// Datos para el cliente
+const rosterClientData: RosterData = {
+  members: rosterMembers,
+  classInfo: rosterData.classInfo,
+  ranks: ranks,
+  classes: classList,
+  totalMembers: rosterMembers.length,
+  rankInfo: {},
+};
+
+// Definir tipos para las distribuciones
+interface DistributionItem {
+  name: string;
+  count: number;
+  percentage?: number;
+  color?: string;
+}
+
+interface RoleDistributionItem extends DistributionItem {
+  role: string;
+}
+
+type MainAltType = 'M' | 'A';
+interface MainAltDistribution {
+  M: number;
+  A: number;
+}
+
+interface ClassDistributionItem extends DistributionItem {
+  color: string;
+}
+
+interface MainAltDistributionItem extends DistributionItem {
+  type: 'M' | 'A';
+}
+
+// Función para calcular la distribución por rango
+function calculateRankDistribution(
+  members: any[] = []
+): Array<{ name: string; count: number; percentage: number }> {
+  if (!members || !Array.isArray(members)) {
+    return [];
+  }
+  const totalMembers = members.length;
+  if (totalMembers === 0) return [];
+  const rankCounts = members.reduce((acc: Record<string, number>, member) => {
+    acc[member.rank] = (acc[member.rank] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Definir tipos de rangos válidos
+  type RankType = 'Oficial' | 'Veterano' | 'Miembro' | 'Iniciado' | 'Recluta';
+
+  // Calcular porcentajes y redondear a 1 decimal
+  return Object.entries(rankCounts).map(([name, count]) => {
+    const rankName = name as RankType;
+    return {
+      name: rankName,
+      count: count as number,
+      percentage:
+        totalMembers > 0
+          ? Math.round(((count as number) / totalMembers) * 100 * 10) / 10 // Redondear a 1 decimal
+          : 0,
+    };
+  });
+}
+
+// Función para calcular la distribución por clase
+function calculateClassDistribution(
+  members: any[] = [],
+  classInfo: any = {}
+): ClassDistributionItem[] {
+  if (!Array.isArray(members) || !classInfo) {
+    return [];
+  }
+
+  const classCounts = members.reduce((acc: Record<string, number>, member) => {
+    if (member && member.class) {
+      acc[member.class] = (acc[member.class] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  return Object.entries(classCounts)
+    .filter(([className]) => className && classInfo[className])
+    .map(([className, count]) => ({
+      name: className,
+      count: count as number,
+      color: classInfo[className].color || 'FFFFFF',
+    }));
+}
+
+// Calcular distribuciones
+// RosterData interface is already defined above
+
+const rankDistribution = calculateRankDistribution(rosterData.members);
+const classDistribution = calculateClassDistribution(rosterData.members, rosterData.classInfo);
+
+// Calcular estadísticas del formato de notas
+const stats = rosterData.members.reduce(
+  (
+    acc: {
+      roles: Record<string, number>;
+      mainAlt: Record<string, number>;
+      professions: Record<string, number>;
+      gearScores: number[];
+      totalGearScore: number;
+      minGearScore: number;
+      maxGearScore: number;
+      validNotesCount: number;
+    },
+    member
+  ) => {
+    const validation = member.noteValidation;
+
+    if (validation?.isValid) {
+      // Contar roles (incluyendo duales)
+      if (validation.role) {
+        acc.roles[validation.role] = (acc.roles[validation.role] || 0) + 1;
+
+        // Si tiene rol dual, contarlo también
+        if (validation.dualRole) {
+          acc.roles[validation.dualRole] = (acc.roles[validation.dualRole] || 0) + 1;
+        }
+      }
+
+      // Contar main/alt
+      if (validation.mainAlt) {
+        acc.mainAlt[validation.mainAlt] = (acc.mainAlt[validation.mainAlt] || 0) + 1;
+      }
+
+      // Acumular gear score
+      if (validation.gearScore) {
+        const gs = parseFloat(validation.gearScore);
+        if (!isNaN(gs)) {
+          acc.gearScores.push(gs);
+          acc.totalGearScore += gs;
+          if (gs < acc.minGearScore) acc.minGearScore = gs;
+          if (gs > acc.maxGearScore) acc.maxGearScore = gs;
+        }
+      }
+
+      // Contar profesiones
+      if (validation.professions && Array.isArray(validation.professions)) {
+        console.log('Profesiones encontradas en la nota:', validation.professions);
+        
+        // Crear un mapa inverso de nombre a código de profesión
+        const nameToCode = Object.entries(PROFESSIONS).reduce((acc, [code, name]) => {
+          acc[name.toLowerCase()] = code;
+          return acc;
+        }, {} as Record<string, string>);
+        
+        validation.professions.forEach((prof: any) => {
+          const profName = String(prof).trim();
+          console.log('Procesando profesión:', profName);
+          
+          // Buscar el código de la profesión por nombre o usar el valor directamente
+          const code = nameToCode[profName.toLowerCase()] || profName;
+          const codeUpper = code.toUpperCase();
+          
+          // Verificar si el código de profesión es válido
+          if (codeUpper in PROFESSIONS) {
+            console.log(`Profesión válida: ${profName} -> ${codeUpper}`);
+            acc.professions[codeUpper] = (acc.professions[codeUpper] || 0) + 1;
+          } else {
+            console.warn(`Profesión no reconocida: ${profName} (código: ${code})`);
+          }
+        });
+        
+        console.log('Conteo actual de profesiones:', acc.professions);
+      }
+
+      acc.validNotesCount++;
+    }
+
+    return acc;
+  },
+  {
+    roles: { T: 0, H: 0, D: 0 },
+    mainAlt: { M: 0, A: 0 },
+    professions: Object.keys(PROFESSIONS).reduce((acc, prof) => {
+      acc[prof] = 0;
+      return acc;
+    }, {} as Record<string, number>),
+    gearScores: [],
+    totalGearScore: 0,
+    minGearScore: Infinity,
+    maxGearScore: 0,
+    validNotesCount: 0,
+  }
+);
+
+// Calcular porcentajes para las distribuciones
+const totalValid = stats.validNotesCount || 1; // Evitar división por cero
+
+
+
+const mainAltDistribution: MainAltDistributionItem[] = Object.entries(stats.mainAlt)
+  .filter(([_, count]) => count > 0)
+  .map(([type, count]) => ({
+    type: type as 'M' | 'A',
+    name: type === 'M' ? 'Main' : 'Alt',
+    count: count as number,
+    percentage: Math.round(((count as number) / totalValid) * 100),
+  }));
+
+// Calcular estadísticas de gear score
+const averageGearScore =
+  stats.validNotesCount > 0 ? (stats.totalGearScore / stats.validNotesCount).toFixed(1) : 'N/A';
+
+const minGearScore = stats.minGearScore !== Infinity ? stats.minGearScore.toFixed(1) : 'N/A';
+const maxGearScore = stats.maxGearScore > 0 ? stats.maxGearScore.toFixed(1) : 'N/A';
+const gearScorePercentage =
+  stats.validNotesCount > 0
+    ? Math.min(100, Math.max(0, (parseFloat(averageGearScore) / 6.8) * 100))
+    : 0;
+
+const validNotesCount = stats.validNotesCount;
+
+// Procesar datos de miembros
+const sortedMembers = [...rosterData.members].sort((a, b) => a.name.localeCompare(b.name));
+const filteredMembers = [...sortedMembers];
+const totalRaiders = rosterData.members.filter(
+  (m) =>
+    m.rank.toLowerCase().includes('élite') ||
+    m.rank.toLowerCase().includes('oficial') ||
+    m.rank.toLowerCase().includes('comandante')
+).length;
+---
+
+<div class="space-y-6">
+  <style>
+    /* Estilos para los tooltips */
+    .tooltip-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip-container:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .tooltip {
+      transform: translateY(-5px);
+      transition: all 0.2s ease-in-out;
+      box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Estilos para los dropdowns */
+    select option {
+      background-color: #1a202c; /* Fondo oscuro */
+      color: #e2e8f0; /* Texto claro */
+      padding: 0.5rem;
+    }
+
+    select:focus option:checked {
+      background-color: #4a5568; /* Color de fondo para la opción seleccionada */
+      color: white;
+    }
+
+    /* Estilo para el hover en las opciones */
+    select option:hover {
+      background-color: #4a5568 !important;
+    }
+  </style>
+  <!-- Script del cliente con la lógica de JavaScript -->
+  <script
+    define:vars={{
+      rosterData: JSON.stringify(rosterClientData),
+      roleNames: JSON.stringify(roleNames),
+      professionNames: JSON.stringify(professionNames),
+    }}
+  >
+    // Analizar los datos del roster
+    const rosterInfo = JSON.parse(rosterData);
+    const roleNamesData = JSON.parse(roleNames);
+    const professionNamesData = JSON.parse(professionNames);
+
+    // Función para inicializar tooltips
+    function initTooltips() {
+      document.querySelectorAll('.tooltip-container').forEach((container) => {
+        const tooltip = container.querySelector('.tooltip');
+        if (!tooltip) return;
+
+        // Posicionamiento del tooltip
+        const updatePosition = () => {
+          const rect = container.getBoundingClientRect();
+          const tooltipRect = tooltip.getBoundingClientRect();
+
+          // Centrar horizontalmente
+          const left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+
+          // Ajustar para que no se salga de la pantalla
+          const adjustedLeft = Math.max(
+            10,
+            Math.min(window.innerWidth - tooltipRect.width - 10, left)
+          );
+
+          tooltip.style.left = `${adjustedLeft}px`;
+        };
+
+        // Actualizar posición al mostrar
+        container.addEventListener('mouseenter', updatePosition);
+
+        // Actualizar posición al redimensionar
+        window.addEventListener('resize', updatePosition);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inicializar tooltips después de cargar la tabla
+      initTooltips();
+      // Obtener elementos del DOM
+      const searchInput = document.getElementById('search');
+      const classFilter = document.getElementById('class-filter');
+      const rankFilter = document.getElementById('rank-filter');
+      const tableBody = document.getElementById('roster-table-body');
+      const prevButton = document.getElementById('prev-button');
+      const nextButton = document.getElementById('next-button');
+      const pageInfo = document.getElementById('page-info');
+
+      let currentPage = 1;
+      const itemsPerPage = 6;
+      let allMembers = [];
+      let filteredMembers = [];
+      let sortConfig = { key: 'name', direction: 'asc' };
+
+      // Inicializar la tabla con los datos
+      function initTable() {
+        if (!tableBody || !pageInfo) {
+          console.error('No se encontraron elementos del DOM necesarios');
+          return;
+        }
+
+        allMembers = [...rosterInfo.members];
+        filteredMembers = [...allMembers];
+
+        // Llenar filtros
+        if (classFilter && rankFilter) {
+          // No necesitamos llenar los dropdowns aquí ya que se generan en el template
+        }
+
+        updateTable();
+        updatePaginationInfo();
+      }
+
+      // Actualizar la tabla con los miembros filtrados y ordenados
+      function updateTable() {
+        if (!tableBody) return;
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const paginatedMembers = filteredMembers.slice(startIndex, startIndex + itemsPerPage);
+
+        tableBody.innerHTML = paginatedMembers
+          .map((member) => {
+            const classData = rosterInfo.classInfo[member.class] || {
+              color: 'FFFFFF',
+              name: member.class,
+            };
+            const className = classData.name;
+            const classColor = classData.color;
+
+            return `
+            <tr class="hover:bg-steel-dark transition-colors duration-200 hover:border-accent">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <img src="/images/avatars/class_${className}.jpg" alt="${className}" class="w-8 h-8 rounded-full mr-3 border border-accent/30" onerror="this.src='/images/avatars/default.png'"/>
+                  <div>
+                    <div class="text-sm font-medium text-white">${member.name}</div>
+                    <div class="text-xs text-text-muted/70" style="color: #${classColor}">${className}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex justify-center">
+                  <span class="px-3 py-1.5 text-sm font-medium rounded-full bg-gradient-to-r from-accent/20 to-accent/10 text-accent-light border border-accent/30 shadow-sm">
+                    ${member.rank}
+                  </span>
+                </div>
+              </td>
+              <td class="px-6 py-4 relative overflow-visible">
+                <div class="relative">
+                  <div class="flex items-start gap-2">
+                    <div class="relative inline-flex items-center">
+                      ${
+                        member.publicNote
+                          ? `
+                        <div class="space-y-1">
+                          <div class="text-text-muted/70 text-xs">${member.publicNote}</div>
+                          ${(() => {
+                            const validation = member.noteValidation;
+                            if (validation?.isValid) {
+                              // Formatear la información validada
+                              const formattedInfo = [];
+
+                              // 1. Main/Alt
+                              if (validation.mainAlt) {
+                                formattedInfo.push({
+                                  label: validation.mainAlt === 'M' ? 'Main' : 'Alt',
+                                  class:
+                                    validation.mainAlt === 'M'
+                                      ? 'bg-blue-500/20 text-blue-300'
+                                      : 'bg-purple-500/20 text-purple-300',
+                                });
+                              }
+
+                              // 2. Rol principal
+                              if (validation.role) {
+                                const roleName =
+                                  roleNamesData[validation.role]?.name || validation.role;
+                                formattedInfo.push({
+                                  label: roleName,
+                                  class:
+                                    validation.role === 'T'
+                                      ? 'bg-blue-500/20 text-blue-300'
+                                      : validation.role === 'H'
+                                        ? 'bg-green-500/20 text-green-300'
+                                        : 'bg-red-500/20 text-red-300',
+                                });
+                              }
+
+                              // 3. Gear Score
+                              if (validation.gearScore) {
+                                formattedInfo.push({
+                                  label: `GS ${validation.gearScore}`,
+                                  class: 'bg-amber-500/20 text-amber-300',
+                                });
+                              }
+
+                              // 4. Rol secundario (dual role)
+                              if (validation.dualRole) {
+                                const dualRoleName =
+                                  roleNamesData[validation.dualRole]?.name || validation.dualRole;
+                                formattedInfo.push({
+                                  label: `Dual ${dualRoleName}`,
+                                  class: 'bg-yellow-500/20 text-yellow-300',
+                                });
+                              }
+
+                              // 4. Profesiones
+                              if (validation.professions?.length) {
+                                formattedInfo.push({
+                                  label: validation.professions.join(' / '),
+                                  class: 'bg-indigo-500/20 text-indigo-300',
+                                });
+                              }
+
+                              // 5. Horarios
+                              if (validation.schedules?.length) {
+                                // Convertir X a h para visualización
+                                const formattedSchedules = validation.schedules.map((time) =>
+                                  time.replace(/X$/g, 'h').replace(/(\d{2}):(\d{2})X/g, '$1:$2h')
+                                );
+                                formattedInfo.push({
+                                  label: `Online a las: ${formattedSchedules.join(' ')}`,
+                                  class: 'bg-emerald-500/20 text-emerald-300',
+                                });
+                              }
+
+                              // 6. Raids y dificultades
+                              if (validation.raids?.length) {
+                                // Separar las raids de sus dificultades
+                                const raidNames = [];
+                                const raidDifficulties = [];
+
+                                validation.raids.forEach((raid) => {
+                                  if (raid.difficultyCode) {
+                                    // Usar difficultyCode (ej: 10N, 25H) en lugar de difficulty (Normal, Heroic)
+                                    if (!raidDifficulties.includes(raid.difficultyCode)) {
+                                      raidDifficulties.push(raid.difficultyCode);
+                                    }
+                                  } else if (
+                                    raid.difficulty &&
+                                    raid.difficulty !== 'Sin especificar'
+                                  ) {
+                                    // Si no hay difficultyCode pero sí difficulty, usamos este como respaldo
+                                    if (!raidDifficulties.includes(raid.difficulty)) {
+                                      raidDifficulties.push(raid.difficulty);
+                                    }
+                                  }
+                                  if (!raidNames.includes(raid.name)) {
+                                    raidNames.push(raid.name);
+                                  }
+                                });
+
+                                // Mostrar nombres de raids
+                                if (raidNames.length > 0) {
+                                  const isRaidLeader = validation.isRaidLeader;
+                                  formattedInfo.push({
+                                    label: `${isRaidLeader ? 'Armo' : 'Busco'}: ${raidNames.join(', ')}`,
+                                    class: isRaidLeader
+                                      ? 'bg-purple-600/30 text-purple-300 border border-purple-500/40'
+                                      : 'bg-purple-500/20 text-purple-300',
+                                  });
+
+                                  // Si es raid leader, añadir etiqueta especial
+                                  if (isRaidLeader) {
+                                    formattedInfo.unshift({
+                                      label: 'Raid Leader',
+                                      class:
+                                        'bg-yellow-500/30 text-yellow-300 border border-yellow-500/40 font-medium',
+                                    });
+                                  }
+                                }
+
+                                // Mostrar dificultades solo si hay alguna definida y no está vacía
+                                const validDifficulties = raidDifficulties.filter(
+                                  (d) => d && d.trim() !== ''
+                                );
+                                if (validDifficulties.length > 0) {
+                                  formattedInfo.push({
+                                    label: `Dificultad: ${validDifficulties.join(', ')}`,
+                                    class: 'bg-indigo-500/20 text-indigo-300',
+                                  });
+                                }
+                              }
+
+                              // Verificar si hay campos faltantes incluso si la nota es válida
+                              const missingFields = validation.missingFields || [];
+
+                              // Renderizar las etiquetas formateadas
+                              return `
+                                <div class="space-y-1">
+                                  <div class="flex flex-wrap gap-1">
+                                    ${formattedInfo
+                                      .map(
+                                        (info) =>
+                                          `<span class="px-2 py-0.5 text-xs rounded-full ${info.class}">
+                                        ${info.label}
+                                      </span>`
+                                      )
+                                      .join('')}
+                                  </div>
+                                  ${
+                                    missingFields.length > 0
+                                      ? `
+                                    <div class="flex items-start gap-1 text-yellow-400 text-xs mt-1">
+                                      <svg class="w-3 h-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                      </svg>
+                                      <span>Faltan: ${missingFields.join(', ')}</span>
+                                    </div>
+                                  `
+                                      : ''
+                                  }
+                                </div>
+                              `;
+                            } else {
+                              const missingFields = validation.missingFields || [];
+                              const errorMessage =
+                                missingFields.length > 0
+                                  ? `Faltan: ${missingFields.join(', ')}`
+                                  : 'Formato inválido';
+
+                              return `
+                                <div class="space-y-1">
+                                  <div class="flex flex-wrap gap-1">
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300">
+                                      Formato inválido
+                                    </span>
+                                  </div>
+                                  ${
+                                    missingFields.length > 0
+                                      ? `
+                                    <div class="flex items-start gap-1 text-yellow-400 text-xs mt-1">
+                                      <svg class="w-3 h-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                      </svg>
+                                      <span>Faltan: ${missingFields.join(', ')}</span>
+                                    </div>
+                                  `
+                                      : ''
+                                  }
+                                </div>
+                              `;
+                            }
+                          })()}
+                        </div> 
+                      `
+                          : `
+                        <div class="flex items-center gap-2">
+                          <span class="text-text-muted/70 italic">Sin nota</span>
+                          <div class="flex items-center justify-center w-5 h-5 rounded-full bg-gray-900/20 border border-gray-500/30">
+                            <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                          </div>
+                        </div>
+                      `
+                      }
+                    </div>
+                    
+                  </div>
+                </div>
+              </td>
+            </tr>
+          `;
+          })
+          .join('');
+
+        updatePaginationInfo();
+        updateSortIndicators();
+      }
+
+      // Función para ordenar los miembros
+      function sortMembers(key) {
+        if (sortConfig.key === key) {
+          sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+          sortConfig.key = key;
+          sortConfig.direction = 'asc';
+        }
+
+        filteredMembers.sort((a, b) => {
+          let aValue = a[key] || '';
+          let bValue = b[key] || '';
+
+          // Manejar valores nulos o indefinidos
+          if (aValue === null || aValue === undefined) aValue = '';
+          if (bValue === null || bValue === undefined) bValue = '';
+
+          // Convertir a string para comparación segura
+          aValue = String(aValue).toLowerCase();
+          bValue = String(bValue).toLowerCase();
+
+          if (aValue < bValue) {
+            return sortConfig.direction === 'asc' ? -1 : 1;
+          }
+          if (aValue > bValue) {
+            return sortConfig.direction === 'asc' ? 1 : -1;
+          }
+          return 0;
+        });
+
+        currentPage = 1; // Volver a la primera página al cambiar el orden
+        updateTable();
+
+        filteredMembers.sort((a, b) => {
+          const aValue = a[sortConfig.key]?.toString().toLowerCase() || '';
+          const bValue = b[sortConfig.key]?.toString().toLowerCase() || '';
+
+          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+          return 0;
+        });
+
+        currentPage = 1;
+        updateTable();
+      }
+
+      // Función para actualizar la información de paginación
+      function updatePaginationInfo() {
+        if (!pageInfo) return;
+        const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
+
+        // Actualizar el contador de página
+        pageInfo.textContent = `Página ${currentPage} de ${totalPages} (${filteredMembers.length} miembros)`;
+
+        // Actualizar estado de los botones de paginación
+        if (prevButton) {
+          prevButton.disabled = currentPage <= 1;
+        }
+        if (nextButton) {
+          nextButton.disabled = currentPage >= totalPages;
+        }
+
+        // Actualizar los botones de página
+        updatePageButtons(totalPages);
+      }
+
+      // Función para actualizar los botones de página
+      function updatePageButtons(totalPages) {
+        const paginationContainer = document.getElementById('pagination-buttons');
+        if (!paginationContainer) return;
+
+        let buttons = [];
+        const maxVisiblePages = 5; // Número máximo de páginas visibles
+        let startPage, endPage;
+
+        if (totalPages <= maxVisiblePages) {
+          // Mostrar todas las páginas
+          startPage = 1;
+          endPage = totalPages;
+        } else {
+          // Calcular qué páginas mostrar
+          if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
+            // Estamos cerca del inicio
+            startPage = 1;
+            endPage = maxVisiblePages - 2; // Dejamos espacio para "..." y la última página
+          } else if (currentPage + Math.floor(maxVisiblePages / 2) >= totalPages) {
+            // Estamos cerca del final
+            startPage = totalPages - maxVisiblePages + 3; // Dejamos espacio para la primera página y "..."
+            endPage = totalPages;
+          } else {
+            // Estamos en el medio
+            startPage = currentPage - Math.floor((maxVisiblePages - 2) / 2);
+            endPage = currentPage + Math.floor((maxVisiblePages - 2) / 2);
+          }
+
+          // Asegurarnos de no salirnos de los límites
+          if (startPage < 1) startPage = 1;
+          if (endPage > totalPages) endPage = totalPages;
+        }
+
+        // Botón Anterior
+        buttons.push(`
+          <button 
+            id="prev-button"
+            class="px-3 py-1 rounded-md ${currentPage <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-steel-dark'} transition-colors"
+            ${currentPage <= 1 ? 'disabled' : ''}
+          >
+            &lt;
+          </button>
+        `);
+
+        // Primera página
+        if (startPage > 1) {
+          buttons.push(`
+            <button 
+              class="px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-accent/20 text-accent font-medium' : 'hover:bg-steel-dark'} transition-colors page-button"
+              data-page="1"
+            >
+              1
+            </button>
+          `);
+
+          if (startPage > 2) {
+            buttons.push('<span class="px-2">...</span>');
+          }
+        }
+
+        // Páginas intermedias
+        for (let i = startPage; i <= endPage; i++) {
+          buttons.push(`
+            <button 
+              class="px-3 py-1 rounded-md ${currentPage === i ? 'bg-accent/20 text-accent font-medium' : 'hover:bg-steel-dark'} transition-colors page-button"
+              data-page="${i}"
+            >
+              ${i}
+            </button>
+          `);
+        }
+
+        // Última página
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            buttons.push('<span class="px-2">...</span>');
+          }
+
+          buttons.push(`
+            <button 
+              class="px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-accent/20 text-accent font-medium' : 'hover:bg-steel-dark'} transition-colors page-button"
+              data-page="${totalPages}"
+            >
+              ${totalPages}
+            </button>
+          `);
+        }
+
+        // Botón Siguiente
+        buttons.push(`
+          <button 
+            id="next-button"
+            class="px-3 py-1 rounded-md ${currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-steel-dark'} transition-colors"
+            ${currentPage >= totalPages ? 'disabled' : ''}
+          >
+            &gt;
+          </button>
+        `);
+
+        paginationContainer.innerHTML = buttons.join('');
+
+        // Agregar event listeners a los botones de página
+        document.querySelectorAll('.page-button').forEach((button) => {
+          button.addEventListener('click', (e) => {
+            const page = parseInt(e.target.getAttribute('data-page'));
+            if (page && !isNaN(page)) {
+              currentPage = page;
+              updateTable();
+            }
+          });
+        });
+
+        // Actualizar botones anterior/siguiente
+        const prevBtn = document.getElementById('prev-button');
+        const nextBtn = document.getElementById('next-button');
+
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+              currentPage--;
+              updateTable();
+            }
+          });
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+              currentPage++;
+              updateTable();
+            }
+          });
+        }
+      }
+
+      // Función para actualizar los indicadores de ordenación
+      function updateSortIndicators() {
+        document.querySelectorAll('th[data-sort]').forEach((th) => {
+          const sortKey = th.getAttribute('data-sort');
+          if (!sortKey) return;
+
+          const indicator = th.querySelector('.sort-indicator');
+          if (!indicator) return;
+
+          if (sortConfig.key === sortKey) {
+            indicator.textContent = sortConfig.direction === 'asc' ? '↑' : '↓';
+          } else {
+            indicator.textContent = '↕';
+          }
+        });
+      }
+
+      // Función para filtrar miembros según los filtros aplicados
+      function filterMembers() {
+        if (!searchInput || !classFilter || !rankFilter) return;
+
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedClass = classFilter.value;
+        const selectedRank = rankFilter.value;
+
+        filteredMembers = allMembers.filter((member) => {
+          const matchesSearch =
+            searchTerm === '' ||
+            member.name.toLowerCase().includes(searchTerm) ||
+            (member.publicNote && member.publicNote.toLowerCase().includes(searchTerm));
+          const matchesClass = selectedClass === '' || member.class === selectedClass;
+          const matchesRank = selectedRank === '' || member.rank === selectedRank;
+
+          return matchesSearch && matchesClass && matchesRank;
+        });
+
+        currentPage = 1;
+        updateTable();
+      }
+
+      // Event listeners
+      if (searchInput) {
+        searchInput.addEventListener('input', filterMembers);
+      }
+
+      if (classFilter) {
+        classFilter.addEventListener('change', filterMembers);
+      }
+
+      if (rankFilter) {
+        rankFilter.addEventListener('change', filterMembers);
+      }
+
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage--;
+            updateTable();
+          }
+        });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
+          if (currentPage < totalPages) {
+            currentPage++;
+            updateTable();
+          }
+        });
+      }
+
+      // Inicializar encabezados ordenables
+      document.querySelectorAll('th[data-sort]').forEach((th) => {
+        th.addEventListener('click', () => {
+          const sortKey = th.getAttribute('data-sort');
+          if (sortKey) {
+            sortMembers(sortKey);
+          }
+        });
+      });
+
+      // Inicializar la tabla
+      initTable();
+
+      // Inicializar tooltips después de actualizar la tabla
+      initTooltips();
+
+      // Función para actualizar la tabla después de cambios
+      const originalUpdateTable = updateTable;
+      updateTable = function () {
+        originalUpdateTable.apply(this, arguments);
+      };
+    });
+  </script>
+
+  <!-- Estadísticas del Roster -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 -pt-2 mb-8">
+    <!-- Total de Miembros y Mains/Alts -->
+    <div
+      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-accent hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between"
+    >
+      <div class="flex items-center mb-2">
+        <h3 class="text-text-muted/90 text-sm font-medium">Miembros Totales</h3>
+      </div>
+      <p class="text-xl text-center font-bold text-white">{totalMembers}</p>
+      <div class="grid grid-cols-2 gap-4 mt-3 justify-items-center">
+        <div>
+          <p class="text-3xl font-bold text-purple-300">{mainAltStats.M || 0}</p>
+          <p class="text-xs text-text-muted/70">Mains</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-purple-300">{mainAltStats.A || 0}</p>
+          <p class="text-xs text-text-muted/70">Alts</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribución de Roles -->
+    <div
+      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-green-500/20 hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between"
+    >
+      <div class="flex mb-2">
+        <h3 class="text-text-muted/90 text-sm font-medium">Roles principales</h3>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <div class="text-center">
+          <p class="text-3xl font-bold text-blue-400">{roleStats.T || 0}</p>
+          <p class="text-xs text-text-muted/70">Tanks</p>
+        </div>
+        <div class="text-center">
+          <p class="text-3xl font-bold text-green-400">{roleStats.H || 0}</p>
+          <p class="text-xs text-text-muted/70">Healers</p>
+        </div>
+        <div class="text-center">
+          <p class="text-3xl font-bold text-red-400">{roleStats.D || 0}</p>
+          <p class="text-xs text-text-muted/70">DPS</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combinaciones de Roles Duales -->
+    <div
+      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-blue-500/20 hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between"
+    >
+      <div class="mb-2">
+        <h3 class="text-text-muted/90 text-sm font-medium">Roles dual</h3>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        {sortedDualRoles.map(({ combo, label, count, color, textColor }) => (
+          <div class="text-center">
+            <p class={`text-3xl font-bold ${textColor}`}>{count}</p>
+            <p class="text-[10px] text-text-muted/70">{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Gear Score Promedio -->
+    <div class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-green-500/20 hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-text-muted/90 text-sm font-medium">Gear Score</h3>
+        <span class="text-xs bg-green-500/10 text-green-400 px-2 py-0.5 rounded-full">Prom</span>
+      </div>
+      <div>
+        <p class="text-3xl font-bold text-green-400">
+          {gearScoreStats.avg > 0 ? gearScoreStats.avg.toFixed(1) : 'N/A'}
+        </p>
+        <div class="flex justify-between text-xs text-text-muted/70 mt-1">
+          <span>Min: {gearScoreStats.min > 0 ? gearScoreStats.min : 'N/A'}</span>
+          <span>Max: {gearScoreStats.max > 0 ? gearScoreStats.max : 'N/A'}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div
+    class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-steel-light shadow-lg mb-8"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="relative">
+        <label for="search" class="block text-sm font-medium text-text-muted/80 mb-2">
+          Buscar por nombre o nota
+        </label>
+        <input
+          type="text"
+          id="search"
+          placeholder="Nombre o nota..."
+          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
+        />
+      </div>
+
+      <div class="relative">
+        <label for="class-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+          Filtrar por clase
+        </label>
+        <select
+          id="class-filter"
+          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
+        >
+          <option value="">Todas las clases</option>
+          {
+            Object.entries(rosterData.classInfo).map(([key, info]) => (
+              <option value={key} style={`color: #${info.color}`}>
+                {info.name}
+              </option>
+            ))
+          }
+        </select>
+      </div>
+
+      <div class="relative">
+        <label for="rank-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+          Filtrar por rango
+        </label>
+        <select
+          id="rank-filter"
+          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
+        >
+          <option value="">Todos los rangos</option>
+          {
+            ranks.map((rank) => (
+              <option value={rank} class="text-white">
+                {rank}
+              </option>
+            ))
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de miembros -->
+  <div
+    class="rounded-xl border border-accent bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm shadow-lg overflow-hidden"
+  >
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-accent">
+        <thead class="bg-steel-darker/80">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider cursor-pointer" data-sort="name">
+              <div class="flex items-center">
+                Personaje
+                <span class="sort-icon ml-1">↕</span>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider cursor-pointer"
+              data-sort="rank"
+            >
+              <div class="flex items-center">
+                Rango
+                <span class="ml-1 sort-indicator">↕</span>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider cursor-pointer"
+              data-sort="publicNote"
+            >
+              <div class="flex items-center">
+                Nota Pública
+                <span class="ml-1 sort-indicator">↕</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="roster-table-body" class="divide-y divide-accent bg-steel-darker/50">
+          <!-- Los miembros se cargarán aquí dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Controles de paginación -->
+    <div
+      class="px-6 py-4 bg-steel-darker/80 border-t border-accent flex flex-col sm:flex-row items-center justify-between gap-4"
+    >
+      <div id="page-info" class="text-text-muted text-sm order-2 sm:order-1">
+        Página 1 de 1 (0 miembros)
+      </div>
+
+      <div
+        id="pagination-buttons"
+        class="flex items-center gap-1 bg-steel-darker/50 border border-accent/20 rounded-lg p-1 order-1 sm:order-2"
+      >
+        <!-- Los botones de página se generarán aquí dinámicamente -->
+        <button
+          id="prev-button"
+          class="px-3 py-1 rounded-md opacity-50 cursor-not-allowed transition-colors"
+          disabled
+        >
+          &lt;
+        </button>
+        <button class="px-3 py-1 rounded-md bg-accent/20 text-accent font-medium">1</button>
+        <button
+          id="next-button"
+          class="px-3 py-1 rounded-md opacity-50 cursor-not-allowed transition-colors"
+          disabled
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de estadísticas -->
+  <div class="mt-8">
+    <h2
+      class="px-4 py-2 text-xl font-medium border-b-2 border-transparent text-text-muted hover:text-white transition-colors duration-200 tab-button"
+      data-tab="stats"
+    >
+      Estadísticas
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Columna 1: Distribución por Rango -->
+      <div>
+        <div
+          class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent shadow-lg hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300"
+        >
+          <h3
+            class="text-text-muted/90 text-lg font-medium mb-4 text-center uppercase tracking-wider bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent"
+          >
+            Por Rango
+          </h3>
+          <div class="space-y-3">
+            {
+              rankDistribution.map(({ name, count, percentage }) => {
+                // Asignar colores directamente
+                let colorClass = 'from-accent to-accent-light';
+                if (name === 'Oficial') colorClass = 'from-blue-400 to-blue-600';
+                else if (name === 'Veterano') colorClass = 'from-purple-400 to-purple-600';
+                else if (name === 'Miembro') colorClass = 'from-green-400 to-green-600';
+                else if (name === 'Iniciado') colorClass = 'from-yellow-400 to-yellow-600';
+                else if (name === 'Recluta') colorClass = 'from-gray-400 to-gray-600';
+
+                return (
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-text-muted">{name}</span>
+                      <div class="flex items-center">
+                        <span class="text-white font-medium mr-1">{count}</span>
+                        <span class="text-text-muted/70">({percentage}%)</span>
+                      </div>
+                    </div>
+                    <div class="w-full bg-gray-700/50 rounded-full h-2">
+                      <div
+                        class="h-full rounded-full bg-gradient-to-r transition-all duration-500 ease-out"
+                        class:list={[colorClass]}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 2: Distribución por Clase -->
+      <div>
+        <div
+          class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-green-500/20 shadow-lg hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 h-full"
+        >
+          <h3
+            class="text-text-muted/90 text-lg font-medium mb-4 text-center uppercase tracking-wider bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent"
+          >
+            Por Clase
+          </h3>
+          <div class="space-y-3">
+            {
+              classDistribution.map(({ name, count, color: classColor }) => {
+                const percentage = Math.round((count / rosterData.members.length) * 100);
+                return (
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                      <div class="flex items-center">
+                        <span
+                          class="w-3 h-3 rounded-full mr-2"
+                          style={`background-color: #${classColor}`}
+                        />
+                        <span class="text-text-muted">{name}</span>
+                      </div>
+                      <div class="flex items-center">
+                        <span class="text-white font-medium mr-1">{count}</span>
+                        <span class="text-text-muted/70">({percentage}%)</span>
+                      </div>
+                    </div>
+                    <div class="w-full bg-gray-700/50 rounded-full h-2">
+                      <div
+                        class="h-full rounded-full transition-all duration-500 ease-out"
+                        style={{
+                          width: `${percentage}%`,
+                          background: `linear-gradient(to right, #${classColor}99, #${classColor}ff)`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300 shadow-lg"
+      >
+        <h3
+          class="text-text-muted/90 text-lg font-medium mb-4 text-center uppercase tracking-wider bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent"
+        >
+          Por Profesión
+        </h3>
+        <div class="space-y-3">
+          {
+            Object.entries(stats.professions || {})
+              .filter(([_, count]) => count > 0)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 11)
+              .map(([code, count]) => {
+                const profName = PROFESSIONS[code as keyof typeof PROFESSIONS] || code;
+                const percentage = Math.min(100, Math.round((count / stats.validNotesCount) * 100));
+                
+                // Mapa de colores por código de profesión
+                const colorsMap = {
+                  JC: { light: '#fde047', dark: '#d97706' },  // Joyería
+                  BS: { light: '#60a5fa', dark: '#1d4ed8' },  // Herrería
+                  EN: { light: '#c084fc', dark: '#7e22ce' },  // Encantamiento
+                  EG: { light: '#2dd4bf', dark: '#0d9488' },  // Ingeniería
+                  AL: { light: '#4ade80', dark: '#15803d' },  // Alquimia
+                  TL: { light: '#f472b6', dark: '#db2777' },  // Sastrería
+                  IN: { light: '#818cf8', dark: '#4f46e5' },  // Inscripción
+                  HB: { light: '#84cc16', dark: '#65a30d' },  // Herboristería
+                  LW: { light: '#f59e0b', dark: '#d97706' },  // Peletería
+                  MN: { light: '#f97316', dark: '#c2410c' },  // Minería
+                  SK: { light: '#f43f5e', dark: '#be123c' }   // Desuello
+                };
+                
+                // Obtener los colores para la profesión
+                const colors = colorsMap[code as keyof typeof colorsMap] || { light: '#d1d5db', dark: '#6b7280' };
+                
+                return (
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                      <div class="flex items-center">
+                        <span
+                          class="w-3 h-3 rounded-full mr-2"
+                          style={`background-color: ${colors.dark}`}
+                        />
+                        <span class="text-text-muted">{profName}</span>
+                      </div>
+                      <div class="flex items-center">
+                        <span class="text-white font-medium mr-1">{count}</span>
+                        <span class="text-text-muted/70">({percentage}%)</span>
+                      </div>
+                    </div>
+                    <div class="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
+                      <div
+                        class="h-full rounded-full transition-all duration-500 ease-out"
+                        style={{
+                          width: `${percentage}%`,
+                          background: `linear-gradient(90deg, ${colors.light}, ${colors.dark})`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script para el manejo de pestañas -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabButtons = document.querySelectorAll<HTMLButtonElement>('.tab-button');
+      const tabPanes = document.querySelectorAll<HTMLElement>('.tab-pane');
+      const defaultTab = document.getElementById('legend-tab');
+
+      // Activar la pestaña por defecto
+      if (defaultTab) {
+        defaultTab.classList.remove('hidden');
+      }
+
+      tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          // Remover clases activas
+          tabButtons.forEach((btn) => {
+            btn.classList.remove('active', 'border-accent', 'text-white');
+            btn.classList.add('text-text-muted');
+          });
+
+          tabPanes.forEach((pane) => pane.classList.add('hidden'));
+
+          // Activar pestaña clickeada
+          button.classList.remove('text-text-muted');
+          button.classList.add('active', 'border-accent', 'text-white');
+
+          const tabId = button.getAttribute('data-tab');
+          if (tabId) {
+            const tabPane = document.getElementById(`${tabId}-tab`);
+            if (tabPane) {
+              tabPane.classList.remove('hidden');
+
+              // Forzar reflow para activar la animación
+              void tabPane.offsetWidth;
+              tabPane.style.animation = 'fadeIn 0.3s ease';
+
+              // Remover la animación después de que termine
+              setTimeout(() => {
+                tabPane.style.animation = '';
+              }, 300);
+            }
+          }
+        });
+      });
+    });
+  </script>
+
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tab-pane {
+      animation: fadeIn 0.3s ease-out;
+    }
+  </style>
+
+  <!-- Estilos para las pestañas -->
+  <style>
+    .tab-button {
+      transition: all 0.2s ease;
+      margin-bottom: -1px;
+    }
+    .tab-button:hover {
+      color: white;
+    }
+    .tab-button.active {
+      border-bottom-color: #3b82f6;
+      color: white;
+    }
+    .tab-pane {
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</div>

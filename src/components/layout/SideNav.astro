@@ -1,0 +1,106 @@
+---
+const sections = [
+  { id: 'inicio', label: 'Inicio' },
+  { id: 'rooster', label: 'Rooster' },
+  { id: 'raids', label: 'Raids' },
+  { id: 'guias', label: 'Guías' },
+];
+---
+
+<aside class="fixed right-8 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
+  <div class="flex flex-col space-y-4">
+    <button
+      class="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      aria-label="Ir al inicio"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </button>
+
+    <div class="flex flex-col items-center space-y-2">
+      {sections.map((section) => (
+        <a
+          href={`#${section.id}`}
+          class="w-2 h-2 rounded-full bg-primary/30 hover:bg-primary transition-colors"
+          data-section={section.id}
+          aria-label={`Ir a ${section.label}`}
+          title={section.label}
+        ></a>
+      ))}
+    </div>
+
+    <button
+      class="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+      onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })"
+      aria-label="Ir al final"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </button>
+  </div>
+</aside>
+
+<script>
+  // Update active section indicator on scroll
+  document.addEventListener('DOMContentLoaded', () => {
+    const sectionLinks = document.querySelectorAll('a[data-section]');
+    const sections = Array.from(sectionLinks)
+      .map(link => {
+        const sectionId = link.getAttribute('data-section');
+        if (!sectionId) return null;
+        
+        return {
+          id: sectionId,
+          element: document.getElementById(sectionId),
+          link: link as HTMLElement
+        };
+      })
+      .filter((section): section is { id: string; element: HTMLElement | null; link: HTMLElement } => section !== null);
+
+    const updateActiveSection = () => {
+      const scrollPosition = window.scrollY + 100;
+      
+      sections.forEach(({ id, element, link }) => {
+        if (!element) return;
+        
+        const sectionTop = element.offsetTop;
+        const sectionHeight = element.offsetHeight;
+        
+        if (scrollPosition >= sectionTop && 
+            scrollPosition < sectionTop + sectionHeight) {
+          link.classList.remove('bg-primary/30');
+          link.classList.add('bg-primary');
+          link.classList.add('scale-150');
+        } else {
+          link.classList.remove('bg-primary');
+          link.classList.remove('scale-150');
+          link.classList.add('bg-primary/30');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', updateActiveSection);
+    updateActiveSection(); // Initial call
+  });
+</script>

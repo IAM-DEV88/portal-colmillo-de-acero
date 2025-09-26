@@ -1,0 +1,79 @@
+---
+// Guides section with useful resources
+const guides = [
+  {
+    title: 'Guía de Iniciación',
+    description: 'Todo lo que necesitas saber para comenzar tu aventura con nosotros.',
+    icon: '📚',
+    tags: ['Nuevos', 'Básico']
+  },
+  {
+    title: 'Addons Recomendados',
+    description: 'Los mejores addons para mejorar tu experiencia de juego en raids y mazmorras.',
+    icon: '⚙️',
+    tags: ['Addons', 'UI']
+  },
+  {
+    title: 'Rotaciones de Clase',
+    description: 'Guías detalladas de rotaciones para cada especialización en el parche actual.',
+    icon: '🎯',
+    tags: ['DPS', 'Healers', 'Tanks']
+  },
+  {
+    title: 'Estrategias de Jefes',
+    description: 'Guías detalladas para vencer a los jefes de la incursión actual.',
+    icon: '🏆',
+    tags: ['Raids', 'Progresión']
+  },
+  {
+    title: 'Farmeo de Oro',
+    description: 'Las mejores rutas y métodos para conseguir oro en Shadowlands.',
+    icon: '💰',
+    tags: ['Oro', 'Economía']
+  },
+  {
+    title: 'PvP Básico',
+    description: 'Introducción al PvP y consejos para mejorar en campos de batalla.',
+    icon: '⚔️',
+    tags: ['PvP', 'JcJ']
+  }
+];
+---
+
+<section id="guias" class="section py-20">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-primary mb-4">Guías y Recursos</h2>
+      <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+      <p class="text-normal/80 max-w-2xl mx-auto">
+        Recopilación de guías y recursos útiles para mejorar tu experiencia de juego.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {guides.map((guide) => (
+        <a 
+          href="#" 
+          class="card group hover:border-primary/50 transition-all duration-300 hover:scale-[1.02]"
+        >
+          <div class="flex items-start">
+            <div class="text-4xl mr-4 group-hover:scale-110 transition-transform duration-300">
+              {guide.icon}
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-primary mb-2">{guide.title}</h3>
+              <p class="text-normal/80 mb-3">{guide.description}</p>
+              <div class="flex flex-wrap gap-2">
+                {guide.tags.map(tag => (
+                  <span class="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary/80">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

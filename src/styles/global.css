@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+:root {
+  --color-steel: #4a5568;
+  --color-steel-dark: #2d3748;
+  --color-steel-darker: #1a202c;
+  --color-steel-light: rgba(217, 222, 231, 0.4);
+  --color-accent: rgba(234, 163, 8,.2) ;
+  --color-accent-dark: #d69e2e;
+  --color-accent-darker: #b7791f;
+  --color-text: #e2e8f0;
+  --color-text-muted: #a0aec0;
+  --color-bg: #0a0a0f;
+  --color-bg-secondary: #111827;
+  --color-border: #2d3748;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-steel-darker text-gray-100;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-white;
+  }
+  
+  p {
+    @apply text-gray-300;
+  }
+  
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .text-text {
+    color: var(--color-text);
+  }
+  
+  .text-text-muted {
+    color: var(--color-text-muted);
+  }
+  
+  .bg-steel {
+    background-color: var(--color-steel);
+  }
+  
+  .bg-steel-dark {
+    background-color: var(--color-steel-dark);
+  }
+  
+  .bg-steel-darker {
+    background-color: var(--color-steel-darker);
+  }
+  
+  .bg-steel-light {
+    background-color: var(--color-steel-light);
+  }
+  
+  .bg-accent {
+    background-color: var(--color-accent);
+  }
+  
+  .bg-accent-dark {
+    background-color: var(--color-accent-dark);
+  }
+  
+  .bg-accent-darker {
+    background-color: var(--color-accent-darker);
+  }
+  
+  .border-steel {
+    border-color: var(--color-steel);
+  }
+  
+  .border-steel-light {
+    border-color: var(--color-steel-light);
+  }
+  
+  .border-accent {
+    border-color: var(--color-accent);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-steel-darker);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-steel);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-steel-light);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Custom utilities */
+.glow {
+  text-shadow: 0 0 10px rgba(236, 201, 75, 0.5);
+}
+
+.glow-hover:hover {
+  text-shadow: 0 0 15px rgba(236, 201, 75, 0.7);
+}
+
+/* Custom components */
+.btn-primary {
+  @apply px-6 py-2.5 bg-gradient-to-r from-accent to-accent-dark text-gray-900 font-semibold rounded-lg shadow-lg hover:from-accent-dark hover:to-accent-darker transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-accent focus:ring-opacity-50;
+}
+
+.card {
+  @apply bg-gray-900/70 backdrop-blur-sm rounded-xl border border-gray-800 p-6 shadow-xl transition-all duration-300 hover:border-purple-500/50 hover:shadow-purple-500/10;
+}
+
+/* Card */
+.card {
+  @apply bg-txtbg1 backdrop-blur-sm rounded-lg p-6 shadow-3xl border border-primary/20;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary/50;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/50 rounded-full hover:bg-primary/70 transition-colors;
+}

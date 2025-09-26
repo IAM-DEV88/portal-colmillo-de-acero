@@ -1,0 +1,50 @@
+---
+// Rooster section to display guild members
+const members = [
+  { name: 'Guild Master', role: 'Tank', class: 'Paladin', race: 'Human' },
+  { name: 'Healbot', role: 'Healer', class: 'Priest', race: 'Dwarf' },
+  { name: 'Dpsmaster', role: 'DPS', class: 'Mage', race: 'Gnome' },
+  { name: 'Tankadin', role: 'Tank', class: 'Paladin', race: 'Dwarf' },
+  { name: 'Shadowstep', role: 'DPS', class: 'Rogue', race: 'Night Elf' },
+  { name: 'Beastmode', role: 'DPS', class: 'Hunter', race: 'Dwarf' },
+  { name: 'Holypriest', role: 'Healer', class: 'Priest', race: 'Human' },
+  { name: 'Frosty', role: 'DPS', class: 'Mage', race: 'Gnome' },
+];
+
+const roles = {
+  Tank: 'bg-blue-500/20 text-blue-300 border-blue-500/50',
+  Healer: 'bg-green-500/20 text-green-300 border-green-500/50',
+  DPS: 'bg-red-500/20 text-red-300 border-red-500/50',
+};
+---
+
+<section id="rooster" class="section py-20">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-primary mb-4">Nuestro Rooster</h2>
+      <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+      <p class="text-normal/80 max-w-2xl mx-auto">
+        Conoce a los valientes miembros de nuestra hermandad que luchan juntos en las tierras de Azeroth.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {members.map((member) => (
+        <div class="card hover:scale-105 transition-transform duration-300">
+          <div class="flex items-center space-x-4">
+            <div class="flex-shrink-0 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="text-2xl">👤</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-lg font-medium text-primary truncate">{member.name}</h3>
+              <p class="text-sm text-normal/70">{member.class} - {member.race}</p>
+              <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1 border ${roles[member.role as keyof typeof roles]}`}>
+                {member.role}
+              </span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

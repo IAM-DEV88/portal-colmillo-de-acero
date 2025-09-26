@@ -1,0 +1,68 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-gradient-to-r from-steel-darker/95 to-steel-dark/90 backdrop-blur-md border-t border-accent shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex flex-col md:flex-row items-center justify-between">
+      <!-- Logo and guild name -->
+      <div class="flex items-center mb-4 md:mb-0 group">
+        <img 
+          src="/images/logo.png" 
+          alt="Colmillo de Acero" 
+          class="h-12 w-auto mr-3 transition-transform duration-300 group-hover:scale-110"
+        >
+        <span class="text-2xl font-bold bg-gradient-to-r from-accent to-accent-dark bg-clip-text text-transparent">
+          Colmillo de Acero
+        </span>
+      </div>
+      
+      <!-- Social links -->
+      <div class="flex space-x-6 mb-4 md:mb-0">
+        <a 
+          href="https://discord.gg/your-invite-link" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-text-muted hover:text-accent transition-all duration-300"
+          aria-label="Discord"
+        >
+          <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.319 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.253 12.253 0 01-1.875.892.077.077 0 00-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.84 19.84 0 006.006-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.158-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.158 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"></path>
+          </svg>
+        </a>
+        <a 
+          href="https://www.youtube.com/your-channel" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-text-muted hover:text-accent transition-all duration-300"
+          aria-label="YouTube"
+        >
+          <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"></path>
+          </svg>
+        </a>
+        <a 
+          href="https://www.twitch.tv/your-channel" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-text-muted hover:text-accent transition-all duration-300"
+          aria-label="Twitch"
+        >
+          <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+          </svg>
+        </a>
+      </div>
+      
+      <!-- Copyright -->
+      <div class="text-center md:text-right">
+        <p class="text-sm text-text-muted">
+          &copy; {currentYear} Colmillo de Acero. Todos los derechos reservados.
+        </p>
+        <p class="text-xs text-text-muted/80 mt-1">
+          World of Warcraft™ y Blizzard Entertainment® son marcas registradas de Blizzard Entertainment, Inc.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

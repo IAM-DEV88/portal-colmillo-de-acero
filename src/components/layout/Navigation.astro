@@ -1,0 +1,164 @@
+---
+const navItems = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Roster', href: '/roster' },
+  { name: 'Raids', href: '/raids' },
+  { name: 'Guías', href: '/guides' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-steel-darker/95 to-steel-dark/90 backdrop-blur-md border-b border-accent shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <div class="flex-shrink-0">
+        <a href="/" class="flex items-center group">
+          <img src="/images/logo.png" alt="Colmillo de Acero Logo" class="h-12 w-auto mr-3 transition-transform duration-300 group-hover:scale-110">
+          <span class="text-2xl font-bold bg-gradient-to-r from-accent to-accent-dark bg-clip-text text-transparent">
+            Colmillo de Acero
+          </span>
+        </a>
+      </div>
+      
+      <!-- Desktop Navigation -->
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-center space-x-8">
+          {navItems.map((item) => {
+            const isActive = currentPath === item.href || 
+                          (item.href !== '/' && currentPath.startsWith(item.href));
+            return (
+              <a
+                href={item.href}
+                class={`px-3 py-2 text-sm font-medium transition-all duration-300 relative group ${
+                  isActive 
+                    ? 'text-accent font-semibold' 
+                    : 'text-text-muted hover:text-accent'
+                }`}
+              >
+                {item.name}
+                <span class={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
+                  isActive 
+                    ? 'w-full bg-gradient-to-r from-accent to-accent-dark' 
+                    : 'w-0 group-hover:w-full bg-accent'
+                }`}></span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+      
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button
+          type="button"
+          class="text-white hover:text-purple-300 focus:outline-none p-2 transition-colors"
+          id="mobile-menu-button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="sr-only">Abrir menú</span>
+          <svg
+            class="h-8 w-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            id="menu-icon"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+          <svg
+            class="hidden h-8 w-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            id="close-icon"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Mobile menu, show/hide based on menu state -->
+  <div class="hidden md:hidden bg-black/95 backdrop-blur-lg border-t border-purple-900/50" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      {navItems.map((item) => {
+        const isActive = currentPath === item.href || 
+                       (item.href !== '/' && currentPath.startsWith(item.href));
+        return (
+          <a
+            href={item.href}
+            class={`block px-3 py-2 rounded-md text-base font-medium ${
+              isActive 
+                ? 'text-white bg-purple-900/50' 
+                : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
+            }`}
+          >
+            {item.name}
+          </a>
+        );
+      })}
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const menuIcon = document.getElementById('menu-icon');
+      const closeIcon = document.getElementById('close-icon');
+      
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+          const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+          mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+          
+          if (isExpanded) {
+            mobileMenu.classList.add('hidden');
+            menuIcon?.classList.remove('hidden');
+            closeIcon?.classList.add('hidden');
+          } else {
+            mobileMenu.classList.remove('hidden');
+            menuIcon?.classList.add('hidden');
+            closeIcon?.classList.remove('hidden');
+          }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          const isClickInside = mobileMenuButton.contains(e.target) || mobileMenu.contains(e.target);
+          if (!isClickInside && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+            menuIcon?.classList.remove('hidden');
+            closeIcon?.classList.add('hidden');
+          }
+        });
+      }
+    });
+  </script>
+</nav>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+</script>
