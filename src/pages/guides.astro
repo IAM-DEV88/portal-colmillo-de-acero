@@ -3,38 +3,67 @@ import Layout from '../components/layout/Layout.astro';
 ---
 
 <Layout title="Guías">
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-white mb-8 animate-fade-in">Guías</h1>
-    
-    <div class="grid gap-6 max-w-4xl mx-auto animate-fade-in [animation-delay:100ms] opacity-0 [animation-fill-mode:forwards]">
-      <!-- Guía de Nota Pública -->
-      <a 
-        href="/guides/nota-publica" 
-        class="group block bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg hover:border-accent/50 hover:shadow-accent/10 transition-all duration-300"
-      >
-        <div class="flex items-start justify-between">
-          <div>
-            <h2 class="text-xl font-bold text-white mb-2 group-hover:text-accent transition-colors">
-              Guía de Nota Pública
-            </h2>
-            <p class="text-text-muted/90">
-              Aprende a configurar tu nota pública para participar en el sistema de raids de la hermandad
-            </p>
-          </div>
-          <span class="text-accent text-2xl ml-4 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
-        <div class="mt-4 pt-4 border-t border-accent/10">
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent">
-            Ver Guía Completa
-          </span>
-        </div>
-      </a>
+  <!-- Main Container -->
+  <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <header class="text-center mb-12 animate-fade-in">
+        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-title tracking-wider">
+          GUÍAS
+        </h1>
+        <div class="w-48 h-0.5 bg-gradient-to-r from-amber-900/0 via-amber-500/80 to-amber-900/0 mx-auto my-6"></div>
+      </header>
       
-      <!-- Otras guías pueden ir aquí -->
-      <div class="bg-gradient-to-br from-steel-dark/50 to-steel-darker/50 backdrop-blur-sm p-6 rounded-xl border border-accent/10 shadow-lg">
-        <h3 class="text-lg font-semibold text-white mb-2">Próximamente</h3>
-        <p class="text-text-muted/80 text-sm">Más guías estarán disponibles pronto.</p>
+      <!-- Guides Grid -->
+      <div class="grid gap-6">
+        <!-- Guía de Nota Pública -->
+        <a 
+          href="/guides/nota-publica" 
+          class="relative group bg-gray-900/60 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 transition-all duration-300 hover:border-amber-800/50 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5 overflow-hidden animate-fade-in opacity-0"
+          style="animation-delay: 0.2s;"
+        >
+          <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          <div class="relative z-10">
+            <div class="flex items-start justify-between">
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3 group-hover:text-amber-300 transition-colors">
+                  <i class="fas fa-file-alt text-amber-400 mr-2"></i>
+                  Guía de Nota Pública
+                </h2>
+                <p class="text-amber-100/70 text-sm">
+                  Aprende a configurar tu nota pública para participar en el sistema de raids de la hermandad
+                </p>
+              </div>
+              <span class="text-amber-400 text-2xl ml-4 group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+            <div class="mt-5 pt-4 border-t border-amber-900/20">
+              <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 transition-colors">
+                Ver Guía Completa
+              </span>
+            </div>
+          </div>
+        </a>
+        
+        <!-- Placeholder for Future Guides -->
+        <div class="relative bg-gray-900/60 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 animate-fade-in opacity-0"
+             style="animation-delay: 0.4s;"
+        >
+          <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          <div class="relative z-10">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 mr-4">
+                <div class="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                  <i class="fas fa-plus text-amber-400/70 text-xl"></i>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white mb-1">Próximamente</h3>
+                <p class="text-amber-100/60 text-sm">Más guías estarán disponibles pronto.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 </Layout>

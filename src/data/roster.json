@@ -11,21 +11,28 @@
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Adversidad",
         "officerNote": "",
         "class": "Chamán",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Agonisante",
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Élite"
+    },
+    {
+        "name": "Ahbregh",
+        "officerNote": "",
+        "class": "Guerrero",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Aioriakun",
@@ -39,21 +46,28 @@
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Akkali",
         "officerNote": "",
         "class": "Pícaro",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Algos",
+        "officerNote": "",
+        "class": "Cazador",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Alrod",
         "officerNote": "",
         "class": "Cazador",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Amunnat",
@@ -67,13 +81,13 @@
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "Desafio, Twink. 80 Coming soon.",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Archersd",
         "officerNote": "ESPIRITU",
         "class": "Paladín",
-        "publicNote": "",
+        "publicNote": "pala retry 5.3",
         "rank": "Élite"
     },
     {
@@ -82,13 +96,6 @@
         "class": "Mago",
         "publicNote": "",
         "rank": "Élite"
-    },
-    {
-        "name": "Awqaylli",
-        "officerNote": "",
-        "class": "Guerrero",
-        "publicNote": "",
-        "rank": "Recluta"
     },
     {
         "name": "Axeltx",
@@ -109,21 +116,14 @@
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
-    },
-    {
-        "name": "Barsacer",
-        "officerNote": "",
-        "class": "Sacerdote",
-        "publicNote": "sastre y encantador 5.3 sombra ",
-        "rank": "Élite"
+        "rank": "Iniciado"
     },
     {
         "name": "Bbjorn",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Beido",
@@ -137,7 +137,14 @@
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Bhelld",
+        "officerNote": "",
+        "class": "Pícaro",
+        "publicNote": "ase 5.4",
+        "rank": "Iniciado"
     },
     {
         "name": "Bigmack",
@@ -158,21 +165,21 @@
         "officerNote": "",
         "class": "Chamán",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Bloodyqlo",
         "officerNote": "",
         "class": "Pícaro",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Boldigor",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Brauwar",
@@ -186,14 +193,14 @@
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Cabum",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Casabichos",
@@ -214,14 +221,14 @@
         "officerNote": "",
         "class": "Chamán",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Circuncidor",
         "officerNote": "",
         "class": "Brujo",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Cleyre",
@@ -242,28 +249,28 @@
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Deathxil",
         "officerNote": "",
         "class": "Brujo",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
-        "name": "Deborath",
+        "name": "Deckyohan",
         "officerNote": "",
-        "class": "Caballero de la Muerte",
+        "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Élite"
     },
     {
         "name": "Diamonddogss",
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Diossita",
@@ -277,14 +284,14 @@
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Dkkris",
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Dkricatura",
@@ -319,28 +326,35 @@
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Elpaulo",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "dk profano 5.3, no full pve",
+        "rank": "Iniciado"
     },
     {
         "name": "Evillive",
         "officerNote": "",
         "class": "Brujo",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Exud",
         "officerNote": "",
         "class": "Cazador",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Faisin",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Falfurt",
@@ -354,14 +368,28 @@
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Fiorelah",
+        "officerNote": "",
+        "class": "Chamán",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Fracturadoor",
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Fransisml",
+        "officerNote": "",
+        "class": "Cazador",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Gannicuss",
@@ -382,7 +410,7 @@
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Golemdp",
@@ -396,28 +424,28 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
-        "name": "Grissone",
+        "name": "Grudk",
         "officerNote": "",
-        "class": "Pícaro",
-        "publicNote": "",
-        "rank": "Recluta"
+        "class": "Caballero de la Muerte",
+        "publicNote": "PROFANO 5K",
+        "rank": "Iniciado"
     },
     {
         "name": "Halloweenn",
         "officerNote": "",
         "class": "Brujo",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Hanabata",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Hekler",
@@ -427,17 +455,24 @@
         "rank": "Élite"
     },
     {
+        "name": "Hhekler",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "Heler novato casi 3k",
+        "rank": "Iniciado"
+    },
+    {
         "name": "Howlshade",
         "officerNote": "",
         "class": "Chamán",
-        "publicNote": "ah 5.9 IN/HB icc 10n 25n 18x rl",
+        "publicNote": "ah 5.9 voa icc 10n 25n 18x rl",
         "rank": "Oficial"
     },
     {
         "name": "Hungdaddy",
         "officerNote": "ESPIRITU",
         "class": "Brujo",
-        "publicNote": "",
+        "publicNote": "peladobrazer",
         "rank": "Élite"
     },
     {
@@ -452,28 +487,42 @@
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Ivanovaa",
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
-        "name": "Jhonnycuro",
-        "officerNote": "ESPIRITU",
-        "class": "Chamán",
+        "name": "Jainapower",
+        "officerNote": "",
+        "class": "Guerrero",
         "publicNote": "",
-        "rank": "Élite"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Jandangus",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Jhonnysims",
+        "officerNote": "",
+        "class": "Sacerdote",
+        "publicNote": "Dps 5k / Heal 5k A",
+        "rank": "Iniciado"
     },
     {
         "name": "Jimagua",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Jinnah",
@@ -487,14 +536,35 @@
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Jmkiuu",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Johanz",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Jonablue",
+        "officerNote": "",
+        "class": "Pícaro",
+        "publicNote": "MD 5.5 JC/EG 18x ICC 10N 25N",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Jonared",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Juliwar",
@@ -504,11 +574,18 @@
         "rank": "Élite"
     },
     {
+        "name": "Kaeldin",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "",
+        "rank": "Iniciado"
+    },
+    {
         "name": "Kaelthnas",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Katrodk",
@@ -522,14 +599,14 @@
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
-        "name": "Kervin",
+        "name": "Kekos",
         "officerNote": "",
-        "class": "Mago",
+        "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Kharkhar",
@@ -546,32 +623,25 @@
         "rank": "Élite"
     },
     {
-        "name": "Killerfly",
-        "officerNote": "ESPIRITU",
-        "class": "Cazador",
-        "publicNote": "Minera/Ingeniera",
-        "rank": "Élite"
-    },
-    {
         "name": "Kitoz",
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Kpillo",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Larrikapinga",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Larsi",
@@ -585,21 +655,28 @@
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Lovisome",
+        "officerNote": "",
+        "class": "Brujo",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Luaana",
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Luckytoloco",
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Lykam",
@@ -627,28 +704,42 @@
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Marculin",
         "officerNote": "ESPIRITU",
         "class": "Paladín",
         "publicNote": "Alter Sashu - minero joyero",
-        "rank": "Élite"
+        "rank": "Comandante"
     },
     {
         "name": "Mariguaniel",
         "officerNote": "",
         "class": "Chamán",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Mercuriio",
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Mfer",
+        "officerNote": "",
+        "class": "Brujo",
+        "publicNote": "5.6k A",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Mhegara",
+        "officerNote": "",
+        "class": "Mago",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Miamiau",
@@ -668,7 +759,7 @@
         "name": "Mimarin",
         "officerNote": "",
         "class": "Pícaro",
-        "publicNote": "combat 5.7 / assa 5.8 alq full",
+        "publicNote": "combat 5.7 / assa 5.9 alq full",
         "rank": "Comandante"
     },
     {
@@ -676,7 +767,7 @@
         "officerNote": "",
         "class": "Brujo",
         "publicNote": "...",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Mograck",
@@ -690,42 +781,42 @@
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Montriuk",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Morien",
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Mosstasa",
         "officerNote": "",
         "class": "Cazador",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Nandoh",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Ninaxd",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Nosequeponer",
@@ -746,21 +837,21 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Orcrok",
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Orejaslargas",
         "officerNote": "",
         "class": "Cazador",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Osulivan",
@@ -781,7 +872,7 @@
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Papermint",
@@ -791,25 +882,18 @@
         "rank": "Élite"
     },
     {
-        "name": "Pikantus",
+        "name": "Picapicaron",
         "officerNote": "",
         "class": "Pícaro",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Pintao",
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
-    },
-    {
-        "name": "Pipazon",
-        "officerNote": "ESPIRITU",
-        "class": "Paladín",
-        "publicNote": "",
-        "rank": "Élite"
+        "rank": "Iniciado"
     },
     {
         "name": "Pladobrazer",
@@ -826,24 +910,52 @@
         "rank": "Élite"
     },
     {
+        "name": "Prestoxx",
+        "officerNote": "",
+        "class": "Sacerdote",
+        "publicNote": "",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Psicotic",
+        "officerNote": "",
+        "class": "Mago",
+        "publicNote": "",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Punteras",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "",
+        "rank": "Iniciado"
+    },
+    {
         "name": "Putifarra",
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Pzycoqt",
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Radyent",
+        "officerNote": "",
+        "class": "Sacerdote",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Ravenguard",
         "officerNote": "",
         "class": "Pícaro",
-        "publicNote": "ad 5.9 LW/SK icc 10n 25n 18x rl",
+        "publicNote": "ad 5.9 icc voa 10n 25n 18x rl",
         "rank": "Oficial"
     },
     {
@@ -858,14 +970,14 @@
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Remydj",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Renald",
@@ -878,35 +990,84 @@
         "name": "Rikinal",
         "officerNote": "",
         "class": "Druida",
-        "publicNote": "",
-        "rank": "Recluta"
+        "publicNote": "DUDU heal 5.2, con exp",
+        "rank": "Iniciado"
     },
     {
         "name": "Rimurukamado",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
-        "name": "Saanguinaria",
+        "name": "Saamus",
+        "officerNote": "",
+        "class": "Chamán",
+        "publicNote": "",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Saintblack",
+        "officerNote": "",
+        "class": "Guerrero",
+        "publicNote": "Tank 5.7 A/  ICC 10 25 SR 10 25",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Saintdash",
+        "officerNote": "",
+        "class": "Chamán",
+        "publicNote": "Mejora 5.8 / Heal 5.8",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Saintholy",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "Dps 5.9 / Hpala 6.3hc",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Saintkoga",
         "officerNote": "",
         "class": "Pícaro",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Saintshoot",
+        "officerNote": "",
+        "class": "Cazador",
+        "publicNote": "4.2k",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Saintt",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "Unholy 5.4",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Sainttouch",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "heal 5k / Dps 4.9",
+        "rank": "Iniciado"
     },
     {
         "name": "Sargeiras",
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Sargorath",
         "officerNote": "",
         "class": "Druida",
-        "publicNote": "ah 5.9 AL/HB icc 10n 25n 18x rl",
+        "publicNote": "ah 5.9 AL icc voa 10n 25n 18xrl",
         "rank": "Oficial"
     },
     {
@@ -920,8 +1081,15 @@
         "name": "Seban",
         "officerNote": "",
         "class": "Chamán",
-        "publicNote": "DPS 5.0",
-        "rank": "Élite"
+        "publicNote": "Alter - Zumbie / DPS 5.0 - ",
+        "rank": "Comandante"
+    },
+    {
+        "name": "Seekbromance",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Shulin",
@@ -931,11 +1099,11 @@
         "rank": "Élite"
     },
     {
-        "name": "Sinreceta",
+        "name": "Siegfred",
         "officerNote": "",
-        "class": "Druida",
-        "publicNote": "",
-        "rank": "Recluta"
+        "class": "Caballero de la Muerte",
+        "publicNote": "FROST 5.7 / TANK 5.7",
+        "rank": "Iniciado"
     },
     {
         "name": "Slaashh",
@@ -949,21 +1117,28 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Smoktheweed",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Solariana",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Stewen",
+        "officerNote": "",
+        "class": "Mago",
+        "publicNote": "AD 5.9k A/H Icc 10/25 SR 10 25",
+        "rank": "Élite"
     },
     {
         "name": "Sthacy",
@@ -974,9 +1149,9 @@
     },
     {
         "name": "Stormgrim",
-        "officerNote": "",
+        "officerNote": "ddddddddddddddddddddddddddddddd",
         "class": "Brujo",
-        "publicNote": "ad 5.9 TL/en icc 10n 25n 18h rl",
+        "publicNote": "d icc voa 10n 25n 18x rl",
         "rank": "Guild Master"
     },
     {
@@ -987,25 +1162,18 @@
         "rank": "Élite"
     },
     {
-        "name": "Syspowerr",
-        "officerNote": "ESPIRITU",
-        "class": "Paladín",
-        "publicNote": "",
-        "rank": "Élite"
-    },
-    {
-        "name": "Sysprower",
+        "name": "Surik",
         "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "",
-        "rank": "Recluta"
+        "class": "Cazador",
+        "publicNote": "5.3 minero e inge ",
+        "rank": "Iniciado"
     },
     {
         "name": "Tatow",
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Tekkhu",
@@ -1019,14 +1187,7 @@
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
-        "rank": "Recluta"
-    },
-    {
-        "name": "Thedrakion",
-        "officerNote": "",
-        "class": "Paladín",
-        "publicNote": "PalaRepr+6060gs+ingeniero+joyer",
-        "rank": "Élite"
+        "rank": "Iniciado"
     },
     {
         "name": "Tiernis",
@@ -1040,14 +1201,14 @@
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Totooporto",
         "officerNote": "",
         "class": "Cazador",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Trapfrost",
@@ -1061,7 +1222,14 @@
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Tutelamai",
+        "officerNote": "",
+        "class": "Cazador",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Unholywoman",
@@ -1074,7 +1242,7 @@
         "name": "Valatrax",
         "officerNote": "",
         "class": "Cazador",
-        "publicNote": "Punteria  4.3   ingenie",
+        "publicNote": "MD 4.9 EG/MN 20x icc 10n 25n",
         "rank": "Élite"
     },
     {
@@ -1085,25 +1253,11 @@
         "rank": "Élite"
     },
     {
-        "name": "Vanko",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "",
-        "rank": "Recluta"
-    },
-    {
         "name": "Varkhad",
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
-    },
-    {
-        "name": "Vasilib",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "tank 5.6 mineria y joyeria low",
-        "rank": "Élite"
+        "rank": "Iniciado"
     },
     {
         "name": "Velfor",
@@ -1116,14 +1270,14 @@
         "name": "Voidhammer",
         "officerNote": "",
         "class": "Paladín",
-        "publicNote": "MDT 5.8 JC/MN ICC 10n 25n18x rl",
+        "publicNote": "MDT 5.8 ICC voa 10n 25n 18x rl",
         "rank": "Oficial"
     },
     {
         "name": "Vorthrak",
         "officerNote": "",
         "class": "Guerrero",
-        "publicNote": "adt 5.9 BS/en icc 10n 25n18x rl",
+        "publicNote": "adt 6.0 icc 10h 25n 18x rl",
         "rank": "Oficial"
     },
     {
@@ -1131,28 +1285,35 @@
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Wadeh",
         "officerNote": "",
         "class": "Cazador",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Wadex",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Wikix",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Xelvara",
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Xenxen",
@@ -1167,6 +1328,13 @@
         "class": "Mago",
         "publicNote": "Arcane OP / Enchant & Sastre",
         "rank": "Élite"
+    },
+    {
+        "name": "Yonofuiin",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "",
+        "rank": "Iniciado"
     },
     {
         "name": "Yuis",
@@ -1194,14 +1362,14 @@
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Zorete",
         "officerNote": "",
         "class": "Pícaro",
         "publicNote": "",
-        "rank": "Recluta"
+        "rank": "Iniciado"
     },
     {
         "name": "Zumbie",

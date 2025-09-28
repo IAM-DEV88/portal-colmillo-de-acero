@@ -1,4 +1,4 @@
-import { RosterMember } from '../types/roster';
+import type { RosterMember } from '../types/roster';
 import { validatePublicNote } from './rosterUtils';
 
 interface RoleStats {
@@ -40,7 +40,7 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
   };
 
   for (const member of members) {
-    const validation = validatePublicNote(member.publicNote || '');
+    const validation = validatePublicNote(member.publicNote || '', member.name);
     
     // Contar raid leaders
     if (validation.isRaidLeader) {

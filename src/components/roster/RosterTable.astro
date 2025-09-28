@@ -94,7 +94,7 @@ const rosterMembers: RosterMember[] = rosterJson
   .map((member: any) => ({
     ...member,
     class: member.class as ClassName,
-    noteValidation: validatePublicNote(member.publicNote),
+    noteValidation: validatePublicNote(member.publicNote, member.name),
     // Agregar campo de prioridad para ordenación inicial
     _priority: member.rank === 'Guild Master' ? 0 : member.rank === 'Oficial' ? 1 : 2,
   }))
@@ -298,7 +298,7 @@ interface RosterData {
 // Class info is already defined in the RosterData interface
 
 // Validar nota pública según el formato requerido
-function validatePublicNote(note: string | undefined): PublicNoteValidation {
+function validatePublicNote(note: string | undefined, characterName: string = 'Desconocido'): PublicNoteValidation {
   const errors: string[] = [];
   const missingFields: string[] = [];
   const result: PublicNoteValidation = {
@@ -628,111 +628,65 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
     missingFields.push('Horario de conexión (ej: 18X, 21:30X)');
   }
 
-  // 5. Extraer raids y dificultades
+  // 5. Extraer raids y dificultades por separado
   const allRaidCodes = Object.keys(RAIDS) as RaidCode[];
   const raidCodesPattern = allRaidCodes.map(rc => rc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-  const difficulties = ['N', 'H'] as const;
+  
+  // Log para depuración
+  console.log(`\n=== INICIO DE DETECCIÓN PARA ${characterName.toUpperCase()} ===`);
+  console.log('Nota original:', note);
+  console.log('Nota recortada:', trimmedNote);
+  console.log('Códigos de raid disponibles:', allRaidCodes);
   
   // Inicializar el conjunto de raids encontradas
   result.raids = [];
   const usedRaids = new Set<string>();
-  
-  
-  // Mapa para evitar duplicados
   const usedIndices = new Set<string>();
-  const difficultyMatches: Array<{number: number; difficulty: 'N' | 'H'}> = [];
   
-  // Buscar dificultades en formato estándar (10N, 25H, 10h, etc.)
-  // Detecta tanto N/H mayúscula como minúscula
-  const stdDifficultyPattern = /(10|25)([NHnh])(?![a-zA-Z0-9])/g;
-  let stdMatch;
+  // 1. Buscar menciones directas de raids
+  const raidPattern = new RegExp(`\\b(${raidCodesPattern})\\b`, 'gi');
+  let raidMatch;
   
-  while ((stdMatch = stdDifficultyPattern.exec(trimmedNote)) !== null) {
-    const number = parseInt(stdMatch[1]);
-    const difficulty = stdMatch[2].toUpperCase() as 'N' | 'H';
-    const key = `${stdMatch.index}-${stdMatch[0].length}`;
+  console.log(`\n[${characterName}] Buscando menciones directas de raids...`);
+  while ((raidMatch = raidPattern.exec(trimmedNote)) !== null) {
+    const raidCode = raidMatch[1].toUpperCase();
+    console.log(`[${characterName}] Raid encontrada:`, raidCode);
     
-    if ((number === 10 || number === 25) && !usedIndices.has(key)) {
-      usedIndices.add(key);
-      difficultyMatches.push({ number, difficulty });
+    if (raidCode in RAIDS && !usedRaids.has(raidCode)) {
+      console.log(`[${characterName}] Añadiendo raid:`, raidCode);
+      result.raids.push({
+        code: raidCode as RaidCode,
+        difficultyCode: undefined, // Sin dificultad específica
+        difficulty: undefined,
+        name: RAIDS[raidCode as keyof typeof RAIDS],
+      });
+      usedRaids.add(raidCode);
+    } else {
+      console.log(`[${characterName}] Raid ya añadida o no válida:`, raidCode);
     }
   }
-
-  // 1. Buscar patrones de raid seguida de número y dificultad pegados (ej: icc10n)
-  const raidWithNumberPattern1 = new RegExp(`(${raidCodesPattern})(10|25)([NHnh])(?![a-zA-Z0-9])`, 'gi');
-  // 2. Buscar patrones de raid seguida de espacio, número y dificultad (ej: icc 10n)
-  const raidWithNumberPattern2 = new RegExp(`(${raidCodesPattern})\\s+(10|25)([NHnh])(?![a-zA-Z0-9])`, 'gi');
-  // 3. Buscar patrones de número, dificultad y raid pegados (ej: 10nicc)
-  const raidWithNumberPattern3 = new RegExp(`(10|25)([NHnh])(${raidCodesPattern})(?![a-zA-Z0-9])`, 'gi');
   
-  // Función para agregar una raid si no existe
-  const addRaidIfNotExists = (raidCode: string, difficultyNumber: string, difficultyLetter: string) => {
-    // Convertir a mayúsculas para estandarizar
-    const normalizedLetter = difficultyLetter.toUpperCase();
-    const difficultyCode = `${difficultyNumber}${normalizedLetter}` as DifficultyCode;
-    
-    if (['10N', '10H', '25N', '25H'].includes(difficultyCode)) {
-      const raidKey = `${raidCode}${difficultyCode}`;
-      if (!usedRaids.has(raidKey)) {
-        const raidName = raidCode in RAIDS ? RAIDS[raidCode as keyof typeof RAIDS] : raidCode;
-        result.raids.push({
-          code: raidCode as RaidCode,
-          difficultyCode,
-          difficulty: difficultyLetter === 'N' ? 'Normal' : 'Heroic',
-          name: raidName,
-        });
-        usedRaids.add(raidKey);
-      }
-    }
-  };
-
-  // Procesar cada patrón por separado
-  // Patrón 1: raid + número + dificultad pegados (ej: icc10n)
-  let match1;
-  while ((match1 = raidWithNumberPattern1.exec(trimmedNote)) !== null) {
-    const raidCode = match1[1].toUpperCase();
-    const number = match1[2];
-    const difficultyLetter = match1[3].toUpperCase();
-    addRaidIfNotExists(raidCode, number, difficultyLetter);
-  }
+  // 2. Buscar dificultades (10n, 25h, etc.)
+  const difficultyPattern = /\b(10|25)([hn])\b/gi;
+  const foundDifficulties = new Set<string>();
+  let diffMatch;
   
-  // Patrón 2: raid + espacio + número + dificultad (ej: icc 10n)
-  let match2;
-  while ((match2 = raidWithNumberPattern2.exec(trimmedNote)) !== null) {
-    const raidCode = match2[1].toUpperCase();
-    const number = match2[2];
-    const difficultyLetter = match2[3].toUpperCase();
-    addRaidIfNotExists(raidCode, number, difficultyLetter);
-  }
-  
-  // Patrón 3: número + dificultad + raid pegados (ej: 10nicc)
-  let match3;
-  while ((match3 = raidWithNumberPattern3.exec(trimmedNote)) !== null) {
-    const number = match3[1];
-    const difficultyLetter = match3[2].toUpperCase();
-    const raidCode = match3[3].toUpperCase();
-    addRaidIfNotExists(raidCode, number, difficultyLetter);
-  }
-  
-  // Buscar dificultades sueltas (como 10h al final de línea)
-  const looseDifficultyPattern = /(10|25)([hnHN])(?:$|\s|\/|,|;|\.|\|)/g;
-  let looseMatch;
-  
-  while ((looseMatch = looseDifficultyPattern.exec(trimmedNote)) !== null) {
-    const number = looseMatch[1];
-    const difficulty = looseMatch[2].toUpperCase() as 'N' | 'H';
-    const key = `loose_${looseMatch.index}_${looseMatch[0].length}`;
-    
-    if (!usedIndices.has(key)) {
-      usedIndices.add(key);
-      difficultyMatches.push({ number: parseInt(number), difficulty });
-    }
+  console.log(`\n[${characterName}] Buscando dificultades...`);
+  while ((diffMatch = difficultyPattern.exec(trimmedNote)) !== null) {
+    const number = diffMatch[1];
+    const difficulty = diffMatch[2].toUpperCase() as 'N' | 'H';
+    const difficultyCode = `${number}${difficulty}` as DifficultyCode;
+    console.log(`[${characterName}] Dificultad encontrada:`, difficultyCode);
+    foundDifficulties.add(difficultyCode);
   }
 
   // Si no encontramos raids con los patrones anteriores, buscar solo los códigos de raid
+  console.log(`\n[${characterName}] Verificando si no se encontraron raids...`);
   if (result.raids.length === 0) {
+    console.log(`[${characterName}] No se encontraron raids en la primera pasada, buscando con patrón alternativo...`);
     const raidCodePattern = new RegExp(`(?:^|[^a-zA-Z])(${raidCodesPattern})(?=$|[^a-zA-Z0-9])`, 'gi');
     const raidCodeMatches = trimmedNote.matchAll(raidCodePattern);
+    console.log(`[${characterName}] Coincidencias encontradas:`, Array.from(raidCodeMatches).map(m => m[1]));
     
     for (const match of raidCodeMatches) {
       const raidCode = match[0].toUpperCase() as RaidCode;
@@ -874,13 +828,22 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
     orderedMissingFields.push('Horario de juego (ej: 18X, 21:30X)');
   }
 
-  // 7. Raid que busca
+  // 7. Verificar raids en la nota
+  console.log(`\n=== VERIFICACIÓN FINAL DE RAIDS PARA ${characterName.toUpperCase()} ===`);
   const raidCodes = Object.keys(RAIDS).map(raid => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  
   // Buscar cualquier mención de raid, con o sin dificultad
-  const raidPattern = `(?:^|\\s|\\(|\[)(${raidCodes})(?![a-z0-9])(?:$|\\s|\\)|\]|\/|\\d|\\s*\\d*[NH])`;
-  const hasAnyRaid = new RegExp(raidPattern, 'i').test(trimmedNote);
+  const raidSearchPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodes})(?![a-z0-9])(?:$|\\s|\\)|\\]|\\/|\\d|\\s*\\d*[NH])`, 'i');
+  const hasAnyRaid = raidSearchPattern.test(trimmedNote);
+  console.log(`[${characterName}] ¿Se encontró alguna mención de raid?`, hasAnyRaid);
+  
   // Buscar específicamente patrones como 'icc10n' o 'voa25h'
-  const hasAnyRaidWithNumber = new RegExp(`(?:^|\\s|\\(|\[)(${raidCodes})\\s*\\d+[NH])`, 'i').test(trimmedNote);
+  const raidWithNumberPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodes})\\s*\\d+[NH]`, 'i');
+  const hasAnyRaidWithNumber = raidWithNumberPattern.test(trimmedNote);
+  console.log(`[${characterName}] ¿Se encontró alguna raid con número?`, hasAnyRaidWithNumber);
+  
+  // Mostrar las raids encontradas hasta ahora
+  console.log(`[${characterName}] Raids encontradas:`, result.raids.map(r => r.code));
   
   if (!hasAnyRaid && !hasAnyRaidWithNumber) {
     orderedMissingFields.push('Raids que busca (ej: ICC 25H)');
@@ -919,6 +882,14 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
   // 7. Determinar si la nota es válida
   // La nota es válida si tiene al menos un campo válido
   result.isValid = true;
+
+  // Mostrar resumen de lo encontrado
+  console.log(`\n=== RESUMEN FINAL PARA ${characterName.toUpperCase()} ===`);
+  console.log(`[${characterName}] Raids detectadas:`, result.raids);
+  console.log(`[${characterName}] Dificultades detectadas:`, Array.from(foundDifficulties));
+  console.log(`[${characterName}] Campos faltantes:`, missingFields);
+  console.log(`[${characterName}] Es válido:`, result.isValid);
+  console.log('='.repeat(50) + '\n');
 
   // Si no hay ningún campo válido, marcar como inválido
   const hasAnyValidField =
@@ -1579,15 +1550,33 @@ const totalRaiders = rosterData.members.filter(
                                   }
                                 }
 
-                                // Mostrar dificultades solo si hay alguna definida y no está vacía
+                                // Mostrar dificultades si hay alguna definida o si hay raids sin dificultad
                                 const validDifficulties = raidDifficulties.filter(
                                   (d) => d && d.trim() !== ''
                                 );
+                                
+                                // Si hay dificultades válidas, mostrarlas
                                 if (validDifficulties.length > 0) {
                                   formattedInfo.push({
                                     label: `Dificultad: ${validDifficulties.join(' o ')}`,
                                     class: 'text-indigo-300 font-medium',
                                   });
+                                } 
+                                // Si no hay dificultades pero sí raids, buscar dificultades en la nota
+                                else if (validation.raids?.length > 0) {
+                                  // Buscar dificultades directamente en la nota
+                                  const noteDifficulties = [];
+                                  const difficultyMatch = member.publicNote.match(/\b(10N|25N|10H|25H|H)\b/gi);
+                                  
+                                  if (difficultyMatch) {
+                                    const uniqueDifficulties = [...new Set(difficultyMatch.map(d => d.toUpperCase()))];
+                                    if (uniqueDifficulties.length > 0) {
+                                      formattedInfo.push({
+                                        label: `Dificultad: ${uniqueDifficulties.join(' o ')}`,
+                                        class: 'text-indigo-300 font-medium',
+                                      });
+                                    }
+                                  }
                                 }
                               }
 

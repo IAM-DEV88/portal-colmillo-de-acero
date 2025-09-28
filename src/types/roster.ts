@@ -7,7 +7,7 @@ export type Role = 'T' | 'H' | 'D';
 export type MainAlt = 'M' | 'A';
 export type ProfessionCode = 'AL' | 'HB' | 'TL' | 'EN' | 'EG' | 'JC' | 'BS' | 'IN' | 'MN' | 'SK' | 'LW';
 export type RaidCode = 'ICC' | 'TOC' | 'ULD' | 'NAX' | 'OS' | 'VOA' | 'EOE' | 'ONY' | 'RS';
-export type DifficultyCode = '10N' | '25N' | '25H';
+export type DifficultyCode = '10N' | '10H' | '25N' | '25H';
 
 export interface RaidInfo {
   name: string;
@@ -95,8 +95,9 @@ export const RAIDS = {
 
 export const DIFFICULTIES = {
   '10N': '10 Normal',
+  '10H': '10 Heroico',
   '25N': '25 Normal',
-  '25H': '25 Heroic'
+  '25H': '25 Heroico'
 } as const;
 
 export const CLASS_INFO: Record<ClassName, ClassInfo> = {
@@ -109,9 +110,7 @@ export const CLASS_INFO: Record<ClassName, ClassInfo> = {
   'Chamán': { color: '0070DE', name: 'Chamán' },
   'Mago': { color: '69CCF0', name: 'Mago' },
   'Brujo': { color: '9482C9', name: 'Brujo' },
-  'Druida': { color: 'FF7D0A', name: 'Druida' },
-  'Cazador de demonios': { color: 'A330C9', name: 'Cazador de demonios' },
-  'Monje': { color: '00FF96', name: 'Monje' }
+  'Druida': { color: 'FF7D0A', name: 'Druida' }
 };
 
 export const ROLE_NAMES: Record<Role, { name: string; color: string; bgColor: string }> = {

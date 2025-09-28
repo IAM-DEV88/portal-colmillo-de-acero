@@ -73,7 +73,7 @@ const debugLeaders = ['Stormgrim', 'Voidhammer', 'Vorthrak'];
 
 for (const member of members) {
   try {
-    const validation = validatePublicNote(member.publicNote || '');
+    const validation = validatePublicNote(member.publicNote || '', member.name);
     const hasSchedule = (validation.schedules && validation.schedules.length > 0) || false;
     const hasRaids = (validation.raids && validation.raids.length > 0) || false;
     const isRaidLeader =
@@ -195,128 +195,70 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
 <Layout title="Líderes de Raid">
   <div class="mx-auto animate-fade-in">
     <!-- Estadísticas Principales -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 mt-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-2">
       <!-- Total de Líderes -->
-      <div
-        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-accent shadow-lg hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300"
-      >
-        <div class="flex flex-col items-center">
-          <div class="p-3 rounded-lg text-accent">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-              ></path>
-            </svg>
-          </div>
-          <p class="text-3xl font-bold text-white">{raidLeaders.length}</p>
-          <p class="text-xs text-white font-bold">Líderes Activos</p>
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Líderes de Raid</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{raidLeaders.length}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">ACTIVOS</p>
         </div>
       </div>
 
       <!-- Total de Raids -->
-      <div
-        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-green-500/20 shadow-lg hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300"
-      >
-        <div class="flex flex-col items-center">
-          <div class="p-3 rounded-lg text-green-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-              ></path>
-            </svg>
-          </div>
-          <p class="text-3xl font-bold text-green-400">{totalRaidsPerWeek}</p>
-          <p class="text-xs text-white font-bold">Raid Semanales</p>
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Raid Semanales</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{totalRaidsPerWeek}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">TOTAL</p>
         </div>
       </div>
 
       <!-- Dificultades Únicas -->
-      <div
-        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-blue-500/20 shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300"
-      >
-        <div class="flex flex-col items-center">
-          <div class="p-3 rounded-lg text-blue-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-            </svg>
-          </div>
-          <p class="text-3xl font-bold text-blue-400">{allDifficulties.length}</p>
-          <p class="text-xs text-white font-bold">Dificultades</p>
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Dificultades</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{Object.keys(raidStats.difficulties).length}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">ÚNICAS</p>
         </div>
       </div>
 
       <!-- Bandas Únicas -->
-      <div
-        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1 transition-all duration-300"
-      >
-        <div class="flex flex-col items-center">
-          <div class="p-3 rounded-lg text-purple-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              ></path>
-            </svg>
-          </div>
-          <p class="text-3xl font-bold text-purple-400">{allRaids.length}</p>
-          <p class="text-xs text-white font-bold">Bandas Activas</p>
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Bandas</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{allRaids.length}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">ÚNICAS</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Tabla de Líderes de Raid -->
-  <div
-    class="rounded-xl border border-accent bg-gradient-to-br from-steel-dark to-steel-darker backdrop-blur-sm shadow-lg overflow-hidden animate-fade-in [animation-delay:100ms] opacity-0 [animation-fill-mode:forwards]"
-  >
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-accent">
-        <thead class="bg-steel-darker/80">
+  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3 mt-6 animate-fade-in" style="animation-delay: 0.2s;">
+    <div class="overflow-x-auto rounded-t-xl">
+      <table class="min-w-full divide-y divide-accent bg-gray-900/50 backdrop-blur-sm">
+        <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
           <tr>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider"
-              >Raids de la hermandad</th
-            >
+            <th data-column="name" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors" data-sort="name">
+              <div class="flex items-center justify-center">
+                <span class="py-2">Líder de Raid</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3.5 w-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                </svg>
+              </div>
+            </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-accent bg-steel-darker/50">
+        <tbody class="divide-y divide-accent">
           {
             raidLeaders.map((leader, index) => {
               // Get unique difficulties, ensure valid format (10N, 25N, 10H, 25H)
@@ -341,7 +283,7 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                     .join(' ')
                     .toLowerCase()}
                 >
-                  <td class="px-6 py-4">
+                  <td class="px-2 md:px-6 py-4">
                     <div class="flex items-start">
                       <div class="flex-shrink-0 h-10 w-10 rounded-full bg-steel-darker/80 border border-accent/20 flex items-center justify-center shadow-inner overflow-hidden mr-3">
                         <img
@@ -353,7 +295,6 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                       </div>
                       <div class="min-w-0 flex-1">
                         <div class="flex flex-col">
-                          <div class="text-sm font-medium text-white mr-2">{leader.name}</div>
                           <div
                             class="text-xs"
                             style={`color: #${
@@ -386,7 +327,12 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                           >
                             {leader.class}
                           </div>
-                          <div class="mt-1.5 text-xs text-text-muted/90 flex flex-wrap gap-1 px-2 py-1 rounded-md border border-accent">
+                          <div class="text-sm font-medium text-white mr-2">{leader.name}</div>
+                          
+                        </div>
+                      </div>
+                    </div>
+                          <div class="mt-1.5 text-xs text-text-muted/90 flex flex-wrap gap-1 px-2 py-1.5 rounded-md bg-gray-900/30 border border-accent self-start">
                             {/* Raids */} Arma 
                             {Array.from(new Set(leader.raids.map((r) => r.code))).map(
                               (raidCode: string, index, array) => (
@@ -462,9 +408,6 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                               <span class="text-text-muted/70">Sin horario</span>
                             )}
                           </div>
-                        </div>
-                      </div>
-                    </div>
                   </td>
                 </tr>
               );
@@ -476,7 +419,7 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
 
     <!-- Paginación -->
     <div
-      class="px-6 py-4 bg-steel-darker/80 border-t border-accent flex flex-col sm:flex-row items-center justify-between gap-4"
+      class="px-2 md:px-6 py-4 bg-gray-900/50 backdrop-blur-sm border-t border-amber-900/30 flex flex-col sm:flex-row items-center justify-between gap-4"
     >
       <div class="text-sm text-text-muted/70">
         Página <span id="currentPage" class="font-medium text-white">1</span> de
@@ -508,7 +451,7 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
     </div>
 
     <!-- Filtros -->
-    <div class="p-6">
+    <div class="p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Búsqueda por Nombre -->
         <div>
@@ -566,136 +509,115 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
     </div>
   </div>
 
-  <!-- Estadísticas Detalladas -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12 mt-8">
-    <!-- Bandas Populares - Versión Mejorada -->
-    <div
-      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-accent shadow-lg"
-    >
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-white">Bandas</h3>
-        <span class="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full"
-          >{sortedRaidStats.length} bandas</span
-        >
-      </div>
-      <div class="space-y-2">
-        {
-          sortedRaidStats.map(([raid, count]) => {
-            const percentage = Math.round((count / raidLeaders.length) * 100);
-            return (
-              <div class="group hover:bg-steel-darker/30 transition-colors duration-200 rounded-lg p-2">
-                <div class="flex items-center justify-between text-sm">
-                  <span class="text-text-muted/90 font-medium">{raid}</span>
-                  <div class="flex items-center space-x-2">
-                    <span class="text-xs text-text-muted/70 group-hover:text-white transition-colors">
-                      {count} líderes
-                    </span>
-                    <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full">
-                      {percentage}%
-                    </span>
+  <!-- Sección de estadísticas -->
+  <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
+    <h2 class="text-xl font-semibold mb-6 text-center text-amber-200/90 uppercase tracking-wider">
+      Estadísticas de Líderes de Raid
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Bandas Populares -->
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Bandas
+        </h3>
+        <div class="space-y-3">
+          {
+            sortedRaidStats.map(([raid, count]) => {
+              const percentage = Math.round((count / raidLeaders.length) * 100);
+              return (
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-amber-100/80">{raid}</span>
+                    <div class="flex items-center">
+                      <span class="text-white font-semibold mr-1">{count}</span>
+                      <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-500 ease-out"
+                      style={{ width: `${percentage}%` }}
+                    />
                   </div>
                 </div>
-                <div class="w-full bg-steel-darker/50 rounded-full h-1.5 mt-1.5">
-                  <div
-                    class="bg-gradient-to-r from-accent to-accent/80 h-1.5 rounded-full"
-                    style={`width: ${percentage}%;`}
-                  />
-                </div>
-              </div>
-            );
-          })
-        }
+              );
+            })
+          }
+        </div>
       </div>
-    </div>
 
-    <!-- Dificultades - Versión Mejorada -->
-    <div
-      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-green-500/20 shadow-lg"
-    >
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-white">Dificultades</h3>
-        <span class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full"
-          >{sortedDifficultyStats.length} tipos</span
-        >
-      </div>
-      <div class="space-y-2">
-        {
-          sortedDifficultyStats.map(([difficulty, count]) => {
-            const difficultyColors = {
-              '10N': 'from-blue-500 to-blue-400',
-              '25N': 'from-purple-500 to-purple-400',
-              '10H': 'from-yellow-500 to-yellow-400',
-              '25H': 'from-red-500 to-red-400',
-              Unknown: 'from-gray-500 to-gray-400',
-            };
-            const gradient =
-              difficultyColors[difficulty as keyof typeof difficultyColors] ||
-              'from-accent to-accent/80';
-            const percentage = Math.round((count / raidLeaders.length) * 100);
-
-            return (
-              <div class="group hover:bg-steel-darker/30 transition-colors duration-200 rounded-lg p-2">
-                <div class="flex items-center justify-between text-sm">
-                  <span class="text-text-muted/90 font-medium">{difficulty}</span>
-                  <div class="flex items-center space-x-2">
-                    <span class="text-xs text-text-muted/70 group-hover:text-white transition-colors">
-                      {count} líderes
-                    </span>
-                    <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full">
-                      {percentage}%
-                    </span>
+      <!-- Dificultades -->
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Dificultades
+        </h3>
+        <div class="space-y-3">
+          {
+            sortedDifficultyStats.map(([difficulty, count]) => {
+              const difficultyColors = {
+                '10N': { from: 'from-blue-400', to: 'to-blue-600' },
+                '25N': { from: 'from-purple-400', to: 'to-purple-600' },
+                '10H': { from: 'from-yellow-400', to: 'to-yellow-600' },
+                '25H': { from: 'from-red-400', to: 'to-red-600' },
+                'Unknown': { from: 'from-gray-400', to: 'to-gray-600' }
+              };
+              
+              const colors = difficultyColors[difficulty as keyof typeof difficultyColors] || 
+                            { from: 'from-amber-400', to: 'to-amber-600' };
+              
+              const percentage = Math.round((count / raidLeaders.length) * 100);
+              
+              return (
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-amber-100/80">{difficulty}</span>
+                    <div class="flex items-center">
+                      <span class="text-white font-semibold mr-1">{count}</span>
+                      <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class={`h-full rounded-full bg-gradient-to-r ${colors.from} ${colors.to} transition-all duration-500 ease-out`}
+                      style={{ width: `${percentage}%` }}
+                    />
                   </div>
                 </div>
-                <div class="w-full bg-steel-darker/50 rounded-full h-1.5 mt-1.5">
-                  <div
-                    class={`bg-gradient-to-r ${gradient} h-1.5 rounded-full`}
-                    style={`width: ${percentage}%;`}
-                  />
-                </div>
-              </div>
-            );
-          })
-        }
+              );
+            })
+          }
+        </div>
       </div>
-    </div>
 
-    <!-- Horarios Populares - Versión Compacta -->
-    <div
-      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-blue-500/20 shadow-lg mb-8"
-    >
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-white">Horarios Populares</h3>
-        <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full"
-          >{sortedScheduleStats.length} horarios</span
-        >
-      </div>
-      <div class="space-y-2">
-        {
-          sortedScheduleStats.map(([time, count]) => {
-            const percentage = Math.round((count / raidLeaders.length) * 100);
-            return (
-              <div class="group hover:bg-steel-darker/30 transition-colors duration-200 rounded-lg p-2">
-                <div class="flex items-center justify-between text-sm">
-                  <span class="text-text-muted/90 font-medium">{time}</span>
-                  <div class="flex items-center space-x-2">
-                    <span class="text-xs text-text-muted/70 group-hover:text-white transition-colors">
-                      {count} líderes
-                    </span>
-                    <span class="text-xs bg-green-500/10 text-green-400 px-2 py-0.5 rounded-full">
-                      {percentage}%
-                    </span>
+      <!-- Horarios Populares -->
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Horarios
+        </h3>
+        <div class="space-y-3">
+          {
+            sortedScheduleStats.map(([time, count]) => {
+              const percentage = Math.round((count / raidLeaders.length) * 100);
+              return (
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-amber-100/80">{time}</span>
+                    <div class="flex items-center">
+                      <span class="text-white font-semibold mr-1">{count}</span>
+                      <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500 ease-out"
+                      style={{ width: `${percentage}%` }}
+                    />
                   </div>
                 </div>
-                <div class="w-full bg-steel-darker/50 rounded-full h-1.5 mt-1.5">
-                  <div
-                    class="bg-gradient-to-r from-green-500 to-green-400 h-1.5 rounded-full"
-                    style={`width: ${percentage}%;`}
-                  />
-                </div>
-              </div>
-            );
-          })
-        }
+              );
+            })
+          }
+        </div>
       </div>
     </div>
   </div>
