@@ -1,0 +1,20 @@
+[
+  {
+    "id": "getting-started",
+    "title": "Guía de Inicio Rápido",
+    "description": "Aprende los conceptos básicos para comenzar a jugar en nuestra hermandad.",
+    "category": "General",
+    "date": "2025-09-26",
+    "tags": ["inicio", "básico", "guía"],
+    "content": "# Guía de Inicio Rápido\n\n¡Bienvenido a nuestra hermandad! Esta guía te ayudará a comenzar.\n\n## Requisitos\n- Nivel 80\n- Equipo básico\n- Discord instalado\n\n## Primeros Pasos\n1. Preséntate en el canal de bienvenida\n2. Revisa las reglas\n3. Habla con un oficial para roles"
+  },
+  {
+    "id": "raid-basics",
+    "title": "Guía Básica de Raids",
+    "description": "Todo lo que necesitas saber para participar en raids con nosotros.",
+    "category": "Raids",
+    "date": "2025-09-25",
+    "tags": ["raids", "guía", "pve"],
+    "content": "# Guía Básica de Raids\n\n## Preparación\n- Gear Score mínimo: 5.0\n- Consumibles necesarios\n- Addons recomendados\n\n## Reglas\n1. Llegar 15 minutos antes\n2. Venir preparado\n3. Seguir las indicaciones del líder"
+  }
+]

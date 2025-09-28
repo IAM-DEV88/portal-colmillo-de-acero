@@ -4,197 +4,37 @@ import Layout from '../components/layout/Layout.astro';
 
 <Layout title="Guías">
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-white mb-6">Guías</h1>
-    <!-- Guides content will go here -->
-    <div
-    class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg"
-  >
-    <h3
-      class="text-text-muted/90 text-lg font-medium mb-6 text-center uppercase tracking-wider bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent"
-    >
-      Formato de Notas Públicas
-    </h3>
-
-    <div class="space-y-6">
-      <!-- Formato de Nota -->
-      <div>
-        <h4 class="text-text-muted/90 font-medium mb-3">Formato Actual:</h4>
-        <div class="bg-steel-darker/80 p-4 rounded-lg border border-accent/20">
-          <p class="text-text-muted/80 text-sm mb-2">
-            El formato es flexible, pero debe incluir:
-          </p>
-          <ul class="list-disc list-inside space-y-1 text-sm text-text-muted/90 mb-3">
-            <li>Main/Alt (M/A) (obligatorio)</li>
-            <li>Rol (T/H/D)</li>
-            <li>Dual (T/H/D)</li>
-            <li>Gear Score (ej. 6.2)</li>
-            <li>Profesiones</li>
-            <li>Horario de juego</li>
-            <li>Raid que busca</li>
-          </ul>
-          <p class="text-text-muted/80 text-sm">Ejemplos válidos:</p>
-          <ul class="space-y-1 mt-2">
-            <li><code class="text-green-300 font-mono">MT 6.2 JC/BS 21h</code></li>
-            <li><code class="text-green-300 font-mono">AD GS5.8 20h-23h</code></li>
-            <li><code class="text-green-300 font-mono">MTH 6.51 SR ICC 10n 10h</code></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Explicación del Formato -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h4 class="text-text-muted/90 font-medium mb-2">Abreviaturas Comunes:</h4>
-          <div class="grid grid-cols-2 gap-2 text-sm text-text-muted/90">
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">M/A</span>
-              <span>Main/Alt</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">T</span>
-              <span>Tank</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">H</span>
-              <span>Healer</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">D</span>
-              <span>DPS</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">X.X</span>
-              <span>Gear Score</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">RL</span>
-              <span>Lider de Raid</span>
-            </div>
+    <h1 class="text-3xl font-bold text-white mb-8 animate-fade-in">Guías</h1>
+    
+    <div class="grid gap-6 max-w-4xl mx-auto animate-fade-in [animation-delay:100ms] opacity-0 [animation-fill-mode:forwards]">
+      <!-- Guía de Nota Pública -->
+      <a 
+        href="/guides/nota-publica" 
+        class="group block bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg hover:border-accent/50 hover:shadow-accent/10 transition-all duration-300"
+      >
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-white mb-2 group-hover:text-accent transition-colors">
+              Guía de Nota Pública
+            </h2>
+            <p class="text-text-muted/90">
+              Aprende a configurar tu nota pública para participar en el sistema de raids de la hermandad
+            </p>
           </div>
+          <span class="text-accent text-2xl ml-4 group-hover:translate-x-1 transition-transform">→</span>
         </div>
-
-        <div>
-          <h4 class="text-text-muted/90 font-medium mb-2">Profesiones:</h4>
-          <div class="grid grid-cols-2 gap-2 text-sm text-text-muted/90">
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">JC</span>
-              <span>Joyería</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">BS</span>
-              <span>Herrería</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">EN</span>
-              <span>Encantamiento</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">EG</span>
-              <span>Ingeniería</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">LW</span>
-              <span>Peletería</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">AL</span>
-              <span>Alquimia</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">TL</span>
-              <span>Sastrería</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">IN</span>
-              <span>Inscripción</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">HB</span>
-              <span>Herboristería</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">MN</span>
-              <span>Minería</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-8">SK</span>
-              <span>Desuello</span>
-            </div>
-          </div>
+        <div class="mt-4 pt-4 border-t border-accent/10">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent">
+            Ver Guía Completa
+          </span>
         </div>
-      </div>
-
-      <!-- Sección de Bandas y Dificultades -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div>
-          <h4 class="text-text-muted/90 font-medium mb-2">Bandas:</h4>
-          <div class="grid grid-cols-2 gap-2 text-sm text-text-muted/90">
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">ICC</span>
-              <span>Icecrown Citadel</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">TOC</span>
-              <span>Trial of the Crusader</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">ULD</span>
-              <span>Ulduar</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">NAX</span>
-              <span>Naxxramas</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">OS</span>
-              <span>Obsidian Sanctum</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">RS</span>
-              <span>Ruby Sanctum</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">EOE</span>
-              <span>Eye of Eternity</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">VOA</span>
-              <span>Vault of Archavon</span>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="text-text-muted/90 font-medium mb-2">Dificultades:</h4>
-          <div class="grid grid-cols-2 gap-2 text-sm text-text-muted/90">
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">10N</span>
-              <span>10 Jug. Normal</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">25N</span>
-              <span>25 Jug. Normal</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">10H</span>
-              <span>10 Jug. Heroico</span>
-            </div>
-            <div class="flex items-center">
-              <span class="text-accent font-mono w-12">25H</span>
-              <span>25 Jug. Heroico</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notas Importantes -->
-      <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-lg">
-        <h4 class="text-amber-300 font-medium mb-2">¡Importante!</h4>
-        <ul class="text-sm text-amber-100/90 space-y-1">
-          <li>• El sistema de raids de la hermandad se carga con esta nota</li>
-        </ul>
+      </a>
+      
+      <!-- Otras guías pueden ir aquí -->
+      <div class="bg-gradient-to-br from-steel-dark/50 to-steel-darker/50 backdrop-blur-sm p-6 rounded-xl border border-accent/10 shadow-lg">
+        <h3 class="text-lg font-semibold text-white mb-2">Próximamente</h3>
+        <p class="text-text-muted/80 text-sm">Más guías estarán disponibles pronto.</p>
       </div>
     </div>
-  </div>
   </div>
 </Layout>

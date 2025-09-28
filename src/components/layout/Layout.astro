@@ -43,33 +43,20 @@ const { title = 'Colmillo de Acero' } = Astro.props;
       
       ::selection {
         background: var(--color-accent);
-        color: var(--color-steel-darker);
       }
       
       *:focus {
         outline: 2px solid var(--color-accent);
         outline-offset: 2px;
       }
-      
-      [data-aos] {
-        opacity: 0;
-        transition-property: opacity, transform;
-      }
-      }
-      
-      [data-aos].aos-animate {
-        opacity: 1;
-      }
     </style>
   </head>
-  <body class="min-h-screen bg-cover bg-fixed bg-center bg-no-repeat" style="background-image: url('/images/background.jpg');">
-    <div class="min-h-screen bg-black/10 backdrop-blur-sm">
+  <body class="bg-cover bg-fixed bg-center bg-no-repeat overflow-x-hidden" style="background-image: url('/images/background.jpg');">
       <Navigation />
-      <main class="relative z-10 pt-24 pb-12 max-w-7xl mx-auto">
+      <main class="min-h-screen relative z-10 mt-8 pb-32 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <slot />
       </main>
       
       <Footer />
-    </div>
   </body>
 </html>

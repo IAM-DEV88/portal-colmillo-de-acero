@@ -313,28 +313,47 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
   const trimmedNote = note.trim();
   const parts = trimmedNote.split(/\s+/); // Dividir por cualquier espacio en blanco
 
-  // 1. Intentar detectar Main/Alt (opcional)
-  // Primero verificar si comienza con A o M seguido de un rol (ej: AD, MT)
-  const altMainRoleMatch = trimmedNote.match(/^([MA])([THD])\b/i);
-  if (altMainRoleMatch) {
-    result.mainAlt = altMainRoleMatch[1].toUpperCase() as MainAlt;
-    result.role = altMainRoleMatch[2].toUpperCase() as Role;
-  } else {
-    // Si no, buscar M o A solos
-    const mainAltMatch = trimmedNote.match(/(?:^|[|\s])([MA])(?=[|\s]|$)/i);
-    if (mainAltMatch) {
-      result.mainAlt = mainAltMatch[1].toUpperCase() as MainAlt;
-    } else {
-      // Si no encuentra M o A explícito, verificar si está en formato MTH, MHD, etc.
-      const mainAltWithRole = trimmedNote.match(/^M?([THD])([THD]?)\b/i);
-      if (mainAltWithRole?.[0].startsWith('M')) {
-        result.mainAlt = 'M';
-      }
+  // 1. Detección de Main/Alt (M/A) - Prioridad a patrones con roles
+  
+  // Patrón 1: M o A seguido de rol (ej: 'MT', 'AD', 'MH', 'AH')
+  const mainAltWithRole = trimmedNote.match(/^([MA])([THD])(?:[^a-zA-Z]|$)/i);
+  if (mainAltWithRole) {
+    result.mainAlt = mainAltWithRole[1].toUpperCase() as MainAlt;
+    result.role = mainAltWithRole[2].toUpperCase() as Role;
+  } 
+  
+  // Patrón 2: M o A al inicio de la nota (ej: 'M 5.9', 'A TL/EN')
+  if (!result.mainAlt) {
+    const startWithMainAlt = trimmedNote.match(/^([MA])(?:\s+|$)/i);
+    if (startWithMainAlt) {
+      result.mainAlt = startWithMainAlt[1].toUpperCase() as MainAlt;
+    }
+  }
+  
+  // Patrón 3: M o A con separador (ej: 'M/Tank', 'A-Healer')
+  if (!result.mainAlt) {
+    const mainAltWithSeparator = trimmedNote.match(/(?:^|[\s/\-|])([MA])(?=$|[\s/\-|])/i);
+    if (mainAltWithSeparator) {
+      result.mainAlt = mainAltWithSeparator[1].toUpperCase() as MainAlt;
+    }
+  }
+  
+  // Patrón 4: M o A en cualquier parte como palabra completa (último recurso)
+  if (!result.mainAlt) {
+    const mainAltAnywhere = trimmedNote.match(/(?:^|\s)([MA])(?:\s|$)/i);
+    if (mainAltAnywhere) {
+      result.mainAlt = mainAltAnywhere[1].toUpperCase() as MainAlt;
     }
   }
 
-  // 2. Buscar si es Raid Leader (RL)
-  result.isRaidLeader = /\bRL\b/i.test(trimmedNote);
+  // 2. Buscar si es Raid Leader (RL o rl)
+  // Buscar patrones como 'RL', 'rl', 'RaidLeader', 'raid leader', etc.
+  result.isRaidLeader = /(?:^|\s)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl)(?=\s|$)/i.test(trimmedNote);
+  
+  // También verificar si está en formato como '18xrl' (común en notas)
+  if (!result.isRaidLeader) {
+    result.isRaidLeader = /\d*[xX]\s*rl\b/i.test(trimmedNote);
+  }
 
   // 3. Buscar roles (T, H, D) y rol dual
   // Primero buscar formato de 3 letras que comience con A o M (ej: MDT, AHT, etc.)
@@ -403,66 +422,126 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
     missingFields.push(`Rol principal (${Object.keys(ROLES).join(', ')})`);
   }
 
-  // 2. Extraer Gear Score - formatos: X.X, X,X o XXXX (4 dígitos)
-  const gsMatch = trimmedNote.match(/(?:^|[\s|])(\d{4}|\d[.,]\d)(?=$|[\s|])/);
-  if (gsMatch) {
-    let gsValue = gsMatch[1]; // Usar el grupo capturado
-    // Si es un número de 4 dígitos, convertirlo a formato decimal (ej: 5585 -> 5.5)
-    if (/^\d{4}$/.test(gsValue)) {
-      const num = parseInt(gsValue);
-      gsValue = (num / 1000).toFixed(1);
-    } else {
-      // Reemplazar coma por punto para estandarizar
-      gsValue = gsValue.replace(',', '.');
+  // 2. Extraer Gear Score - Múltiples formatos soportados:
+  //    - Números de 4 dígitos (ej: 5585 -> 5.5)
+  //    - Números decimales con punto o coma (ej: 5.9, 6,2)
+  //    - Números rodeados de cualquier carácter
+  //    - Prefijos comunes como 'GS', 'gs', 'ilvl', 'iLvl', etc.
+  let gsValue: string | null = null;
+  
+  // Patrón 1: Buscar formato XXXX (4 dígitos) en cualquier parte
+  const fourDigitMatch = trimmedNote.match(/\b(\d{4})\b/);
+  if (fourDigitMatch) {
+    const num = parseInt(fourDigitMatch[1]);
+    gsValue = (num / 1000).toFixed(1);
+  } 
+  // Patrón 2: Buscar números decimales con punto o coma
+  else {
+    const decimalMatch = trimmedNote.match(/(\d[\.,]\d\d?)/);
+    if (decimalMatch) {
+      gsValue = decimalMatch[1].replace(',', '.');
     }
+  }
+  
+  // Patrón 3: Buscar después de prefijos comunes (GS, ilvl, etc.)
+  if (!gsValue) {
+    const prefixMatch = trimmedNote.match(/(?:GS|gs|ilvl|iLvl|gear|Gear|gs:?\s*)(?:\s*[:=]?\s*)(\d[\.,]?\d?\d?)/i);
+    if (prefixMatch) {
+      gsValue = prefixMatch[1].replace(',', '.');
+      // Asegurar formato decimal correcto
+      if (!gsValue.includes('.')) {
+        gsValue = gsValue + '.0';
+      }
+    }
+  }
+  
+  // Validar y guardar el Gear Score encontrado
+  if (gsValue) {
     const gsNumber = parseFloat(gsValue);
-    if (gsNumber >= 0.1 && gsNumber <= 10) {
-      result.gearScore = gsValue;
+    if (!isNaN(gsNumber) && gsNumber >= 0.1 && gsNumber <= 10) {
+      result.gearScore = gsNumber.toFixed(1);
     } else {
       errors.push('El Gear Score debe estar entre 0.1 y 10');
     }
-  } else if (!trimmedNote.includes('GS:')) {
-    // Solo marcar como faltante si no hay un intento de especificar GS
-    missingFields.push('Gear Score (ej: 5.9, 6.2)');
+  } else if (!trimmedNote.match(/GS|gs|ilvl|iLvl|gear|Gear|\d[\.,]\d|\d{4}/i)) {
+    // Solo marcar como faltante si no hay ningún indicio de GS en la nota
+    missingFields.push('Gear Score (ej: 5.9, 6.2, 5585)');
   }
 
   // 3. Extraer Profesiones - Opcionales pero recomendadas
   const profCodes = Object.keys(PROFESSIONS).join('|');
-  console.log('Profession codes:', profCodes); // Debug
-  
-  // Primero buscamos cualquier código de profesión en la nota (incluyendo pares separados por / o espacio)
-  const profRegex = new RegExp(`(?:^|\\s)(${profCodes})(?:\\s*[\\/\\s]\\s*(${profCodes}))?(?=\\s|$)`, 'gi');
-  const matches = Array.from(trimmedNote.matchAll(profRegex));
-  
-  console.log('Profession matches:', matches); // Debug
   
   const foundProfs = new Set<string>();
   
-  // Procesamos todos los matches
-  for (const match of matches) {
-    // El primer grupo de captura es la primera profesión
-    if (match[1]) {
-      const code = match[1].toUpperCase() as ProfessionCode;
-      if (PROFESSIONS[code]) {
-        foundProfs.add(code);
+  // Patrón 1: Buscar códigos juntos sin separador (ej: 'TLen')
+  // Primero buscamos cualquier secuencia de 4-6 letras mayúsculas
+  const combinedProfRegex = /[A-Z]{4,6}/g;
+  let combinedMatch;
+  
+  while ((combinedMatch = combinedProfRegex.exec(trimmedNote.toUpperCase())) !== null) {
+    const combinedText = combinedMatch[0];
+    
+    // Buscar códigos de profesión dentro del texto combinado
+    let remainingText = combinedText;
+    while (remainingText.length >= 2) {
+      let found = false;
+      // Probar con códigos de 2 caracteres primero (y luego 3 si es necesario)
+      for (let i = 2; i <= 3 && i <= remainingText.length; i++) {
+        const possibleCode = remainingText.substring(0, i);
+        if (profCodes.includes(possibleCode)) {
+          foundProfs.add(possibleCode as ProfessionCode);
+          remainingText = remainingText.substring(i);
+          found = true;
+          break;
+        }
       }
+      // Si no se encontró un código válido, avanzar un carácter
+      if (!found) {
+        remainingText = remainingText.substring(1);
+      }
+      // No buscar más de 3 profesiones (máximo razonable)
+      if (foundProfs.size >= 3) break;
     }
     
-    // El segundo grupo de captura es la segunda profesión (si existe)
-    if (match[2]) {
-      const code = match[2].toUpperCase() as ProfessionCode;
-      if (PROFESSIONS[code]) {
-        foundProfs.add(code);
-      }
-    }
     
-    // Si ya encontramos 2 profesiones, no necesitamos seguir buscando
+    // Si ya encontramos 2 profesiones, no es necesario seguir buscando
     if (foundProfs.size >= 2) break;
   }
   
+  // Si no encontramos códigos juntos, buscar otros patrones
+  if (foundProfs.size < 2) {
+    // Patrón 2: Buscar el patrón específico 'TL/en' o similar
+    const directProfRegex = new RegExp(`\b(${profCodes})[/,\s-](${profCodes})\b`, 'i');
+    const directMatch = directProfRegex.exec(trimmedNote);
+    
+    if (directMatch) {
+      const code1 = directMatch[1].toUpperCase() as ProfessionCode;
+      const code2 = directMatch[2].toUpperCase() as ProfessionCode;
+      if (PROFESSIONS[code1]) foundProfs.add(code1);
+      if (PROFESSIONS[code2]) foundProfs.add(code2);
+    }
+    
+    // Patrón 3: Buscar códigos individuales
+    if (foundProfs.size < 2) {
+      const singleProfRegex = new RegExp(`(?:^|[^a-zA-Z])(${profCodes})(?![a-zA-Z])`, 'gi');
+      let singleMatch;
+      
+      while ((singleMatch = singleProfRegex.exec(trimmedNote)) !== null && foundProfs.size < 2) {
+        const code = singleMatch[1].toUpperCase() as ProfessionCode;
+        if (PROFESSIONS[code]) {
+          foundProfs.add(code);
+        }
+      }
+    }
+  }
+  
+  // Si encontramos al menos una profesión, actualizar el resultado
+  if (foundProfs.size > 0) {
+    result.professions = Array.from(foundProfs);
+  }
   // Convertimos a array y tomamos las dos primeras profesiones únicas
   const uniqueProfs = Array.from(foundProfs);
-  console.log('Found professions:', uniqueProfs); // Debug
+
   
   if (uniqueProfs.length >= 2) {
     const prof1 = uniqueProfs[0] as ProfessionCode;
@@ -550,124 +629,180 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
   }
 
   // 5. Extraer raids y dificultades
+  const allRaidCodes = Object.keys(RAIDS) as RaidCode[];
+  const raidCodesPattern = allRaidCodes.map(rc => rc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const difficulties = ['N', 'H'] as const;
+  
+  // Inicializar el conjunto de raids encontradas
   result.raids = [];
   const usedRaids = new Set<string>();
-
-  // Primero, buscar todas las dificultades en la nota (independientemente de las bandas)
-  console.log('Nota completa:', trimmedNote);
-  const difficultyMatches = [];
-  const usedIndices = new Set();
-
-  // Función para validar y agregar dificultad
-  const addValidDifficulty = (match) => {
-    const key = `${match.index}-${match[0].length}`;
-    if (usedIndices.has(key)) return;
-
-    const number = parseInt(match[1]);
-    const letter = match[2].toUpperCase();
-    const validDifficulties = ['10N', '10H', '25N', '25H'];
-    const difficulty = `${number}${letter}`;
-
-    // Solo agregar si es una dificultad válida
-    if (validDifficulties.includes(difficulty)) {
+  
+  
+  // Mapa para evitar duplicados
+  const usedIndices = new Set<string>();
+  const difficultyMatches: Array<{number: number; difficulty: 'N' | 'H'}> = [];
+  
+  // Buscar dificultades en formato estándar (10N, 25H, 10h, etc.)
+  // Detecta tanto N/H mayúscula como minúscula
+  const stdDifficultyPattern = /(10|25)([NHnh])(?![a-zA-Z0-9])/g;
+  let stdMatch;
+  
+  while ((stdMatch = stdDifficultyPattern.exec(trimmedNote)) !== null) {
+    const number = parseInt(stdMatch[1]);
+    const difficulty = stdMatch[2].toUpperCase() as 'N' | 'H';
+    const key = `${stdMatch.index}-${stdMatch[0].length}`;
+    
+    if ((number === 10 || number === 25) && !usedIndices.has(key)) {
       usedIndices.add(key);
-      difficultyMatches.push({
-        1: number.toString(),
-        2: letter,
-        index: match.index,
-      });
-      console.log('Dificultad válida encontrada:', difficulty);
-    } else {
-      console.log('Dificultad ignorada (no válida):', match[0]);
+      difficultyMatches.push({ number, difficulty });
+    }
+  }
+
+  // 1. Buscar patrones de raid seguida de número y dificultad pegados (ej: icc10n)
+  const raidWithNumberPattern1 = new RegExp(`(${raidCodesPattern})(10|25)([NHnh])(?![a-zA-Z0-9])`, 'gi');
+  // 2. Buscar patrones de raid seguida de espacio, número y dificultad (ej: icc 10n)
+  const raidWithNumberPattern2 = new RegExp(`(${raidCodesPattern})\\s+(10|25)([NHnh])(?![a-zA-Z0-9])`, 'gi');
+  // 3. Buscar patrones de número, dificultad y raid pegados (ej: 10nicc)
+  const raidWithNumberPattern3 = new RegExp(`(10|25)([NHnh])(${raidCodesPattern})(?![a-zA-Z0-9])`, 'gi');
+  
+  // Función para agregar una raid si no existe
+  const addRaidIfNotExists = (raidCode: string, difficultyNumber: string, difficultyLetter: string) => {
+    // Convertir a mayúsculas para estandarizar
+    const normalizedLetter = difficultyLetter.toUpperCase();
+    const difficultyCode = `${difficultyNumber}${normalizedLetter}` as DifficultyCode;
+    
+    if (['10N', '10H', '25N', '25H'].includes(difficultyCode)) {
+      const raidKey = `${raidCode}${difficultyCode}`;
+      if (!usedRaids.has(raidKey)) {
+        const raidName = raidCode in RAIDS ? RAIDS[raidCode as keyof typeof RAIDS] : raidCode;
+        result.raids.push({
+          code: raidCode as RaidCode,
+          difficultyCode,
+          difficulty: difficultyLetter === 'N' ? 'Normal' : 'Heroic',
+          name: raidName,
+        });
+        usedRaids.add(raidKey);
+      }
     }
   };
 
-  // Buscar patrones de dificultad válidos (10N, 10H, 25N, 25H)
-  const patterns = [
-    /\b(10|25)([NH])\b/gi, // Formato estándar (10N, 10H, 25N, 25H)
-    /(10|25)([NH])(?![\dNH])/gi, // Formato sin límite de palabra al final (ej: 25n18x)
-  ];
-
-  patterns.forEach((pattern) => {
-    const regex = new RegExp(pattern);
-    let match;
-
-    while ((match = regex.exec(trimmedNote)) !== null) {
-      // Extraer solo la parte de la dificultad
-      const cleanMatch = match[0].match(/(10|25)([NH])/i);
-      if (cleanMatch) {
-        addValidDifficulty({
-          0: match[0],
-          1: cleanMatch[1],
-          2: cleanMatch[2],
-          index: match.index,
-        });
-      }
-
-      // Evitar bucle infinito si la regex no avanza
-      if (match.index === regex.lastIndex) {
-        regex.lastIndex++;
-      }
+  // Procesar cada patrón por separado
+  // Patrón 1: raid + número + dificultad pegados (ej: icc10n)
+  let match1;
+  while ((match1 = raidWithNumberPattern1.exec(trimmedNote)) !== null) {
+    const raidCode = match1[1].toUpperCase();
+    const number = match1[2];
+    const difficultyLetter = match1[3].toUpperCase();
+    addRaidIfNotExists(raidCode, number, difficultyLetter);
+  }
+  
+  // Patrón 2: raid + espacio + número + dificultad (ej: icc 10n)
+  let match2;
+  while ((match2 = raidWithNumberPattern2.exec(trimmedNote)) !== null) {
+    const raidCode = match2[1].toUpperCase();
+    const number = match2[2];
+    const difficultyLetter = match2[3].toUpperCase();
+    addRaidIfNotExists(raidCode, number, difficultyLetter);
+  }
+  
+  // Patrón 3: número + dificultad + raid pegados (ej: 10nicc)
+  let match3;
+  while ((match3 = raidWithNumberPattern3.exec(trimmedNote)) !== null) {
+    const number = match3[1];
+    const difficultyLetter = match3[2].toUpperCase();
+    const raidCode = match3[3].toUpperCase();
+    addRaidIfNotExists(raidCode, number, difficultyLetter);
+  }
+  
+  // Buscar dificultades sueltas (como 10h al final de línea)
+  const looseDifficultyPattern = /(10|25)([hnHN])(?:$|\s|\/|,|;|\.|\|)/g;
+  let looseMatch;
+  
+  while ((looseMatch = looseDifficultyPattern.exec(trimmedNote)) !== null) {
+    const number = looseMatch[1];
+    const difficulty = looseMatch[2].toUpperCase() as 'N' | 'H';
+    const key = `loose_${looseMatch.index}_${looseMatch[0].length}`;
+    
+    if (!usedIndices.has(key)) {
+      usedIndices.add(key);
+      difficultyMatches.push({ number: parseInt(number), difficulty });
     }
-  });
-
-  // Ordenar por posición en el texto (de izquierda a derecha)
-  difficultyMatches.sort((a, b) => a.index - b.index);
-
-  const difficulties = difficultyMatches.map(
-    (m) => `${m[1]}${m[2].toUpperCase()}` as DifficultyCode
-  );
-  console.log('Dificultades extraídas:', difficulties);
-
-  // Buscar raids mencionados en la nota
-  const raidMentions = [
-    ...trimmedNote.matchAll(/\b(ICC|TOC|ULD|NAX|OS|RS|EOE|VOA|ONY|MALY|SAP)\b/gi),
-  ];
-
-  // Si hay dificultades encontradas, asignarlas a los raids mencionados
-  if (difficulties.length > 0) {
-    // Si no hay raids mencionados, usar 'ICC' por defecto
-    const raidCodes =
-      raidMentions.length > 0
-        ? raidMentions.map((m) => m[0].toUpperCase() as RaidCode)
-        : ['ICC' as RaidCode];
-
-    raidCodes.forEach((raidCode) => {
-      difficulties.forEach((difficulty) => {
-        const raidKey = `${raidCode}${difficulty}`;
-        if (!usedRaids.has(raidKey)) {
-          result.raids.push({
-            code: raidCode,
-            difficultyCode: difficulty,
-            difficulty: difficulty.endsWith('N') ? 'Normal' : 'Heroic',
-            name: RAIDS[raidCode] || raidCode,
-          });
-          usedRaids.add(raidKey);
-        }
-      });
-    });
   }
 
-  // Buscar raids sin dificultad (solo si no encontramos ninguna con dificultad)
+  // Si no encontramos raids con los patrones anteriores, buscar solo los códigos de raid
   if (result.raids.length === 0) {
-    const raidOnlyRegex = new RegExp(`\\b(${Object.keys(RAIDS).join('|')})\\b`, 'gi');
-    let raidMatch: RegExpExecArray | null;
-
-    while ((raidMatch = raidOnlyRegex.exec(trimmedNote)) !== null) {
-      const raidCode = raidMatch[1].toUpperCase() as RaidCode;
-
+    const raidCodePattern = new RegExp(`(?:^|[^a-zA-Z])(${raidCodesPattern})(?=$|[^a-zA-Z0-9])`, 'gi');
+    const raidCodeMatches = trimmedNote.matchAll(raidCodePattern);
+    
+    for (const match of raidCodeMatches) {
+      const raidCode = match[0].toUpperCase() as RaidCode;
       if (!usedRaids.has(raidCode)) {
+        // Type assertion to handle the indexing
+        const raidName = raidCode in RAIDS ? RAIDS[raidCode as keyof typeof RAIDS] : raidCode;
         result.raids.push({
           code: raidCode,
           difficultyCode: undefined,
           difficulty: undefined,
-          name: RAIDS[raidCode] || raidCode,
+          name: raidName,
         });
         usedRaids.add(raidCode);
       }
+    }
+  }
 
-      if (raidMatch.index === raidOnlyRegex.lastIndex) {
-        raidOnlyRegex.lastIndex++; // Evitar bucle infinito
+  // Si no encontramos raids aún, intentar con un patrón más flexible
+  if (result.raids.length === 0) {
+    const escapedRaidCodes = allRaidCodes.map(raid => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    const raidPatterns = [
+      // Patrón para 'icc10n' o 'voa25h' (sin espacios)
+      new RegExp(`(${escapedRaidCodes})(\\d+)([NH])`, 'gi'),
+      // Patrón para 'icc 10n' o 'voa 25h' (con espacios)
+      new RegExp(`(${escapedRaidCodes})\\s*(\\d+)([NH])`, 'gi'),
+      // Patrón para solo el código de raid
+      new RegExp(`\\b(${escapedRaidCodes})\\b`, 'gi')
+    ];
+    
+    for (const pattern of raidPatterns) {
+      let match;
+      while ((match = pattern.exec(trimmedNote)) !== null) {
+        const raidCode = match[1]?.toUpperCase() as RaidCode;
+        if (!raidCode) continue;
+        
+        // Type assertion to handle the indexing
+        const raidName = raidCode in RAIDS ? RAIDS[raidCode as keyof typeof RAIDS] : raidCode;
+        
+        // Si es un patrón con dificultad (ej: 'icc10n' o 'icc 10n')
+        if (match[2] && match[3]) {
+          const difficultyNumber = match[2];
+          const difficultyLetter = match[3].toUpperCase();
+          const difficultyCode = `${difficultyNumber}${difficultyLetter}` as DifficultyCode;
+          
+          if (['10N', '10H', '25N', '25H'].includes(difficultyCode)) {
+            const raidKey = `${raidCode}${difficultyCode}`;
+            if (!usedRaids.has(raidKey)) {
+              result.raids.push({
+                code: raidCode,
+                difficultyCode,
+                difficulty: difficultyLetter === 'N' ? 'Normal' : 'Heroic',
+                name: raidName,
+              });
+              usedRaids.add(raidKey);
+            }
+          }
+        } else if (!usedRaids.has(raidCode)) {
+          // Si es solo el código de raid sin dificultad
+          result.raids.push({
+            code: raidCode,
+            difficultyCode: undefined,
+            difficulty: undefined,
+            name: raidName,
+          });
+          usedRaids.add(raidCode);
+        }
+        
+        if (match.index === pattern.lastIndex) {
+          pattern.lastIndex++; // Evitar bucle infinito
+        }
       }
     }
   }
@@ -675,20 +810,33 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
   // Verificar si faltan raids o su dificultad (solo como advertencia, no invalida)
   if (result.raids.length === 0) {
     // Verificar si hay algún código de raid sin dificultad
-    const raidCodes = Object.keys(RAIDS).join('|');
-    const hasRaidWithoutDiff = new RegExp(`\\b(${raidCodes})\\b`, 'i').test(trimmedNote);
-
-    if (hasRaidWithoutDiff) {
+    const raidPatterns = [
+      // Patrones para detectar menciones de raid con o sin dificultad
+      new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodesPattern})(?![a-z0-9])(?:$|\\s|\\)|\\]|\/)`, 'i'),
+      new RegExp(`(${raidCodesPattern})\\s*\\d+[NH]`, 'i'),
+      new RegExp(`(${raidCodesPattern})\\d+[NH]`, 'i'),
+      new RegExp(`(10|25)[NH](${raidCodesPattern})`, 'i')  // Para formato 10Nicc, 25Hvoa
+    ];
+    
+    const hasAnyRaidMention = raidPatterns.some(pattern => pattern.test(trimmedNote));
+    const hasRaidWithDifficulty = new RegExp(`(?:${raidCodesPattern})(?:\\s*\\d+[NH]|\\d+[NH]|(?:10|25)[NH](?=${raidCodesPattern}))`, 'i').test(trimmedNote);
+    
+    if (hasAnyRaidMention && !hasRaidWithDifficulty) {
       // Solo agregar el mensaje de dificultad faltante si no está ya en el array
       if (!missingFields.some((mf) => mf.includes('Dificultad'))) {
         missingFields.push('Dificultad (ej: 10N, 25H)');
       }
-    } else {
-      missingFields.push('Raids que busca/arma (ej: ICC, TOC)');
+    } else if (!hasAnyRaidMention) {
+      // Verificar si hay menciones de raid en el texto sin formato específico
+      const raidMentionPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${allRaidCodes.join('|')})(?=$|[^a-zA-Z0-9])`, 'i');
+      if (!raidMentionPattern.test(trimmedNote)) {
+        missingFields.push('Raids que busca/arma (ej: ICC, TOC)');
+      }
     }
   } else if (result.raids.some((raid) => !raid.difficultyCode)) {
-    // Solo agregar el mensaje de dificultad faltante si no está ya en el array
-    if (!missingFields.some((mf) => mf.includes('Dificultad'))) {
+    // Verificar si hay alguna mención de dificultad en la nota
+    const hasDifficultyMention = /(?:^|\s)(\d+[NH])(?:\s|$)/i.test(trimmedNote);
+    if (!hasDifficultyMention && !missingFields.some((mf) => mf.includes('Dificultad'))) {
       missingFields.push('Dificultad (ej: 10N, 25H)');
     }
   }
@@ -727,23 +875,33 @@ function validatePublicNote(note: string | undefined): PublicNoteValidation {
   }
 
   // 7. Raid que busca
-  const hasAnyRaid = /\b(ICC|TOC|ULD|NAX|OS|RS|EOE|VOA|ONY|MALY|SAP)\b/i.test(trimmedNote);
-  if (!hasAnyRaid) {
+  const raidCodes = Object.keys(RAIDS).map(raid => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  // Buscar cualquier mención de raid, con o sin dificultad
+  const raidPattern = `(?:^|\\s|\\(|\[)(${raidCodes})(?![a-z0-9])(?:$|\\s|\\)|\]|\/|\\d|\\s*\\d*[NH])`;
+  const hasAnyRaid = new RegExp(raidPattern, 'i').test(trimmedNote);
+  // Buscar específicamente patrones como 'icc10n' o 'voa25h'
+  const hasAnyRaidWithNumber = new RegExp(`(?:^|\\s|\\(|\[)(${raidCodes})\\s*\\d+[NH])`, 'i').test(trimmedNote);
+  
+  if (!hasAnyRaid && !hasAnyRaidWithNumber) {
     orderedMissingFields.push('Raids que busca (ej: ICC 25H)');
   } else if (!result.raids || result.raids.length === 0) {
-    orderedMissingFields.push('Formato de raid (ej: ICC 25H)');
+    // Si no se detectaron raids pero hay menciones de raids con números, asumir que el formato es correcto
+    if (!hasAnyRaidWithNumber) {
+      orderedMissingFields.push('Formato de raid (ej: ICC 25H)');
+    }
   } else {
     // Verificar dificultad para cada raid
     const raidsWithoutDifficulty = result.raids.filter((raid) => !raid.difficultyCode);
-    if (raidsWithoutDifficulty.length > 0) {
+    if (raidsWithoutDifficulty.length > 0 && !hasAnyRaidWithNumber) {
       orderedMissingFields.push('Dificultad (ej: 10N, 25H)');
     }
   }
 
   // 8. Raid Leader (opcional, solo si se especifica RL pero no está marcado)
-  const hasRLNotation = /\bRL\b/i.test(trimmedNote);
+  const hasRLNotation = /(?:^|\s)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl|\d*[xX]\s*rl)\b/i.test(trimmedNote);
   if (hasRLNotation && !result.isRaidLeader) {
-    orderedMissingFields.push('RaidLeader (RL) - No se pudo marcar como líder');
+    // Verificar si el formato es válido pero no se pudo marcar
+    orderedMissingFields.push('RaidLeader (RL) - Verificar formato (ej: RL, rl, RaidLeader, 18xrl)');
   }
 
   // Agregar cualquier otro campo faltante que no esté en la lista ordenada
@@ -1057,7 +1215,7 @@ const stats = rosterData.members.reduce(
 
       // Contar profesiones
       if (validation.professions && Array.isArray(validation.professions)) {
-        console.log('Profesiones encontradas en la nota:', validation.professions);
+
         
         // Crear un mapa inverso de nombre a código de profesión
         const nameToCode = Object.entries(PROFESSIONS).reduce((acc, [code, name]) => {
@@ -1067,7 +1225,7 @@ const stats = rosterData.members.reduce(
         
         validation.professions.forEach((prof: any) => {
           const profName = String(prof).trim();
-          console.log('Procesando profesión:', profName);
+
           
           // Buscar el código de la profesión por nombre o usar el valor directamente
           const code = nameToCode[profName.toLowerCase()] || profName;
@@ -1075,14 +1233,14 @@ const stats = rosterData.members.reduce(
           
           // Verificar si el código de profesión es válido
           if (codeUpper in PROFESSIONS) {
-            console.log(`Profesión válida: ${profName} -> ${codeUpper}`);
+
             acc.professions[codeUpper] = (acc.professions[codeUpper] || 0) + 1;
           } else {
-            console.warn(`Profesión no reconocida: ${profName} (código: ${code})`);
+
           }
         });
         
-        console.log('Conteo actual de profesiones:', acc.professions);
+
       }
 
       acc.validNotesCount++;
@@ -1247,7 +1405,7 @@ const totalRaiders = rosterData.members.filter(
       // Inicializar la tabla con los datos
       function initTable() {
         if (!tableBody || !pageInfo) {
-          console.error('No se encontraron elementos del DOM necesarios');
+
           return;
         }
 
@@ -1281,23 +1439,23 @@ const totalRaiders = rosterData.members.filter(
 
             return `
             <tr class="hover:bg-steel-dark transition-colors duration-200 hover:border-accent">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <img src="/images/avatars/class_${className}.jpg" alt="${className}" class="w-8 h-8 rounded-full mr-3 border border-accent/30" onerror="this.src='/images/avatars/default.png'"/>
-                  <div>
-                    <div class="text-sm font-medium text-white">${member.name}</div>
-                    <div class="text-xs text-text-muted/70" style="color: #${classColor}">${className}</div>
+              <td class="px-2 md:px-6 py-4 whitespace-nowrap text-center">
+                <div class="flex items-center sm:flex-row flex-col">
+                  <img src="/images/avatars/class_${className}.jpg" alt="${className}" class="w-8 h-8 rounded-full sm:mr-3 border border-accent/30" onerror="this.src='/images/avatars/default.png'"/>
+                  <div class="flex-grow">
+                    <div class="text-xs" style="color: #${classColor}">${className}</div>
+                    <div class="font-medium text-text-primary">${member.name}</div>
+                    <div class="mt-1">
+                      <span class="px-2 py-0.5 text-xs font-medium rounded-full ${member.rank === 'Guild Master' ? 'bg-yellow-500/20 text-yellow-300' : member.rank === 'Oficial' ? 'bg-purple-500/20 text-purple-300' : 'bg-gray-500/20 text-gray-300'}">
+                        ${member.rank}
+                      </span>
+                    </div>
+                    <!-- Nota real (media prioridad) -->
+                    <div class="w-full text-text-muted/60 text-xs mt-1.5 font-normal break-words whitespace-normal">${member.publicNote}</div>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4">
-                <div class="flex justify-center">
-                  <span class="px-3 py-1.5 text-sm font-medium rounded-full bg-gradient-to-r from-accent/20 to-accent/10 text-accent-light border border-accent/30 shadow-sm">
-                    ${member.rank}
-                  </span>
-                </div>
-              </td>
-              <td class="px-6 py-4 relative overflow-visible">
+              <td class="px-2 md:px-6 py-4 relative overflow-visible">
                 <div class="relative">
                   <div class="flex items-start gap-2">
                     <div class="relative inline-flex items-center">
@@ -1305,7 +1463,6 @@ const totalRaiders = rosterData.members.filter(
                         member.publicNote
                           ? `
                         <div class="space-y-1">
-                          <div class="text-text-muted/70 text-xs">${member.publicNote}</div>
                           ${(() => {
                             const validation = member.noteValidation;
                             if (validation?.isValid) {
@@ -1318,8 +1475,8 @@ const totalRaiders = rosterData.members.filter(
                                   label: validation.mainAlt === 'M' ? 'Main' : 'Alt',
                                   class:
                                     validation.mainAlt === 'M'
-                                      ? 'bg-blue-500/20 text-blue-300'
-                                      : 'bg-purple-500/20 text-purple-300',
+                                      ? 'text-blue-300 font-medium'
+                                      : 'text-purple-300 font-medium',
                                 });
                               }
 
@@ -1331,10 +1488,10 @@ const totalRaiders = rosterData.members.filter(
                                   label: roleName,
                                   class:
                                     validation.role === 'T'
-                                      ? 'bg-blue-500/20 text-blue-300'
+                                      ? 'text-blue-300 font-medium'
                                       : validation.role === 'H'
-                                        ? 'bg-green-500/20 text-green-300'
-                                        : 'bg-red-500/20 text-red-300',
+                                        ? 'text-green-300 font-medium'
+                                        : 'text-red-300 font-medium',
                                 });
                               }
 
@@ -1342,7 +1499,7 @@ const totalRaiders = rosterData.members.filter(
                               if (validation.gearScore) {
                                 formattedInfo.push({
                                   label: `GS ${validation.gearScore}`,
-                                  class: 'bg-amber-500/20 text-amber-300',
+                                  class: 'text-amber-300 font-medium',
                                 });
                               }
 
@@ -1352,7 +1509,7 @@ const totalRaiders = rosterData.members.filter(
                                   roleNamesData[validation.dualRole]?.name || validation.dualRole;
                                 formattedInfo.push({
                                   label: `Dual ${dualRoleName}`,
-                                  class: 'bg-yellow-500/20 text-yellow-300',
+                                  class: 'text-yellow-300 font-medium',
                                 });
                               }
 
@@ -1360,7 +1517,7 @@ const totalRaiders = rosterData.members.filter(
                               if (validation.professions?.length) {
                                 formattedInfo.push({
                                   label: validation.professions.join(' / '),
-                                  class: 'bg-indigo-500/20 text-indigo-300',
+                                  class: 'text-indigo-300 font-medium',
                                 });
                               }
 
@@ -1371,8 +1528,8 @@ const totalRaiders = rosterData.members.filter(
                                   time.replace(/X$/g, 'h').replace(/(\d{2}):(\d{2})X/g, '$1:$2h')
                                 );
                                 formattedInfo.push({
-                                  label: `Online a las: ${formattedSchedules.join(' ')}`,
-                                  class: 'bg-emerald-500/20 text-emerald-300',
+                                  label: `Online a las: ${formattedSchedules.join(' o ')}`,
+                                  class: 'text-emerald-300 font-medium',
                                 });
                               }
 
@@ -1406,10 +1563,10 @@ const totalRaiders = rosterData.members.filter(
                                 if (raidNames.length > 0) {
                                   const isRaidLeader = validation.isRaidLeader;
                                   formattedInfo.push({
-                                    label: `${isRaidLeader ? 'Armo' : 'Busco'}: ${raidNames.join(', ')}`,
+                                    label: `${isRaidLeader ? 'Armo' : 'Busco'}: ${raidNames.join(' o ')}`,
                                     class: isRaidLeader
-                                      ? 'bg-purple-600/30 text-purple-300 border border-purple-500/40'
-                                      : 'bg-purple-500/20 text-purple-300',
+                                      ? 'text-purple-300 font-medium border-b border-purple-500/60 pb-0.5'
+                                      : 'text-purple-300 font-medium',
                                   });
 
                                   // Si es raid leader, añadir etiqueta especial
@@ -1417,7 +1574,7 @@ const totalRaiders = rosterData.members.filter(
                                     formattedInfo.unshift({
                                       label: 'Raid Leader',
                                       class:
-                                        'bg-yellow-500/30 text-yellow-300 border border-yellow-500/40 font-medium',
+                                        'text-yellow-300 font-bold border-b border-yellow-500/60 pb-0.5',
                                     });
                                   }
                                 }
@@ -1428,8 +1585,8 @@ const totalRaiders = rosterData.members.filter(
                                 );
                                 if (validDifficulties.length > 0) {
                                   formattedInfo.push({
-                                    label: `Dificultad: ${validDifficulties.join(', ')}`,
-                                    class: 'bg-indigo-500/20 text-indigo-300',
+                                    label: `Dificultad: ${validDifficulties.join(' o ')}`,
+                                    class: 'text-indigo-300 font-medium',
                                   });
                                 }
                               }
@@ -1439,22 +1596,25 @@ const totalRaiders = rosterData.members.filter(
 
                               // Renderizar las etiquetas formateadas
                               return `
-                                <div class="space-y-1">
-                                  <div class="flex flex-wrap gap-1">
+                                <div class="space-y-1.5">
+                                  <!-- Nota generada (alta prioridad) -->
+                                  <div class="flex flex-wrap gap-1.5">
                                     ${formattedInfo
                                       .map(
                                         (info) =>
-                                          `<span class="px-2 py-0.5 text-xs rounded-full ${info.class}">
-                                        ${info.label}
-                                      </span>`
+                                          `<span class="text-sm font-medium ${info.class}">
+                                            ${info.label}
+                                          </span>`
                                       )
                                       .join('')}
                                   </div>
+                                  
+                                  <!-- Advertencias (baja prioridad) -->
                                   ${
                                     missingFields.length > 0
                                       ? `
-                                    <div class="flex items-start gap-1 text-yellow-400 text-xs mt-1">
-                                      <svg class="w-3 h-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <div class="flex items-start gap-1 text-yellow-500/70 text-[11px] mt-0.5">
+                                      <svg class="w-2.5 h-2.5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                       </svg>
                                       <span>Faltan: ${missingFields.join(', ')}</span>
@@ -1472,17 +1632,20 @@ const totalRaiders = rosterData.members.filter(
                                   : 'Formato inválido';
 
                               return `
-                                <div class="space-y-1">
+                                <div class="space-y-1.5">
+                                  <!-- Mensaje de error (alta prioridad) -->
                                   <div class="flex flex-wrap gap-1">
-                                    <span class="px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300">
+                                    <span class="text-sm font-medium text-red-300">
                                       Formato inválido
                                     </span>
                                   </div>
+                                  
+                                  <!-- Advertencias (baja prioridad) -->
                                   ${
                                     missingFields.length > 0
                                       ? `
-                                    <div class="flex items-start gap-1 text-yellow-400 text-xs mt-1">
-                                      <svg class="w-3 h-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <div class="flex items-start gap-1 text-yellow-500/70 text-[11px] mt-0.5">
+                                      <svg class="w-2.5 h-2.5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                       </svg>
                                       <span>Faltan: ${missingFields.join(', ')}</span>
@@ -1490,7 +1653,6 @@ const totalRaiders = rosterData.members.filter(
                                   `
                                       : ''
                                   }
-                                </div>
                               `;
                             }
                           })()}
@@ -1818,186 +1980,126 @@ const totalRaiders = rosterData.members.filter(
   </script>
 
   <!-- Estadísticas del Roster -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 -pt-2 mb-8">
-    <!-- Total de Miembros y Mains/Alts -->
-    <div
-      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-accent hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between"
-    >
-      <div class="flex items-center mb-2">
-        <h3 class="text-text-muted/90 text-sm font-medium">Miembros Totales</h3>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-2">
+  <!-- Total de Miembros y Mains/Alts -->
+  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+    <div class="flex justify-between items-center">
+      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Miembros Totales</h3>
+      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{totalMembers}</p>
+    </div>
+    <div class="grid grid-cols-2 justify-items-center">
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{mainAltStats.M || 0}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mains</p>
       </div>
-      <p class="text-xl text-center font-bold text-white">{totalMembers}</p>
-      <div class="grid grid-cols-2 gap-4 mt-3 justify-items-center">
-        <div>
-          <p class="text-3xl font-bold text-purple-300">{mainAltStats.M || 0}</p>
-          <p class="text-xs text-text-muted/70">Mains</p>
-        </div>
-        <div>
-          <p class="text-3xl font-bold text-purple-300">{mainAltStats.A || 0}</p>
-          <p class="text-xs text-text-muted/70">Alts</p>
-        </div>
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{mainAltStats.A || 0}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Alts</p>
       </div>
     </div>
+  </div>
 
-    <!-- Distribución de Roles -->
-    <div
-      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-green-500/20 hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between"
-    >
-      <div class="flex mb-2">
-        <h3 class="text-text-muted/90 text-sm font-medium">Roles principales</h3>
+  <!-- Distribución de Roles -->
+  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+    <div class="flex justify-between items-center">
+      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Roles Principales</h3>
+      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}</p>
+    </div>
+    <div class="grid grid-cols-3 gap-1 mt-1">
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.T || 0}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tanks</p>
       </div>
-      <div class="grid grid-cols-3 gap-2">
-        <div class="text-center">
-          <p class="text-3xl font-bold text-blue-400">{roleStats.T || 0}</p>
-          <p class="text-xs text-text-muted/70">Tanks</p>
-        </div>
-        <div class="text-center">
-          <p class="text-3xl font-bold text-green-400">{roleStats.H || 0}</p>
-          <p class="text-xs text-text-muted/70">Healers</p>
-        </div>
-        <div class="text-center">
-          <p class="text-3xl font-bold text-red-400">{roleStats.D || 0}</p>
-          <p class="text-xs text-text-muted/70">DPS</p>
-        </div>
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.H || 0}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Healers</p>
+      </div>
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.D || 0}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">DPS</p>
       </div>
     </div>
+  </div>
 
-    <!-- Combinaciones de Roles Duales -->
-    <div
-      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-blue-500/20 hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between"
-    >
-      <div class="mb-2">
-        <h3 class="text-text-muted/90 text-sm font-medium">Roles dual</h3>
-      </div>
-      <div class="grid grid-cols-3 gap-2">
-        {sortedDualRoles.map(({ combo, label, count, color, textColor }) => (
-          <div class="text-center">
-            <p class={`text-3xl font-bold ${textColor}`}>{count}</p>
-            <p class="text-[10px] text-text-muted/70">{label}</p>
-          </div>
-        ))}
-      </div>
+  <!-- Combinaciones de Roles Duales -->
+  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+    <div class="flex justify-between items-center">
+      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Roles Duales</h3>
+      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
+        {sortedDualRoles.reduce((sum, { count }) => sum + count, 0) || 0}
+      </p>
     </div>
+    <div class="grid grid-cols-3 gap-1 mt-1">
+      {sortedDualRoles.map(({ combo, label, count, textColor }) => (
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{count}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">{label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
 
-    <!-- Gear Score Promedio -->
-    <div class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-green-500/20 hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 shadow-lg flex flex-col justify-between">
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="text-text-muted/90 text-sm font-medium">Gear Score</h3>
-        <span class="text-xs bg-green-500/10 text-green-400 px-2 py-0.5 rounded-full">Prom</span>
-      </div>
-      <div>
-        <p class="text-3xl font-bold text-green-400">
-          {gearScoreStats.avg > 0 ? gearScoreStats.avg.toFixed(1) : 'N/A'}
+  <!-- Gear Score Promedio -->
+  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+    <div class="flex justify-between items-center">
+      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Gear Score</h3>
+      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
+        {gearScoreStats.avg > 0 ? gearScoreStats.avg.toFixed(1) : 'N/A'}
+      </p>
+    </div>
+    <div class="grid grid-cols-2 gap-1 mt-1">
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">
+          {gearScoreStats.max > 0 ? gearScoreStats.max : 'N/A'}
         </p>
-        <div class="flex justify-between text-xs text-text-muted/70 mt-1">
-          <span>Min: {gearScoreStats.min > 0 ? gearScoreStats.min : 'N/A'}</span>
-          <span>Max: {gearScoreStats.max > 0 ? gearScoreStats.max : 'N/A'}</span>
-        </div>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Máx</p>
+      </div>
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">
+          {gearScoreStats.min > 0 ? gearScoreStats.min : 'N/A'}
+        </p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mín</p>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Filtros -->
-  <div
-    class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-steel-light shadow-lg mb-8"
-  >
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="relative">
-        <label for="search" class="block text-sm font-medium text-text-muted/80 mb-2">
-          Buscar por nombre o nota
-        </label>
-        <input
-          type="text"
-          id="search"
-          placeholder="Nombre o nota..."
-          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
-        />
-      </div>
 
-      <div class="relative">
-        <label for="class-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
-          Filtrar por clase
-        </label>
-        <select
-          id="class-filter"
-          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
-        >
-          <option value="">Todas las clases</option>
-          {
-            Object.entries(rosterData.classInfo).map(([key, info]) => (
-              <option value={key} style={`color: #${info.color}`}>
-                {info.name}
-              </option>
-            ))
-          }
-        </select>
-      </div>
-
-      <div class="relative">
-        <label for="rank-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
-          Filtrar por rango
-        </label>
-        <select
-          id="rank-filter"
-          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
-        >
-          <option value="">Todos los rangos</option>
-          {
-            ranks.map((rank) => (
-              <option value={rank} class="text-white">
-                {rank}
-              </option>
-            ))
-          }
-        </select>
-      </div>
-    </div>
-  </div>
 
   <!-- Tabla de miembros -->
   <div
-    class="rounded-xl border border-accent bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm shadow-lg overflow-hidden"
+    class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3"
   >
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-accent">
-        <thead class="bg-steel-darker/80">
+    <div class="overflow-x-auto rounded-t-xl">
+      <table class="min-w-full divide-y divide-accent bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 p-2 sm:p-3">
+        <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
           <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider cursor-pointer" data-sort="name">
-              <div class="flex items-center">
-                Personaje
-                <span class="sort-icon ml-1">↕</span>
+            <th data-column="name" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors" data-sort="name">
+              <div class="flex items-center justify-center">
+                <span class="py-2">Personaje</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3.5 w-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                </svg>
               </div>
             </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider cursor-pointer"
-              data-sort="rank"
-            >
-              <div class="flex items-center">
-                Rango
-                <span class="ml-1 sort-indicator">↕</span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider cursor-pointer"
-              data-sort="publicNote"
-            >
-              <div class="flex items-center">
-                Nota Pública
-                <span class="ml-1 sort-indicator">↕</span>
+            <th data-column="details" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors" data-sort="publicNote">
+              <div class="flex items-center justify-center">
+                <span class="py-2">Detalles</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3.5 w-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                </svg>
               </div>
             </th>
           </tr>
         </thead>
-        <tbody id="roster-table-body" class="divide-y divide-accent bg-steel-darker/50">
+        <tbody id="roster-table-body" class="divide-y divide-accent bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
           <!-- Los miembros se cargarán aquí dinámicamente -->
         </tbody>
       </table>
     </div>
     <!-- Controles de paginación -->
     <div
-      class="px-6 py-4 bg-steel-darker/80 border-t border-accent flex flex-col sm:flex-row items-center justify-between gap-4"
+      class="px-2 md:px-6 py-4 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 flex flex-col sm:flex-row items-center justify-between gap-4"
     >
       <div id="page-info" class="text-text-muted text-sm order-2 sm:order-1">
         Página 1 de 1 (0 miembros)
@@ -2025,27 +2127,79 @@ const totalRaiders = rosterData.members.filter(
         </button>
       </div>
     </div>
+
+    
+  <!-- Filtros -->
+  <div
+  class="p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30"
+>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="relative">
+      <label for="search" class="block text-sm font-medium text-text-muted/80 mb-2">
+        Buscar por nombre o nota
+      </label>
+      <input
+        type="text"
+        id="search"
+        placeholder="Nombre o nota..."
+        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
+      />
+    </div>
+
+    <div class="relative">
+      <label for="class-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+        Filtrar por clase
+      </label>
+      <select
+        id="class-filter"
+        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
+      >
+        <option value="">Todas las clases</option>
+        {
+          Object.entries(rosterData.classInfo).map(([key, info]) => (
+            <option value={key} style={`color: #${info.color}`}>
+              {info.name}
+            </option>
+          ))
+        }
+      </select>
+    </div>
+
+    <div class="relative">
+      <label for="rank-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+        Filtrar por rango
+      </label>
+      <select
+        id="rank-filter"
+        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
+      >
+        <option value="">Todos los rangos</option>
+        {
+          ranks.map((rank) => (
+            <option value={rank} class="text-white">
+              {rank}
+            </option>
+          ))
+        }
+      </select>
+    </div>
+  </div>
+</div>
   </div>
 
   <!-- Sección de estadísticas -->
-  <div class="mt-8">
+  <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
     <h2
-      class="px-4 py-2 text-xl font-medium border-b-2 border-transparent text-text-muted hover:text-white transition-colors duration-200 tab-button"
-      data-tab="stats"
+      class="text-xl font-semibold mb-6 text-center text-amber-200/90 uppercase tracking-wider"
     >
-      Estadísticas
+      Estadísticas del Roster
     </h2>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-3 gap-6">
       <!-- Columna 1: Distribución por Rango -->
-      <div>
-        <div
-          class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent shadow-lg hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300"
-        >
-          <h3
-            class="text-text-muted/90 text-lg font-medium mb-4 text-center uppercase tracking-wider bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent"
-          >
-            Por Rango
-          </h3>
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Por Rango
+        </h3>
           <div class="space-y-3">
             {
               rankDistribution.map(({ name, count, percentage }) => {
@@ -2058,15 +2212,15 @@ const totalRaiders = rosterData.members.filter(
                 else if (name === 'Recluta') colorClass = 'from-gray-400 to-gray-600';
 
                 return (
-                  <div class="space-y-1">
+                  <div class="space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
-                      <span class="text-text-muted">{name}</span>
+                      <span class="text-amber-100/80">{name}</span>
                       <div class="flex items-center">
-                        <span class="text-white font-medium mr-1">{count}</span>
-                        <span class="text-text-muted/70">({percentage}%)</span>
+                        <span class="text-white font-semibold mr-1">{count}</span>
+                        <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
                       </div>
                     </div>
-                    <div class="w-full bg-gray-700/50 rounded-full h-2">
+                    <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
                       <div
                         class="h-full rounded-full bg-gradient-to-r transition-all duration-500 ease-out"
                         class:list={[colorClass]}
@@ -2079,43 +2233,37 @@ const totalRaiders = rosterData.members.filter(
             }
           </div>
         </div>
-      </div>
 
       <!-- Columna 2: Distribución por Clase -->
-      <div>
-        <div
-          class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-green-500/20 shadow-lg hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 h-full"
-        >
-          <h3
-            class="text-text-muted/90 text-lg font-medium mb-4 text-center uppercase tracking-wider bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent"
-          >
-            Por Clase
-          </h3>
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Por Clase
+        </h3>
           <div class="space-y-3">
             {
               classDistribution.map(({ name, count, color: classColor }) => {
                 const percentage = Math.round((count / rosterData.members.length) * 100);
                 return (
-                  <div class="space-y-1">
+                  <div class="space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
                       <div class="flex items-center">
                         <span
-                          class="w-3 h-3 rounded-full mr-2"
+                          class="w-2.5 h-2.5 rounded-full mr-2 border border-amber-900/30"
                           style={`background-color: #${classColor}`}
                         />
-                        <span class="text-text-muted">{name}</span>
+                        <span class="text-amber-100/80">{name}</span>
                       </div>
                       <div class="flex items-center">
-                        <span class="text-white font-medium mr-1">{count}</span>
-                        <span class="text-text-muted/70">({percentage}%)</span>
+                        <span class="text-white font-semibold mr-1">{count}</span>
+                        <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
                       </div>
                     </div>
-                    <div class="w-full bg-gray-700/50 rounded-full h-2">
+                    <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
                       <div
                         class="h-full rounded-full transition-all duration-500 ease-out"
                         style={{
                           width: `${percentage}%`,
-                          background: `linear-gradient(to right, #${classColor}99, #${classColor}ff)`,
+                          background: `linear-gradient(to right, #${classColor}cc, #${classColor}ff)`,
                         }}
                       />
                     </div>
@@ -2125,14 +2273,9 @@ const totalRaiders = rosterData.members.filter(
             }
           </div>
         </div>
-      </div>
 
-      <div
-        class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300 shadow-lg"
-      >
-        <h3
-          class="text-text-muted/90 text-lg font-medium mb-4 text-center uppercase tracking-wider bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent"
-        >
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
           Por Profesión
         </h3>
         <div class="space-y-3">
@@ -2164,21 +2307,21 @@ const totalRaiders = rosterData.members.filter(
                 const colors = colorsMap[code as keyof typeof colorsMap] || { light: '#d1d5db', dark: '#6b7280' };
                 
                 return (
-                  <div class="space-y-1">
+                  <div class="space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
                       <div class="flex items-center">
                         <span
-                          class="w-3 h-3 rounded-full mr-2"
+                          class="w-2.5 h-2.5 rounded-full mr-2 border border-amber-900/30"
                           style={`background-color: ${colors.dark}`}
                         />
-                        <span class="text-text-muted">{profName}</span>
+                        <span class="text-amber-100/80">{profName}</span>
                       </div>
                       <div class="flex items-center">
-                        <span class="text-white font-medium mr-1">{count}</span>
-                        <span class="text-text-muted/70">({percentage}%)</span>
+                        <span class="text-white font-semibold mr-1">{count}</span>
+                        <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
                       </div>
                     </div>
-                    <div class="w-full bg-gray-700/50 rounded-full h-2 overflow-hidden">
+                    <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
                       <div
                         class="h-full rounded-full transition-all duration-500 ease-out"
                         style={{
@@ -2193,7 +2336,6 @@ const totalRaiders = rosterData.members.filter(
           }
         </div>
       </div>
-    </div>
   </div>
 
   <!-- Script para el manejo de pestañas -->

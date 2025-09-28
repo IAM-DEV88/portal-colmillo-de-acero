@@ -62,11 +62,22 @@ export const validatePublicNote = (note: string | undefined): PublicNoteValidati
     result.gearScore = gsValue;
   }
   
-  // 4. Extraer horarios (formato HHX o HH:MMX, con X opcional para compatibilidad)
+  // 4. Extraer horarios (formatos: HHx, HHX, HH:MMx, HH:MMX, HHx-HHx, etc.)
   const hourMatches: string[] = [];
   
-  // Buscar rangos de horario (ej: 20X-23X)
-  const rangeMatches = [...trimmedNote.matchAll(/(\d{1,2})X?\s*-\s*(\d{1,2})X/gi)];
+  // Debug: Log the note being processed
+  const debugNote = trimmedNote.toLowerCase();
+  const debugLeaders = ['stormgrim', 'voidhammer', 'vorthrak'];
+  const isDebugLeader = debugLeaders.some(name => debugNote.includes(name.toLowerCase()));
+  
+  if (isDebugLeader) {
+
+  }
+  
+  // Buscar rangos de horario (ej: 20x-23x, 18h-20h, 18X-20X)
+  const rangeMatches = [
+    ...trimmedNote.matchAll(/(\d{1,2})[xh]?\s*-\s*(\d{1,2})[xh]/gi)
+  ];
   rangeMatches.forEach(match => {
     const startHour = parseInt(match[1], 10);
     const endHour = parseInt(match[2], 10);
@@ -78,8 +89,29 @@ export const validatePublicNote = (note: string | undefined): PublicNoteValidati
     }
   });
   
-  // Buscar horas individuales (que no sean parte de un rango)
-  const individualMatches = [...trimmedNote.matchAll(/(?:^|[\s|])(\d{1,2})(?::(\d{2}))?[Xx](?=[\s|]|$)/g)];
+  // Buscar horas individuales con varios formatos:
+  // - Después de espacio o barra: "18x", "18X", "18 x", "18 X"
+  // - Después de letra de dificultad: "25n18x", "10h20x"
+  // - Con minutos: "18:30x", "18:30X"
+  const timePatterns = [
+    // Formato después de letra de dificultad (ej: 25n18x)
+    /(?:^|[\s|]|[a-zA-Z])(\d{1,2})(?::(\d{2}))?[xX](?=[\s|]|$)/g,
+    // Formato con espacio opcional (ej: 18x, 18 x, 18X, 18 X)
+    /(?:^|[\s|])(\d{1,2})\s*[xX](?=[\s|]|$)/g,
+    // Formato pegado al final (ej: ...18x, ...18X)
+    /(\d{2})[xX](?=[^\d]|$)/g
+  ];
+  
+  const individualMatches: RegExpMatchArray[] = [];
+  for (const pattern of timePatterns) {
+    const matches = [...trimmedNote.matchAll(pattern)];
+    individualMatches.push(...matches);
+  }
+  
+  if (isDebugLeader) {
+
+  }
+  
   individualMatches.forEach(match => {
     const hour = parseInt(match[1], 10);
     const minutes = match[2] ? parseInt(match[2], 10) : 0;
@@ -97,30 +129,48 @@ export const validatePublicNote = (note: string | undefined): PublicNoteValidati
   }
   
   // 5. Extraer raids y dificultades
-  // Primero buscamos el formato con espacio: "ICC 25H" o "ULD 10N"
-  let raidMatches = [...trimmedNote.matchAll(/(ICC|TOC|ULD|NAX|OS|VOA|EOE|ONY|RS)\s+(10N|25N|10H|25H|H)/gi)];
+  // Primero buscamos el formato con múltiples dificultades: "ICC 10n 25n" o "ICC10n25n"
+  let raidMatches: Array<[string, string, string?]> = [];
   
-  // Si no encontramos en ese formato, buscamos el formato pegado: "ICC25H" o "ULD10N"
+  // Patrón para capturar raid con múltiples dificultades (ej: "ICC 10n 25n" o "ICC10n25n")
+  const multiDifficultyPattern = /(ICC|TOC|ULD|NAX|OS|VOA|EOE|ONY|RS)(?:\s*)((?:\d+[NHnh]\s*)+)/gi;
+  let match;
+  
+  while ((match = multiDifficultyPattern.exec(trimmedNote)) !== null) {
+    const raidCode = match[1].toUpperCase();
+    const difficulties = match[2].match(/\d+[NHnh]/gi) || [];
+    
+    for (const diff of difficulties) {
+      raidMatches.push([raidCode, diff.toUpperCase()]);
+    }
+  }
+  
+  // Si no encontramos en el formato múltiple, buscamos formatos individuales
   if (raidMatches.length === 0) {
-    raidMatches = [...trimmedNote.matchAll(/(ICC|TOC|ULD|NAX|OS|VOA|EOE|ONY|RS)(10N|25N|10H|25H|H)/gi)];
+    // Buscar formato con espacio: "ICC 25H" o "ULD 10N"
+    const spaceFormat = [...trimmedNote.matchAll(/(ICC|TOC|ULD|NAX|OS|VOA|EOE|ONY|RS)\s+(10N|25N|10H|25H|H)/gi)];
+    if (spaceFormat.length > 0) {
+      raidMatches = spaceFormat.map(m => [m[1], m[2]]);
+    } else {
+      // Buscar formato pegado: "ICC25H" o "ULD10N"
+      const attachedFormat = [...trimmedNote.matchAll(/(ICC|TOC|ULD|NAX|OS|VOA|EOE|ONY|RS)(10N|25N|10H|25H|H)/gi)];
+      raidMatches = attachedFormat.map(m => [m[1], m[2]]);
+    }
   }
   
   if (raidMatches.length > 0) {
     const raids: RaidInfo[] = [];
     
-    for (const match of raidMatches) {
-      const raidCode = match[1].toUpperCase();
-      const difficultyCode = match[2]?.toUpperCase();
-      
+    for (const [raidCode, difficultyCode] of raidMatches) {
       if (raidCode in RAIDS) {
         const raidKey = raidCode as RaidCode;
-        const diffKey = difficultyCode as DifficultyCode | undefined;
+        const diffKey = difficultyCode as DifficultyCode;
         
         raids.push({
           code: raidKey,
           name: RAIDS[raidKey],
           difficultyCode: diffKey,
-          difficulty: diffKey ? DIFFICULTIES[diffKey] : undefined
+          difficulty: DIFFICULTIES[diffKey as keyof typeof DIFFICULTIES]
         });
       }
     }
