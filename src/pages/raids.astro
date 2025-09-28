@@ -1,0 +1,886 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import rosterJson from '../data/roster.json';
+import { validatePublicNote } from '../utils/rosterUtils';
+import type { RaidInfo } from '../types/roster';
+
+// Define the roster item type
+interface RosterItem {
+  name: string;
+  class: string;
+  publicNote?: string;
+  rank: string;
+  officerNote?: string;
+  [key: string]: any;
+}
+
+// Type the roster data
+const rosterData: RosterItem[] = Array.isArray(rosterJson) ? rosterJson : [];
+
+// Define types for our data
+interface RaidLeader {
+  name: string;
+  class: string;
+  publicNote: string;
+  isRaidLeader: boolean;
+  raids: Array<{
+    code: string;
+    difficultyCode?: string;
+    difficulty?: string;
+    name: string;
+  }>;
+  schedule: string[];
+  hasSchedule: boolean;
+  hasRaids: boolean;
+  icon: string;
+}
+
+// Type for roster data that could be either an array or an object with members
+interface RosterData {
+  members?: Array<{
+    name: string;
+    class: string;
+    publicNote?: string;
+    rank: string;
+    [key: string]: any;
+  }>;
+  [key: string]: any;
+}
+
+interface RaidStats {
+  raids: Record<string, number>;
+  difficulties: Record<string, number>;
+  schedules: Record<string, number>;
+}
+
+// Format class name for file paths
+const formatClassName = (className: string): string => {
+  return className
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/\s+/g, '_'); // Replace spaces with underscores
+};
+
+// Process roster data to find raid leaders with raids and schedules
+const raidLeaders: RaidLeader[] = [];
+const potentialLeaders: { name: string; reason: string }[] = [];
+
+// Use the typed roster data
+const members = rosterData;
+
+const debugLeaders = ['Stormgrim', 'Voidhammer', 'Vorthrak'];
+
+for (const member of members) {
+  try {
+    const validation = validatePublicNote(member.publicNote || '');
+    const hasSchedule = (validation.schedules && validation.schedules.length > 0) || false;
+    const hasRaids = (validation.raids && validation.raids.length > 0) || false;
+    const isRaidLeader =
+      validation.isRaidLeader ||
+      (hasRaids && hasSchedule) ||
+      (hasRaids && member.publicNote?.toLowerCase().includes('rl'));
+
+    if (isRaidLeader || hasRaids || hasSchedule) {
+      if (hasRaids && hasSchedule) {
+        raidLeaders.push({
+          name: member.name,
+          class: member.class,
+          publicNote: member.publicNote || '',
+          isRaidLeader: Boolean(isRaidLeader),
+          raids: validation.raids || [],
+          schedule: validation.schedules || [],
+          hasSchedule,
+          hasRaids,
+          icon: formatClassName(member.class),
+        });
+      } else if (hasRaids) {
+        potentialLeaders.push({
+          name: member.name,
+          reason: `Tiene raids pero le falta horario: ${validation.raids?.map((r) => r.code).join(', ')}`,
+        });
+      } else if (hasSchedule) {
+        potentialLeaders.push({
+          name: member.name,
+          reason: `Tiene horario (${validation.schedules?.join(', ')}) pero no tiene raids definidos`,
+        });
+      }
+    }
+  } catch (error) {}
+}
+
+// Calculate total raids per week based on schedules
+const totalRaidsPerWeek = raidLeaders.reduce((total, leader) => {
+  // Count each schedule time as one raid instance
+  return total + ((leader.schedule && leader.schedule.length) || 0);
+}, 0);
+
+// Get unique raids and difficulties for filters
+const allRaids = Array.from(
+  new Set(
+    raidLeaders.flatMap((member) => (member.raids || []).map((raid) => raid.code).filter(Boolean))
+  )
+).sort() as string[];
+
+const allDifficulties = Array.from(
+  new Set(
+    raidLeaders.flatMap((member) =>
+      (member.raids || []).map((raid) => raid.difficultyCode).filter(Boolean)
+    )
+  )
+).sort() as string[];
+
+// Statistics
+const raidStats = raidLeaders.reduce<RaidStats>(
+  (acc, member) => {
+    // Track unique raids and difficulties per member
+    const memberRaids = new Set<string>();
+    const memberDifficulties = new Set<string>();
+
+    member.raids?.forEach((raid: { code: string; difficultyCode?: string }) => {
+      // Raid statistics (count each raid code only once per member)
+      if (raid.code) {
+        memberRaids.add(raid.code);
+      }
+
+      // Track unique difficulties per member
+      const difficulty = raid.difficultyCode || 'Unknown';
+      if (difficulty) {
+        memberDifficulties.add(difficulty);
+      }
+    });
+
+    // Add each unique raid code once for this member
+    memberRaids.forEach((raidCode) => {
+      acc.raids[raidCode] = (acc.raids[raidCode] || 0) + 1;
+    });
+
+    // Add each unique difficulty once for this member
+    memberDifficulties.forEach((difficulty) => {
+      acc.difficulties[difficulty] = (acc.difficulties[difficulty] || 0) + 1;
+    });
+
+    // Schedule statistics (count each schedule time only once per member)
+    if (member.schedule) {
+      const uniqueTimes = new Set<string>();
+      member.schedule.forEach((time: string) => {
+        if (time) {
+          uniqueTimes.add(time);
+        }
+      });
+      uniqueTimes.forEach((time) => {
+        acc.schedules[time] = (acc.schedules[time] || 0) + 1;
+      });
+    }
+
+    return acc;
+  },
+  { raids: {}, difficulties: {}, schedules: {} }
+);
+
+// Sort statistics with proper type assertions
+const sortedRaidStats = (Object.entries(raidStats.raids) as [string, number][]).sort(
+  (a, b) => b[1] - a[1]
+);
+
+const sortedDifficultyStats = (Object.entries(raidStats.difficulties) as [string, number][]).sort(
+  (a, b) => b[1] - a[1]
+);
+
+const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, number][]).sort(
+  (a, b) => b[1] - a[1]
+);
+---
+
+<Layout title="Líderes de Raid">
+  <div class="mx-auto animate-fade-in">
+    <!-- Estadísticas Principales -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 mt-4">
+      <!-- Total de Líderes -->
+      <div
+        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-accent shadow-lg hover:shadow-accent/10 hover:-translate-y-1 transition-all duration-300"
+      >
+        <div class="flex flex-col items-center">
+          <div class="p-3 rounded-lg text-accent">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-3xl font-bold text-white">{raidLeaders.length}</p>
+          <p class="text-xs text-white font-bold">Líderes Activos</p>
+        </div>
+      </div>
+
+      <!-- Total de Raids -->
+      <div
+        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-green-500/20 shadow-lg hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300"
+      >
+        <div class="flex flex-col items-center">
+          <div class="p-3 rounded-lg text-green-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-3xl font-bold text-green-400">{totalRaidsPerWeek}</p>
+          <p class="text-xs text-white font-bold">Raid Semanales</p>
+        </div>
+      </div>
+
+      <!-- Dificultades Únicas -->
+      <div
+        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-blue-500/20 shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300"
+      >
+        <div class="flex flex-col items-center">
+          <div class="p-3 rounded-lg text-blue-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <p class="text-3xl font-bold text-blue-400">{allDifficulties.length}</p>
+          <p class="text-xs text-white font-bold">Dificultades</p>
+        </div>
+      </div>
+
+      <!-- Bandas Únicas -->
+      <div
+        class="bg-gradient-to-br from-steel-dark/60 to-steel-darker/60 backdrop-blur-sm p-6 rounded-xl border border-purple-500/20 shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1 transition-all duration-300"
+      >
+        <div class="flex flex-col items-center">
+          <div class="p-3 rounded-lg text-purple-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-3xl font-bold text-purple-400">{allRaids.length}</p>
+          <p class="text-xs text-white font-bold">Bandas Activas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Líderes de Raid -->
+  <div
+    class="rounded-xl border border-accent bg-gradient-to-br from-steel-dark to-steel-darker backdrop-blur-sm shadow-lg overflow-hidden animate-fade-in [animation-delay:100ms] opacity-0 [animation-fill-mode:forwards]"
+  >
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-accent">
+        <thead class="bg-steel-darker/80">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-text-muted/90 uppercase tracking-wider"
+              >Raids de la hermandad</th
+            >
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-accent bg-steel-darker/50">
+          {
+            raidLeaders.map((leader, index) => {
+              // Get unique difficulties, ensure valid format (10N, 25N, 10H, 25H)
+              const difficulties = [
+                ...new Set(
+                  leader.raids
+                    .filter(
+                      (raid): raid is RaidInfo & { difficultyCode: string } =>
+                        !!raid.difficultyCode && /^\d+[NH]$/i.test(raid.difficultyCode)
+                    )
+                    .map((raid) => raid.difficultyCode.toUpperCase())
+                    .sort() // Ordenar por dificultad
+                ),
+              ];
+
+              return (
+                <tr
+                  class="hover:bg-steel-dark transition-colors duration-200 hover:border-accent"
+                  data-name={leader.name.toLowerCase()}
+                  data-raids={leader.raids
+                    .map((r) => `${r.code}${r.difficultyCode}`)
+                    .join(' ')
+                    .toLowerCase()}
+                >
+                  <td class="px-6 py-4">
+                    <div class="flex items-start">
+                      <div class="flex-shrink-0 h-10 w-10 rounded-full bg-steel-darker/80 border border-accent/20 flex items-center justify-center shadow-inner overflow-hidden mr-3">
+                        <img
+                          src={`/images/avatars/class_${leader.class}.jpg`}
+                          alt={leader.class}
+                          class="h-8 w-8 rounded-full object-cover"
+                          onerror="this.onerror=null; this.src='/images/class_default.jpg'"
+                        />
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <div class="flex flex-col">
+                          <div class="text-sm font-medium text-white mr-2">{leader.name}</div>
+                          <div
+                            class="text-xs"
+                            style={`color: #${
+                              leader.class === 'Guerrero'
+                                ? 'C79C6E'
+                                : leader.class === 'Paladín'
+                                  ? 'F58CBA'
+                                  : leader.class === 'Cazador'
+                                    ? 'ABD473'
+                                    : leader.class === 'Pícaro'
+                                      ? 'FFF569'
+                                      : leader.class === 'Sacerdote'
+                                        ? 'FFFFFF'
+                                        : leader.class === 'Caballero de la Muerte'
+                                          ? 'C41F3B'
+                                          : leader.class === 'Chamán'
+                                            ? '0070DE'
+                                            : leader.class === 'Mago'
+                                              ? '69CCF0'
+                                              : leader.class === 'Brujo'
+                                                ? '9482C9'
+                                                : leader.class === 'Monje'
+                                                  ? '00FF96'
+                                                  : leader.class === 'Druida'
+                                                    ? 'FF7D0A'
+                                                    : leader.class === 'Cazador de demonios'
+                                                      ? 'A330C9'
+                                                      : '9D9D9D' // Color por defecto
+                            }`}
+                          >
+                            {leader.class}
+                          </div>
+                          <div class="mt-1.5 text-xs text-text-muted/90 flex flex-wrap gap-1 px-2 py-1 rounded-md border border-accent">
+                            {/* Raids */} Arma 
+                            {Array.from(new Set(leader.raids.map((r) => r.code))).map(
+                              (raidCode: string, index, array) => (
+                                <>
+                                  <span class="font-medium text-accent">{raidCode}</span>
+                                  {index < array.length - 1 && <span class="text-text-muted/60"> o </span>}
+                                </>
+                              )
+                            )}
+
+                            <span class="text-text-muted/60">•</span>
+
+                            {/* Dificultades */}
+                            {difficulties.length > 0 ? (
+                              <>
+                                {difficulties.map((diff, index) => {
+                                  const difficultyColors = {
+                                    '10N': 'text-blue-400',
+                                    '25N': 'text-purple-400',
+                                    '25H': 'text-red-400',
+                                    '10H': 'text-yellow-400',
+                                  } as const;
+                                  type DifficultyKey = keyof typeof difficultyColors;
+                                  const color =
+                                    difficultyColors[diff as DifficultyKey] || 'text-text-muted';
+                                  return (
+                                    <>
+                                      <span class={`font-medium ${color}`}>{diff}</span>
+                                      {index < difficulties.length - 1 && <span class="text-text-muted/60"> o </span>}
+                                    </>
+                                  );
+                                })}
+                              </>
+                            ) : (
+                              <span class="text-text-muted/70">Sin dificultad</span>
+                            )}
+
+                            <span class="text-text-muted/60">•</span>
+
+                            {/* Horarios */}
+                            {leader.schedule?.length > 0 ? (
+                              <>
+                                <span class="flex items-center">
+                                  <svg
+                                    class="w-3 h-3 mr-1 text-green-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                  </svg>
+                                  {leader.schedule.map((time, i) => {
+                                    const formattedTime = time
+                                      .replace(/X$/i, 'h')
+                                      .replace(/(\d{2})(\d{2})X/i, '$1:$2h');
+                                    return (
+                                      <span>
+                                        {i > 0 && <span class="text-text-muted/60">, </span>}
+                                        <span class="text-green-300 font-medium">
+                                         A las {formattedTime} hora server
+                                        </span>
+                                      </span>
+                                    );
+                                  })}
+                                </span>
+                              </>
+                            ) : (
+                              <span class="text-text-muted/70">Sin horario</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+    <div
+      class="px-6 py-4 bg-steel-darker/80 border-t border-accent flex flex-col sm:flex-row items-center justify-between gap-4"
+    >
+      <div class="text-sm text-text-muted/70">
+        Página <span id="currentPage" class="font-medium text-white">1</span> de
+        <span id="totalPages" class="font-medium text-white">1</span>
+        <span class="hidden sm:inline"
+          >(<span id="resultsCount" class="font-medium text-white">0</span> líderes)</span
+        >
+      </div>
+      <div class="flex items-center space-x-1">
+        <button
+          id="prevPage"
+          class="px-2 py-1 rounded-md border border-accent/30 bg-steel-darker/50 text-text-muted hover:bg-accent/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          title="Página anterior"
+          disabled
+        >
+          &lt;
+        </button>
+        <div id="pageNumbers" class="flex items-center space-x-1">
+          <!-- Page numbers will be inserted here by JavaScript -->
+        </div>
+        <button
+          id="nextPage"
+          class="px-2 py-1 rounded-md border border-accent/30 bg-steel-darker/50 text-text-muted hover:bg-accent/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          title="Página siguiente"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Búsqueda por Nombre -->
+        <div>
+          <label for="searchName" class="block text-sm font-medium text-text-muted/80 mb-2"
+            >Buscar por Nombre</label
+          >
+          <input
+            type="text"
+            id="searchName"
+            placeholder="Escribe un nombre..."
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
+          />
+        </div>
+
+        <!-- Filtro por Raid -->
+        <div>
+          <label for="filterRaid" class="block text-sm font-medium text-text-muted/80 mb-2"
+            >Filtrar por Raid</label
+          >
+          <select
+            id="filterRaid"
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200 appearance-none"
+          >
+            <option value="" selected>Todas las Raids</option>
+            {
+              allRaids.map((raid) => (
+                <option value={raid.toLowerCase()} class="bg-steel-darker text-white">
+                  {raid}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+
+        <!-- Filtro por Dificultad -->
+        <div>
+          <label for="filterDifficulty" class="block text-sm font-medium text-text-muted/80 mb-2"
+            >Filtrar por Dificultad</label
+          >
+          <select
+            id="filterDifficulty"
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200 appearance-none"
+          >
+            <option value="" selected>Todas las Dificultades</option>
+            {
+              allDifficulties.map((difficulty) => (
+                <option value={difficulty.toLowerCase()} class="bg-steel-darker text-white">
+                  {difficulty}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas Detalladas -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12 mt-8">
+    <!-- Bandas Populares - Versión Mejorada -->
+    <div
+      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-accent shadow-lg"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-white">Bandas</h3>
+        <span class="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full"
+          >{sortedRaidStats.length} bandas</span
+        >
+      </div>
+      <div class="space-y-2">
+        {
+          sortedRaidStats.map(([raid, count]) => {
+            const percentage = Math.round((count / raidLeaders.length) * 100);
+            return (
+              <div class="group hover:bg-steel-darker/30 transition-colors duration-200 rounded-lg p-2">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-text-muted/90 font-medium">{raid}</span>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-xs text-text-muted/70 group-hover:text-white transition-colors">
+                      {count} líderes
+                    </span>
+                    <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full">
+                      {percentage}%
+                    </span>
+                  </div>
+                </div>
+                <div class="w-full bg-steel-darker/50 rounded-full h-1.5 mt-1.5">
+                  <div
+                    class="bg-gradient-to-r from-accent to-accent/80 h-1.5 rounded-full"
+                    style={`width: ${percentage}%;`}
+                  />
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+
+    <!-- Dificultades - Versión Mejorada -->
+    <div
+      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-green-500/20 shadow-lg"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-white">Dificultades</h3>
+        <span class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full"
+          >{sortedDifficultyStats.length} tipos</span
+        >
+      </div>
+      <div class="space-y-2">
+        {
+          sortedDifficultyStats.map(([difficulty, count]) => {
+            const difficultyColors = {
+              '10N': 'from-blue-500 to-blue-400',
+              '25N': 'from-purple-500 to-purple-400',
+              '10H': 'from-yellow-500 to-yellow-400',
+              '25H': 'from-red-500 to-red-400',
+              Unknown: 'from-gray-500 to-gray-400',
+            };
+            const gradient =
+              difficultyColors[difficulty as keyof typeof difficultyColors] ||
+              'from-accent to-accent/80';
+            const percentage = Math.round((count / raidLeaders.length) * 100);
+
+            return (
+              <div class="group hover:bg-steel-darker/30 transition-colors duration-200 rounded-lg p-2">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-text-muted/90 font-medium">{difficulty}</span>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-xs text-text-muted/70 group-hover:text-white transition-colors">
+                      {count} líderes
+                    </span>
+                    <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full">
+                      {percentage}%
+                    </span>
+                  </div>
+                </div>
+                <div class="w-full bg-steel-darker/50 rounded-full h-1.5 mt-1.5">
+                  <div
+                    class={`bg-gradient-to-r ${gradient} h-1.5 rounded-full`}
+                    style={`width: ${percentage}%;`}
+                  />
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+
+    <!-- Horarios Populares - Versión Compacta -->
+    <div
+      class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-4 rounded-xl border border-blue-500/20 shadow-lg mb-8"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-white">Horarios Populares</h3>
+        <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full"
+          >{sortedScheduleStats.length} horarios</span
+        >
+      </div>
+      <div class="space-y-2">
+        {
+          sortedScheduleStats.map(([time, count]) => {
+            const percentage = Math.round((count / raidLeaders.length) * 100);
+            return (
+              <div class="group hover:bg-steel-darker/30 transition-colors duration-200 rounded-lg p-2">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-text-muted/90 font-medium">{time}</span>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-xs text-text-muted/70 group-hover:text-white transition-colors">
+                      {count} líderes
+                    </span>
+                    <span class="text-xs bg-green-500/10 text-green-400 px-2 py-0.5 rounded-full">
+                      {percentage}%
+                    </span>
+                  </div>
+                </div>
+                <div class="w-full bg-steel-darker/50 rounded-full h-1.5 mt-1.5">
+                  <div
+                    class="bg-gradient-to-r from-green-500 to-green-400 h-1.5 rounded-full"
+                    style={`width: ${percentage}%;`}
+                  />
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Obtener referencias a los elementos del DOM
+    const searchName = document.getElementById('searchName') as HTMLInputElement;
+    const filterRaid = document.getElementById('filterRaid') as HTMLSelectElement;
+    const filterDifficulty = document.getElementById('filterDifficulty') as HTMLSelectElement;
+    const resultsCount = document.getElementById('resultsCount') as HTMLSpanElement;
+    const currentPageSpan = document.getElementById('currentPage') as HTMLSpanElement;
+    const totalPagesSpan = document.getElementById('totalPages') as HTMLSpanElement;
+    const prevPageBtn = document.getElementById('prevPage') as HTMLButtonElement;
+    const nextPageBtn = document.getElementById('nextPage') as HTMLButtonElement;
+    const pageNumbersContainer = document.getElementById('pageNumbers') as HTMLDivElement;
+
+    // Obtener todas las filas de la tabla
+    const allRows = Array.from(document.querySelectorAll('tbody tr'));
+
+    // Estado de la paginación
+    let currentPage = 1;
+    const rowsPerPage = 5; // 5 filas por página
+    let filteredRows = [...allRows];
+    let totalPages = 1;
+
+    // Función para actualizar los números de página
+    const updatePageNumbers = () => {
+      pageNumbersContainer.innerHTML = '';
+
+      // Mostrar máximo 5 números de página a la vez
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, startPage + 4);
+
+      // Ajustar si estamos cerca del final
+      if (endPage - startPage < 4 && startPage > 1) {
+        startPage = Math.max(1, endPage - 4);
+      }
+
+      // Botón para la primera página si es necesario
+      if (startPage > 1) {
+        const firstPageBtn = document.createElement('button');
+        firstPageBtn.textContent = '1';
+        firstPageBtn.className = `px-2 py-1 rounded-md ${1 === currentPage ? 'bg-accent text-white' : 'bg-steel-darker/50 text-text-muted hover:bg-accent/10'}`;
+        firstPageBtn.addEventListener('click', () => goToPage(1));
+        pageNumbersContainer.appendChild(firstPageBtn);
+
+        if (startPage > 2) {
+          const ellipsis = document.createElement('span');
+          ellipsis.textContent = '...';
+          ellipsis.className = 'px-1 text-text-muted/50';
+          pageNumbersContainer.appendChild(ellipsis);
+        }
+      }
+
+      // Números de página
+      for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i.toString();
+        pageBtn.className = `px-2 py-1 rounded-md ${i === currentPage ? 'bg-accent text-white' : 'bg-steel-darker/50 text-text-muted hover:bg-accent/10'}`;
+        pageBtn.addEventListener('click', () => goToPage(i));
+        pageNumbersContainer.appendChild(pageBtn);
+      }
+
+      // Botón para la última página si es necesario
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const ellipsis = document.createElement('span');
+          ellipsis.textContent = '...';
+          ellipsis.className = 'px-1 text-text-muted/50';
+          pageNumbersContainer.appendChild(ellipsis);
+        }
+
+        const lastPageBtn = document.createElement('button');
+        lastPageBtn.textContent = totalPages.toString();
+        lastPageBtn.className = `px-2 py-1 rounded-md ${totalPages === currentPage ? 'bg-accent text-white' : 'bg-steel-darker/50 text-text-muted hover:bg-accent/10'}`;
+        lastPageBtn.addEventListener('click', () => goToPage(totalPages));
+        pageNumbersContainer.appendChild(lastPageBtn);
+      }
+    };
+
+    // Función para ir a una página específica
+    const goToPage = (page: number) => {
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        updateTable();
+      }
+    };
+
+    // Función para actualizar la visualización de la tabla
+    const updateTable = () => {
+      // Calcular índices para la paginación
+      const startIndex = (currentPage - 1) * rowsPerPage;
+      const endIndex = startIndex + rowsPerPage;
+      const rowsToShow = filteredRows.slice(startIndex, endIndex);
+
+      // Ocultar todas las filas primero
+      allRows.forEach((row) => {
+        row.style.display = 'none';
+      });
+
+      // Mostrar solo las filas de la página actual
+      rowsToShow.forEach((row) => {
+        if (row) row.style.display = '';
+      });
+
+      // Actualizar contadores y controles de paginación
+      totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
+      resultsCount.textContent = filteredRows.length.toString();
+      totalPagesSpan.textContent = totalPages.toString();
+
+      // Asegurarse de que la página actual no sea mayor que el número total de páginas
+      if (currentPage > totalPages && totalPages > 0) {
+        currentPage = totalPages;
+        updateTable();
+        return;
+      }
+
+      // Actualizar estado de los botones de paginación
+      prevPageBtn.disabled = currentPage === 1;
+      nextPageBtn.disabled = currentPage >= totalPages || totalPages === 0;
+
+      currentPageSpan.textContent = currentPage.toString();
+
+      // Actualizar los números de página
+      updatePageNumbers();
+    };
+
+    // Función para aplicar los filtros
+    const applyFilters = () => {
+      const nameQuery = searchName.value.trim().toLowerCase();
+      const raidQuery = filterRaid.value.toLowerCase();
+      const difficultyQuery = filterDifficulty.value.toLowerCase();
+
+      filteredRows = allRows.filter((row) => {
+        const name = row.querySelector('td:first-child .text-sm')?.textContent?.toLowerCase() || '';
+        const raids = Array.from(row.querySelectorAll('td:nth-child(2) span')).map(
+          (span) => span.getAttribute('data-raid') || ''
+        );
+        const difficulties = Array.from(row.querySelectorAll('td:nth-child(3) span')).map(
+          (span) => span.textContent?.toLowerCase() || ''
+        );
+
+        // Aplicar filtros
+        const nameMatch = name.includes(nameQuery);
+        const raidMatch = !raidQuery || raids.some((raid) => raid.includes(raidQuery));
+        const difficultyMatch =
+          !difficultyQuery || difficulties.some((diff) => diff.includes(difficultyQuery));
+
+        return nameMatch && raidMatch && difficultyMatch;
+      });
+
+      // Resetear a la primera página al aplicar nuevos filtros
+      currentPage = 1;
+      updateTable();
+    };
+
+    // Manejadores de eventos
+    searchName.addEventListener('input', applyFilters);
+    filterRaid.addEventListener('change', applyFilters);
+    filterDifficulty.addEventListener('change', applyFilters);
+
+    prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
+    nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+    // Inicializar la tabla
+    updateTable();
+  });
+</script>
+
+<style>
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #2d3748;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #718096;
+  }
+</style>

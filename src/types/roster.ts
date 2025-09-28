@@ -28,8 +28,8 @@ export interface PublicNoteValidation {
   isRaidLeader: boolean;
   hasSchedule: boolean;
   hasRaids: boolean;
-  missingFields?: string[];
   error?: string;
+  missingFields?: string[];
 }
 
 export interface ClassInfo {
