@@ -1,25 +1,48 @@
 ---
 import Layout from '../components/layout/Layout.astro';
+import AddonGallery from '../components/index/AddonGallery.astro';
+import ImageComponent from '@/components/index/ImageComponent.astro';
 ---
 
 <Layout title="Inicio">
   <!-- Main Container -->
   <main class="overflow-x-hidden min-h-screen w-full">
     <!-- Main Content -->
-    <div class="relative flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 w-full max-w-full mx-auto">
+    <div
+      class="relative flex flex-col items-center justify-center w-full max-w-full mx-auto"
+    >
       <!-- Header -->
-      <header class="text-center mb-12 animate-fade-in">
-        <h1 class="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-title tracking-wider">
+      <header class="text-center animate-fade-in">
+        <h1
+          class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-title tracking-wider"
+        >
           BIENVENIDOS
         </h1>
-        <div class="w-48 h-0.5 bg-gradient-to-r from-amber-900/0 via-amber-500/80 to-amber-900/0 mx-auto my-6"></div>
+        <div
+          class="w-48 h-0.5 bg-gradient-to-r from-amber-900/0 via-amber-500/80 to-amber-900/0 mx-auto my-6"
+        >
+        </div>
+        <div
+          class="relative mb-4 animate-fade-in-1"
+          style="animation-delay: 0.3s"
+          data-astro-cid-wuxc42xx=""
+        >
+          <img
+            src="images/logo.png"
+            alt="Raid Dominion"
+            width="280"
+            height="auto"
+            class="drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+            data-astro-cid-wuxc42xx=""
+          />
+        </div>
       </header>
 
       <!-- Navigation Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
         <!-- Roster Card -->
-        <a 
-          href="/roster" 
+        <a
+          href="/roster"
           class="relative group bg-gray-900/60 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 transition-all duration-300 hover:border-amber-800/50 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-1 overflow-hidden animate-fade-in opacity-0"
           style="animation-delay: 0.2s;"
         >
@@ -29,18 +52,25 @@ import Layout from '../components/layout/Layout.astro';
               <i class="fas fa-users"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">ROSTER</h3>
-            <p class="text-amber-100/70 text-sm mb-4">Conoce a los miembros de nuestra hermandad y sus roles</p>
-            <div class="mt-4 text-xs text-amber-400 flex items-center group-hover:text-amber-300 transition-colors">
+            <p class="text-amber-100/70 text-sm mb-4">
+              Conoce a los miembros de nuestra hermandad y sus roles
+            </p>
+            <div
+              class="mt-4 text-xs text-amber-400 flex items-center group-hover:text-amber-300 transition-colors"
+            >
               <span>VER MÁS</span>
               <i class="fas fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
             </div>
           </div>
-          <div class="absolute inset-0 border-2 border-transparent group-hover:border-amber-500/20 rounded-xl transition-all duration-300 pointer-events-none"></div>
+          <div
+            class="absolute inset-0 border-2 border-transparent group-hover:border-amber-500/20 rounded-xl transition-all duration-300 pointer-events-none"
+          >
+          </div>
         </a>
 
         <!-- Raids Card -->
-        <a 
-          href="/raids" 
+        <a
+          href="/raids"
           class="relative group bg-gray-900/60 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 transition-all duration-300 hover:border-amber-800/50 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-1 overflow-hidden animate-fade-in opacity-0"
           style="animation-delay: 0.4s;"
         >
@@ -50,18 +80,25 @@ import Layout from '../components/layout/Layout.astro';
               <i class="fas fa-dungeon"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">RAIDS</h3>
-            <p class="text-amber-100/70 text-sm mb-4">Horarios, líderes y progreso de incursiones</p>
-            <div class="mt-4 text-xs text-amber-400 flex items-center group-hover:text-amber-300 transition-colors">
+            <p class="text-amber-100/70 text-sm mb-4">
+              Horarios, líderes y progreso de incursiones
+            </p>
+            <div
+              class="mt-4 text-xs text-amber-400 flex items-center group-hover:text-amber-300 transition-colors"
+            >
               <span>VER MÁS</span>
               <i class="fas fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
             </div>
           </div>
-          <div class="absolute inset-0 border-2 border-transparent group-hover:border-amber-500/20 rounded-xl transition-all duration-300 pointer-events-none"></div>
+          <div
+            class="absolute inset-0 border-2 border-transparent group-hover:border-amber-500/20 rounded-xl transition-all duration-300 pointer-events-none"
+          >
+          </div>
         </a>
 
         <!-- Guides Card -->
-        <a 
-          href="/guides" 
+        <a
+          href="/guides"
           class="relative group bg-gray-900/60 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 transition-all duration-300 hover:border-amber-800/50 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-1 overflow-hidden animate-fade-in opacity-0"
           style="animation-delay: 0.6s;"
         >
@@ -71,42 +108,389 @@ import Layout from '../components/layout/Layout.astro';
               <i class="fas fa-book"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">GUÍAS</h3>
-            <p class="text-amber-100/70 text-sm mb-4">Estrategias y consejos para el contenido de endgame</p>
-            <div class="mt-4 text-xs text-amber-400 flex items-center group-hover:text-amber-300 transition-colors">
+            <p class="text-amber-100/70 text-sm mb-4">
+              Estrategias y consejos para el contenido de endgame
+            </p>
+            <div
+              class="mt-4 text-xs text-amber-400 flex items-center group-hover:text-amber-300 transition-colors"
+            >
               <span>VER MÁS</span>
               <i class="fas fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
             </div>
           </div>
-          <div class="absolute inset-0 border-2 border-transparent group-hover:border-amber-500/20 rounded-xl transition-all duration-300 pointer-events-none"></div>
+          <div
+            class="absolute inset-0 border-2 border-transparent group-hover:border-amber-500/20 rounded-xl transition-all duration-300 pointer-events-none"
+          >
+          </div>
         </a>
       </div>
     </div>
+    <section id="addon" class="scroll-mt-16 py-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="w-full">
+          <!-- Main Content -->
+          <div class="w-full">
+            <div
+              class="rounded-xl overflow-hidden border border-amber-600/30 transform transition-all duration-300 hover:shadow-amber-500/20 bg-gray-900/50 backdrop-blur-sm p-6 sm:p-8"
+            >
+              <!-- Header with Logo -->
+              <div class="text-center mb-10">
+                <div class="mb-6">
+                  <ImageComponent classes="h-16 mx-auto drop-shadow-lg" imageName="logo.png" />
+                </div>
+                <div class="text-center mb-8">
+                  <h2 class="text-3xl font-bold text-amber-400 mb-2">Raid Dominion - Addon</h2>
+                  <div class="w-24 h-1 bg-amber-500 mt-4 mx-auto"></div>
+                </div>
+              </div>
+              <!-- Introduction -->
+              <div class="prose prose-invert max-w-none mb-8">
+                <p class="text-gray-300 leading-relaxed">
+                  <span class="text-amber-300 font-semibold">Raid Dominion</span> es un addon especialmente
+                  diseñado para
+                  <span class="text-amber-300 font-semibold">World of Warcraft 3.3.5a</span>, creado
+                  por el maestro de la hermandad Colmillo de Acero. Este potente addon está
+                  destinado a facilitar la gestión, control y comunicación en las bandas,
+                  permitiendo a los líderes de banda una organización más efectiva de roles, buffs y
+                  habilidades.
+                </p>
+              </div>
+
+              <!-- Gallery -->
+              <div class="mb-10">
+                <AddonGallery />
+              </div>
+
+              <!-- Features -->
+              <div class="mb-8">
+                <div class="grid gap-4 sm:grid-cols-1">
+                  <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-amber-300 mb-6 text-center">
+                      Características Clave
+                    </h3>
+                    <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+                      <div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">📜</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Codex de la Hermandad</h3>
+                        <p class="text-gray-300">
+                          Codex que contiene todas las mecánicas y reglas de las raids.
+                        </p>
+                      </div><div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">👥</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Gestión de Bandas</h3>
+                        <p class="text-gray-300">
+                          Control total sobre la formación y organización de tu banda de raid con
+                          solo unos clics.
+                        </p>
+                      </div><div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">🎯</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Asignación de Roles</h3>
+                        <p class="text-gray-300">
+                          Asigna y gestiona los roles de los jugadores de manera intuitiva y
+                          eficiente.
+                        </p>
+                      </div><div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">✨</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Control de Buffs</h3>
+                        <p class="text-gray-300">
+                          Asegúrate de que todos los buffs necesarios estén cubiertos en tu grupo.
+                        </p>
+                      </div><div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">🎯</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Integración con Discord</h3>
+                        <p class="text-gray-300">
+                          Almacena y comparte el link de Discord para una experiencia más fluida.
+                        </p>
+                      </div><div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">🔔</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Alertas con un click</h3>
+                        <p class="text-gray-300">
+                          Alerta a la banda con notificaciones importantes durante las incursiones.
+                        </p>
+                      </div><div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">🎨</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Interfaz Discreta</h3>
+                        <p class="text-gray-300">
+                          Interfaz que se adapta en un espacio pequeño y discreto.
+                        </p>
+                      </div><div
+                        class="bg-gray-900/50 backdrop-blur-sm rounded-xl overflow-hidden border border-amber-600/30 p-6 h-full transition-transform hover:scale-105"
+                      >
+                        <div class="text-amber-400 text-3xl mb-3">🔧</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Soporte Técnico</h3>
+                        <p class="text-gray-300">
+                          Actualizaciones constantes y soporte activo de la comunidad.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- YouTube Banner -->
+              <div class="mt-8 w-full max-w-lg mx-auto">
+                <article
+                  class="animate-blurred-fade-in rounded-xl overflow-hidden border border-amber-600/30 bg-gradient-to-br from-gray-900 to-gray-800 transform transition-all duration-300 hover:scale-[1.01] hover:shadow-amber-500/20"
+                >
+                  <!-- Header -->
+                  <div class="bg-gradient-to-r from-amber-600/80 to-amber-800/80 px-6 py-2">
+                    <h2 class="text-center text-sm font-bold text-white tracking-wider">
+                      ADDON WOW 3.3.5A
+                    </h2>
+                  </div>
+
+                  <!-- YouTube Button -->
+                  <a
+                    href="https://www.youtube.com/@IAM-GAMECODE"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex flex-col items-center justify-center px-8 py-10 bg-gradient-to-br from-gray-800 to-gray-900 hover:from-amber-900/30 hover:to-amber-800/20 transition-all duration-300"
+                  >
+                    <div class="relative">
+                      <div
+                        class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-200"
+                      >
+                      </div>
+                      <div
+                        class="relative p-4 bg-gradient-to-br from-red-600 to-red-700 rounded-full text-white group-hover:from-red-700 group-hover:to-red-800 transition-colors duration-300"
+                      >
+                        <svg
+                          class="mx-auto"
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="48"
+                          height="48"
+                        >
+                          <path
+                            fill="#ddd5b8"
+                            d="M0 0 C0.73951904 -0.00145523 1.47903809 -0.00291046 2.2409668 -0.00440979 C3.80098418 -0.00275339 5.36101834 0.0087791 6.92089844 0.02954102 C9.30474465 0.05849954 11.68636597 0.05014581 14.0703125 0.03710938 C15.58855244 0.04334726 17.10678538 0.05173861 18.625 0.0625 C19.33551514 0.05956436 20.04603027 0.05662872 20.77807617 0.05360413 C23.85450975 0.11206472 26.01724544 0.33251724 28.73046875 1.83569336 C32.27386306 5.55461693 31.53193668 10.56501205 31.5625 15.37109375 C31.583125 16.17417969 31.60375 16.97726563 31.625 17.8046875 C31.65612543 22.52797106 31.40336599 25.67002178 28.3125 29.49609375 C25.28801729 31.00833511 22.14033864 30.70035235 18.8203125 30.734375 C18.07796356 30.74244675 17.33561462 30.75051849 16.57077026 30.75883484 C14.99886407 30.77267092 13.42692788 30.78339521 11.85498047 30.79125977 C9.4535217 30.80847887 7.05343782 30.85236655 4.65234375 30.89648438 C3.12501012 30.90661104 1.59766479 30.91512723 0.0703125 30.921875 C-0.64647675 30.93938309 -1.36326599 30.95689117 -2.10177612 30.97492981 C-5.43735372 30.96045027 -7.37550475 30.71373234 -10.13916016 28.78588867 C-11.95682764 26.09779291 -12.20213714 24.65648903 -12.21875 21.43359375 C-12.22390625 20.47195312 -12.2290625 19.5103125 -12.234375 18.51953125 C-12.21890625 17.52179687 -12.2034375 16.5240625 -12.1875 15.49609375 C-12.20296875 14.49835937 -12.2184375 13.500625 -12.234375 12.47265625 C-12.22921875 11.51101562 -12.2240625 10.549375 -12.21875 9.55859375 C-12.21423828 8.68332031 -12.20972656 7.80804687 -12.20507812 6.90625 C-10.7790677 0.26588447 -5.90725466 -0.0933998 0 0 Z M5.3125 10.49609375 C5.3125 13.79609375 5.3125 17.09609375 5.3125 20.49609375 C8.71562738 19.43734301 11.32603231 18.48707221 14.3125 16.49609375 C14.3125 15.83609375 14.3125 15.17609375 14.3125 14.49609375 C12.641875 13.50609375 12.641875 13.50609375 10.9375 12.49609375 C10.31101562 12.12484375 9.68453125 11.75359375 9.0390625 11.37109375 C7.33777333 10.34541027 7.33777333 10.34541027 5.3125 10.49609375 Z "
+                            transform="translate(14.6875,8.50390625)"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    <span
+                      class="mt-4 text-lg font-semibold text-amber-300 group-hover:text-amber-200 transition-colors duration-300"
+                    >
+                      Tutorial en YouTube
+                    </span>
+                    <p class="mt-1 text-xs text-gray-400 text-center max-w-xs">
+                      Aprende a aprovechar al máximo el addon con nuestros tutoriales
+                    </p>
+                  </a>
+
+                  <!-- Discord Button -->
+                  <a
+                    href="https://discord.gg/BwdpNV9sky"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex items-center justify-center px-8 py-6 bg-gradient-to-br from-gray-800 to-gray-900 hover:from-indigo-900/30 hover:to-indigo-800/20 transition-all duration-300 border-t border-gray-700/50"
+                  >
+                    <div class="relative mr-3">
+                      <div
+                        class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-200"
+                      >
+                      </div>
+                      <div
+                        class="relative p-3 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-full text-white group-hover:from-indigo-700 group-hover:to-indigo-800 transition-colors duration-300"
+                      >
+                        <svg
+                          class="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.8 8.18 1.8 12.062 0a.074.074 0 01.078.01c.12.098.246.192.373.292a.077.077 0 01-.006.127 12.3 12.3 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.84 19.84 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.95-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.951 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.951-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.951 2.418-2.157 2.418z"
+                          ></path>
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <span
+                        class="block text-lg font-semibold text-indigo-300 group-hover:text-indigo-200 transition-colors duration-300"
+                        >Únete a Discord</span
+                      >
+                      <span class="text-xs text-gray-400">Soporte y actualizaciones</span>
+                    </div>
+                  </a>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="donaciones" class="scroll-mt-16">
+      <div class="max-w-7xl mx-auto">
+        <section class="mt-8 mb-8 flex flex-col flex-wrap lg:flex-row overflow-hidden py-6">
+          <div class="w-full text-center mb-6">
+            <h2 class="text-3xl font-bold text-white mb-2">¡Apóyanos!</h2>
+            <p class="text-gray-300 mb-4">Tu contribución nos ayuda a seguir mejorando</p>
+            <div class="w-20 h-1 bg-amber-500 mx-auto rounded-full"></div>
+          </div>
+          <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
+              class="group relative overflow-hidden bg-white/5 backdrop-blur-sm rounded-xl p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/10 border border-gray-700 hover:border-amber-500 flex flex-col"
+            >
+              <h3 class="text-lg sm:text-xl font-bold text-white mb-4 text-center">PayPal</h3>
+              <div class="flex-grow flex flex-col items-center">
+                <div class="mb-4 flex items-center justify-center h-36">
+                  <img
+                    src="/images/paypal.png"
+                    class="h-16 object-contain"
+                    alt="Logo de PayPal"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="mt-auto w-full">
+                  <a
+                    href="https://paypal.me/iamdev88"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="block w-full px-4 py-3 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors duration-300 text-center"
+                  >
+                    Donar con PayPal <svg
+                      class="w-4 h-4 ml-2 inline-block"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <div
+                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+              </div>
+            </div><div
+              class="group relative overflow-hidden bg-white/5 backdrop-blur-sm rounded-xl p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/10 border border-gray-700 hover:border-amber-500 flex flex-col"
+            >
+              <h3 class="text-lg sm:text-xl font-bold text-white mb-4 text-center">Nequi</h3>
+              <div class="flex-grow flex flex-col items-center">
+                <div class="mb-4">
+                  <p class="text-sm text-gray-400 mb-2">Escanea el código QR</p>
+                  <div class="bg-white p-2 rounded-lg">
+                    <img
+                      src="/images/nequiqr.jpeg"
+                      class="w-32 h-32 sm:w-36 sm:h-36 object-contain"
+                      alt="Código QR de Nequi"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+              </div>
+            </div><div
+              class="group relative overflow-hidden bg-white/5 backdrop-blur-sm rounded-xl p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/10 border border-gray-700 hover:border-amber-500 flex flex-col"
+            >
+              <h3 class="text-lg sm:text-xl font-bold text-white mb-4 text-center">Wompi</h3>
+              <div class="flex-grow flex flex-col items-center">
+                <div class="mb-4">
+                  <p class="text-sm text-gray-400 mb-2">Escanea el código QR</p>
+                  <div class="bg-white p-2 rounded-lg">
+                    <img
+                      src="/images/wompiqr.jpeg"
+                      class="w-32 h-32 sm:w-36 sm:h-36 object-contain"
+                      alt="Código QR de Wompi"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+                <div class="mt-auto w-full">
+                  <a
+                    href="https://checkout.wompi.co/l/PXF3MZ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="block w-full px-4 py-3 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors duration-300 text-center"
+                  >
+                    Donar con Wompi <svg
+                      class="w-4 h-4 ml-2 inline-block"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <div
+                class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
   </main>
-  
+
   <style>
     /* Grid Pattern Background */
     .bg-grid-pattern {
-      background-image: 
+      background-image:
         linear-gradient(to right, currentColor 1px, transparent 1px),
         linear-gradient(to bottom, currentColor 1px, transparent 1px);
       background-size: 40px 40px;
       color: rgba(255, 255, 255, 0.05);
     }
-    
+
     /* Font Awesome Icons */
-    .fa-users, .fa-dungeon, .fa-book, .fa-arrow-right, 
-    .fa-discord, .fa-twitter, .fa-youtube {
+    .fa-users,
+    .fa-dungeon,
+    .fa-book,
+    .fa-arrow-right,
+    .fa-discord,
+    .fa-twitter,
+    .fa-youtube {
       font-family: 'Font Awesome 6 Free';
       font-weight: 900;
     }
-    
+
     /* Animation for the header underline */
     @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
-    
+
     /* Custom font for the title */
     .font-title {
       font-family: 'Arial', sans-serif;
@@ -115,18 +499,19 @@ import Layout from '../components/layout/Layout.astro';
     }
   </style>
 
-<!-- AOS Animation Library -->
-<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // @ts-ignore - AOS is loaded from CDN
-    if (window.AOS) {
-      // @ts-ignore
-      AOS.init({
-        duration: 800,
-        once: true,
-        easing: 'ease-out-quart',
-      });
-    }
-  });
-</script>
+  <!-- AOS Animation Library -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // @ts-ignore - AOS is loaded from CDN
+      if (window.AOS) {
+        // @ts-ignore
+        AOS.init({
+          duration: 800,
+          once: true,
+          easing: 'ease-out-quart',
+        });
+      }
+    });
+  </script>
+</Layout>

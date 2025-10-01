@@ -63,6 +63,7 @@ export interface PublicNoteValidation {
   role?: Role;
   dualRole?: Role;
   gearScore?: number;
+  dualGearScore?: number;
   professions?: ProfessionCode[];
   schedules?: Schedule[];
   raids?: RaidInfo[];
@@ -114,6 +115,9 @@ export interface RosterData {
   classes: string[];
   totalMembers: number;
   stats: RosterStats;
+  raids: any[];
+  raidDays: Record<string, unknown>;
+  raidTimes: Record<string, unknown>;
 }
 
 export interface DistributionItem {

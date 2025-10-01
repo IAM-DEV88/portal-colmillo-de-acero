@@ -25,8 +25,23 @@ declare module '../types/roster' {
   }
 }
 
-// Definir constantes faltantes
-const PROFESSION_CODES: ProfessionCode[] = ['AL', 'BS', 'EN', 'EG', 'JC', 'IN', 'MN', 'SK', 'TL', 'HB', 'LW'];
+// Definir constantes de profesiones
+export const PROFESSION_CODES: ProfessionCode[] = ['AL', 'BS', 'EN', 'EG', 'JC', 'IN', 'MN', 'SK', 'TL', 'HB', 'LW'];
+
+// Mapa de códigos de profesión a nombres
+const PROFESSION_NAMES: Record<ProfessionCode, string> = {
+  'AL': 'Alquimia',
+  'BS': 'Herrería',
+  'EN': 'Encantamiento',
+  'EG': 'Ingeniería',
+  'JC': 'Joyería',
+  'IN': 'Inscripción',
+  'MN': 'Minería',
+  'SK': 'Desuello',
+  'TL': 'Sastrería',
+  'HB': 'Herboristería',
+  'LW': 'Peletería'
+};
 const RAID_NAMES: Record<RaidCode, string> = {
   'ICC': 'Icecrown Citadel',
   'TOC': 'Trial of the Crusader',
@@ -65,13 +80,43 @@ const RAID_COLORS: Record<RaidCode, string> = {
 
 // Funciones de cálculo para el roster
 export const calculateRoleDistribution = (members: RosterMember[]): Record<string, number> => {
-  const roleCounts: Record<string, number> = {};
+  const roleCounts: Record<string, number> = {
+    // Inicializar contadores para roles principales
+    'T': 0, // Tank
+    'H': 0, // Healer
+    'D': 0, // DPS
+    // Inicializar contadores para combinaciones de roles duales
+    'TH': 0, // Tank/Heal
+    'TD': 0, // Tank/DPS
+    'HD': 0  // Heal/DPS
+  };
   
   for (const member of members) {
-    // Verificar si el miembro tiene noteValidation y tiene un rol
-    if (member.noteValidation?.role) {
-      const role = member.noteValidation.role;
-      roleCounts[role] = (roleCounts[role] || 0) + 1;
+    const noteValidation = member.noteValidation;
+    if (!noteValidation) continue;
+    
+    const mainRole = noteValidation.role;
+    const dualRole = noteValidation.dualRole;
+    
+    // Contar rol principal
+    if (mainRole) {
+      // Solo contamos el rol principal para el total de roles principales
+      roleCounts[mainRole] = (roleCounts[mainRole] || 0) + 1;
+      
+      // Si hay rol dual, contamos la combinación de roles duales
+      if (dualRole && dualRole !== mainRole) {
+        // Ordenamos los roles alfabéticamente para evitar duplicados (ej: TH y HT)
+        const roles = [mainRole, dualRole].sort().join('');
+        
+        // Mapear a las claves estándar
+        if (roles === 'HT' || roles === 'TH') {
+          roleCounts['TH'] = (roleCounts['TH'] || 0) + 1;
+        } else if (roles === 'DT' || roles === 'TD') {
+          roleCounts['TD'] = (roleCounts['TD'] || 0) + 1;
+        } else if (roles === 'DH' || roles === 'HD') {
+          roleCounts['HD'] = (roleCounts['HD'] || 0) + 1;
+        }
+      }
     }
   }
   
@@ -83,30 +128,66 @@ export const calculateGearScoreStats = (members: RosterMember[]): {
   max: number;
   avg: number;
   total: number;
+  mainGearScore: number;
+  dualGearScore: number | null;
 } => {
-  if (!members.length) return { min: 0, max: 0, avg: 0, total: 0 };
+  if (!members.length) return { 
+    min: 0, 
+    max: 0, 
+    avg: 0, 
+    total: 0,
+    mainGearScore: 0,
+    dualGearScore: null
+  };
   
   let min = Number.MAX_SAFE_INTEGER;
   let max = 0;
   let total = 0;
   let count = 0;
+  let mainGearScore = 0;
+  let dualGearScore: number | null = null;
   
   for (const member of members) {
-    // Obtener el gearScore de noteValidation si existe
-    const gearScore = member.noteValidation?.gearScore;
-    if (typeof gearScore === 'number') {
-      min = Math.min(min, gearScore);
-      max = Math.max(max, gearScore);
-      total += gearScore;
+    const noteValidation = member.noteValidation;
+    if (!noteValidation) continue;
+    
+    // Obtener el gearScore principal
+    const currentMainGearScore = noteValidation.gearScore || 0;
+    let averageGearScore = currentMainGearScore;
+    let currentDualGearScore: number | null = null;
+    
+    // Si hay un rol dual, calcular el promedio con el gear score dual
+    if (noteValidation.dualRole && noteValidation.dualGearScore) {
+      currentDualGearScore = noteValidation.dualGearScore;
+      averageGearScore = (currentMainGearScore + currentDualGearScore) / 2;
+      
+      // Actualizar el dual gear score más alto
+      if (dualGearScore === null || currentDualGearScore > dualGearScore) {
+        dualGearScore = currentDualGearScore;
+      }
+    }
+    
+    // Actualizar el main gear score más alto
+    if (currentMainGearScore > 0 && currentMainGearScore > mainGearScore) {
+      mainGearScore = currentMainGearScore;
+    }
+    
+    // Solo considerar miembros con gear score válido
+    if (averageGearScore > 0) {
+      min = Math.min(min, averageGearScore);
+      max = Math.max(max, averageGearScore);
+      total += averageGearScore;
       count++;
     }
   }
   
   return {
-    min: count > 0 ? min : 0,
-    max: count > 0 ? max : 0,
-    avg: count > 0 ? Math.round((total / count) * 100) / 100 : 0,
-    total: count
+    min: count > 0 ? Math.round(min * 10) / 10 : 0, // Redondear a 1 decimal
+    max: count > 0 ? Math.round(max * 10) / 10 : 0, // Redondear a 1 decimal
+    avg: count > 0 ? Math.round((total / count) * 10) / 10 : 0, // Redondear a 1 decimal
+    total: count,
+    mainGearScore: Math.round(mainGearScore * 10) / 10,
+    dualGearScore: dualGearScore !== null ? Math.round(dualGearScore * 10) / 10 : null
   };
 };
 
@@ -159,38 +240,71 @@ const parseCharacterBlock = (content: string): CharacterBlock | null => {
     remaining = remaining.substring(1);
   }
   
-  // 2. Extraer rol principal y gear score
-  const mainRoleMatch = remaining.match(/^([THD])(\d+(?:\.\d+)?)/);
+  // 2. Extraer rol principal y gear score (aceptar minúsculas para los roles)
+  const mainRoleMatch = remaining.match(/^([tTdDhH])(\d+(?:\.\d+)?)/);
   if (!mainRoleMatch) {
+    console.log('No se pudo extraer el rol principal del bloque:', content);
     return null;
   }
   
-  const mainRole = mainRoleMatch[1] as Role;
+  const mainRole = mainRoleMatch[1].toUpperCase() as Role;
   const mainGearScore = parseFloat(mainRoleMatch[2]);
   remaining = remaining.substring(mainRoleMatch[0].length);
   
-  // 3. Extraer rol dual y gear score (opcional)
+  console.log(`Bloque ${content}: Rol principal: ${mainRole}, GS: ${mainGearScore}, Resto: ${remaining}`);
+  
+  // 3. Extraer rol dual y gear score (opcional, aceptar minúsculas)
   let dualRole: Role | undefined;
   let dualGearScore: number | undefined;
   
-  const dualRoleMatch = remaining.match(/^([THD])(\d+(?:\.\d+)?)/);
+  const dualRoleMatch = remaining.match(/^([tTdDhH])(\d+(?:\.\d+)?)/);
   if (dualRoleMatch) {
-    dualRole = dualRoleMatch[1] as Role;
+    dualRole = dualRoleMatch[1].toUpperCase() as Role;
     dualGearScore = parseFloat(dualRoleMatch[2]);
     remaining = remaining.substring(dualRoleMatch[0].length);
+    console.log(`Bloque ${content}: Rol dual: ${dualRole}, GS: ${dualGearScore}, Resto: ${remaining}`);
   }
 
   // 4. Extraer profesiones (2 letras cada una, máximo 2)
   const professions: ProfessionCode[] = [];
   
-  // Buscar todas las combinaciones de 2 letras mayúsculas que coincidan con códigos de profesión
-  for (let i = 0; i < remaining.length; i += 2) {
-    const code = remaining.substring(i, i + 2) as ProfessionCode;
-    if (PROFESSION_CODES.includes(code)) {
-      professions.push(code);
-      if (professions.length >= 2) break;
+  console.log(`[parseCharacterBlock] Procesando contenido restante: "${remaining}"`);
+  
+  // Primero buscar el caso especial 'ALMN' (Alquimia + Minería)
+  if (remaining.includes('ALMN')) {
+    console.log('[parseCharacterBlock] Caso especial ALMN encontrado');
+    professions.push('AL', 'MN');
+    remaining = remaining.replace('ALMN', '');
+  } else {
+    // Buscar códigos de profesión válidos en el resto del texto
+    // Primero buscar códigos de 2 letras mayúsculas
+    const professionRegex = new RegExp(`(${PROFESSION_CODES.join('|')})`, 'g');
+    let match;
+    
+    while ((match = professionRegex.exec(remaining)) !== null && professions.length < 2) {
+      const code = match[0] as ProfessionCode;
+      if (!professions.includes(code)) {
+        console.log(`[parseCharacterBlock] Encontrada profesión: ${code}`);
+        professions.push(code);
+      }
+    }
+    
+    // Si no encontramos con el regex, intentar con el método anterior
+    if (professions.length === 0) {
+      console.log('[parseCharacterBlock] No se encontraron profesiones con regex, intentando método alternativo');
+      for (let i = 0; i < remaining.length - 1; i++) {
+        const code = remaining.substring(i, i + 2).toUpperCase() as ProfessionCode;
+        if (PROFESSION_CODES.includes(code) && !professions.includes(code)) {
+          console.log(`[parseCharacterBlock] Encontrada profesión (método alternativo): ${code}`);
+          professions.push(code);
+          i++; // Saltar al siguiente par
+          if (professions.length >= 2) break;
+        }
+      }
     }
   }
+  
+  console.log(`[parseCharacterBlock] Bloque "${content}": Profesiones encontradas:`, professions);
 
   // Validar que el rol dual sea diferente al principal
   if (dualRole && dualRole === mainRole) {
@@ -520,13 +634,31 @@ export const validatePublicNote = (
         // Actualizar propiedades principales
         result.mainAlt = charBlock.mainAlt;
         result.role = charBlock.mainRole;
+        result.dualRole = charBlock.dualRole; // Guardar el rol dual
+        
         // Asegurar que gearScore sea un número
         result.gearScore = typeof charBlock.mainGearScore === 'number' 
           ? charBlock.mainGearScore 
           : parseFloat(charBlock.mainGearScore) || 0;
+          
+        // Guardar el gear score dual si existe
+        if (charBlock.dualGearScore !== undefined) {
+          result.dualGearScore = typeof charBlock.dualGearScore === 'number'
+            ? charBlock.dualGearScore
+            : parseFloat(charBlock.dualGearScore) || 0;
+        }
+
+        // Log de depuración
+        console.log(`[validatePublicNote] Procesado bloque de personaje:`, {
+          block,
+          mainRole: result.role,
+          dualRole: result.dualRole,
+          gearScore: result.gearScore,
+          mainAlt: result.mainAlt
+        });
 
         if (charBlock.dualRole) {
-          result.role = charBlock.dualRole; // Usamos role para el rol secundario si existe
+          console.log(`[validatePublicNote] Rol dual detectado: ${charBlock.dualRole}`);
         }
 
         if (charBlock.professions && charBlock.professions.length > 0) {
@@ -784,8 +916,6 @@ export const validatePublicNote = (
         console.log(eventInfo);
       }
     });
-    
-    return result;
   }
 
   return result;

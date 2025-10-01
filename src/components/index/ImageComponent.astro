@@ -1,0 +1,18 @@
+---
+export interface Props {
+  imageName: string;
+  classes?: string;
+  altText?: string;
+}
+
+const { imageName, classes = "", altText = imageName } = Astro.props;
+
+---
+
+<img 
+  src={`/images/addon/${imageName}`} 
+  class={classes} 
+  alt={altText}
+  loading="lazy"
+  decoding="async"
+/>

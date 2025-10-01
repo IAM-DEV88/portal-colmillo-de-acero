@@ -1,4 +1,4 @@
-﻿---
+---
 // Definir las props del componente
 interface Props {
   initialRosterData?: any[];
@@ -36,7 +36,8 @@ import type {
   MainAltDistributionItem as MainAltDistItem,
   NoteBlock,
   Member,
-  RosterStats
+  RosterStats,
+  RaidInfo
 } from '../../types/roster';
 
 // Usar los tipos directamente desde la importación
@@ -47,8 +48,24 @@ import {
   calculateRoleDistribution as calculateRoleDistro,
   calculateGearScoreStats as calculateGSStats,
   countRaidLeaders as countLeaders,
-  calculateMainAltDistribution as calculateMainAlts
+  calculateMainAltDistribution as calculateMainAlts,
+  PROFESSION_CODES
 } from '../../utils/rosterUtils';
+
+// Variables para las estadísticas de Gear Score
+let gearScoreStats = { 
+  min: 0, 
+  max: 0, 
+  avg: 0, 
+  total: 0, 
+  mainGearScore: 0, 
+  dualGearScore: null as number | null 
+};
+let averageGearScore = 'N/A';
+let minGearScore = 'N/A';
+let maxGearScore = 'N/A';
+let mainGearScore = 'N/A';
+let dualGearScore = 'N/A';
 
 // Import constants
 import {
@@ -140,7 +157,7 @@ const defaultRosterData: RosterData = {
 // Usar directamente las funciones importadas con sus alias
 
 // Process members with proper typing
-const processRosterMember = (member: any): RosterMember => {
+const processRosterMember = (member: any): RosterMemberType => {
   const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).includes(member.class) 
     ? member.class as keyof typeof defaultClassInfo 
     : 'Desconocido' as const;
@@ -149,16 +166,58 @@ const processRosterMember = (member: any): RosterMember => {
   const mainAlt = member.mainAlt === 'main' ? 'M' : 
                  member.mainAlt === 'alt' ? 'A' : 
                  member.mainAlt || 'A';
+  
+  // Validar la nota pública usando el alias importado
+  console.log(`[${member.name}] Validating note: "${member.publicNote}"`);
+  const noteValidation = validateRosterNote(member.publicNote || '', member.name || '', member.officerNote || '');
+  
+  // Debug: Mostrar la validación de la nota
+  console.log(`[${member.name}] Note validation result:`, {
+    isValid: noteValidation.isValid,
+    blocks: noteValidation.blocks,
+    mainAlt: noteValidation.mainAlt,
+    role: noteValidation.role,
+    dualRole: noteValidation.dualRole,
+    gearScore: noteValidation.gearScore,
+    dualGearScore: noteValidation.dualGearScore,
+    professions: noteValidation.professions,
+    isRaidLeader: noteValidation.isRaidLeader,
+    hasSchedule: noteValidation.hasSchedule,
+    hasRaids: noteValidation.hasRaids,
+    schedules: noteValidation.schedules,
+    raids: noteValidation.raids,
+    error: noteValidation.error,
+    missingFields: noteValidation.missingFields
+  });
+  
+  // Asegurar que noteValidation cumpla con PublicNoteValidation
+  const validNoteValidation: RosterPublicNoteValidation = {
+    isValid: noteValidation.isValid || false,
+    blocks: noteValidation.blocks || [],
+    mainAlt: noteValidation.mainAlt || 'A', // Valor por defecto 'A' si no está definido
+    role: noteValidation.role,
+    dualRole: noteValidation.dualRole,
+    gearScore: noteValidation.gearScore || 0,
+    dualGearScore: noteValidation.dualGearScore,
+    professions: noteValidation.professions || [],
+    isRaidLeader: noteValidation.isRaidLeader || false,
+    hasSchedule: noteValidation.hasSchedule || false,
+    hasRaids: noteValidation.hasRaids || false,
+    schedules: noteValidation.schedules || [],
+    raids: noteValidation.raids || [],
+    error: noteValidation.error,
+    missingFields: noteValidation.missingFields || []
+  };
     
   // Create a valid RosterMember object with required properties
-  const processedMember: RosterMember = {
+  const processedMember: RosterMemberType = {
     ...member,
     name: member.name || '',
     class: className,
     rank: member.rank || '',
     publicNote: member.publicNote || '',
     officerNote: member.officerNote || '',
-    noteValidation: validatePublicNote(member.publicNote || '', member.name || '', member.officerNote || ''),
+    noteValidation: validNoteValidation,
     mainAlt: mainAlt as MainAlt
   };
   
@@ -180,6 +239,38 @@ const getRolePercentage = (count: number, total: number = totalMembers) => {
   return total > 0 ? Math.round((count / total) * 100) : 0;
 };
 
+// Calcular las estadísticas de Gear Score
+const updateGearScoreStats = () => {
+  try {
+    const stats = calculateGSStats(members as unknown as RosterMemberType[]);
+    gearScoreStats = stats;
+    averageGearScore = stats.avg > 0 ? stats.avg.toFixed(1) : 'N/A';
+    minGearScore = stats.min > 0 ? stats.min.toFixed(1) : 'N/A';
+    maxGearScore = stats.max > 0 ? stats.max.toFixed(1) : 'N/A';
+    mainGearScore = stats.mainGearScore > 0 ? stats.mainGearScore.toFixed(1) : 'N/A';
+    dualGearScore = stats.dualGearScore !== null && stats.dualGearScore > 0 ? stats.dualGearScore.toFixed(1) : 'N/A';
+    
+    console.log('Estadísticas de Gear Score calculadas:', {
+      avg: averageGearScore,
+      min: minGearScore,
+      max: maxGearScore,
+      total: stats.total,
+      mainGearScore: mainGearScore,
+      dualGearScore: dualGearScore
+    });
+  } catch (error) {
+    console.error('Error al calcular las estadísticas de Gear Score:', error);
+    // Establecer valores por defecto en caso de error
+    gearScoreStats = { min: 0, max: 0, avg: 0, total: 0 };
+    averageGearScore = 'N/A';
+    minGearScore = 'N/A';
+    maxGearScore = 'N/A';
+  }
+};
+
+// Ejecutar el cálculo inicial
+updateGearScoreStats();
+
 // Crear el objeto rosterData con la estructura esperada
 const rosterData: RosterData = {
   ...defaultRosterData,
@@ -192,10 +283,10 @@ const rosterData: RosterData = {
     ...initialStats,
     totalMembers,
     validNotesCount,
-    roleDistribution: calculateRoleDistro(members as unknown as RosterMember[]),
-    gearScoreStats: calculateGSStats(members as unknown as RosterMember[]),
-    raidLeadersCount: countLeaders(members as unknown as RosterMember[]),
-    mainAltDistribution: calculateMainAlts(members as unknown as RosterMember[]),
+    roleDistribution: calculateRoleDistro(members as unknown as RosterMemberType[]),
+    gearScoreStats: calculateGSStats(members as unknown as RosterMemberType[]),
+    raidLeadersCount: countLeaders(members as unknown as RosterMemberType[]),
+    mainAltDistribution: calculateMainAlts(members as unknown as RosterMemberType[]),
     professions: {}
   },
   raids: [],
@@ -215,12 +306,107 @@ const calculateStats = (members: Member[]): RosterStats => {
   
   // Calculate profession distribution
   const professions: Record<string, number> = {};
-  members.forEach(member => {
-    const profs = member.noteValidation?.professions || [];
-    profs.forEach(prof => {
-      professions[prof] = (professions[prof] || 0) + 1;
+  
+  // Initialize all professions with 0
+  PROFESSION_CODES.forEach(code => {
+    professions[code] = 0;
+  });
+  
+  console.log('=== Iniciando cálculo de profesiones ===');
+  console.log('Miembros a procesar:', members.length);
+  console.log('PROFESSION_CODES:', PROFESSION_CODES);
+  
+  let totalProcessed = 0;
+  let membersWithValidNotes = 0;
+  
+  members.forEach((member, index) => {
+    console.log(`\n--- Procesando miembro ${index + 1}/${members.length}: ${member.name} ---`);
+    console.log('Nota del miembro:', member.publicNote);
+    console.log('Validación de nota:', member.noteValidation);
+    
+    // Solo procesar si la nota es válida
+    if (!member.noteValidation?.isValid) {
+      console.log(`[${member.name}] Nota no válida, omitiendo...`);
+      return;
+    }
+    
+    membersWithValidNotes++;
+    
+    // Obtener profesiones de todas las fuentes posibles
+    const profSources = [];
+    
+    // 1. Obtener profesiones directas de noteValidation
+    if (member.noteValidation?.professions?.length) {
+      console.log(`[${member.name}] Profesiones directas:`, member.noteValidation.professions);
+      profSources.push(...member.noteValidation.professions);
+    }
+    
+    // 2. Obtener profesiones de los bloques de personaje
+    const characterBlocks = (member.noteValidation?.blocks || [])
+      .filter(b => b.type === 'character' && b.parsedData?.professions?.length);
+      
+    if (characterBlocks.length > 0) {
+      console.log(`[${member.name}] Bloques de personaje con profesiones:`, characterBlocks);
+      characterBlocks.forEach(block => {
+        if (block.parsedData?.professions?.length) {
+          profSources.push(...block.parsedData.professions);
+        }
+      });
+    }
+    
+    console.log(`[${member.name}] Todas las fuentes de profesiones:`, profSources);
+    
+    // Filtrar y normalizar códigos de profesión
+    const allProfs = [...new Set(profSources)]
+      .filter(Boolean) // Eliminar valores nulos o undefined
+      .map(code => {
+        const normalizedCode = code.trim().toUpperCase();
+        // Asegurarse de que el código tenga exactamente 2 caracteres
+        return normalizedCode.length === 2 ? normalizedCode : null;
+      })
+      .filter(Boolean) // Eliminar códigos nulos después de la normalización
+      .filter((code): code is string => {
+        const isValid = PROFESSION_CODES.includes(code as ProfessionCode);
+        if (!isValid && code) {
+          console.warn(`  Código de profesión no reconocido: "${code}"`);
+        }
+        return isValid;
+      }) as ProfessionCode[]; // Asegurar que TypeScript sepa que son códigos de profesión válidos
+    
+    console.log(`[${member.name}] Profesiones válidas encontradas:`, allProfs);
+    
+    // Contar las profesiones
+    allProfs.forEach(profCode => {
+      if (profCode in professions) {
+        professions[profCode]++;
+        totalProcessed++;
+        console.log(`  +1 para ${profCode} (total: ${professions[profCode]})`);
+      } else {
+        console.warn(`  Código de profesión no reconocido: ${profCode}`);
+      }
     });
   });
+  
+  console.log('Resumen de conteo de profesiones:', professions);
+  
+  console.log('\n=== Resumen de estadísticas de profesiones ===');
+  console.log('Total de miembros con notas válidas:', membersWithValidNotes);
+  console.log('Total de profesiones encontradas:', totalProcessed);
+  console.log('Conteo de profesiones por tipo:', professions);
+  
+  // Verificar si hay alguna profesión con conteo > 0
+  const hasProfessions = Object.values(professions).some(count => count > 0);
+  console.log('¿Hay profesiones con conteo > 0?', hasProfessions);
+  
+  if (!hasProfessions) {
+    console.warn('No se encontraron profesiones en ninguna nota. Revisar el formato de las notas.');
+  }
+  
+  // Actualizar las estadísticas globales
+  stats.validNotesCount = membersWithValidNotes;
+  stats.professions = professions;
+  
+  console.log('Estadísticas de profesiones actualizadas:', professions);
   
   return {
     totalMembers: members.length,
@@ -229,7 +415,7 @@ const calculateStats = (members: Member[]): RosterStats => {
     raidLeadersCount,
     mainAltDistribution,
     professions,
-    validNotesCount
+    validNotesCount: membersWithValidNotes
   };
 };
 
@@ -239,17 +425,41 @@ const calculateStats = (members: Member[]): RosterStats => {
 stats = {
   ...stats,
   totalMembers: rosterData.totalMembers,
-  validNotesCount: rosterData.stats.validNotesCount || 0
+  validNotesCount: rosterData.stats.validNotesCount || 0,
+  professions: {}
 };
 
-// Inicializar roleStats con los valores de rosterData.stats.roleDistribution
+// Inicializar roleStats contando cada rol (T, H, D) independientemente de si es rol principal o dual
+// Un jugador puede contribuir a múltiples roles si tiene un rol dual
 const roleStats = {
-  T: rosterData.stats.roleDistribution?.T || 0,
-  H: rosterData.stats.roleDistribution?.H || 0,
-  D: rosterData.stats.roleDistribution?.D || 0,
-  TH: rosterData.stats.roleDistribution?.TH || 0,
-  TD: rosterData.stats.roleDistribution?.TD || 0,
-  HD: rosterData.stats.roleDistribution?.HD || 0
+  T: rosterData.members.filter(member => 
+    member.noteValidation?.role === 'T' || 
+    member.noteValidation?.dualRole === 'T'
+  ).length,
+  H: rosterData.members.filter(member => 
+    member.noteValidation?.role === 'H' || 
+    member.noteValidation?.dualRole === 'H'
+  ).length,
+  D: rosterData.members.filter(member => 
+    member.noteValidation?.role === 'D' || 
+    member.noteValidation?.dualRole === 'D'
+  ).length
+};
+
+// Contar roles duales por separado
+const dualRoleStats = {
+  TH: rosterData.members.filter(member => 
+    (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'H') ||
+    (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'T')
+  ).length,
+  TD: rosterData.members.filter(member => 
+    (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'D') ||
+    (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'T')
+  ).length,
+  HD: rosterData.members.filter(member => 
+    (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'D') ||
+    (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'H')
+  ).length
 };
 
 // Format role distribution for display
@@ -840,24 +1050,8 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   
   // Si encontramos al menos una profesión, actualizar el resultado
   if (foundProfs.size > 0) {
+    // Guardamos los códigos de profesión directamente
     result.professions = Array.from(foundProfs);
-  }
-  // Convertimos a array y tomamos las dos primeras profesiones únicas
-  const uniqueProfs = Array.from(foundProfs);
-
-  
-  if (uniqueProfs.length >= 2) {
-    const prof1 = uniqueProfs[0] as ProfessionCode;
-    const prof2 = uniqueProfs[1] as ProfessionCode;
-    
-    if (prof1 !== prof2) {
-      result.professions = [PROFESSIONS[prof1], PROFESSIONS[prof2]];
-    } else {
-      errors.push('Las profesiones no pueden ser iguales');
-    }
-  } else if (uniqueProfs.length === 1) {
-    const prof = uniqueProfs[0] as ProfessionCode;
-    result.professions = [PROFESSIONS[prof]];
   }
 
   // La extracción de días ya se realizó anteriormente en la sección 3 del código
@@ -1022,17 +1216,26 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     console.log(`[${characterName}] Coincidencias encontradas:`, Array.from(raidCodeMatches).map(m => m[1]));
     
     for (const match of raidCodeMatches) {
-      const raidCode = match[0].toUpperCase() as RaidCode;
-      if (!usedRaids.has(raidCode)) {
-        // Type assertion to handle the indexing
-        const raidName = raidCode in RAIDS ? RAIDS[raidCode as keyof typeof RAIDS] : raidCode;
-        result.raids.push({
-          code: raidCode,
-          difficultyCode: undefined,
-          difficulty: undefined,
-          name: raidName,
-        });
-        usedRaids.add(raidCode);
+      const raidCodeStr = match[0].toUpperCase();
+      // Verificar que el código de raid sea uno de los permitidos
+      const validRaidCodes: RaidCode[] = ['ICC', 'TOC', 'ULD', 'NAX', 'OS', 'VOA', 'EOE', 'ONY', 'RS'];
+      if (validRaidCodes.includes(raidCodeStr as RaidCode)) {
+        const raidCode = raidCodeStr as RaidCode;
+        if (!usedRaids.has(raidCode)) {
+          // Buscar el raid en el array RAIDS
+          const raidInfo = RAIDS.find(r => r.code === raidCode);
+          const raidName = raidInfo ? raidInfo.name : raidCode;
+          
+          const raidData: RaidInfo = {
+            code: raidCode,
+            difficulty: 'Normal', // Valor por defecto
+            name: raidName,
+            difficultyCode: '10N' as DifficultyCode, // Valor por defecto
+            isRaidLeader: false // Propiedad opcional
+          };
+          result.raids.push(raidData);
+          usedRaids.add(raidCode);
+        }
       }
     }
   }
@@ -1351,6 +1554,58 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   };
 }
 
+// Códigos de profesión válidos
+const PROFESSION_CODES = ['AL', 'BS', 'EN', 'EG', 'HB', 'IN', 'JC', 'LW', 'MN', 'SK', 'TL'] as const;
+type ProfessionCode = typeof PROFESSION_CODES[number];
+
+// Mapa de colores y nombres de profesión
+const PROFESSION_INFO = {
+  'JC': { 
+    name: 'Joyería',
+    colors: { light: '#fde047', dark: '#d97706' }
+  },
+  'BS': { 
+    name: 'Herrería',
+    colors: { light: '#60a5fa', dark: '#1d4ed8' }
+  },
+  'EN': { 
+    name: 'Encantamiento',
+    colors: { light: '#c084fc', dark: '#7e22ce' }
+  },
+  'EG': { 
+    name: 'Ingeniería',
+    colors: { light: '#2dd4bf', dark: '#0d9488' }
+  },
+  'AL': { 
+    name: 'Alquimia',
+    colors: { light: '#4ade80', dark: '#15803d' }
+  },
+  'TL': { 
+    name: 'Sastrería',
+    colors: { light: '#f472b6', dark: '#db2777' }
+  },
+  'IN': { 
+    name: 'Inscripción',
+    colors: { light: '#818cf8', dark: '#4f46e5' }
+  },
+  'HB': { 
+    name: 'Herboristería',
+    colors: { light: '#84cc16', dark: '#65a30d' }
+  },
+  'LW': { 
+    name: 'Peletería',
+    colors: { light: '#f59e0b', dark: '#d97706' }
+  },
+  'MN': { 
+    name: 'Minería',
+    colors: { light: '#f97316', dark: '#c2410c' }
+  },
+  'SK': { 
+    name: 'Desuello',
+    colors: { light: '#f43f5e', dark: '#be123c' }
+  }
+} as const;
+
 // Función para obtener el nombre del rol
 const getRoleName = (role: string): string => {
   const roleNames: Record<string, string> = {
@@ -1407,32 +1662,14 @@ const professionInfo: Record<ProfessionCode, { name: string; color: string; bgCo
 
 // roleStats ya está definido más arriba en el código
 // Usar roleDistribution para obtener los conteos de roles duales
-const dualRoleStats = [
-  {
-    combo: 'TH',
-    label: 'Tank / Heal',
-    count: stats.roleDistribution['TH'] || 0,
-    color: 'bg-blue-400/20',
-    textColor: 'text-blue-400'
-  },
-  {
-    combo: 'TD',
-    label: 'Tank / DPS',
-    count: stats.roleDistribution['TD'] || 0,
-    color: 'bg-purple-400/20',
-    textColor: 'text-purple-400'
-  },
-  {
-    combo: 'HD',
-    label: 'Heal / DPS',
-    count: stats.roleDistribution['HD'] || 0,
-    color: 'bg-green-400/20',
-    textColor: 'text-green-400'
-  }
-];
+// dualRoleStats ya está definido arriba en el código
 
-// Ordenar por cantidad (de mayor a menor)
-const sortedDualRoles = [...dualRoleStats].sort((a, b) => b.count - a.count);
+// Variable para compatibilidad con código existente que espera un array
+const sortedDualRoles = [
+  { combo: 'TH', label: 'Tank / Heal', count: dualRoleStats.TH, color: 'bg-blue-400/20', textColor: 'text-blue-400' },
+  { combo: 'TD', label: 'Tank / DPS', count: dualRoleStats.TD, color: 'bg-purple-400/20', textColor: 'text-purple-400' },
+  { combo: 'HD', label: 'Heal / DPS', count: dualRoleStats.HD, color: 'bg-green-400/20', textColor: 'text-green-400' }
+].sort((a, b) => b.count - a.count);
 
 // Calcular estadísticas de mains/alts
 const mainAltStats = rosterData.members.reduce(
@@ -1582,11 +1819,7 @@ const mainAltDistribution: MainAltDistributionItem[] = [
   { type: 'A', name: 'Alt', count: mainAltStats.A, percentage: getRolePercentage(mainAltStats.A) },
 ];
 
-// Calcular estadísticas de gear score
-const gearScoreStats = stats.gearScoreStats || { min: 0, max: 0, avg: 0, total: 0 };
-const averageGearScore = gearScoreStats.avg > 0 ? gearScoreStats.avg.toFixed(1) : 'N/A';
-const minGearScore = gearScoreStats.min > 0 ? gearScoreStats.min.toFixed(1) : 'N/A';
-const maxGearScore = gearScoreStats.max > 0 ? gearScoreStats.max.toFixed(1) : 'N/A';
+// Usar gearScoreStats ya definido al inicio del archivo
 const gearScorePercentage = gearScoreStats.avg > 0
   ? Math.min(100, Math.max(0, (gearScoreStats.avg / 6.8) * 100))
   : 0;
@@ -1791,7 +2024,7 @@ const totalRaiders = rosterData.members.filter(
                       </span>
                     </div>
                     <!-- Nota real (media prioridad) -->
-                    <div class="w-full text-text-muted/60 text-xs mt-1.5 font-normal break-words whitespace-normal">${member.publicNote}</div>
+                    <div class="hidden">${member.publicNote}</div>
                   </div>
                 </div>
               </td>
@@ -2403,11 +2636,6 @@ const totalRaiders = rosterData.members.filter(
                               const missingCharacterFields = processedBlocks.missingCharacterFields || [];
                               const missingEventFields = processedBlocks.missingEventFields || [];
                               
-                              // Debug: Verificar las etiquetas de personaje
-                              console.log(`[${member.name}] Character tags before render:`, characterTags);
-                              
-                              // Debug: Mostrar los eventos procesados
-                              console.log(`[${member.name}] Processed events:`, processedEvents);
 
                               return `
                                 <div class="space-y-3">
@@ -2861,39 +3089,45 @@ const totalRaiders = rosterData.members.filter(
     <div class="flex justify-between items-center">
       <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Roles Duales</h3>
       <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
-        {sortedDualRoles.reduce((sum, { count }) => sum + count, 0) || 0}
+        {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
       </p>
     </div>
     <div class="grid grid-cols-3 gap-1 mt-1">
-      {sortedDualRoles.map(({ combo, label, count, textColor }) => (
-        <div class="text-center">
-          <p class="text-[18px] sm:text-2xl font-bold text-white">{count}</p>
-          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">{label}</p>
-        </div>
-      ))}
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.TH}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tank / Heal</p>
+      </div>
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.TD}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tank / DPS</p>
+      </div>
+      <div class="text-center">
+        <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.HD}</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Heal / DPS</p>
+      </div>
     </div>
   </div>
 
-  <!-- Gear Score Promedio -->
+  <!-- Gear Score -->
   <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
     <div class="flex justify-between items-center">
       <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Gear Score</h3>
       <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
-        {averageGearScore}
+        {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
       </p>
     </div>
     <div class="grid grid-cols-2 gap-1 mt-1">
       <div class="text-center">
         <p class="text-[18px] sm:text-2xl font-bold text-white">
-          {maxGearScore}
+          {mainGearScore !== 'N/A' ? mainGearScore : 'N/A'}
         </p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Máx</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Principal</p>
       </div>
       <div class="text-center">
         <p class="text-[18px] sm:text-2xl font-bold text-white">
-          {minGearScore}
+          {dualGearScore !== 'N/A' ? dualGearScore : 'N/A'}
         </p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mín</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Secundario</p>
       </div>
     </div>
   </div>
@@ -3115,45 +3349,52 @@ const totalRaiders = rosterData.members.filter(
         </h3>
         <div class="space-y-3">
           {
-            Object.entries(stats.professions || {})
-              .filter(([_, count]) => count > 0)
-              .sort((a, b) => b[1] - a[1])
-              .slice(0, 11)
-              .map(([code, count]) => {
-                const profName = PROFESSIONS[code as keyof typeof PROFESSIONS] || code;
-                const percentage = Math.min(100, Math.round((count / stats.validNotesCount) * 100));
-                
-                // Mapa de colores por código de profesión
-                const colorsMap = {
-                  JC: { light: '#fde047', dark: '#d97706' },  // Joyería
-                  BS: { light: '#60a5fa', dark: '#1d4ed8' },  // Herrería
-                  EN: { light: '#c084fc', dark: '#7e22ce' },  // Encantamiento
-                  EG: { light: '#2dd4bf', dark: '#0d9488' },  // Ingeniería
-                  AL: { light: '#4ade80', dark: '#15803d' },  // Alquimia
-                  TL: { light: '#f472b6', dark: '#db2777' },  // Sastrería
-                  IN: { light: '#818cf8', dark: '#4f46e5' },  // Inscripción
-                  HB: { light: '#84cc16', dark: '#65a30d' },  // Herboristería
-                  LW: { light: '#f59e0b', dark: '#d97706' },  // Peletería
-                  MN: { light: '#f97316', dark: '#c2410c' },  // Minería
-                  SK: { light: '#f43f5e', dark: '#be123c' }   // Desuello
-                };
-                
-                // Obtener los colores para la profesión
-                const colors = colorsMap[code as keyof typeof colorsMap] || { light: '#d1d5db', dark: '#6b7280' };
-                
+            (() => {
+              // Verificar si hay estadísticas de profesiones
+              if (!stats.professions || Object.keys(stats.professions).length === 0) {
                 return (
+                  <div class="text-center text-amber-100/60 text-sm py-4">
+                    No hay datos de profesiones disponibles
+                  </div>
+                );
+              }
+              
+              // Obtener el total de miembros con profesiones válidas
+              const totalWithProfessions = Object.values(stats.professions).reduce((sum, count) => sum + count, 0);
+              
+              // Mostrar todas las profesiones ordenadas por conteo (de mayor a menor)
+              return Object.entries(PROFESSION_INFO)
+                .map(([code, info]) => {
+                  const count = stats.professions[code] || 0;
+                  const percentage = totalWithProfessions > 0 
+                    ? Math.min(100, Math.round((count / totalWithProfessions) * 100))
+                    : 0;
+                    
+                  return { 
+                    code, 
+                    name: info.name, 
+                    count, 
+                    percentage, 
+                    colors: info.colors,
+                    hasData: count > 0
+                  };
+                })
+                .sort((a, b) => b.count - a.count)
+                .map(({ code, name, count, percentage, colors, hasData }) => (
                   <div class="space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
                       <div class="flex items-center">
-                        <span
+                        <span 
                           class="w-2.5 h-2.5 rounded-full mr-2 border border-amber-900/30"
                           style={`background-color: ${colors.dark}`}
                         />
-                        <span class="text-amber-100/80">{profName}</span>
+                        <span class="text-amber-100/80">{name}</span>
                       </div>
                       <div class="flex items-center">
                         <span class="text-white font-semibold mr-1">{count}</span>
-                        <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                        <span class="text-amber-100/60 text-[11px]">
+                          ({percentage}%)
+                        </span>
                       </div>
                     </div>
                     <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
@@ -3161,13 +3402,14 @@ const totalRaiders = rosterData.members.filter(
                         class="h-full rounded-full transition-all duration-500 ease-out"
                         style={{
                           width: `${percentage}%`,
-                          background: `linear-gradient(90deg, ${colors.light}, ${colors.dark})`,
+                          background: `linear-gradient(to right, ${colors.light}, ${colors.dark})`,
+                          opacity: hasData ? 1 : 0.5
                         }}
                       />
                     </div>
                   </div>
-                );
-              })
+                ));
+            })()
           }
         </div>
       </div>
