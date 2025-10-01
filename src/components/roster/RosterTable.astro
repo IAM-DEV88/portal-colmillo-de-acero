@@ -42,6 +42,10 @@ import type {
 
 // Usar los tipos directamente desde la importación
 
+// Códigos de profesión válidos
+const PROFESSION_CODES = ['AL', 'BS', 'EN', 'EG', 'HB', 'IN', 'JC', 'LW', 'MN', 'SK', 'TL'] as const;
+type ProfessionCode = typeof PROFESSION_CODES[number];
+
 // Import roster utilities
 import { 
   validatePublicNote as validateRosterNote,
@@ -421,12 +425,21 @@ const calculateStats = (members: Member[]): RosterStats => {
 
 // mainAltStats se define más abajo con un cálculo más completo
 
+// Calcular estadísticas completas del roster
+const calculatedStats = calculateStats(rosterData.members);
+
 // Actualizar las estadísticas del roster
 stats = {
   ...stats,
   totalMembers: rosterData.totalMembers,
-  validNotesCount: rosterData.stats.validNotesCount || 0,
-  professions: {}
+  validNotesCount: calculatedStats.validNotesCount || 0,
+  professions: calculatedStats.professions || {}
+};
+
+// Asegurarse de que rosterData.stats tenga las estadísticas actualizadas
+rosterData.stats = {
+  ...rosterData.stats,
+  ...calculatedStats
 };
 
 // Inicializar roleStats contando cada rol (T, H, D) independientemente de si es rol principal o dual
@@ -1553,10 +1566,6 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     raids: result.raids || [],
   };
 }
-
-// Códigos de profesión válidos
-const PROFESSION_CODES = ['AL', 'BS', 'EN', 'EG', 'HB', 'IN', 'JC', 'LW', 'MN', 'SK', 'TL'] as const;
-type ProfessionCode = typeof PROFESSION_CODES[number];
 
 // Mapa de colores y nombres de profesión
 const PROFESSION_INFO = {
