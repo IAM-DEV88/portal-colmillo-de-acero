@@ -1,10 +1,78 @@
 ---
 import Layout from '../components/layout/Layout.astro';
 import RosterTable from '../components/roster/RosterTable.astro';
+import rosterData from '../data/roster.json';
+import { validatePublicNote } from '../utils/rosterUtils';
+
+// Definir el tipo para los miembros del roster
+interface RosterMember {
+  name: string;
+  officerNote?: string;
+  class: string;
+  publicNote?: string;
+  rank?: string;
+  noteValidation?: any;
+}
+
+// Asegurarse de que los datos tengan la estructura esperada
+const formattedRosterData = (Array.isArray(rosterData) ? rosterData : []).map((member: any) => {
+  try {
+    // Validar la nota pública si existe
+    const publicNote = String(member.publicNote || '').trim();
+    const noteValidation = validatePublicNote(publicNote, member.name || 'Desconocido');
+    
+    // Asegurar que la clase sea válida
+    const className = String(member.class || 'Desconocido').trim();
+    
+    return {
+      ...member,
+      name: String(member.name || 'Sin nombre').trim(),
+      class: className,
+      rank: String(member.rank || 'Miembro').trim(),
+      publicNote,
+      noteValidation,
+      officerNote: String(member.officerNote || '').trim(),
+      mainAlt: member.mainAlt || 'M',
+      level: Number(member.level) || 80,
+      gearScore: Number(member.gearScore) || 0,
+      // Asegurar que los campos de validación estén presentes
+      validation: {
+        ...noteValidation,
+        isValid: noteValidation.isValid || false,
+        missingFields: Array.isArray(noteValidation.missingFields) 
+          ? noteValidation.missingFields 
+          : []
+      }
+    };
+  } catch (error) {
+    console.error('Error procesando miembro:', member, error);
+    return {
+      ...member,
+      name: String(member.name || 'Error en datos').trim(),
+      class: 'Desconocido',
+      rank: 'Error',
+      publicNote: '',
+      noteValidation: {
+        isValid: false,
+        errors: ['Error al procesar datos del personaje'],
+        missingFields: ['Datos inválidos']
+      },
+      officerNote: '',
+      mainAlt: 'M',
+      level: 0,
+      gearScore: 0,
+      validation: {
+        isValid: false,
+        errors: ['Error al procesar datos del personaje'],
+        missingFields: ['Datos inválidos']
+      }
+    };
+  }
+});
 ---
 
 <Layout title="Roster">
   <div class="mx-auto animate-fade-in">
-    <RosterTable />
+    <RosterTable initialRosterData={formattedRosterData} />
   </div>
 </Layout>

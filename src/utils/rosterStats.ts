@@ -71,7 +71,7 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
 
     // Calcular estadísticas de gear score
     if (validation.gearScore) {
-      const gs = parseFloat(validation.gearScore);
+      const gs = parseFloat(validation.gearScore.toString());
       if (!isNaN(gs)) {
         stats.gearScoreStats.total += gs;
         stats.gearScoreStats.count++;

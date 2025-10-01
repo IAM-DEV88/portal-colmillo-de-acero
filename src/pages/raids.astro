@@ -29,7 +29,9 @@ interface RaidLeader {
     difficulty?: string;
     name: string;
   }>;
-  schedule: string[];
+  schedules: (string | {
+    [key: string]: any;
+  })[]; // Updated to handle both string and Schedule types
   hasSchedule: boolean;
   hasRaids: boolean;
   icon: string;
@@ -89,7 +91,7 @@ for (const member of members) {
           publicNote: member.publicNote || '',
           isRaidLeader: Boolean(isRaidLeader),
           raids: validation.raids || [],
-          schedule: validation.schedules || [],
+          schedules: validation.schedules || [],
           hasSchedule,
           hasRaids,
           icon: formatClassName(member.class),
@@ -112,7 +114,7 @@ for (const member of members) {
 // Calculate total raids per week based on schedules
 const totalRaidsPerWeek = raidLeaders.reduce((total, leader) => {
   // Count each schedule time as one raid instance
-  return total + ((leader.schedule && leader.schedule.length) || 0);
+  return total + ((leader.schedules && leader.schedules.length) || 0);
 }, 0);
 
 // Get unique raids and difficulties for filters
@@ -161,9 +163,10 @@ const raidStats = raidLeaders.reduce<RaidStats>(
     });
 
     // Schedule statistics (count each schedule time only once per member)
-    if (member.schedule) {
+    if (member.schedules) {
       const uniqueTimes = new Set<string>();
-      member.schedule.forEach((time: string) => {
+      member.schedules.forEach((schedule: string | { [key: string]: any }) => {
+        const time = typeof schedule === 'string' ? schedule : schedule.time;
         if (time) {
           uniqueTimes.add(time);
         }
@@ -373,7 +376,7 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                             <span class="text-text-muted/60">•</span>
 
                             {/* Horarios */}
-                            {leader.schedule?.length > 0 ? (
+                            {leader.schedules?.length > 0 ? (
                               <>
                                 <span class="flex items-center">
                                   <svg
@@ -389,10 +392,12 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                     />
                                   </svg>
-                                  {leader.schedule.map((time, i) => {
+                                  {leader.schedules.map((schedule: string | { [key: string]: any }, i: number) => {
+                                    const time = typeof schedule === 'string' ? schedule : schedule.time;
                                     const formattedTime = time
+                                      ?.toString()
                                       .replace(/X$/i, 'h')
-                                      .replace(/(\d{2})(\d{2})X/i, '$1:$2h');
+                                      .replace(/(\d{2})(\d{2})X/i, '$1:$2h') || '';
                                     return (
                                       <span>
                                         {i > 0 && <span class="text-text-muted/60">, </span>}
