@@ -25,9 +25,9 @@ const classIcons = {
     <header
       class="text-center mb-10 bg-gradient-to-r from-amber-900/30 to-amber-800/20 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 shadow-lg"
     >
-      <h1 class="text-3xl font-bold text-amber-200 mb-3 tracking-wide">Guía de Nota Pública</h1>
+      <h1 class="text-3xl font-bold text-amber-200 mb-3 tracking-wide">Guía de Código de Nota</h1>
       <p class="text-amber-100/80 max-w-2xl mx-auto">
-        Aprende a formatear correctamente tu nota pública para mejorar la organización del gremio y
+        Aprende a formatear correctamente tu código de nota para mejorar la organización del gremio y
         asegurar tu participación en los eventos.
       </p>
     </header>
@@ -55,7 +55,7 @@ const classIcons = {
             ></path>
           </svg>
         </div>
-        <h2 class="text-2xl font-bold text-amber-200">Validador de Nota</h2>
+        <h2 class="text-2xl font-bold text-amber-200">Validador de Código</h2>
       </div>
 
       <div class="space-y-4">
@@ -64,8 +64,8 @@ const classIcons = {
             <input
               type="text"
               id="notaInput"
-              placeholder="Pega tu nota pública aquí..."
-              class="w-full bg-steel-darker/80 border border-amber-900/30 rounded-lg px-4 py-3 text-white placeholder-amber-100/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all duration-200"
+              placeholder="Pega tu código aquí..."
+              class="w-full bg-amber-900/50 border border-amber-900/30 rounded-lg px-4 py-3 text-white placeholder-amber-100/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all duration-200"
             />
             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
               <svg
@@ -87,7 +87,7 @@ const classIcons = {
 
         <div id="notaResult" class="hidden">
           <div class="p-4 bg-amber-900/10 rounded-lg border border-amber-900/30">
-            <h3 class="font-semibold text-amber-200 mb-3 flex items-center">
+            <h3 class="font-semibold text-amber-200 mb-4 flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5 mr-2 text-amber-400"
@@ -102,27 +102,18 @@ const classIcons = {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 ></path>
               </svg>
-              Análisis de la nota
+              Vista previa
             </h3>
-            <div class="space-y-3 text-sm">
-              <div id="bloquePersonaje" class="flex items-start">
-                <span class="w-5 mt-0.5"
-                  ><span id="personajeIcon" class="text-green-400 font-bold">✓</span></span
-                >
-                <div>
-                  <span id="personajeText" class="font-medium">Bloque de Personaje</span>
-                  <div id="detallesPersonaje" class="text-xs text-amber-100/80 mt-1 space-y-0.5">
-                  </div>
-                </div>
+            <div class="space-y-4">
+              <div>
+                <div class="text-sm font-medium text-amber-200 mb-2">Bloque de Personaje</div>
+                <div id="previewPersonaje" class="flex flex-wrap gap-1.5"></div>
+                <div id="detallesPersonaje" class="text-xs text-amber-100/60 mt-2"></div>
               </div>
-              <div id="bloqueEvento" class="flex items-start pt-2 border-t border-amber-900/20">
-                <span class="w-5 mt-0.5"
-                  ><span id="eventoIcon" class="text-green-400 font-bold">✓</span></span
-                >
-                <div>
-                  <span id="eventoText" class="font-medium">Bloque de Evento</span>
-                  <div id="detallesEvento" class="text-xs text-amber-100/80 mt-1 space-y-0.5"></div>
-                </div>
+              <div class="pt-3 border-t border-amber-900/30">
+                <div class="text-sm font-medium text-amber-200 mb-2">Bloque de Evento</div>
+                <div id="previewEvento" class="flex flex-wrap gap-1.5"></div>
+                <div id="detallesEvento" class="text-xs text-amber-100/60 mt-2"></div>
               </div>
             </div>
           </div>
@@ -130,6 +121,76 @@ const classIcons = {
       </div>
 
       <script>
+        // Constantes de configuración
+        const ROLES = {
+          'T': 'Tank',
+          'H': 'Healer',
+          'D': 'DPS'
+        };
+
+        const STATUS = {
+          'M': 'Main',
+          'A': 'Alt'
+        };
+
+        const RAID_NAMES = {
+          'ICC': 'Ciudadela de la Corona de Hielo',
+          'TOC': 'Prueba del Cruzado',
+          'ULD': 'Ulduar',
+          'NAX': 'Naxxramas',
+          'OS': 'El Oculus de los Creadores',
+          'VOA': 'Cámara de Archavon',
+          'EOE': 'El Ojo de la Eternidad',
+          'ONY': 'Guarida de Onyxia',
+          'RS': 'Cámara de los Aspectos'
+        };
+
+        const DAY_NAMES = {
+          'L': 'Lun',
+          'M': 'Mar',
+          'X': 'Mié',
+          'J': 'Jue',
+          'V': 'Vie',
+          'S': 'Sáb',
+          'D': 'Dom',
+          'W': 'Mié' // Alias para X
+        };
+
+        const DIFFICULTY_NAMES = {
+          '10N': '10 Normal',
+          '10H': '10 Heroico',
+          '25N': '25 Normal',
+          '25H': '25 Heroico'
+        };
+
+        const PROFESSIONS = {
+          'AL': 'Alquimia',
+          'HB': 'Herboristería',
+          'TL': 'Sastrería',
+          'EN': 'Encantamiento',
+          'EG': 'Ingeniería',
+          'JC': 'Joyería',
+          'BS': 'Herrería',
+          'IN': 'Inscripción',
+          'MN': 'Minería',
+          'SK': 'Desuello',
+          'LW': 'Peletería'
+        };
+
+        // Mapeo de códigos de banda a una letra
+        const BANDA_CODES = {
+          'i': 'ICC',
+          't': 'TOC',
+          'u': 'ULD',
+          'n': 'NAX',
+          'o': 'OS',
+          'v': 'VOA',
+          'e': 'EOE',
+          'y': 'ONY',
+          'r': 'RS',
+          'a': 'VOA' // Alias para VOA
+        };
+
         // Elementos del DOM con tipos TypeScript
         const notaInput = document.getElementById('notaInput') as HTMLInputElement | null;
         const notaError = document.getElementById('notaError') as HTMLDivElement | null;
@@ -159,24 +220,107 @@ const classIcons = {
 
         // Función para validar el bloque de personaje
         function validarPersonaje(bloque: string): boolean {
+          // Extraer partes del bloque
+          const mainRoleMatch = bloque.match(/^([MA])/i);
+          const specMatch = bloque.match(/[MA]([THDB]+)/i);
+          const gsMatch = bloque.match(/(\d+\.\d+)/);
+          const offSpecMatch = bloque.match(/[THDB]+/gi)?.[1] ? true : false;
+          const offGsMatch = bloque.match(/(\d+\.\d+)/g)?.[1] ? true : false;
+          const profsMatch = bloque.match(/([A-Z]{2,4})$/i);
+
           const resultados = {
-            mainRole: regexPersonaje.mainRole.test(bloque),
-            spec: regexPersonaje.spec.test(bloque),
-            gs: regexPersonaje.gs.test(bloque),
-            offSpec: regexPersonaje.offSpec.test(bloque),
-            offGs: regexPersonaje.offGs.test(bloque),
-            profs: regexPersonaje.profs.test(bloque),
+            mainRole: !!mainRoleMatch?.[1],
+            spec: !!specMatch?.[1],
+            gs: !!gsMatch?.[1],
+            offSpec: offSpecMatch,
+            offGs: offGsMatch,
+            profs: !!profsMatch?.[1],
           };
 
-          if (detallesPersonaje) {
-            detallesPersonaje.innerHTML = `
-                <div class="${resultados.mainRole ? 'text-green-400' : 'text-red-400'}">• Rol principal (M/A): ${resultados.mainRole ? '✓' : '✗'}</div>
-                <div class="${resultados.spec ? 'text-green-400' : 'text-red-400'}">• Especialización (T/H/D): ${resultados.spec ? '✓' : '✗'}</div>
-                <div class="${resultados.gs ? 'text-green-400' : 'text-red-400'}">• Gear Score: ${resultados.gs ? '✓' : '✗'}</div>
-                <div class="${resultados.offSpec ? 'text-green-400' : 'text-amber-400'}">• Especialización secundaria (opcional): ${resultados.offSpec ? '✓' : '✗'}</div>
-                <div class="${resultados.offGs ? 'text-green-400' : 'text-amber-400'}">• Gear Score secundario (opcional): ${resultados.offGs ? '✓' : '✗'}</div>
-                <div class="${resultados.profs ? 'text-green-400' : 'text-red-400'}">• Profesiones: ${resultados.profs ? '✓' : '✗'}</div>
-              `;
+          // Extraer valores para la vista previa
+          const mainRole = mainRoleMatch?.[1] || '';
+          const spec = specMatch?.[1] || '';
+          const gs = gsMatch?.[1] || '';
+          const offSpec = bloque.match(/[THDB]+/gi)?.[1] || '';
+          const offGs = bloque.match(/\d+\.\d+/g)?.[1] || '';
+          const profs = profsMatch?.[1] || '';
+
+          // Generar etiquetas para la vista previa
+          const previewPersonaje = document.getElementById('previewPersonaje');
+          if (previewPersonaje) {
+            previewPersonaje.innerHTML = '';
+            
+            // Rol principal (Main/Alt)
+            if (mainRole) {
+              const tag = document.createElement('span');
+              const rolCompleto = STATUS[mainRole.toUpperCase() as keyof typeof STATUS] || mainRole.toUpperCase();
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.mainRole ? 'bg-blue-900/50 text-blue-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              tag.textContent = rolCompleto;
+              tag.title = `Rol: ${rolCompleto}`;
+              previewPersonaje.appendChild(tag);
+            }
+
+            // Especialización principal
+            if (spec) {
+              const tag = document.createElement('span');
+              const specs = Array.from(spec).map(s => 
+                ROLES[s.toUpperCase()] || s.toUpperCase()
+              ).join('');
+              
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.spec ? 'bg-purple-900/50 text-purple-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              tag.textContent = specs;
+              tag.title = `Especialización: ${specs}`;
+              previewPersonaje.appendChild(tag);
+            }
+
+            // Gear Score principal
+            if (gs) {
+              const tag = document.createElement('span');
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.gs ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              tag.textContent = gs;
+              previewPersonaje.appendChild(tag);
+            }
+
+            // Especialización secundaria
+            if (offSpec) {
+              const tag = document.createElement('span');
+              const offSpecs = Array.from(offSpec).map(s => 
+                ROLES[s.toUpperCase()] || s.toUpperCase()
+              ).join('');
+              
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.offSpec ? 'bg-yellow-900/50 text-yellow-200' : 'bg-amber-900/50 text-amber-200'
+              }`;
+              tag.textContent = `Dual: ${offSpecs}`;
+              tag.title = `Especialización secundaria: ${offSpecs}`;
+              previewPersonaje.appendChild(tag);
+            }
+
+            // Gear Score secundario
+            if (offGs) {
+              const tag = document.createElement('span');
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.offGs ? 'bg-pink-900/50 text-pink-200' : 'bg-amber-900/50 text-amber-200'
+              }`;
+              tag.textContent = offGs;
+              previewPersonaje.appendChild(tag);
+            }
+
+            // Profesiones
+            if (profs) {
+              const tag = document.createElement('span');
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.profs ? 'bg-cyan-900/50 text-cyan-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              tag.textContent = profs.toUpperCase();
+              previewPersonaje.appendChild(tag);
+            }
           }
 
           return (
@@ -186,23 +330,103 @@ const classIcons = {
         }
 
         // Función para validar el bloque de evento
-        function validarEvento(bloque: string): boolean {
+        function validarEvento(bloque: string, { dias, bandas }: { dias: Record<string, string>, bandas: Record<string, string> }): boolean {
+          // Extraer partes del bloque de evento
+          // Ahora permite códigos de banda de 1-3 letras
+          const eventMatch = bloque.match(/^([a-z])(\d+)([a-z]*?)([a-z]{1,3})(\d+[a-z]*)$/i);
+          if (!eventMatch) return false;
+          
+          const [_, dia, hora, lider, banda, dificultad] = eventMatch;
+          
           const resultados = {
-            dia: regexEvento.dia.test(bloque),
-            hora: regexEvento.hora.test(bloque),
-            lider: regexEvento.lider.test(bloque),
-            banda: regexEvento.banda.test(bloque),
-            dificultad: regexEvento.dificultad.test(bloque),
+            dia: !!dia,
+            hora: !!hora,
+            lider: true, // Líder es opcional
+            banda: !!banda,
+            dificultad: !!dificultad,
           };
+          
+          // Obtener nombres completos
+          const nombreDia = dias[dia.toLowerCase()] || dia.toUpperCase();
+          const nombreBanda = bandas[banda.toLowerCase()] || banda.toUpperCase();
+          const esHeroico = dificultad.toLowerCase().endsWith('h');
+          const nivelDificultad = dificultad.replace(/[^0-9]/g, '') || '10';
 
-          if (detallesEvento) {
-            detallesEvento.innerHTML = `
-                <div class="${resultados.dia ? 'text-green-400' : 'text-red-400'}">• Día: ${resultados.dia ? '✓' : '✗'}</div>
-                <div class="${resultados.hora ? 'text-green-400' : 'text-red-400'}">• Hora: ${resultados.hora ? '✓' : '✗'}</div>
-                <div class="${resultados.lider ? 'text-green-400' : 'text-red-400'}">• Líder: ${resultados.lider ? '✓' : '✗'}</div>
-                <div class="${resultados.banda ? 'text-green-400' : 'text-red-400'}">• Banda: ${resultados.banda ? '✓' : '✗'}</div>
-                <div class="${resultados.dificultad ? 'text-green-400' : 'text-red-400'}">• Dificultad: ${resultados.dificultad ? '✓' : '✗'}</div>
-              `;
+          // Generar etiquetas para la vista previa
+          const previewEvento = document.getElementById('previewEvento');
+          if (previewEvento) {
+            previewEvento.innerHTML = '';
+            
+            // Día
+            if (dia) {
+              const tag = document.createElement('span');
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.dia ? 'bg-blue-900/50 text-blue-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              tag.textContent = DAY_NAMES[dia.toUpperCase() as keyof typeof DAY_NAMES] || dia.toUpperCase();
+              tag.title = `Día: ${DAY_NAMES[dia.toUpperCase() as keyof typeof DAY_NAMES] || dia.toUpperCase()}`;
+              previewEvento.appendChild(tag);
+            }
+
+            // Hora
+            if (hora) {
+              const tag = document.createElement('span');
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.hora ? 'bg-purple-900/50 text-purple-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              const horaFormateada = `${hora}:00`;
+              tag.textContent = horaFormateada;
+              tag.title = `Hora: ${horaFormateada}`;
+              previewEvento.appendChild(tag);
+            }
+
+            // Líder - Mostrar 'Busco' cuando no hay líder
+            const tag = document.createElement('span');
+            tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+              lider && lider.toLowerCase() === 'rl' ? 'bg-green-900/50 text-green-200' : 'bg-amber-900/50 text-amber-200'
+            }`;
+            tag.textContent = lider && lider.toLowerCase() === 'rl' ? 'Armo' : 'Busco';
+            tag.title = lider ? `Líder: ${lider.toUpperCase()}` : 'Buscando grupo';
+            previewEvento.appendChild(tag);
+
+            // Banda
+            if (banda) {
+              const tag = document.createElement('span');
+              // Primero intenta con el código completo (para códigos de 2-3 letras como ICC, TOC, etc.)
+              const codigoBanda = banda.toUpperCase();
+              let nombreBandaCompleto = RAID_NAMES[codigoBanda as keyof typeof RAID_NAMES];
+              
+              // Si no se encuentra, intenta con el mapeo de una letra
+              if (!nombreBandaCompleto && banda.length === 1) {
+                const bandaMapeada = bandas[banda.toLowerCase()];
+                nombreBandaCompleto = RAID_NAMES[bandaMapeada as keyof typeof RAID_NAMES];
+              }
+              
+              // Si aún no se encuentra, usa el código original
+              if (!nombreBandaCompleto) {
+                nombreBandaCompleto = codigoBanda;
+              }
+              
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.banda ? 'bg-yellow-900/50 text-yellow-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              tag.textContent = nombreBandaCompleto;
+              tag.title = `Banda: ${nombreBandaCompleto} (${codigoBanda})`;
+              previewEvento.appendChild(tag);
+            }
+
+            // Dificultad
+            if (dificultad) {
+              const tag = document.createElement('span');
+              const dificultadKey = `${nivelDificultad}${esHeroico ? 'H' : 'N'}` as keyof typeof DIFFICULTY_NAMES;
+              const nombreDificultad = DIFFICULTY_NAMES[dificultadKey] || `${nivelDificultad} ${esHeroico ? 'Heroico' : 'Normal'}`;
+              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                resultados.dificultad ? 'bg-pink-900/50 text-pink-200' : 'bg-red-900/50 text-red-200'
+              }`;
+              tag.textContent = nombreDificultad;
+              tag.title = `Dificultad: ${nombreDificultad}`;
+              previewEvento.appendChild(tag);
+            }
           }
 
           return Object.values(resultados).every(Boolean);
@@ -210,6 +434,17 @@ const classIcons = {
 
         // Manejador de eventos para el input
         if (notaInput) {
+          function limpiarResultados() {
+            if (detallesPersonaje) detallesPersonaje.innerHTML = '';
+            if (detallesEvento) detallesEvento.innerHTML = '';
+            const previewPersonaje = document.getElementById('previewPersonaje');
+            const previewEvento = document.getElementById('previewEvento');
+            if (previewPersonaje) previewPersonaje.innerHTML = '';
+            if (previewEvento) previewEvento.innerHTML = '';
+            if (notaError) notaError.classList.add('hidden');
+            if (notaResult) notaResult.classList.add('hidden');
+          }
+
           notaInput.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
             if (!target) return;
@@ -217,37 +452,61 @@ const classIcons = {
             const nota = target.value.trim();
 
             if (!nota) {
-              if (notaError) notaError.classList.add('hidden');
-              if (notaResult) notaResult.classList.add('hidden');
+              limpiarResultados();
               return;
             }
 
+            // Usar las constantes importadas
+            const dias = DAY_NAMES;
+            const bandas = BANDA_CODES;
+
             // Validar bloques separados por espacios
             const bloques = nota.split(/\s+/);
-            const bloquePersonaje = bloques.find((bloque) => regexPersonaje.mainRole.test(bloque));
-            const bloqueEvento = bloques.find(
-              (bloque) => regexEvento.dia.test(bloque) && regexEvento.hora.test(bloque)
+            
+            // Buscar bloque de personaje (debe empezar con M o A seguido de letras de especialización)
+            const bloquePersonaje = bloques.find(bloque => 
+              /^[MA][THDB]+/i.test(bloque) && 
+              /\d+\.\d+/.test(bloque) &&
+              /[A-Z]{2,4}$/i.test(bloque)
             );
+            
+            // Buscar bloque de evento (formato: letraDía + númeroHora + letraLíder + códigoBanda + númeroDificultad)
+            const bloqueEvento = bloques.find(bloque => {
+              // Ajustar la expresión regular para manejar códigos de banda de 1-3 letras
+              const eventMatch = bloque.match(/^([a-z])(\d+)([a-z]*?)([a-z]{1,3})(\d+[a-z]*)$/i);
+              if (!eventMatch) return false;
+              
+              const [_, dia, hora, lider, banda, dificultad] = eventMatch;
+              // El líder es opcional, pero debe haber un código de banda
+              return dia && hora && banda && dificultad;
+            });
 
             let tienePersonaje = false;
             let tieneEvento = false;
 
+            // Limpiar resultados previos
+            const previewPersonaje = document.getElementById('previewPersonaje');
+            const previewEvento = document.getElementById('previewEvento');
+            if (previewPersonaje) previewPersonaje.innerHTML = '';
+            if (previewEvento) previewEvento.innerHTML = '';
+
+            // Validar bloques si existen
             if (bloquePersonaje) {
               tienePersonaje = validarPersonaje(bloquePersonaje);
+              if (!tienePersonaje && detallesPersonaje) {
+                detallesPersonaje.innerHTML = '<div class="text-amber-400">Formato de personaje inválido</div>';
+              }
             } else if (detallesPersonaje) {
-              detallesPersonaje.innerHTML =
-                '<div class="text-red-400">No se encontró el bloque de personaje</div>';
-            } else {
-              console.warn('Elemento detallesPersonaje no encontrado en el DOM');
+              detallesPersonaje.innerHTML = '<div class="text-amber-400">No se encontró el bloque de personaje</div>';
             }
 
             if (bloqueEvento) {
-              tieneEvento = validarEvento(bloqueEvento);
+              tieneEvento = validarEvento(bloqueEvento, { dias, bandas });
+              if (!tieneEvento && detallesEvento) {
+                detallesEvento.innerHTML = '<div class="text-amber-400">Formato de evento inválido</div>';
+              }
             } else if (detallesEvento) {
-              detallesEvento.innerHTML =
-                '<div class="text-red-400">No se encontró el bloque de evento</div>';
-            } else {
-              console.warn('Elemento detallesEvento no encontrado en el DOM');
+              detallesEvento.innerHTML = '<div class="text-amber-400">No se encontró el bloque de evento</div>';
             }
 
             // Actualizar iconos principales
