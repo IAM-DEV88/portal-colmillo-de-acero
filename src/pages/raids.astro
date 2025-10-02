@@ -2,7 +2,8 @@
 import Layout from '../components/layout/Layout.astro';
 import rosterJson from '../data/roster.json';
 import { validatePublicNote } from '../utils/rosterUtils';
-import type { RaidInfo } from '../types/roster';
+// Eliminamos la importación de RaidInfo ya que la definiremos localmente
+// import type { RaidInfo } from '../types/roster';
 
 // Define the roster item type
 interface RosterItem {
@@ -17,24 +18,65 @@ interface RosterItem {
 // Type the roster data
 const rosterData: RosterItem[] = Array.isArray(rosterJson) ? rosterJson : [];
 
+// Define difficulty colors
+const difficultyColors = {
+  'normal': 'text-green-400',
+  'heroic': 'text-purple-400',
+  'mythic': 'text-yellow-400',  
+  'lfr': 'text-blue-400',
+  'flex': 'text-blue-400',
+  'raid-finder': 'text-blue-400',
+} as const;
+
+type DifficultyKey = keyof typeof difficultyColors;
+
 // Define types for our data
+interface RaidEvent {
+  name: string;
+  class: string;
+  icon: string;
+  raid: {
+    code: string;
+    difficultyCode: string;
+    difficulty: string;
+    name: string;
+  };
+  schedule: {
+    days: string[];
+    time: string;
+    isRaidLeader: boolean;
+  };
+  combinedNote?: string;
+  nextOccurrence: Date;
+}
+
+interface Schedule {
+  days: string[];
+  time: string;
+  isRaidLeader: boolean;
+  dayRange?: string;
+}
+
+interface RaidInfo {
+  code: string;
+  difficultyCode?: string;
+  difficulty?: string;
+  name: string;
+}
+
 interface RaidLeader {
   name: string;
   class: string;
   publicNote: string;
+  officerNote?: string;
   isRaidLeader: boolean;
-  raids: Array<{
-    code: string;
-    difficultyCode?: string;
-    difficulty?: string;
-    name: string;
-  }>;
-  schedules: (string | {
-    [key: string]: any;
-  })[]; // Updated to handle both string and Schedule types
+  raids: RaidInfo[];
+  schedules: Schedule[];
   hasSchedule: boolean;
   hasRaids: boolean;
   icon: string;
+  combinedNote?: string;
+  events: RaidEvent[];
 }
 
 // Type for roster data that could be either an array or an object with members
@@ -64,60 +106,427 @@ const formatClassName = (className: string): string => {
     .replace(/\s+/g, '_'); // Replace spaces with underscores
 };
 
+// Función para obtener el próximo día de la semana (0 = Domingo, 1 = Lunes, etc.)
+const getNextDayOfWeek = (targetDay: number, timeString: string): Date => {
+  const now = new Date();
+  const [hours, minutes] = timeString.split(':').map(Number);
+  
+  // Crear fecha objetivo
+  const targetDate = new Date(now);
+  targetDate.setHours(hours, minutes, 0, 0);
+  
+  // Calcular días hasta el próximo día objetivo
+  const currentDay = now.getDay(); // 0 = Domingo, 1 = Lunes, etc.
+  let daysToAdd = targetDay - currentDay;
+  
+  // Ajustar si el día ya pasó esta semana o si es hoy pero la hora ya pasó
+  if (daysToAdd < 0 || (daysToAdd === 0 && now > targetDate)) {
+    daysToAdd += 7; // Ir al de la próxima semana
+  }
+  
+  targetDate.setDate(now.getDate() + daysToAdd);
+  return targetDate;
+};
+
+// Función para calcular el peso de un evento para ordenación
+const getEventWeight = (dayCode: string, timeString: string): number => {
+  const now = new Date();
+  const dayIndex = DAY_TO_INDEX[dayCode];
+  const nextOccurrence = getNextDayOfWeek(dayIndex, timeString);
+  
+  // Calcular la diferencia en milisegundos desde ahora
+  const diffMs = nextOccurrence.getTime() - now.getTime();
+  
+  // Si la diferencia es negativa (no debería pasar), sumar una semana
+  return diffMs < 0 ? diffMs + (7 * 24 * 60 * 60 * 1000) : diffMs;
+};
+
+// Mapa de días a índices (0 = Domingo, 1 = Lunes, etc.)
+const DAY_TO_INDEX: Record<string, number> = {
+  'L': 1, // Lunes
+  'M': 2, // Martes
+  'X': 3, // Miércoles
+  'J': 4, // Jueves
+  'V': 5, // Viernes
+  'S': 6, // Sábado
+  'D': 0  // Domingo
+};
+
+// Orden de los días para la visualización (Lunes a Domingo)
+const DAY_ORDER = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+
+// Mapa de códigos de día a nombres completos
+const DAY_NAMES: Record<string, string> = {
+  'L': 'Lunes',
+  'M': 'Martes',
+  'X': 'Miércoles',
+  'J': 'Jueves',
+  'V': 'Viernes',
+  'S': 'Sábado',
+  'D': 'Domingo'
+};
+
 // Process roster data to find raid leaders with raids and schedules
 const raidLeaders: RaidLeader[] = [];
-const potentialLeaders: { name: string; reason: string }[] = [];
+const potentialLeaders: Array<{ name: string; reason: string }> = [];
+const raidEvents: RaidEvent[] = [];
+
+// Función para calcular el peso de un evento para ordenación global
+const getGlobalEventWeight = (event: RaidEvent): number => {
+  if (!event?.schedule?.days?.[0] || !event.schedule.time) return Number.MAX_SAFE_INTEGER;
+  
+  const dayCode = event.schedule.days[0];
+  const time = event.schedule.time;
+  const dayIndex = DAY_TO_INDEX[dayCode];
+  
+  if (dayIndex === undefined) return Number.MAX_SAFE_INTEGER;
+  
+  const now = new Date();
+  const nextOccurrence = getNextDayOfWeek(dayIndex, time);
+  
+  // Calcular la diferencia en minutos desde ahora
+  const diffMs = nextOccurrence.getTime() - now.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  
+  // Si la diferencia es negativa, sumar una semana
+  return diffMinutes < 0 ? diffMinutes + (7 * 24 * 60) : diffMinutes;
+};
 
 // Use the typed roster data
 const members = rosterData;
 
 const debugLeaders = ['Stormgrim', 'Voidhammer', 'Vorthrak'];
 
-for (const member of members) {
-  try {
-    const validation = validatePublicNote(member.publicNote || '', member.name);
-    const hasSchedule = (validation.schedules && validation.schedules.length > 0) || false;
-    const hasRaids = (validation.raids && validation.raids.length > 0) || false;
-    const isRaidLeader =
-      validation.isRaidLeader ||
-      (hasRaids && hasSchedule) ||
-      (hasRaids && member.publicNote?.toLowerCase().includes('rl'));
-
-    if (isRaidLeader || hasRaids || hasSchedule) {
-      if (hasRaids && hasSchedule) {
-        raidLeaders.push({
-          name: member.name,
-          class: member.class,
-          publicNote: member.publicNote || '',
-          isRaidLeader: Boolean(isRaidLeader),
-          raids: validation.raids || [],
-          schedules: validation.schedules || [],
-          hasSchedule,
-          hasRaids,
-          icon: formatClassName(member.class),
-        });
-      } else if (hasRaids) {
-        potentialLeaders.push({
-          name: member.name,
-          reason: `Tiene raids pero le falta horario: ${validation.raids?.map((r) => r.code).join(', ')}`,
-        });
-      } else if (hasSchedule) {
-        potentialLeaders.push({
-          name: member.name,
-          reason: `Tiene horario (${validation.schedules?.join(', ')}) pero no tiene raids definidos`,
+// Función para extraer raids de los bloques de evento
+const extractRaidsFromBlocks = (blocks: any[] = []): RaidInfo[] => {
+  const raids: RaidInfo[] = [];
+  const seen = new Set<string>(); // Para evitar duplicados
+  
+  blocks.forEach(block => {
+    // Solo considerar bloques de evento válidos que tengan RL, raid, días y hora
+    if (block.type === 'event' && 
+        block.isValid && 
+        block.parsedData?.isRaidLeader && 
+        block.parsedData?.raid && 
+        block.parsedData.days?.length > 0 && 
+        block.parsedData.time) {
+      
+      const raidKey = `${block.parsedData.raid}-${block.parsedData.difficulty || '25N'}`;
+      
+      // Evitar duplicados
+      if (!seen.has(raidKey)) {
+        seen.add(raidKey);
+        raids.push({
+          code: block.parsedData.raid,
+          difficultyCode: block.parsedData.difficulty || '25N',
+          difficulty: block.parsedData.difficulty === '10N' ? '10 Normal' : 
+                     block.parsedData.difficulty === '25N' ? '25 Normal' :
+                     block.parsedData.difficulty === '10H' ? '10 Heroico' : '25 Heroico',
+          name: block.parsedData.raid.toUpperCase()
         });
       }
     }
-  } catch (error) {}
+  });
+  return raids;
+};
+
+// Función para extraer horarios de los bloques de evento
+const extractSchedulesFromBlocks = (blocks: any[] = []): Schedule[] => {
+  const schedules: Schedule[] = [];
+  const seen = new Set<string>(); // Para evitar duplicados
+  
+  if (!blocks || !Array.isArray(blocks)) return [];
+  
+  blocks.forEach(block => {
+    try {
+      // Solo considerar bloques de evento válidos que tengan RL, días y hora
+      if (block.type === 'event' && 
+          block.isValid && 
+          block.parsedData?.isRaidLeader && 
+          block.parsedData.days?.length > 0 && 
+          block.parsedData.time &&
+          block.parsedData.raid) {  // Asegurarse de que haya una raid definida
+        
+        const days = Array.isArray(block.parsedData.days) ? block.parsedData.days : [];
+        const time = String(block.parsedData.time || '').trim();
+        const raid = block.parsedData.raid;
+        const difficulty = block.parsedData.difficulty || '25N';
+        
+        // Crear un horario para cada día
+        days.forEach((day: string) => {
+          const scheduleKey = `${day}-${time}-${raid}-${difficulty}`;
+          
+          // Evitar duplicados exactos
+          if (!seen.has(scheduleKey)) {
+            seen.add(scheduleKey);
+            schedules.push({
+              days: [day],
+              time,
+              isRaidLeader: true,
+              raid,
+              difficulty
+            });
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error procesando bloque de horario:', error, block);
+    }
+  });
+  
+  return schedules;
+};
+
+for (const member of members) {
+  try {
+    // Validar tanto la nota pública como la oficial
+    const publicValidation = validatePublicNote(member.publicNote || '', member.name);
+    const officerValidation = validatePublicNote(member.officerNote || '', member.name);
+    
+    // Combinar bloques de ambas validaciones
+    const allBlocks = [
+      ...(publicValidation.blocks || []),
+      ...(officerValidation.blocks || [])
+    ];
+    
+    // Extraer raids y horarios de todos los bloques combinados
+    const raids = extractRaidsFromBlocks(allBlocks);
+    const schedules = extractSchedulesFromBlocks(allBlocks);
+    
+    // Verificar si tiene bloques de evento válidos con RL en cualquiera de las notas
+    const hasValidRLBlocks = allBlocks.some(block => 
+      block.type === 'event' && block.isValid && block.parsedData?.isRaidLeader
+    ) || false;
+
+    const hasSchedule = schedules.length > 0;
+    const hasRaids = raids.length > 0;
+    
+    // Solo considerar líderes de raid con bloques válidos que tengan RL
+    const isRaidLeader = hasValidRLBlocks;
+
+    // Solo agregar a raidLeaders si tienen bloques de evento válidos con RL
+    if (isRaidLeader && hasRaids && hasSchedule) {
+      // Combinar notas públicas y oficiales
+      const combinedNote = [
+        member.publicNote?.trim(),
+        member.officerNote?.trim()
+      ].filter(Boolean).join(' ');
+
+            // Crear eventos individuales para cada horario
+      const leaderEvents: RaidEvent[] = [];
+      
+      // Para cada horario, crear un evento
+      for (const schedule of schedules) {
+        const days = Array.isArray(schedule.days) ? schedule.days : [];
+        const time = String(schedule.time || '').trim();
+        const raidCode = schedule.raid || '';
+        const difficulty = schedule.difficulty || '25N';
+        
+        // Solo procesar si tenemos toda la información necesaria
+        if (days.length > 0 && time && raidCode) {
+          // Para cada día del horario
+          for (const day of days) {
+            try {
+              const dayIndex = DAY_TO_INDEX[day];
+              const nextOccurrence = getNextDayOfWeek(dayIndex, time);
+              
+              // Buscar la información completa del raid
+              const raidInfo = raids.find(r => 
+                r.code.toLowerCase() === raidCode.toLowerCase() && 
+                r.difficultyCode === difficulty
+              );
+              
+              if (raidInfo) {
+                leaderEvents.push({
+                  name: member.name,
+                  class: member.class,
+                  icon: formatClassName(member.class),
+                  raid: {
+                    code: raidInfo.code,
+                    difficultyCode: raidInfo.difficultyCode,
+                    difficulty: raidInfo.difficulty,
+                    name: raidInfo.name
+                  },
+                  schedule: {
+                    days: [day],
+                    time,
+                    isRaidLeader: true
+                  },
+                  combinedNote,
+                  nextOccurrence
+                });
+              }
+            } catch (error) {
+              console.error(`Error procesando evento para ${member.name}:`, error);
+            }
+          }
+        }
+      }
+      
+      // Ordenar los eventos del líder por proximidad
+      const sortedLeaderEvents = [...leaderEvents].sort((a, b) => {
+        return getGlobalEventWeight(a) - getGlobalEventWeight(b);
+      });
+      
+      // Agregar todos los eventos a la lista general
+      raidEvents.push(...sortedLeaderEvents);
+      
+      // Crear objeto de líder de raid con los tipos correctos
+      const raidLeader: RaidLeader = {
+        name: member.name,
+        class: member.class,
+        publicNote: member.publicNote || '',
+        officerNote: member.officerNote,
+        isRaidLeader,
+        raids: raids.map(r => ({
+          code: r.code,
+          difficultyCode: r.difficultyCode || '25N',
+          difficulty: r.difficulty || '25 Normal',
+          name: r.name
+        })),
+        schedules: schedules.map(s => ({
+          days: Array.isArray(s.days) ? s.days : [],
+          time: s.time || '',
+          isRaidLeader: s.isRaidLeader || false
+        })),
+        hasSchedule,
+        hasRaids,
+        icon: formatClassName(member.class),
+        combinedNote,
+        events: leaderEvents
+      };
+      
+      // Agregar al líder de raid con sus eventos
+      raidLeaders.push(raidLeader);
+    } else if (hasRaids || hasSchedule) {
+      // Agregar a potenciales líderes si tienen raids u horarios pero no son RLs válidos
+      potentialLeaders.push({
+        name: member.name,
+        reason: hasRaids && hasSchedule 
+          ? 'Tiene raids y horario pero no está marcado como RL'
+          : hasRaids 
+            ? `Tiene raids pero le falta horario: ${raids.map((r) => r.code).join(', ')}`
+            : `Tiene horario pero no tiene raids definidos`,
+      });
+    }
+  } catch (error) {
+    console.error(`Error procesando miembro ${member.name}:`, error);
+  }
 }
 
-// Calculate total raids per week based on schedules
+// Función para obtener el peso de un evento para ordenación
+const getEventSortWeight = (event: RaidEvent): number => {
+  if (!event?.schedule?.days?.[0] || !event.schedule.time) return Number.MAX_SAFE_INTEGER;
+  
+  const dayCode = event.schedule.days[0];
+  const time = event.schedule.time;
+  const dayIndex = DAY_TO_INDEX[dayCode];
+  
+  if (dayIndex === undefined) return Number.MAX_SAFE_INTEGER;
+  
+  const now = new Date();
+  const currentDay = now.getDay();
+  const [eventHour, eventMinute] = time.split(':').map(Number);
+  
+  // Calcular días hasta el próximo día del evento (0-6)
+  let daysUntil = (dayIndex - currentDay + 7) % 7;
+  
+  // Si es hoy, verificar si la hora ya pasó
+  if (daysUntil === 0) {
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    
+    // Si el evento ya pasó hoy, programar para la próxima semana
+    if (eventHour < currentHour || (eventHour === currentHour && eventMinute <= currentMinute)) {
+      daysUntil = 7; // Mover a la próxima semana
+    }
+  }
+  
+  // Si es un día anterior en la semana, sumar 7 días
+  if (daysUntil < 0) daysUntil += 7;
+  
+  // Calcular la fecha del próximo evento
+  const nextOccurrence = new Date(now);
+  nextOccurrence.setDate(now.getDate() + daysUntil);
+  nextOccurrence.setHours(eventHour, eventMinute, 0, 0);
+  
+  // Devolver el timestamp para ordenación
+  return nextOccurrence.getTime();
+};
+
+// 1. Filtrar eventos que no tengan toda la información necesaria
+const validEvents = raidEvents.filter(event => {
+  return (
+    event.schedule.isRaidLeader &&
+    event.raid?.code &&
+    event.raid?.difficultyCode &&
+    event.schedule.days?.length > 0 &&
+    event.schedule.time
+  );
+});
+
+// 2. Calcular la próxima ocurrencia para cada evento
+const eventsWithNextOccurrence = validEvents.map(event => {
+  const dayIndex = DAY_TO_INDEX[event.schedule.days[0]];
+  const nextDate = getNextDayOfWeek(dayIndex, event.schedule.time);
+  return {
+    ...event,
+    nextOccurrence: nextDate,
+    sortKey: nextDate.getTime() // Añadimos una clave de ordenación numérica
+  };
+});
+
+// 3. Ordenar TODOS los eventos por la clave de ordenación
+const sortedRaidEvents = [...eventsWithNextOccurrence].sort((a, b) => {
+  try {
+    return a.sortKey - b.sortKey;
+  } catch (e) {
+    console.error('Error al ordenar eventos:', e, { a, b });
+    return 0;
+  }
+});
+
+// 4. Agrupar eventos por líder después de ordenarlos
+const eventsByLeader: { [key: string]: RaidEvent[] } = {};
+sortedRaidEvents.forEach(event => {
+  if (!eventsByLeader[event.name]) {
+    eventsByLeader[event.name] = [];
+  }
+  eventsByLeader[event.name].push(event);
+});
+
+// 5. Actualizar raidLeaders con los eventos ordenados
+raidLeaders.forEach(leader => {
+  if (eventsByLeader[leader.name]) {
+    leader.events = eventsByLeader[leader.name];
+  } else {
+    leader.events = []; // Asegurarse de que siempre haya un array
+  }
+});
+
+// 6. Ordenar la lista de líderes basada en el primer evento de cada uno
+const sortedLeaders = [...raidLeaders].sort((a, b) => {
+  const aTime = a.events?.[0]?.sortKey || Infinity;
+  const bTime = b.events?.[0]?.sortKey || Infinity;
+  return aTime - bTime;
+});
+
+// Reemplazar el array original con la versión ordenada
+raidLeaders.length = 0;
+raidLeaders.push(...sortedLeaders);
+
+// Debug: Mostrar información de los eventos
+console.log('Total de eventos de raid:', raidEvents.length);
+console.log('Eventos con RL:', sortedRaidEvents.length);
+console.log('Eventos ordenados:', sortedRaidEvents);
+
+// Calcular total de raids por semana basado en horarios
 const totalRaidsPerWeek = raidLeaders.reduce((total, leader) => {
-  // Count each schedule time as one raid instance
+  // Contar cada instancia de horario como una raid
   return total + ((leader.schedules && leader.schedules.length) || 0);
 }, 0);
 
-// Get unique raids and difficulties for filters
+// Obtener raids y dificultades únicas para los filtros
 const allRaids = Array.from(
   new Set(
     raidLeaders.flatMap((member) => (member.raids || []).map((raid) => raid.code).filter(Boolean))
@@ -251,49 +660,194 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
       <table class="min-w-full divide-y divide-accent bg-gray-900/50 backdrop-blur-sm">
         <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
           <tr>
-            <th data-column="name" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors" data-sort="name">
+            <th data-column="name" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider" data-sort="name">
               <div class="flex items-center justify-center">
-                <span class="py-2">Líder de Raid</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3.5 w-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                </svg>
+                <span class="py-2">RAIDS DE LA HERMANDAD</span>
               </div>
             </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-accent">
-          {
-            raidLeaders.map((leader, index) => {
-              // Get unique difficulties, ensure valid format (10N, 25N, 10H, 25H)
-              const difficulties = [
-                ...new Set(
-                  leader.raids
-                    .filter(
-                      (raid): raid is RaidInfo & { difficultyCode: string } =>
-                        !!raid.difficultyCode && /^\d+[NH]$/i.test(raid.difficultyCode)
-                    )
-                    .map((raid) => raid.difficultyCode.toUpperCase())
-                    .sort() // Ordenar por dificultad
-                ),
-              ];
+          {raidLeaders.flatMap((leader) => {
+            // Usar los eventos ya ordenados del líder
+            const events = Array.isArray(leader.events) ? leader.events : [];
+            
+            // Agrupar eventos por día y hora (sin reordenar)
+            const groupedEvents: { [key: string]: RaidEvent[] } = {};
+            
+            events.forEach((event) => {
+              if (!event?.schedule?.days || !event.schedule.time) return;
+              const key = `${event.schedule.days.join('')}-${event.schedule.time}`;
+              if (!groupedEvents[key]) {
+                groupedEvents[key] = [];
+              }
+              groupedEvents[key].push(event);
+            });
+            
+            // Convertir a array y mantener el orden ya establecido
+            return Object.entries(groupedEvents)
+              .map(([key, events]) => {
+                const event = events[0];
+                const dayCode = event?.schedule?.days?.[0] || '';
+                const eventTime = event?.schedule?.time || '23:59';
+                
+                // Calcular la próxima ocurrencia para mostrar en el tooltip
+                let nextOccurrence = '';
+                let nextDate: Date | null = null;
+                
+                if (dayCode && eventTime) {
+                  const dayIndex = DAY_TO_INDEX[dayCode];
+                  if (dayIndex !== undefined) {
+                    nextDate = getNextDayOfWeek(dayIndex, eventTime);
+                    nextOccurrence = nextDate.toLocaleString('es-ES', {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    });
+                  }
+                }
+                
+                return {
+                  key,
+                  events,
+                  dayCode,
+                  time: eventTime,
+                  nextOccurrence,
+                  nextDate: nextDate || new Date(8640000000000000), // Fecha muy lejana si no hay fecha
+                  weight: nextDate ? nextDate.getTime() : Number.MAX_SAFE_INTEGER
+                };
+              })
+              .sort((a, b) => a.weight - b.weight) // Ordenar por peso ascendente (más cercano primero)
+              .map(({ events: eventGroup, nextOccurrence, nextDate: eventDate }) => {
+              if (!eventGroup || !eventGroup.length) return null;
+              
+              const firstEvent = eventGroup[0];
+              if (!firstEvent?.schedule?.days?.length) return null;
+              
+              const dayName = firstEvent.schedule.days[0];
+              const dayMap: {[key: string]: string} = {
+                'L': 'Lun',
+                'M': 'Mar',
+                'X': 'Mié',
+                'J': 'Jue',
+                'V': 'Vie',
+                'S': 'Sáb',
+                'D': 'Dom'
+              };
+              
+              const difficultyColors = {
+                '10N': 'text-blue-400',
+                '25N': 'text-purple-400',
+                '25H': 'text-red-400',
+                '10H': 'text-yellow-400',
+              } as const;
+              
+              type DifficultyKey = keyof typeof difficultyColors;
+              
+              const formattedTime = firstEvent.schedule.time.includes(':') 
+                ? firstEvent.schedule.time 
+                : `${firstEvent.schedule.time.slice(0, 2)}:${firstEvent.schedule.time.slice(2)}`;
 
               return (
                 <tr
                   class="hover:bg-steel-dark transition-colors duration-200 hover:border-accent"
                   data-name={leader.name.toLowerCase()}
-                  data-raids={leader.raids
-                    .map((r) => `${r.code}${r.difficultyCode}`)
-                    .join(' ')
-                    .toLowerCase()}
+                  data-raids={eventGroup.map((e: RaidEvent) => e.raid?.code?.toLowerCase() || '').filter(Boolean).join(',')}
+                  data-difficulties={Array.from(new Set(eventGroup.map((e: RaidEvent) => e.raid?.difficultyCode).filter(Boolean))).join(',')}
+                  data-day={dayName}
+                  data-time={firstEvent.schedule.time}
                 >
-                  <td class="px-2 md:px-6 py-4">
-                    <div class="flex items-start">
+                  <td class="p-4">
+                    
+                    <div>
+                      {/* Sección de Raids */}
+                      <div class="mb-3">
+                        <div class="flex items-center text-xs font-medium text-gray-400 mb-1.5" title={nextOccurrence}>
+                          <svg class="w-3.5 h-3.5 mr-1.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                          RAIDS PROGRAMADOS
+                          {nextOccurrence && (() => {
+                            try {
+                              const now = new Date();
+                              // Usamos eventDate que ya es un objeto Date
+                              const occurrenceDate = eventDate || new Date();
+                              
+                              // Crear fecha de mañana
+                              const tomorrow = new Date(now);
+                              tomorrow.setDate(now.getDate() + 1);
+                              
+                              // Comparar fechas
+                              const isToday = 
+                                now.getFullYear() === occurrenceDate.getFullYear() &&
+                                now.getMonth() === occurrenceDate.getMonth() &&
+                                now.getDate() === occurrenceDate.getDate();
+                                
+                              const isTomorrow =
+                                tomorrow.getFullYear() === occurrenceDate.getFullYear() &&
+                                tomorrow.getMonth() === occurrenceDate.getMonth() &&
+                                tomorrow.getDate() === occurrenceDate.getDate();
+                              
+                              let prefix = 'Próximo';
+                              if (isToday) prefix = 'Hoy';
+                              else if (isTomorrow) prefix = 'Mañana';
+                              
+                              return (
+                                <span class="ml-2 text-amber-300 text-xs font-normal">
+                                  {prefix}: {nextOccurrence}
+                                </span>
+                              );
+                            } catch (e) {
+                              console.error('Error al procesar la fecha:', e);
+                              return (
+                                <span class="ml-2 text-amber-300 text-xs font-normal">
+                                  Próximo: {nextOccurrence}
+                                </span>
+                              );
+                            }
+                          })()}
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                          {eventGroup.map((event: RaidEvent, index: number) => {
+                            const raidName = event.raid?.name || 'Unknown Raid';
+                            const raidClass = raidName.toLowerCase().includes('icc') ? 'raid-icc' :
+                                            raidName.toLowerCase().includes('voa') ? 'raid-voa' :
+                                            raidName.toLowerCase().includes('naxx') ? 'raid-naxx' :
+                                            raidName.toLowerCase().includes('ulduar') ? 'raid-ulduar' :
+                                            raidName.toLowerCase().includes('toc') ? 'raid-toc' :
+                                            raidName.toLowerCase().includes('rs') ? 'raid-rs' : '';
+                            
+                            const difficulty = event.raid?.difficulty || '10N';
+                            const diffClass = difficulty === '10N' ? 'difficulty-10N' :
+                                            difficulty === '10H' ? 'difficulty-10H' :
+                                            difficulty === '25N' ? 'difficulty-25N' :
+                                            difficulty === '25H' ? 'difficulty-25H' :
+                                            'difficulty-unknown';
+                            
+                            return (
+                              <div key={`${raidName}-${index}`} class="inline-flex items-center group rounded-md overflow-hidden border border-gray-700/50 hover:border-gray-600/50 transition-all duration-200 hover:shadow-lg hover:shadow-blue-900/20 hover:-translate-y-0.5">
+                              <span class={`inline-flex items-center px-3 py-1.5 text-sm font-semibold ${raidClass} h-full`}>
+                                {raidName}
+                              </span>
+                              <span class={`inline-flex items-center px-2.5 py-1.5 text-xs font-bold ${diffClass} h-full`}>
+                                {difficulty}
+                              </span>
+                            </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      
+                      {/* Sección de Horario */}
+                      <div class="flex items-center justify-between bg-gray-900/40 px-3 py-2 rounded border border-gray-700/50">
+                        <div class="flex items-start">
                       <div class="flex-shrink-0 h-10 w-10 rounded-full bg-steel-darker/80 border border-accent/20 flex items-center justify-center shadow-inner overflow-hidden mr-3">
                         <img
                           src={`/images/avatars/class_${leader.class}.jpg`}
                           alt={leader.class}
                           class="h-8 w-8 rounded-full object-cover"
-                          onerror="this.onerror=null; this.src='/images/class_default.jpg'"
                         />
                       </div>
                       <div class="min-w-0 flex-1">
@@ -301,123 +855,62 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                           <div
                             class="text-xs"
                             style={`color: #${
-                              leader.class === 'Guerrero'
-                                ? 'C79C6E'
-                                : leader.class === 'Paladín'
-                                  ? 'F58CBA'
-                                  : leader.class === 'Cazador'
-                                    ? 'ABD473'
-                                    : leader.class === 'Pícaro'
-                                      ? 'FFF569'
-                                      : leader.class === 'Sacerdote'
-                                        ? 'FFFFFF'
-                                        : leader.class === 'Caballero de la Muerte'
-                                          ? 'C41F3B'
-                                          : leader.class === 'Chamán'
-                                            ? '0070DE'
-                                            : leader.class === 'Mago'
-                                              ? '69CCF0'
-                                              : leader.class === 'Brujo'
-                                                ? '9482C9'
-                                                : leader.class === 'Monje'
-                                                  ? '00FF96'
-                                                  : leader.class === 'Druida'
-                                                    ? 'FF7D0A'
-                                                    : leader.class === 'Cazador de demonios'
-                                                      ? 'A330C9'
-                                                      : '9D9D9D' // Color por defecto
+                              leader.class === 'Guerrero' ? 'C79C6E' :
+                              leader.class === 'Paladín' ? 'F58CBA' :
+                              leader.class === 'Cazador' ? 'ABD473' :
+                              leader.class === 'Pícaro' ? 'FFF569' :
+                              leader.class === 'Sacerdote' ? 'FFFFFF' :
+                              leader.class === 'Caballero de la Muerte' ? 'C41F3B' :
+                              leader.class === 'Chamán' ? '0070DE' :
+                              leader.class === 'Mago' ? '69CCF0' :
+                              leader.class === 'Brujo' ? '9482C9' :
+                              leader.class === 'Monje' ? '00FF96' :
+                              leader.class === 'Druida' ? 'FF7D0A' :
+                              leader.class === 'Cazador de demonios' ? 'A330C9' : '9D9D9D'
                             }`}
                           >
                             {leader.class}
                           </div>
                           <div class="text-sm font-medium text-white mr-2">{leader.name}</div>
-                          
                         </div>
                       </div>
                     </div>
-                          <div class="mt-1.5 text-xs text-text-muted/90 flex flex-wrap gap-1 px-2 py-1.5 rounded-md bg-gray-900/30 border border-accent self-start">
-                            {/* Raids */} Arma 
-                            {Array.from(new Set(leader.raids.map((r) => r.code))).map(
-                              (raidCode: string, index, array) => (
-                                <>
-                                  <span class="font-medium text-accent">{raidCode}</span>
-                                  {index < array.length - 1 && <span class="text-text-muted/60"> o </span>}
-                                </>
-                              )
-                            )}
-
-                            <span class="text-text-muted/60">•</span>
-
-                            {/* Dificultades */}
-                            {difficulties.length > 0 ? (
-                              <>
-                                {difficulties.map((diff, index) => {
-                                  const difficultyColors = {
-                                    '10N': 'text-blue-400',
-                                    '25N': 'text-purple-400',
-                                    '25H': 'text-red-400',
-                                    '10H': 'text-yellow-400',
-                                  } as const;
-                                  type DifficultyKey = keyof typeof difficultyColors;
-                                  const color =
-                                    difficultyColors[diff as DifficultyKey] || 'text-text-muted';
-                                  return (
-                                    <>
-                                      <span class={`font-medium ${color}`}>{diff}</span>
-                                      {index < difficulties.length - 1 && <span class="text-text-muted/60"> o </span>}
-                                    </>
-                                  );
-                                })}
-                              </>
-                            ) : (
-                              <span class="text-text-muted/70">Sin dificultad</span>
-                            )}
-
-                            <span class="text-text-muted/60">•</span>
-
-                            {/* Horarios */}
-                            {leader.schedules?.length > 0 ? (
-                              <>
-                                <span class="flex items-center">
-                                  <svg
-                                    class="w-3 h-3 mr-1 text-green-400"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="2"
-                                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    />
-                                  </svg>
-                                  {leader.schedules.map((schedule: string | { [key: string]: any }, i: number) => {
-                                    const time = typeof schedule === 'string' ? schedule : schedule.time;
-                                    const formattedTime = time
-                                      ?.toString()
-                                      .replace(/X$/i, 'h')
-                                      .replace(/(\d{2})(\d{2})X/i, '$1:$2h') || '';
-                                    return (
-                                      <span>
-                                        {i > 0 && <span class="text-text-muted/60">, </span>}
-                                        <span class="text-green-300 font-medium">
-                                         A las {formattedTime} hora server
-                                        </span>
-                                      </span>
-                                    );
-                                  })}
-                                </span>
-                              </>
-                            ) : (
-                              <span class="text-text-muted/70">Sin horario</span>
-                            )}
+                        <div class="flex items-center">
+                          <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span class="text-sm font-medium text-gray-200">
+                            {firstEvent.schedule.days.map((day: string) => 
+                              <span class="text-amber-300 font-semibold">{dayMap[day as keyof typeof dayMap] || day}</span>
+                            ).reduce((prev: any, curr: any, i: number, arr: any[]) => 
+                              prev.concat(curr, i < arr.length - 1 ? ', ' : ' '), [] as any[])}
+                            <span class="text-green-300 ml-1">{formattedTime}</span>
+                            <span class="text-gray-300 ml-1">Hora server</span>
+                          </span>
+                        </div>
+                        {firstEvent.schedule.isRaidLeader && (
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900/40 text-amber-300 border border-amber-700/50">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                            RAID LEADER
+                          </span>
+                        )}
+                      </div>
+                      {leader.combinedNote && (
+                        <div class="mt-1 w-full hidden">
+                          <div class="text-xs text-text-muted/70 mb-0.5">Nota:</div>
+                          <div class="text-xs bg-gray-800/50 p-2 rounded border border-gray-700/50 break-words">
+                            {leader.combinedNote}
                           </div>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               );
-            })
-          }
+            });
+          })}
         </tbody>
       </table>
     </div>
@@ -517,13 +1010,13 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
   <!-- Sección de estadísticas -->
   <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
     <h2 class="text-xl font-semibold mb-6 text-center text-amber-200/90 uppercase tracking-wider">
-      Estadísticas de Líderes de Raid
+      Líderes de Raid
     </h2>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Bandas Populares -->
       <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
         <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
-          Bandas
+          Por Bandas
         </h3>
         <div class="space-y-3">
           {
@@ -554,7 +1047,7 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
       <!-- Dificultades -->
       <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
         <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
-          Dificultades
+          Por Dificultades
         </h3>
         <div class="space-y-3">
           {
@@ -597,7 +1090,7 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
       <!-- Horarios Populares -->
       <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
         <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
-          Horarios
+          Por Horarios
         </h3>
         <div class="space-y-3">
           {
@@ -809,5 +1302,68 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #718096;
+  }
+
+  /* Estilos para etiquetas de colores */
+  .tag {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap;
+  }
+  
+  /* Colores de dificultad mejorados */
+  .difficulty-10N { 
+    @apply bg-blue-600/30 text-blue-100 border-l-2 border-blue-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-10H { 
+    @apply bg-yellow-600/30 text-yellow-100 border-l-2 border-yellow-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-25N { 
+    @apply bg-purple-600/30 text-purple-100 border-l-2 border-purple-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-25H { 
+    @apply bg-red-600/30 text-red-100 border-l-2 border-red-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-unknown { 
+    @apply bg-gray-600/30 text-gray-200 border-l-2 border-gray-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Colores de raids mejorados */
+  .raid-icc { 
+    @apply bg-gradient-to-r from-blue-900/50 to-blue-900/30 text-blue-100 border-r border-blue-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-voa { 
+    @apply bg-gradient-to-r from-purple-900/50 to-purple-900/30 text-purple-100 border-r border-purple-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-naxx { 
+    @apply bg-gradient-to-r from-red-900/50 to-red-900/30 text-red-100 border-r border-red-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-ulduar { 
+    @apply bg-gradient-to-r from-yellow-900/50 to-yellow-900/30 text-yellow-100 border-r border-yellow-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-toc { 
+    @apply bg-gradient-to-r from-green-900/50 to-green-900/30 text-green-100 border-r border-green-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-rs { 
+    @apply bg-gradient-to-r from-pink-900/50 to-pink-900/30 text-pink-100 border-r border-pink-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Efecto hover para etiquetas */
+  .tag-hover {
+    @apply transition-all duration-200 hover:brightness-110 hover:scale-105;
+  }
+  
+  /* Sombra para mejor contraste */
+  .tag-shadow {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 </style>

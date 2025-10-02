@@ -480,32 +480,30 @@ const parseEventBlock = (content: string): EventBlock | null => {
     }
   }
   
-  // 5. Si no se encontró dificultad, usar valor por defecto
-  if (!difficulty) {
-    difficulty = '25N'; // Valor por defecto
+  // 5. Validar que tengamos toda la información necesaria
+  if (!time || !raid || !difficulty) {
+    return null; // No devolver evento si falta información crítica
   }
   
-  // 6. Si no se encontró raid, intentar extraer de lo que queda
-  if (!raid) {
-    const raidMatch = remaining.match(new RegExp(`(${RAID_CODES.join('|')})`, 'i'));
-    if (raidMatch) {
-      raid = raidMatch[1].toUpperCase() as RaidCode;
-      remaining = remaining.replace(raidMatch[0], '').trim();
-    } else {
-      // Si no se puede determinar la raid, usar ICC por defecto
-      raid = 'ICC';
-    }
-  }
-  
-  // 7. Validar valores de raid y dificultad
-  const validRaid: RaidCode = RAID_CODES.includes(raid as RaidCode) ? raid as RaidCode : 'ICC';
-  const validDifficulty: DifficultyCode = DIFFICULTY_CODES.includes(difficulty as DifficultyCode) 
+  // 6. Validar valores de raid y dificultad
+  const validRaid: RaidCode | null = RAID_CODES.includes(raid as RaidCode) ? raid as RaidCode : null;
+  const validDifficulty: DifficultyCode | null = DIFFICULTY_CODES.includes(difficulty as DifficultyCode) 
     ? difficulty as DifficultyCode 
-    : '25N';
+    : null;
+    
+  // 7. Si no hay raid o dificultad válida, no devolver evento
+  if (!validRaid || !validDifficulty) {
+    return null;
+  }
+
+  // 8. Si no hay días definidos, no es un evento válido
+  if (days.length === 0) {
+    return null;
+  }
     
   return {
-    days: days.length > 0 ? days : ['L', 'M', 'X', 'J', 'V'], // Si no hay días, usar L-V por defecto
-    time: time || '18:00', // Hora por defecto si no se especifica
+    days,
+    time,
     raid: validRaid, 
     difficulty: validDifficulty, 
     isRaidLeader,
