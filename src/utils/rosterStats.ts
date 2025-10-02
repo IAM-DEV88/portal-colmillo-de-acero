@@ -43,21 +43,9 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
     // Validar la nota pública y del oficial
     const validation = validatePublicNote(member.publicNote || '', member.name, member.officerNote || '');
     
-    // Log de depuración
-    console.log(`[calculateRosterStats] Procesando miembro: ${member.name}`, {
-      publicNote: member.publicNote,
-      officerNote: member.officerNote,
-      validation: {
-        role: validation.role,
-        dualRole: validation.dualRole,
-        isRaidLeader: validation.isRaidLeader
-      }
-    });
-    
     // Contar raid leaders
     if (validation.isRaidLeader) {
       stats.raidLeaders++;
-      console.log(`[calculateRosterStats] ${member.name} es raid leader`);
     }
 
     // Calcular estadísticas de roles
@@ -66,13 +54,10 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
       const mainRole = validation.role.toUpperCase();
       if (mainRole === 'T') {
         stats.roleStats.tanks++;
-        console.log(`[calculateRosterStats] ${member.name} es Tank (rol principal)`);
       } else if (mainRole === 'H') {
         stats.roleStats.healers++;
-        console.log(`[calculateRosterStats] ${member.name} es Healer (rol principal)`);
       } else if (mainRole === 'D') {
         stats.roleStats.dps++;
-        console.log(`[calculateRosterStats] ${member.name} es DPS (rol principal)`);
       }
       
       // Contar rol dual si existe
@@ -80,20 +65,16 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
         const dualRole = validation.dualRole.toUpperCase();
         if (dualRole === 'T') {
           stats.roleStats.tanks++;
-          console.log(`[calculateRosterStats] ${member.name} es Tank (rol dual)`);
         } else if (dualRole === 'H') {
           stats.roleStats.healers++;
-          console.log(`[calculateRosterStats] ${member.name} es Healer (rol dual)`);
         } else if (dualRole === 'D') {
           stats.roleStats.dps++;
-          console.log(`[calculateRosterStats] ${member.name} es DPS (rol dual)`);
         }
       }
       
       // Actualizar el total de roles (1 por rol principal + 1 por rol dual si existe)
       const rolesCount = validation.dualRole ? 2 : 1;
       stats.roleStats.total += rolesCount;
-      console.log(`[calculateRosterStats] ${member.name} tiene ${rolesCount} rol(es) contabilizado(s)`);
     }
 
     // Calcular estadísticas de mains/alts

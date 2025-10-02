@@ -49,11 +49,11 @@ export interface EventBlock {
 
 // Bloque de nota (puede ser personaje o evento)
 export interface NoteBlock {
-  type: 'character' | 'event';
+  type: 'character' | 'event' | 'unknown';
   content: string;
   isValid: boolean;
   error?: string;
-  parsedData?: CharacterBlock | EventBlock;
+  parsedData?: any;
 }
 
 export interface PublicNoteValidation {

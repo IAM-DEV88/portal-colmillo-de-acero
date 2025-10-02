@@ -6,13 +6,19 @@ import type {
   RaidCode, 
   DifficultyCode, 
   ProfessionCode, 
-  PublicNoteValidation, 
+  PublicNoteValidation as BasePublicNoteValidation, 
   CharacterBlock, 
   EventBlock,
   NoteBlock,
   RaidInfo,
   Schedule
 } from '../types/roster';
+
+// Extend the base PublicNoteValidation interface
+export interface PublicNoteValidation extends Omit<BasePublicNoteValidation, 'publicNote' | 'officerNote'> {
+  publicNote?: string;
+  officerNote?: string;
+}
 
 declare module '../types/roster' {
   interface RosterMember {
@@ -22,6 +28,33 @@ declare module '../types/roster' {
       isValid: boolean;
       missingFields: string[];
     };
+  }
+
+  export interface PublicNoteValidation {
+    isValid: boolean;
+    mainAlt?: MainAlt;
+    role?: Role;
+    dualRole?: Role;
+    gearScore?: number;
+    dualGearScore?: number;
+    professions?: ProfessionCode[];
+    schedules?: string[];
+    raids?: RaidInfo[];
+    isRaidLeader?: boolean;
+    hasSchedule?: boolean;
+    hasRaids?: boolean;
+    blocks?: Array<{
+      type: string;
+      content: string;
+      isValid: boolean;
+      parsedData?: any;
+      error?: string;
+    }>;
+    error?: string;
+    missingFields?: string[];
+    days?: string[];
+    publicNote?: string;
+    officerNote?: string;
   }
 }
 
@@ -147,44 +180,64 @@ export const calculateGearScoreStats = (members: RosterMember[]): {
   let mainGearScore = 0;
   let dualGearScore: number | null = null;
   
+  // Array para almacenar todos los gear scores (primarios y secundarios)
+  const allGearScores: number[] = [];
+  
   for (const member of members) {
     const noteValidation = member.noteValidation;
     if (!noteValidation) continue;
     
     // Obtener el gearScore principal
     const currentMainGearScore = noteValidation.gearScore || 0;
-    let averageGearScore = currentMainGearScore;
-    let currentDualGearScore: number | null = null;
     
-    // Si hay un rol dual, calcular el promedio con el gear score dual
-    if (noteValidation.dualRole && noteValidation.dualGearScore) {
-      currentDualGearScore = noteValidation.dualGearScore;
-      averageGearScore = (currentMainGearScore + currentDualGearScore) / 2;
+    // Agregar el gear score principal si es mayor a 0
+    if (currentMainGearScore > 0) {
+      allGearScores.push(currentMainGearScore);
       
-      // Actualizar el dual gear score más alto
-      if (dualGearScore === null || currentDualGearScore > dualGearScore) {
-        dualGearScore = currentDualGearScore;
+      // Actualizar el gear score principal más alto
+      if (currentMainGearScore > mainGearScore) {
+        mainGearScore = currentMainGearScore;
       }
-    }
-    
-    // Actualizar el main gear score más alto
-    if (currentMainGearScore > 0 && currentMainGearScore > mainGearScore) {
-      mainGearScore = currentMainGearScore;
-    }
-    
-    // Solo considerar miembros con gear score válido
-    if (averageGearScore > 0) {
-      min = Math.min(min, averageGearScore);
-      max = Math.max(max, averageGearScore);
-      total += averageGearScore;
+      
+      // Actualizar min y max con el gear score principal
+      min = Math.min(min, currentMainGearScore);
+      max = Math.max(max, currentMainGearScore);
+      total += currentMainGearScore;
       count++;
+    }
+    
+    // Si hay un rol dual, procesar el gear score secundario
+    if (noteValidation.dualRole && noteValidation.dualGearScore) {
+      const currentDualGearScore = noteValidation.dualGearScore;
+      
+      // Agregar el gear score secundario si es mayor a 0
+      if (currentDualGearScore > 0) {
+        allGearScores.push(currentDualGearScore);
+        
+        // Actualizar el dual gear score más alto
+        if (dualGearScore === null || currentDualGearScore > dualGearScore) {
+          dualGearScore = currentDualGearScore;
+        }
+        
+        // Actualizar min y max con el gear score secundario
+        min = Math.min(min, currentDualGearScore);
+        max = Math.max(max, currentDualGearScore);
+        total += currentDualGearScore;
+        count++;
+      }
     }
   }
   
+  // Calcular el promedio de todos los gear scores
+  const avg = count > 0 ? total / count : 0;
+  
+  // Si no hay gear scores, establecer min a 0
+  const finalMin = allGearScores.length > 0 ? min : 0;
+  
   return {
-    min: count > 0 ? Math.round(min * 10) / 10 : 0, // Redondear a 1 decimal
-    max: count > 0 ? Math.round(max * 10) / 10 : 0, // Redondear a 1 decimal
-    avg: count > 0 ? Math.round((total / count) * 10) / 10 : 0, // Redondear a 1 decimal
+    min: Math.round(finalMin * 10) / 10,
+    max: Math.round(max * 10) / 10,
+    avg: Math.round(avg * 10) / 10,
     total: count,
     mainGearScore: Math.round(mainGearScore * 10) / 10,
     dualGearScore: dualGearScore !== null ? Math.round(dualGearScore * 10) / 10 : null
@@ -226,106 +279,73 @@ export const calculateMainAltDistribution = (members: RosterMember[]): { M: numb
  * Ejemplo con rol dual: MT6.2H5.3ALMN (Main Tanque 6.2k, Heal 5.3k, Alquimia/Minería)
  */
 const parseCharacterBlock = (content: string): CharacterBlock | null => {
-  // Convertir a mayúsculas y eliminar espacios
-  const normalized = content.trim().toUpperCase().replace(/\s+/g, '');
-  if (!normalized) return null;
-
-  let remaining = normalized;
+  // Verificar que el bloque coincida con el patrón de personaje
+  // Debe comenzar con M/A seguido de T/H/D y un número
+  const match = content.match(/^([MA])([THD])(\d+(?:\.\d+)?)([THD]\d+(?:\.\d+)?)?([A-Za-z]{2,6})?/i);
+  if (!match) return null;
   
-  // 1. Extraer main/alt (opcional, por defecto Main)
-  let mainAlt: MainAlt = 'M';
-  const mainAltMatch = remaining.match(/^([MA])/);
-  if (mainAltMatch) {
-    mainAlt = mainAltMatch[1] as MainAlt;
-    remaining = remaining.substring(1);
-  }
+  const [, mainAlt, mainRole, gs, dualInfo, profs] = match;
   
-  // 2. Extraer rol principal y gear score (aceptar minúsculas para los roles)
-  const mainRoleMatch = remaining.match(/^([tTdDhH])(\d+(?:\.\d+)?)/);
-  if (!mainRoleMatch) {
-    console.log('No se pudo extraer el rol principal del bloque:', content);
-    return null;
-  }
+  // Validar que el gear score sea un número válido
+  const gearScore = parseFloat(gs);
+  if (isNaN(gearScore)) return null;
   
-  const mainRole = mainRoleMatch[1].toUpperCase() as Role;
-  const mainGearScore = parseFloat(mainRoleMatch[2]);
-  remaining = remaining.substring(mainRoleMatch[0].length);
-  
-  console.log(`Bloque ${content}: Rol principal: ${mainRole}, GS: ${mainGearScore}, Resto: ${remaining}`);
-  
-  // 3. Extraer rol dual y gear score (opcional, aceptar minúsculas)
+  // Procesar rol dual si existe
   let dualRole: Role | undefined;
   let dualGearScore: number | undefined;
   
-  const dualRoleMatch = remaining.match(/^([tTdDhH])(\d+(?:\.\d+)?)/);
-  if (dualRoleMatch) {
-    dualRole = dualRoleMatch[1].toUpperCase() as Role;
-    dualGearScore = parseFloat(dualRoleMatch[2]);
-    remaining = remaining.substring(dualRoleMatch[0].length);
-    console.log(`Bloque ${content}: Rol dual: ${dualRole}, GS: ${dualGearScore}, Resto: ${remaining}`);
+  if (dualInfo) {
+    const dualMatch = dualInfo.match(/^([THD])(\d+(?:\.\d+)?)/i);
+    if (dualMatch) {
+      dualRole = dualMatch[1].toUpperCase() as Role;
+      dualGearScore = parseFloat(dualMatch[2]);
+    }
   }
-
-  // 4. Extraer profesiones (2 letras cada una, máximo 2)
+  
+  // Procesar profesiones (2 letras cada una, máximo 2)
   const professions: ProfessionCode[] = [];
-  
-  console.log(`[parseCharacterBlock] Procesando contenido restante: "${remaining}"`);
-  
-  // Primero buscar el caso especial 'ALMN' (Alquimia + Minería)
-  if (remaining.includes('ALMN')) {
-    console.log('[parseCharacterBlock] Caso especial ALMN encontrado');
-    professions.push('AL', 'MN');
-    remaining = remaining.replace('ALMN', '');
-  } else {
-    // Buscar códigos de profesión válidos en el resto del texto
-    // Primero buscar códigos de 2 letras mayúsculas
-    const professionRegex = new RegExp(`(${PROFESSION_CODES.join('|')})`, 'g');
-    let match;
-    
-    while ((match = professionRegex.exec(remaining)) !== null && professions.length < 2) {
-      const code = match[0] as ProfessionCode;
-      if (!professions.includes(code)) {
-        console.log(`[parseCharacterBlock] Encontrada profesión: ${code}`);
-        professions.push(code);
-      }
-    }
-    
-    // Si no encontramos con el regex, intentar con el método anterior
-    if (professions.length === 0) {
-      console.log('[parseCharacterBlock] No se encontraron profesiones con regex, intentando método alternativo');
-      for (let i = 0; i < remaining.length - 1; i++) {
-        const code = remaining.substring(i, i + 2).toUpperCase() as ProfessionCode;
-        if (PROFESSION_CODES.includes(code) && !professions.includes(code)) {
-          console.log(`[parseCharacterBlock] Encontrada profesión (método alternativo): ${code}`);
-          professions.push(code);
-          i++; // Saltar al siguiente par
-          if (professions.length >= 2) break;
-        }
+  if (profs) {
+    for (let i = 0; i < profs.length; i += 2) {
+      const prof = profs.substring(i, i + 2).toUpperCase();
+      if (PROFESSION_CODES.includes(prof as ProfessionCode) && !professions.includes(prof as ProfessionCode)) {
+        professions.push(prof as ProfessionCode);
+        // Solo permitir hasta 2 profesiones
+        if (professions.length >= 2) break;
       }
     }
   }
   
-  console.log(`[parseCharacterBlock] Bloque "${content}": Profesiones encontradas:`, professions);
-
-  // Validar que el rol dual sea diferente al principal
-  if (dualRole && dualRole === mainRole) {
-    dualRole = undefined;
-    dualGearScore = undefined;
-  }
-
-  return {
-    mainAlt,
-    mainRole,
-    mainGearScore,
-    dualRole,
-    dualGearScore,
-    professions: Array.from(new Set(professions))
+  // Validar que el rol principal sea válido
+  const validMainRole: Role = ['T', 'H', 'D'].includes(mainRole.toUpperCase()) ? 
+    (mainRole.toUpperCase() as Role) : 'D';
+    
+  // Validar que el rol dual sea válido si existe
+  const validDualRole: Role | undefined = dualRole && ['T', 'H', 'D'].includes(dualRole) ? 
+    dualRole as Role : undefined;
+    
+  // Asegurar que los tipos sean correctos
+  const result: CharacterBlock = {
+    mainAlt: (mainAlt.toUpperCase() === 'M' ? 'M' : 'A') as 'M' | 'A',
+    mainRole: validMainRole,
+    mainGearScore: gearScore,
+    dualRole: validDualRole,
+    dualGearScore: validDualRole ? dualGearScore : undefined,
+    professions
   };
+  
+  // Validar que el rol dual sea diferente al principal
+  if (validDualRole && validDualRole === validMainRole) {
+    return null;
+  }
+
+  return result;
 };
 
 /**
  * Parsea un bloque de evento según el formato SNCD
  * Formato: [DÍAS][HORA][RL?][RAID][DIFICULTAD]
  * Ejemplo: L-V20:00RLICC25H (Lunes a Viernes a las 20:00, ICC 25H, Raid Leader)
+ * También maneja formato: L-V18rlicc10n (Lunes a Viernes 18:00, ICC 10N)
  */
 const parseEventBlock = (content: string): EventBlock | null => {
   if (!content) return null;
@@ -335,126 +355,162 @@ const parseEventBlock = (content: string): EventBlock | null => {
   
   let isRaidLeader = false;
   let days: string[] = [];
+  let time: string | undefined;
+  let raid: RaidCode | undefined;
+  let difficulty: DifficultyCode | undefined;
   
-  // 1. Extraer días (soporta L-V o L,M,X,J,V)
-  const daysMatch = remaining.match(/^([LMXJVSD]+(?:-[LMXJVSD]+)?)/) || remaining.match(/([LMXJVSD],?)+/);
-  if (daysMatch) {
-    const daysStr = daysMatch[0];
+  // Mapa de códigos de día a sus nombres completos
+  const dayMap: Record<string, string> = {
+    'L': 'Lun',
+    'M': 'Mar',
+    'X': 'Mié',
+    'J': 'Jue',
+    'V': 'Vie',
+    'S': 'Sáb',
+    'D': 'Dom'
+  };
+  
+  // 1. Extraer días (soporta L-V, l-v, L-v, l-V, etc.)
+  // Días en español: L (lunes), M (martes), X (miércoles), J (jueves), V (viernes), S (sábado), D (domingo)
+  const daysMatch = remaining.match(/([LMXJVSD]+(?:-[LMXJVSD])?)/i);
+  if (daysMatch && daysMatch.index === 0) {  // Solo si el match está al inicio
+    const daysStr = daysMatch[0].toUpperCase();
     
-    // Manejar rangos como L-V (Lunes a Viernes)
+    // Si es un rango (ej: L-V)
     if (daysStr.includes('-')) {
-      const [startDay, endDay] = daysStr.split('-');
-      const dayOrder = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-      const startIndex = dayOrder.indexOf(startDay);
-      const endIndex = dayOrder.indexOf(endDay);
+      const [start, end] = daysStr.split('-') as [string, string];
+      const startIndex = 'LMXJVSD'.indexOf(start);
+      const endIndex = 'LMXJVSD'.indexOf(end);
       
-      if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
-        // Crear array con todos los días del rango
-        for (let i = startIndex; i <= endIndex; i++) {
-          days.push(dayOrder[i]);
-        }
+      if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
+        days = Array.from(new Set('LMXJVSD'.substring(startIndex, endIndex + 1).split('')));
       } else {
-        // Si no es un rango válido, tratar como días individuales
-        days = daysStr.split('').filter(day => dayOrder.includes(day));
+        // Si no es un rango válido, tomar solo el primer día
+        days = [start[0]];
       }
     } else {
-      // Días individuales separados por comas o juntos
-      days = daysStr.split(',').flatMap(part => 
-        part.split('').filter(day => ['L', 'M', 'X', 'J', 'V', 'S', 'D'].includes(day))
-      );
+      // Si son días individuales, eliminar duplicados
+      days = Array.from(new Set(daysStr.split('')));
+    }
+    
+    // Validar que todos los días sean válidos
+    const validDays = new Set('LMXJVSD');
+    if (!days.every(day => validDays.has(day))) {
+      return null;
     }
     
     remaining = remaining.substring(daysMatch[0].length).trim();
   }
 
-  // 2. Extraer hora (formatos: HH:MM, HHMM)
-  let time: string | undefined;
-  const timeMatch = remaining.match(/^(\d{1,2})(?::?(\d{2}))?/);
-  
-  if (timeMatch) {
-    let hours = timeMatch[1].padStart(2, '0');
-    let minutes = timeMatch[2] ? timeMatch[2] : '00';
-    if (minutes.length === 1) minutes = `0${minutes}`;
-    time = `${hours}:${minutes}`;
-    
-    // Avanzar el puntero más allá de la hora
-    remaining = remaining.substring(timeMatch[0].length).trim();
+  // 2. Extraer RL (Raid Leader) - puede estar antes o después de la hora
+  if (remaining.toLowerCase().includes('rl')) {
+    isRaidLeader = true;
+    remaining = remaining.replace(/rl/gi, '').trim();
   }
   
-  // 3. Buscar RL (Raid Leader) en cualquier posición
-  if (remaining.includes('RL')) {
-    isRaidLeader = true;
-    remaining = remaining.replace(/RL/gi, '').trim();
+  // 2. Extraer hora (formato HH o HH:MM)
+  // Primero verificar si hay una hora después de los días
+  const timeMatch = remaining.match(/^(\d{1,2})(?::(\d{2}))?/);
+  if (timeMatch) {
+    // Verificar si es un caso especial donde 'M' es seguido de números
+    const isMDayWithTime = days.length === 1 && days[0] === 'M' && timeMatch.index === 0;
+    
+    // Si no es el caso especial de 'M' seguido de hora, o si es un caso especial pero tiene formato válido
+    if (!isMDayWithTime || (isMDayWithTime && timeMatch[0].length > 0)) {
+      let hours = parseInt(timeMatch[1], 10);
+      const minutes = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
+      
+      // Validar horas y minutos
+      if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+        time = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        remaining = remaining.substring(timeMatch[0].length).trim();
+      } else {
+        // Si la hora no es válida, no procesar este bloque
+        return null;
+      }
+    } else if (isMDayWithTime) {
+      // Si es solo 'M' sin hora, continuar sin extraer hora
+      remaining = remaining.substring(1).trim();
+    }
   }
 
-  // Extraer raid y dificultad (formatos: RAIDDIFICULTAD, RAID DIFICULTAD, o RAID-DIFICULTAD)
+  // 4. Extraer raid y dificultad
+  // Formato: raid + número + n/h (ej: icc10n, voa25h)
+  // Primero intentamos hacer match con cualquier texto que parezca un código de raid
+  const raidMatch = remaining.match(/^([a-zA-Z]+)(\d{1,2}[NHnh])/i);
   
-  let raid: RaidCode | undefined;
-  let difficulty: DifficultyCode | undefined;
-  
-  // Try to match raid code with optional RL prefix and difficulty (e.g., RLICC25H, ICC25H, ICC-25H, ICC 25H)
-  const raidWithDiffMatch = remaining.match(
-    new RegExp(`^(RL)?\s*(${RAID_CODES.join('|')})\s*([-\s]?)\s*(${DIFFICULTY_CODES.join('|')})`, 'i')
-  );
-  
-  if (raidWithDiffMatch) {
-    // Check if RL was in the match
-    if (raidWithDiffMatch[1]) {
-      isRaidLeader = true;
-    }
+  if (raidMatch) {
+    const raidCode = raidMatch[1].toUpperCase();
+    const difficultyCode = raidMatch[2].toUpperCase() as DifficultyCode;
     
-    raid = raidWithDiffMatch[2].toUpperCase() as RaidCode;
-    difficulty = (raidWithDiffMatch[4] || '25N').toUpperCase() as DifficultyCode; // Default to 25N if no difficulty
-    remaining = remaining.substring(raidWithDiffMatch[0].length).trim();
-  } else {
-    // Intentar encontrar solo raid (sin dificultad)
-    const raidMatch = remaining.match(new RegExp(`^(${RAID_CODES.join('|')})`));
+    // Verificar si el código de raid está en la lista de códigos permitidos
+    if (RAID_CODES.includes(raidCode as RaidCode)) {
+      raid = raidCode as RaidCode;
+      difficulty = difficultyCode;
+      remaining = remaining.substring(raidMatch[0].length).trim();
+    }
+    // Si no coincide, intentar con códigos de raid en minúsculas
+    else if (RAID_CODES.map(code => code.toLowerCase()).includes(raidCode.toLowerCase())) {
+      const validRaidCode = RAID_CODES.find(code => code.toLowerCase() === raidCode.toLowerCase());
+      if (validRaidCode) {
+        raid = validRaidCode;
+        difficulty = difficultyCode;
+        remaining = remaining.substring(raidMatch[0].length).trim();
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+  // Si no coincide, intentar con el formato de dificultad separado
+  else {
+    // Intentar encontrar raid
+    const raidMatch = remaining.match(new RegExp(`^(${RAID_CODES.join('|')})`, 'i'));
     if (raidMatch) {
-      raid = raidMatch[1] as RaidCode;
+      raid = raidMatch[1].toUpperCase() as RaidCode;
       remaining = remaining.substring(raidMatch[0].length).trim();
       
-      // Intentar extraer dificultad después del raid
-      const diffMatch = remaining.match(new RegExp(`^(${DIFFICULTY_CODES.join('|')})`));
+      // Intentar extraer dificultad como número seguido de N/H (ej: 10n, 25h)
+      const diffMatch = remaining.match(/^(\d{1,2})([NHnh])/i);
       if (diffMatch) {
-        difficulty = diffMatch[1] as DifficultyCode;
+        difficulty = `${diffMatch[1]}${diffMatch[2].toUpperCase()}` as DifficultyCode;
         remaining = remaining.substring(diffMatch[0].length).trim();
       }
     }
   }
-
-  // Buscar RL (Raid Leader) en cualquier parte
-  if (remaining.includes('RL')) {
-    isRaidLeader = true;
-    remaining = remaining.replace(/RL/gi, '').trim();
+  
+  // 5. Si no se encontró dificultad, usar valor por defecto
+  if (!difficulty) {
+    difficulty = '25N'; // Valor por defecto
   }
   
-  // Si no se encontró dificultad, intentar extraerla
-  if (!difficulty) {
-    const diffMatch = remaining.match(new RegExp(`(${DIFFICULTY_CODES.join('|')})`));
-    if (diffMatch && diffMatch[1]) {
-      difficulty = diffMatch[1].toUpperCase() as DifficultyCode;
-      if (typeof diffMatch.index === 'number') {
-        remaining = remaining.substring(0, diffMatch.index) + 
-                   remaining.substring(diffMatch.index + diffMatch[0].length);
-      }
+  // 6. Si no se encontró raid, intentar extraer de lo que queda
+  if (!raid) {
+    const raidMatch = remaining.match(new RegExp(`(${RAID_CODES.join('|')})`, 'i'));
+    if (raidMatch) {
+      raid = raidMatch[1].toUpperCase() as RaidCode;
+      remaining = remaining.replace(raidMatch[0], '').trim();
     } else {
-      difficulty = '25N'; // Valor por defecto
+      // Si no se puede determinar la raid, usar ICC por defecto
+      raid = 'ICC';
     }
   }
   
-  // Validar valores de raid y dificultad
-  const validRaid: RaidCode = raid && RAID_CODES.includes(raid as RaidCode) ? raid as RaidCode : 'ICC';
+  // 7. Validar valores de raid y dificultad
+  const validRaid: RaidCode = RAID_CODES.includes(raid as RaidCode) ? raid as RaidCode : 'ICC';
   const validDifficulty: DifficultyCode = DIFFICULTY_CODES.includes(difficulty as DifficultyCode) 
     ? difficulty as DifficultyCode 
     : '25N';
     
   return {
-    days,
-    time: time || '00:00',
+    days: days.length > 0 ? days : ['L', 'M', 'X', 'J', 'V'], // Si no hay días, usar L-V por defecto
+    time: time || '18:00', // Hora por defecto si no se especifica
     raid: validRaid, 
     difficulty: validDifficulty, 
     isRaidLeader,
-    isLookingForGroup: !isRaidLeader 
+    isLookingForGroup: !isRaidLeader,
+    dayRange: days.length > 0 ? `${days[0]}${days.length > 1 ? `-${days[days.length-1]}` : ''}` : 'L-V'
   };
 };
 
@@ -574,25 +630,68 @@ export const validatePublicNote = (
     .replace(/\s+/g, ' ') // Normalizar espacios
     .trim();
 
+  // Inicializar el array de bloques
+  const blocks: NoteBlock[] = [];
+  
   const result: PublicNoteValidation = { 
     isValid: false,
-    blocks: [],
+    blocks: blocks,
     raids: [],
     isRaidLeader: false,
     hasSchedule: false,
     hasRaids: false,
     schedules: [],
     publicNote: note,
-    officerNote: officerNote
+    officerNote: officerNote,
+    missingFields: []
   };
 
   if (!combinedNote) {
     return { ...result, error: 'La nota pública y del oficial están vacías' };
   }
   
-  // Usar combinedNote para el procesamiento
-  const blocks: NoteBlock[] = [];
-  const noteBlocks = combinedNote.split(/[\s|]+/).filter(Boolean);
+  // Dividir la nota en bloques separados por espacios
+  const noteBlocks = combinedNote.split(/\s+/).filter(Boolean);
+  
+  // Procesar cada bloque individualmente
+  for (const block of noteBlocks) {
+    // Primero intentar parsear como bloque de personaje
+    const charBlock = parseCharacterBlock(block);
+    if (charBlock) {
+      blocks.push({
+        type: 'character',
+        content: block,
+        isValid: true,
+        parsedData: charBlock
+      });
+      continue;
+    }
+    
+    // Luego intentar parsear como bloque de evento
+    const eventBlock = parseEventBlock(block);
+    if (eventBlock) {
+      blocks.push({
+        type: 'event',
+        content: block,
+        isValid: true,
+        parsedData: eventBlock
+      });
+      continue;
+    }
+    
+    // Si no es ninguno de los dos, marcarlo como inválido
+    blocks.push({
+      type: 'unknown',
+      content: block,
+      isValid: false,
+      error: 'Formato no reconocido'
+    });
+  }
+  // Actualizar el estado de validación basado en los bloques
+  result.isValid = blocks.every(block => block.isValid);
+  result.isRaidLeader = blocks.some(block => block.type === 'event' && block.parsedData?.isRaidLeader);
+  result.hasSchedule = blocks.some(block => block.type === 'event');
+  result.hasRaids = blocks.some(block => block.type === 'event' && block.parsedData?.raid);
   
   // Log compacto de la estructura de la nota
   const logStructure = {
@@ -623,187 +722,85 @@ export const validatePublicNote = (
             professions: charBlock.professions
           }
         });
-        
-        result.blocks.push({
-          type: 'character',
-          content: block,
-          isValid: true,
-          parsedData: charBlock
-        });
-
-        // Actualizar propiedades principales
-        result.mainAlt = charBlock.mainAlt;
-        result.role = charBlock.mainRole;
-        result.dualRole = charBlock.dualRole; // Guardar el rol dual
-        
-        // Asegurar que gearScore sea un número
-        result.gearScore = typeof charBlock.mainGearScore === 'number' 
-          ? charBlock.mainGearScore 
-          : parseFloat(charBlock.mainGearScore) || 0;
-          
-        // Guardar el gear score dual si existe
-        if (charBlock.dualGearScore !== undefined) {
-          result.dualGearScore = typeof charBlock.dualGearScore === 'number'
-            ? charBlock.dualGearScore
-            : parseFloat(charBlock.dualGearScore) || 0;
-        }
-
-        // Log de depuración
-        console.log(`[validatePublicNote] Procesado bloque de personaje:`, {
-          block,
-          mainRole: result.role,
-          dualRole: result.dualRole,
-          gearScore: result.gearScore,
-          mainAlt: result.mainAlt
-        });
-
-        if (charBlock.dualRole) {
-          console.log(`[validatePublicNote] Rol dual detectado: ${charBlock.dualRole}`);
-        }
-
-        if (charBlock.professions && charBlock.professions.length > 0) {
-          result.professions = charBlock.professions;
-        }
-
-        continue;
-      } else {
-        result.blocks.push({
-          type: 'character',
-          content: block,
-          isValid: false,
-          error: 'Formato de bloque de personaje inválido'
-        });
-      }
-    }
-
-    // Si no es un bloque de personaje, intentar como bloque de evento
-    const eventBlock = parseEventBlock(block);
-    
-    if (eventBlock) {
-      // Agregar al log de estructura
-      logStructure.blocks.push({
-        type: 'event',
-        content: block,
-        data: {
-          days: eventBlock.days,
-          time: eventBlock.time,
-          raid: eventBlock.raid,
-          difficulty: eventBlock.difficulty,
-          isRaidLeader: eventBlock.isRaidLeader,
-          isLookingForGroup: eventBlock.isLookingForGroup
-        }
-      });
-      
-      blocks.push({
-        type: 'event',
-        content: block,
-        isValid: true,
-        parsedData: eventBlock
-      });
-      
-      // Actualizar información de raids y horarios
-      if (eventBlock.raid) {
-        const difficulty = eventBlock.difficulty && DIFFICULTY_CODES.includes(eventBlock.difficulty as DifficultyCode)
-          ? eventBlock.difficulty as DifficultyCode
-          : '25N'; // Default to 25N if difficulty is not valid
-        
-        // Crear clave única para evitar duplicados
-        const raidKey = `${eventBlock.raid}-${difficulty}-${eventBlock.isRaidLeader ? 'RL' : ''}`;
-        
-        // Solo agregar si no existe ya
-        const existingRaidIndex = result.raids?.findIndex(r => 
-          r.code === eventBlock.raid && 
-          r.difficultyCode === difficulty
-        ) ?? -1;
-
-        const raidInfo: RaidInfo = {
-          code: eventBlock.raid,
-          name: RAID_NAMES[eventBlock.raid] || eventBlock.raid,
-          difficulty: DIFFICULTY_NAMES[difficulty as keyof typeof DIFFICULTY_NAMES] || difficulty,
-          difficultyCode: difficulty,
-          isRaidLeader: eventBlock.isRaidLeader || false,
-          days: eventBlock.days,
-          time: eventBlock.time
-        };
-        
-        if (existingRaidIndex === -1) {
-          if (!result.raids) result.raids = [];
-          result.raids.push(raidInfo);
-        } else if (result.raids) {
-          // Si ya existe, actualizar con la información más reciente
-          result.raids[existingRaidIndex] = {
-            ...result.raids[existingRaidIndex],
-            isRaidLeader: result.raids[existingRaidIndex].isRaidLeader || raidInfo.isRaidLeader,
-            days: result.raids[existingRaidIndex].days || raidInfo.days,
-            time: result.raids[existingRaidIndex].time || raidInfo.time
-          };
-        }
-        
-        result.hasRaids = true;
-        
-        // Solo agregar horario si hay días y hora
-        if (eventBlock.days.length > 0 && eventBlock.time) {
-          if (!result.schedules) result.schedules = [];
-          
-          // Crear clave única para el horario
-          const scheduleKey = `${eventBlock.days.join('')}-${eventBlock.time}`;
-          if (!result.schedules.some(s => 
-            s.days === eventBlock.days.join('') && 
-            s.time === eventBlock.time
-          )) {
-            result.schedules.push({
-              days: eventBlock.days.join(''),
-              time: eventBlock.time,
-              isRaidLeader: eventBlock.isRaidLeader || false
-            });
-            result.hasSchedule = true;
-          }
-        }
-        
-        if (eventBlock.isRaidLeader) {
-          result.isRaidLeader = true;
-        }
       }
     } else {
-      // Bloque no reconocido
-      // Agregar al log de estructura
-      const blockContent = typeof block === 'string' ? block : 'content' in block ? String(block.content) : 'Unknown block';
-      
-      // Agregar al log de estructura con el tipo correcto
-      logStructure.blocks.push({
-        type: 'character',
-        content: blockContent,
-        data: {
-          mainAlt: 'M',
-          mainRole: 'D',
-          mainGearScore: 0,
-          professions: []
-        }
-      });
-      
-      // Crear un nuevo bloque de tipo character con error
-      const errorBlock: NoteBlock = {
-        type: 'character',
-        content: blockContent,
-        isValid: false,
-        error: 'Tipo de bloque desconocido',
-        parsedData: {
-          mainAlt: 'M',
-          mainRole: 'D',
-          mainGearScore: 0,
-          professions: []
-        } as CharacterBlock
-      };
-      
-      // Si el bloque original tenía parsedData, intentar mantenerlo
-      if (typeof block === 'object' && 'parsedData' in block && block.parsedData) {
-        errorBlock.parsedData = block.parsedData as CharacterBlock | EventBlock;
+      // Intentar parsear como bloque de evento
+      const eventBlock = parseEventBlock(block);
+      if (eventBlock) {
+        // Agregar al log de estructura con todas las propiedades requeridas
+        logStructure.blocks.push({
+          type: 'event',
+          content: block,
+          data: {
+            days: eventBlock.days,
+            time: eventBlock.time,
+            raid: eventBlock.raid,
+            difficulty: eventBlock.difficulty,
+            isRaidLeader: eventBlock.isRaidLeader,
+            isLookingForGroup: eventBlock.isLookingForGroup,
+            dayRange: eventBlock.dayRange
+          } as EventBlock
+        });
       }
-      
-      result.blocks.push(errorBlock);
     }
   }
+
+  // Extraer información de personaje del primer bloque de personaje
+  const characterBlock = blocks.find(b => b.type === 'character' && b.parsedData);
+  if (characterBlock) {
+    const data = characterBlock.parsedData as CharacterBlock;
+    result.mainAlt = data.mainAlt;
+    result.role = data.mainRole;
+    result.dualRole = data.dualRole;
+    result.gearScore = data.mainGearScore;
+    result.dualGearScore = data.dualGearScore;
+    result.professions = data.professions;
+  }
+
+  // Extraer información de eventos
+  const eventBlocks = blocks.filter(b => b.type === 'event' && b.parsedData) as Array<NoteBlock & { parsedData: EventBlock }>;
   
+  // Actualizar información de raids y horarios
+  result.schedules = [];
+  result.raids = [];
+  
+  for (const block of eventBlocks) {
+    const event = block.parsedData;
+    
+    // Agregar a horarios
+    if (event.days && event.time) {
+      result.schedules!.push({
+        days: event.dayRange || event.days.join(''),
+        time: event.time,
+        isRaidLeader: event.isRaidLeader
+      });
+    }
+    
+    // Agregar a raids
+    if (event.raid && event.difficulty) {
+      // Asegurarse de que raid sea un RaidCode válido
+      const raidCode = RAID_CODES.includes(event.raid as RaidCode) ? event.raid as RaidCode : 'ICC';
+      const raidName = RAID_NAMES[raidCode] || raidCode;
+      
+      // Asegurarse de que difficulty sea un DifficultyCode válido
+      const difficultyCode = DIFFICULTY_CODES.includes(event.difficulty as DifficultyCode) 
+        ? event.difficulty as DifficultyCode 
+        : '25N';
+      const difficultyName = DIFFICULTY_NAMES[difficultyCode] || difficultyCode;
+      
+      result.raids!.push({
+        code: raidCode,
+        difficulty: difficultyName,
+        name: raidName,
+        difficultyCode: difficultyCode,
+        isRaidLeader: event.isRaidLeader,
+        days: event.days,
+        dayRange: event.dayRange,
+        time: event.time
+      });
+    }
+  }
+
   // Verificar campos faltantes
   const missingFields: string[] = [];
   
@@ -824,10 +821,7 @@ export const validatePublicNote = (
   
   // Actualizar estado de validación
   result.isValid = allBlocksValid && missingFields.length === 0;
-  
-  // Combinar bloques de personaje y evento
-  result.blocks = [...result.blocks, ...blocks];
-  
+
   // Procesar raids únicas
   if (result.raids && result.raids.length > 0) {
     const uniqueRaids: RaidInfo[] = [];
@@ -882,19 +876,12 @@ export const validatePublicNote = (
     difficultyCode: raid.difficultyCode || '25N'
   }));
 
-  // Actualizar flags basados en los datos
-  result.hasRaids = result.raids.length > 0;
+  // Actualizar contadores (ya se actualizaron anteriormente)
   result.hasSchedule = (result.schedules?.length ?? 0) > 0;
 
   // Mostrar log compacto de la estructura
   if (logStructure.blocks.length > 0) {
-    console.log('\n=== ESTRUCTURA DE NOTA ===');
-    console.log(`Nota: "${logStructure.originalNote}"`);
-    console.log('Bloques encontrados:');
-    
     logStructure.blocks.forEach((block, index) => {
-      console.log(`\n[Bloque ${index + 1}] ${block.type.toUpperCase()}: "${block.content}"`);
-      
       if (block.type === 'character' && block.data) {
         const charData = block.data as CharacterBlock;
         const roles = [
@@ -903,7 +890,6 @@ export const validatePublicNote = (
           charData.professions?.length > 0 && `Prof: ${charData.professions.join(', ')}`
         ].filter(Boolean).join(' | ');
         
-        console.log(roles);
       } else if (block.type === 'event' && block.data) {
         const eventData = block.data as EventBlock;
         const eventInfo = [
@@ -913,7 +899,6 @@ export const validatePublicNote = (
           eventData.isRaidLeader && '[RL]'
         ].filter(Boolean).join(' | ');
         
-        console.log(eventInfo);
       }
     });
   }

@@ -42,10 +42,6 @@ import type {
 
 // Usar los tipos directamente desde la importación
 
-// Códigos de profesión válidos
-const PROFESSION_CODES = ['AL', 'BS', 'EN', 'EG', 'HB', 'IN', 'JC', 'LW', 'MN', 'SK', 'TL'] as const;
-type ProfessionCode = typeof PROFESSION_CODES[number];
-
 // Import roster utilities
 import { 
   validatePublicNote as validateRosterNote,
@@ -55,6 +51,8 @@ import {
   calculateMainAltDistribution as calculateMainAlts,
   PROFESSION_CODES
 } from '../../utils/rosterUtils';
+
+type ProfessionCode = (typeof PROFESSION_CODES)[number];
 
 // Variables para las estadísticas de Gear Score
 let gearScoreStats = { 
@@ -172,27 +170,7 @@ const processRosterMember = (member: any): RosterMemberType => {
                  member.mainAlt || 'A';
   
   // Validar la nota pública usando el alias importado
-  console.log(`[${member.name}] Validating note: "${member.publicNote}"`);
   const noteValidation = validateRosterNote(member.publicNote || '', member.name || '', member.officerNote || '');
-  
-  // Debug: Mostrar la validación de la nota
-  console.log(`[${member.name}] Note validation result:`, {
-    isValid: noteValidation.isValid,
-    blocks: noteValidation.blocks,
-    mainAlt: noteValidation.mainAlt,
-    role: noteValidation.role,
-    dualRole: noteValidation.dualRole,
-    gearScore: noteValidation.gearScore,
-    dualGearScore: noteValidation.dualGearScore,
-    professions: noteValidation.professions,
-    isRaidLeader: noteValidation.isRaidLeader,
-    hasSchedule: noteValidation.hasSchedule,
-    hasRaids: noteValidation.hasRaids,
-    schedules: noteValidation.schedules,
-    raids: noteValidation.raids,
-    error: noteValidation.error,
-    missingFields: noteValidation.missingFields
-  });
   
   // Asegurar que noteValidation cumpla con PublicNoteValidation
   const validNoteValidation: RosterPublicNoteValidation = {
@@ -253,18 +231,7 @@ const updateGearScoreStats = () => {
     maxGearScore = stats.max > 0 ? stats.max.toFixed(1) : 'N/A';
     mainGearScore = stats.mainGearScore > 0 ? stats.mainGearScore.toFixed(1) : 'N/A';
     dualGearScore = stats.dualGearScore !== null && stats.dualGearScore > 0 ? stats.dualGearScore.toFixed(1) : 'N/A';
-    
-    console.log('Estadísticas de Gear Score calculadas:', {
-      avg: averageGearScore,
-      min: minGearScore,
-      max: maxGearScore,
-      total: stats.total,
-      mainGearScore: mainGearScore,
-      dualGearScore: dualGearScore
-    });
   } catch (error) {
-    console.error('Error al calcular las estadísticas de Gear Score:', error);
-    // Establecer valores por defecto en caso de error
     gearScoreStats = { min: 0, max: 0, avg: 0, total: 0 };
     averageGearScore = 'N/A';
     minGearScore = 'N/A';
@@ -302,11 +269,14 @@ const rosterData: RosterData = {
 const calculateStats = (members: Member[]): RosterStats => {
   if (!members.length) return { ...initialStats };
   
-  const roleDistribution = calculateRoleDistro(members as unknown as RosterMember[]);
-  const gearScoreStats = calculateGSStats(members as unknown as RosterMember[]);
-  const raidLeadersCount = countLeaders(members as unknown as RosterMember[]);
-  const mainAltDistribution = calculateMainAlts(members as unknown as RosterMember[]);
-  const validNotesCount = members.filter(m => m.noteValidation?.isValid).length;
+  // Cast members to RosterMember[] to satisfy type requirements
+  const rosterMembers = members as unknown as RosterMember[];
+  
+  const roleDistribution = calculateRoleDistro(rosterMembers);
+  const gearScoreStats = calculateGSStats(rosterMembers);
+  const raidLeadersCount = countLeaders(rosterMembers);
+  const mainAltDistribution = calculateMainAlts(rosterMembers);
+  const validNotesCount = rosterMembers.filter(m => m.noteValidation?.isValid).length;
   
   // Calculate profession distribution
   const professions: Record<string, number> = {};
@@ -316,21 +286,13 @@ const calculateStats = (members: Member[]): RosterStats => {
     professions[code] = 0;
   });
   
-  console.log('=== Iniciando cálculo de profesiones ===');
-  console.log('Miembros a procesar:', members.length);
-  console.log('PROFESSION_CODES:', PROFESSION_CODES);
-  
   let totalProcessed = 0;
   let membersWithValidNotes = 0;
   
   members.forEach((member, index) => {
-    console.log(`\n--- Procesando miembro ${index + 1}/${members.length}: ${member.name} ---`);
-    console.log('Nota del miembro:', member.publicNote);
-    console.log('Validación de nota:', member.noteValidation);
     
     // Solo procesar si la nota es válida
     if (!member.noteValidation?.isValid) {
-      console.log(`[${member.name}] Nota no válida, omitiendo...`);
       return;
     }
     
@@ -341,7 +303,6 @@ const calculateStats = (members: Member[]): RosterStats => {
     
     // 1. Obtener profesiones directas de noteValidation
     if (member.noteValidation?.professions?.length) {
-      console.log(`[${member.name}] Profesiones directas:`, member.noteValidation.professions);
       profSources.push(...member.noteValidation.professions);
     }
     
@@ -350,15 +311,12 @@ const calculateStats = (members: Member[]): RosterStats => {
       .filter(b => b.type === 'character' && b.parsedData?.professions?.length);
       
     if (characterBlocks.length > 0) {
-      console.log(`[${member.name}] Bloques de personaje con profesiones:`, characterBlocks);
       characterBlocks.forEach(block => {
         if (block.parsedData?.professions?.length) {
           profSources.push(...block.parsedData.professions);
         }
       });
     }
-    
-    console.log(`[${member.name}] Todas las fuentes de profesiones:`, profSources);
     
     // Filtrar y normalizar códigos de profesión
     const allProfs = [...new Set(profSources)]
@@ -377,30 +335,19 @@ const calculateStats = (members: Member[]): RosterStats => {
         return isValid;
       }) as ProfessionCode[]; // Asegurar que TypeScript sepa que son códigos de profesión válidos
     
-    console.log(`[${member.name}] Profesiones válidas encontradas:`, allProfs);
-    
     // Contar las profesiones
     allProfs.forEach(profCode => {
       if (profCode in professions) {
         professions[profCode]++;
         totalProcessed++;
-        console.log(`  +1 para ${profCode} (total: ${professions[profCode]})`);
       } else {
         console.warn(`  Código de profesión no reconocido: ${profCode}`);
       }
     });
   });
   
-  console.log('Resumen de conteo de profesiones:', professions);
-  
-  console.log('\n=== Resumen de estadísticas de profesiones ===');
-  console.log('Total de miembros con notas válidas:', membersWithValidNotes);
-  console.log('Total de profesiones encontradas:', totalProcessed);
-  console.log('Conteo de profesiones por tipo:', professions);
-  
   // Verificar si hay alguna profesión con conteo > 0
   const hasProfessions = Object.values(professions).some(count => count > 0);
-  console.log('¿Hay profesiones con conteo > 0?', hasProfessions);
   
   if (!hasProfessions) {
     console.warn('No se encontraron profesiones en ninguna nota. Revisar el formato de las notas.');
@@ -409,8 +356,6 @@ const calculateStats = (members: Member[]): RosterStats => {
   // Actualizar las estadísticas globales
   stats.validNotesCount = membersWithValidNotes;
   stats.professions = professions;
-  
-  console.log('Estadísticas de profesiones actualizadas:', professions);
   
   return {
     totalMembers: members.length,
@@ -953,38 +898,27 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   
   const foundProfs = new Set<string>();
   
-  console.log(`[${characterName}] Buscando profesiones en: ${trimmedNote}`);
-  console.log(`[${characterName}] Códigos de profesión válidos:`, profCodes);
-  
   // Caso especial para 'ALMN' (Alquimia + Minería)
   if (trimmedNote.includes('ALMN')) {
-    console.log(`[${characterName}] Caso especial detectado: ALMN`);
-    console.log(`[${characterName}] Agregando profesiones: AL (Alquimia) y MN (Minería)`);
     foundProfs.add('AL');
     foundProfs.add('MN');
-    console.log(`[${characterName}] Profesiones después de agregar:`, Array.from(foundProfs));
   } else {
     // Búsqueda normal de códigos de profesión
     const singleProfRegex = new RegExp(`(?:^|[^a-zA-Z])(${profCodesStr})(?![a-zA-Z])|(${profCodesStr})$`, 'gi');
     let singleMatch;
     
-    console.log(`[${characterName}] Buscando con expresión regular:`, singleProfRegex);
     singleProfRegex.lastIndex = 0;
     
     while ((singleMatch = singleProfRegex.exec(trimmedNote)) !== null) {
       const code = (singleMatch[1] || singleMatch[2]).toUpperCase() as ProfessionCode;
       
       if (profCodes.includes(code) && !foundProfs.has(code)) {
-        console.log(`[${characterName}] Profesión válida encontrada: ${code} (${PROFESSIONS[code as keyof typeof PROFESSIONS]})`);
         foundProfs.add(code);
         if (foundProfs.size >= 2) break;
       }
     }
   }
   
-  // Depuración final
-  console.log(`[${characterName}] Profesiones encontradas:`, Array.from(foundProfs));
-
   // Si no encontramos códigos individuales, buscar códigos juntos sin separador
   if (foundProfs.size < 2) {
     const combinedProfRegex = /[A-Z]{4,6}/g;
@@ -1172,12 +1106,6 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   const allRaidCodes = Object.keys(RAID_NAMES) as RaidCode[];
   const raidCodesPattern = allRaidCodes.map(rc => rc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
   
-  // Log para depuración
-  console.log(`\n=== INICIO DE DETECCIÓN PARA ${characterName.toUpperCase()} ===`);
-  console.log('Nota original:', note);
-  console.log('Nota recortada:', trimmedNote);
-  console.log('Códigos de raid disponibles:', allRaidCodes);
-  
   // Inicializar el conjunto de raids encontradas
   result.raids = [];
   const usedRaids = new Set<string>();
@@ -1187,13 +1115,10 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   const raidPattern = new RegExp(`\\b(${raidCodesPattern})\\b`, 'gi');
   let raidMatch;
   
-  console.log(`\n[${characterName}] Buscando menciones directas de raids...`);
   while ((raidMatch = raidPattern.exec(trimmedNote)) !== null) {
     const raidCode = raidMatch[1].toUpperCase();
-    console.log(`[${characterName}] Raid encontrada:`, raidCode);
     
     if (raidCode in RAID_NAMES && !usedRaids.has(raidCode)) {
-      console.log(`[${characterName}] Añadiendo raid:`, raidCode);
       result.raids.push({
         code: raidCode as RaidCode,
         difficultyCode: undefined, // Sin dificultad específica
@@ -1201,8 +1126,6 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
         name: RAID_NAMES[raidCode as RaidCode],
       });
       usedRaids.add(raidCode);
-    } else {
-      console.log(`[${characterName}] Raid ya añadida o no válida:`, raidCode);
     }
   }
   
@@ -1211,22 +1134,17 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   const foundDifficulties = new Set<string>();
   let diffMatch;
   
-  console.log(`\n[${characterName}] Buscando dificultades...`);
   while ((diffMatch = difficultyPattern.exec(trimmedNote)) !== null) {
     const number = diffMatch[1];
     const difficulty = diffMatch[2].toUpperCase() as 'N' | 'H';
     const difficultyCode = `${number}${difficulty}` as DifficultyCode;
-    console.log(`[${characterName}] Dificultad encontrada:`, difficultyCode);
     foundDifficulties.add(difficultyCode);
   }
 
   // Si no encontramos raids con los patrones anteriores, buscar solo los códigos de raid
-  console.log(`\n[${characterName}] Verificando si no se encontraron raids...`);
   if (result.raids.length === 0) {
-    console.log(`[${characterName}] No se encontraron raids en la primera pasada, buscando con patrón alternativo...`);
     const raidCodePattern = new RegExp(`(?:^|[^a-zA-Z])(${raidCodesPattern})(?=$|[^a-zA-Z0-9])`, 'gi');
     const raidCodeMatches = trimmedNote.matchAll(raidCodePattern);
-    console.log(`[${characterName}] Coincidencias encontradas:`, Array.from(raidCodeMatches).map(m => m[1]));
     
     for (const match of raidCodeMatches) {
       const raidCodeStr = match[0].toUpperCase();
@@ -1378,21 +1296,15 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   }
 
   // 7. Verificar raids en la nota
-  console.log(`\n=== VERIFICACIÓN FINAL DE RAIDS PARA ${characterName.toUpperCase()} ===`);
   const raidCodes = Object.keys(RAID_NAMES).map(raid => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
   
   // Buscar cualquier mención de raid, con o sin dificultad
   const raidSearchPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodes})(?![a-z0-9])(?:$|\\s|\\)|\\]|\\/|\\d|\\s*\\d*[NH])`, 'i');
   const hasAnyRaid = raidSearchPattern.test(trimmedNote);
-  console.log(`[${characterName}] ¿Se encontró alguna mención de raid?`, hasAnyRaid);
   
   // Buscar específicamente patrones como 'icc10n' o 'voa25h'
   const raidWithNumberPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodes})\\s*\\d+[NH]`, 'i');
   const hasAnyRaidWithNumber = raidWithNumberPattern.test(trimmedNote);
-  console.log(`[${characterName}] ¿Se encontró alguna raid con número?`, hasAnyRaidWithNumber);
-  
-  // Mostrar las raids encontradas hasta ahora
-  console.log(`[${characterName}] Raids encontradas:`, result.raids.map(r => r.code));
   
   if (!hasAnyRaid && !hasAnyRaidWithNumber) {
     orderedMissingFields.push('Raids que busca (ej: ICC 25H)');
@@ -1431,14 +1343,6 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   // 7. Determinar si la nota es válida
   // La nota es válida si tiene al menos un campo válido
   result.isValid = true;
-
-  // Mostrar resumen de lo encontrado
-  console.log(`\n=== RESUMEN FINAL PARA ${characterName.toUpperCase()} ===`);
-  console.log(`[${characterName}] Raids detectadas:`, result.raids);
-  console.log(`[${characterName}] Dificultades detectadas:`, Array.from(foundDifficulties));
-  console.log(`[${characterName}] Campos faltantes:`, missingFields);
-  console.log(`[${characterName}] Es válido:`, result.isValid);
-  console.log('='.repeat(50) + '\n');
 
   // Si no hay ningún campo válido, marcar como inválido
   const hasAnyValidField =
@@ -1643,12 +1547,12 @@ const getRoleColorClass = (role: string): string => {
 const professionNames: Record<ProfessionCode, { name: string; color: string; bgColor: string }> = {
   AL: { name: 'Alquimia', color: 'text-blue-300', bgColor: 'bg-blue-500/20' },
   HB: { name: 'Herboristería', color: 'text-green-300', bgColor: 'bg-green-500/20' },
-  TL: { name: 'Trabajo del Cuero', color: 'text-amber-300', bgColor: 'bg-amber-500/20' },
+  TL: { name: 'Sastrería', color: 'text-amber-300', bgColor: 'bg-amber-500/20' },
   EN: { name: 'Encantamiento', color: 'text-purple-300', bgColor: 'bg-purple-500/20' },
   EG: { name: 'Ingeniería', color: 'text-orange-300', bgColor: 'bg-orange-500/20' },
   JC: { name: 'Joyería', color: 'text-yellow-300', bgColor: 'bg-yellow-500/20' },
   BS: { name: 'Herrería', color: 'text-gray-300', bgColor: 'bg-gray-500/20' },
-  IN: { name: 'Sastrería', color: 'text-pink-300', bgColor: 'bg-pink-500/20' },
+  IN: { name: 'Inscripción', color: 'text-pink-300', bgColor: 'bg-pink-500/20' },
   MN: { name: 'Minería', color: 'text-gray-400', bgColor: 'bg-gray-600/20' },
   SK: { name: 'Desuello', color: 'text-red-200', bgColor: 'bg-red-700/20' },
   LW: { name: 'Peletería', color: 'text-amber-200', bgColor: 'bg-amber-700/20' }
@@ -1709,28 +1613,33 @@ const ranks = [...new Set(rosterData.members.map((member) => member.rank))].sort
 const rosterClassInfo = rosterData?.classInfo || {};
 const classList = Object.keys(rosterClassInfo) as ClassName[];
 
-// Datos para el cliente
-const rosterClientData: RosterData = {
-  members: rosterData.members as RosterMemberType[],
-  classInfo: rosterData.classInfo,
-  rankInfo: rosterData.rankInfo || {},
-  classes: Object.keys(rosterData.classInfo || {}),
-  totalMembers: rosterData.members.length,
-  stats: rosterData.stats || {
-    totalMembers: 0,
-    roleDistribution: {},
-    gearScoreStats: { min: 0, max: 0, avg: 0, total: 0 },
-    raidLeadersCount: 0,
-    mainAltDistribution: { M: 0, A: 0 },
-    professions: {},
-    validNotesCount: 0
-  },
-  guildInfo: {
-    name: '',
-    realm: '',
-    faction: '',
-    region: ''
+// Función para determinar la prioridad del rango
+const getRankPriority = (rank: string): number => {
+  const rankLower = rank.toLowerCase();
+  if (rankLower.includes('guild master')) return 0;
+  if (rankLower.includes('alter')) return 1;
+  return 2;
+};
+
+// Ordenar miembros
+const sortedMembers = [...rosterData.members].sort((a, b) => {
+  // Primero ordenar por prioridad de rango
+  const priorityA = getRankPriority(a.rank);
+  const priorityB = getRankPriority(b.rank);
+  
+  if (priorityA !== priorityB) {
+    return priorityA - priorityB;
   }
+  
+  // Si tienen la misma prioridad, ordenar alfabéticamente
+  return a.name.localeCompare(b.name);
+});
+
+// Datos para el cliente - Usamos los miembros ya ordenados
+const rosterClientData: RosterData = {
+  ...rosterData,
+  members: sortedMembers as RosterMemberType[],
+  classes: Object.keys(rosterData.classInfo || {})
 };
 
 // Definir tipos para las distribuciones
@@ -1835,15 +1744,19 @@ const gearScorePercentage = gearScoreStats.avg > 0
 
 // Usar validNotesCount ya calculado anteriormente
 
-// Procesar datos de miembros
-const sortedMembers = [...rosterData.members].sort((a, b) => a.name.localeCompare(b.name));
+// La función getRankPriority y sortedMembers han sido movidas arriba para la inicialización
+
+// Use the sorted members as the base for filtered members
 const filteredMembers = [...sortedMembers];
 const totalRaiders = rosterData.members.filter(
   (m) =>
     m.rank.toLowerCase().includes('élite') ||
-    m.rank.toLowerCase().includes('Alter') ||
-    m.rank.toLowerCase().includes('comandante')
+    m.rank.toLowerCase().includes('alter') ||
+    m.rank.toLowerCase().includes('comandante') ||
+    m.rank.toLowerCase().includes('guild master')
 ).length;
+
+// rosterClientData is already defined above with the sorted members
 ---
 
 <div class="space-y-6">
@@ -1987,11 +1900,31 @@ const totalRaiders = rosterData.members.filter(
       // Inicializar la tabla con los datos
       function initTable() {
         if (!tableBody || !pageInfo) {
-
           return;
         }
 
+        // Use the pre-sorted members from the server
         allMembers = [...rosterInfo.members];
+        
+        // Apply the same sorting logic on the client side
+        allMembers.sort((a, b) => {
+          const getRankPriority = (rank) => {
+            const rankLower = rank?.toLowerCase() || '';
+            if (rankLower.includes('guild master')) return 0;
+            if (rankLower.includes('alter')) return 1;
+            return 2;
+          };
+          
+          const priorityA = getRankPriority(a.rank);
+          const priorityB = getRankPriority(b.rank);
+          
+          if (priorityA !== priorityB) {
+            return priorityA - priorityB;
+          }
+          
+          return (a.name || '').localeCompare(b.name || '');
+        });
+        
         filteredMembers = [...allMembers];
 
         // Llenar filtros
@@ -2032,8 +1965,11 @@ const totalRaiders = rosterData.members.filter(
                         ${member.rank}
                       </span>
                     </div>
-                    <!-- Nota real (media prioridad) -->
-                    <div class="hidden">${member.publicNote}</div>
+                    <!-- Nota combinada -->
+                    <div class="text-xs mt-1 text-gray-400">
+                      ${member.publicNote || ''}
+                      ${member.officerNote ? `<div class="text-amber-500/80">${member.officerNote}</div>` : ''}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -2143,20 +2079,12 @@ const totalRaiders = rosterData.members.filter(
                                 return entry ? entry[0] : null;
                               };
 
-                              // Profesiones (solo mostrar si no son números que podrían ser GS)
-                              console.log(`[${member.name}] Profesiones en charData:`, charData.professions);
-                              console.log(`[${member.name}] Profesiones en validation:`, validation.professions);
-                              
                               const professionsToShow = (charData.professions?.length 
                                 ? charData.professions 
                                 : validation.professions || [])
                                 .filter(prof => prof && !/^\d+\.?\d*$/.test(prof)); // Filtrar posibles GS mal interpretados
                               
-                              console.log(`[${member.name}] Profesiones a mostrar:`, professionsToShow);
-                              
                               if (professionsToShow.length) {
-                                console.log(`[${member.name}] Todas las profesiones a mostrar:`, professionsToShow);
-                                
                                 // Procesar cada profesión
                                 const processedProfs = new Set(); // Para evitar duplicados
                                 
@@ -2169,14 +2097,6 @@ const totalRaiders = rosterData.members.filter(
                                     // Evitar duplicados
                                     if (processedProfs.has(profCode)) return;
                                     processedProfs.add(profCode);
-                                    
-                                    console.log(`[${member.name}] Procesando profesión:`, { 
-                                      original: prof, 
-                                      profCode, 
-                                      profName,
-                                      inProfessionNames: profCode in professionNamesData,
-                                      allProfessionNames: Object.keys(professionNamesData)
-                                    });
                                     
                                     if (profName) {
                                       // Usar los estilos definidos o los predeterminados
@@ -2192,17 +2112,11 @@ const totalRaiders = rosterData.members.filter(
                                         class: `${profStyle.bgColor || 'bg-indigo-500/20'} ${profStyle.borderColor || 'border-indigo-500/50'}`,
                                         inline: true
                                       });
-                                      
-                                      console.log(`[${member.name}] Etiqueta agregada:`, profName);
                                     }
                                   } catch (error) {
                                     console.error(`[${member.name}] Error procesando profesión ${prof}:`, error);
                                   }
                                 });
-                                
-                                console.log(`[${member.name}] Total de etiquetas de profesión agregadas:`, 
-                                  formattedInfo.filter(i => i.label === 'Alquimia' || i.label === 'Minería').length
-                                );
                               }
 
                               // 2. Procesar bloques de evento
@@ -2469,14 +2383,6 @@ const totalRaiders = rosterData.members.filter(
                                 if (characterBlocks.length > 0) {
                                   const charData = characterBlocks[0]?.parsedData || {};
                                   
-                                  // Debug log para ver los datos del personaje
-                                  console.log('Character data:', {
-                                    name: member.name,
-                                    charData: charData,
-                                    hasProfessions: charData.professions?.length > 0,
-                                    professionNamesData: professionNamesData
-                                  });
-                                  
                                   // Agregar etiquetas en el orden deseado
                                   if (charData.mainAlt) {
                                     characterTags.push({
@@ -2519,16 +2425,13 @@ const totalRaiders = rosterData.members.filter(
                                   
                                   // Agregar etiquetas de profesiones
                                   if (charData.professions && charData.professions.length > 0) {
-                                    console.log(`[${member.name}] Processing professions:`, charData.professions);
                                     charData.professions.forEach(profCode => {
                                       const profInfo = professionNamesData[profCode];
-                                      console.log(`[${member.name}] Profession ${profCode}:`, profInfo);
                                       if (profInfo) {
                                         const tag = {
                                           label: profInfo.name,
                                           class: `${profInfo.bgColor || 'bg-indigo-500/20'} border-${profInfo.color.replace('text-', '')}`
                                         };
-                                        console.log(`[${member.name}] Adding profession tag:`, tag);
                                         characterTags.push(tag);
                                       }
                                     });
@@ -3128,15 +3031,15 @@ const totalRaiders = rosterData.members.filter(
     <div class="grid grid-cols-2 gap-1 mt-1">
       <div class="text-center">
         <p class="text-[18px] sm:text-2xl font-bold text-white">
-          {mainGearScore !== 'N/A' ? mainGearScore : 'N/A'}
+          {minGearScore !== 'N/A' ? minGearScore : 'N/A'}
         </p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Principal</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mínimo</p>
       </div>
       <div class="text-center">
         <p class="text-[18px] sm:text-2xl font-bold text-white">
-          {dualGearScore !== 'N/A' ? dualGearScore : 'N/A'}
+          {maxGearScore !== 'N/A' ? maxGearScore : 'N/A'}
         </p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Secundario</p>
+        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Máximo</p>
       </div>
     </div>
   </div>
