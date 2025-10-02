@@ -1,512 +1,911 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
+
+// Importar iconos de clases
+const classIcons = {
+  'Death Knight': 'classicon_deathknight',
+  'Demon Hunter': 'classicon_demonhunter',
+  Druid: 'classicon_druid',
+  Evoker: 'classicon_evoker',
+  Hunter: 'classicon_hunter',
+  Mage: 'classicon_mage',
+  Monk: 'classicon_monk',
+  Paladin: 'classicon_paladin',
+  Priest: 'classicon_priest',
+  Rogue: 'classicon_rogue',
+  Shaman: 'classicon_shaman',
+  Warlock: 'classicon_warlock',
+  Warrior: 'classicon_warrior',
+};
 ---
 
-<Layout title="Guía de Nota Pública">
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-      <!-- Header -->
-      <div class="text-center mb-10">
-        <h1 class="text-4xl font-bold text-white mb-4">Uso de la Nota Pública</h1>
-        <p class="text-text-muted/80">Aprende a configurar tu nota pública para participar en el sistema de raids de la hermandad</p>
+<Layout title="Nota Pública">
+  <div class="container mx-auto px-4 py-8 max-w-4xl animate-fade-in">
+    <!-- Header -->
+    <header
+      class="text-center mb-10 bg-gradient-to-r from-amber-900/30 to-amber-800/20 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 shadow-lg"
+    >
+      <h1 class="text-3xl font-bold text-amber-200 mb-3 tracking-wide">Guía de Nota Pública</h1>
+      <p class="text-amber-100/80 max-w-2xl mx-auto">
+        Aprende a formatear correctamente tu nota pública para mejorar la organización del gremio y
+        asegurar tu participación en los eventos.
+      </p>
+    </header>
+
+    <!-- Main Content -->
+
+    <!-- Sección del Validador -->
+    <section
+      class="bg-gradient-to-br from-steel-darker/90 to-steel-dark/90 backdrop-blur-sm p-6 rounded-xl border border-amber-900/30 shadow-lg mb-8 hover:border-amber-800/50 transition-colors duration-200"
+    >
+      <div class="flex items-center mb-6">
+        <div class="bg-amber-900/50 p-2 rounded-lg mr-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-amber-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-amber-200">Validador de Nota</h2>
       </div>
 
-      <!-- Main Content -->
-      <div class="space-y-8">
-        <!-- Introducción -->
-        <section class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg">
-          <h2 class="text-2xl font-bold text-white mb-4">¿Qué es la Nota Pública?</h2>
-          <p class="text-text-muted/90 mb-4">
-            Tu nota pública es la forma en que la hermandad organiza las raids. 
-            El sistema automático lee esta información para asignarte a las incursiones según tu disponibilidad, rol y preferencias.
-          </p>
-          <!-- aqui -->
-          <div class="bg-steel-darker/80 p-4 rounded-lg border border-accent/20 mt-4">
-            <h3 class="text-accent font-medium mb-2">📌 Requisitos Mínimos</h3>
-            <ul class="list-disc list-inside space-y-1 text-sm text-text-muted/90">
-              <li>Debes incluir si es Main o Alt (M/A)</li>
-              <li>Especificar tu rol principal (T/H/D)</li>
-              <li>Incluir tu Gear Score actual (ej: 6.5)</li>
-              <li>Mencionar tus horarios disponibles (ej: 23x)</li>
-              <li>Indicar las raids que te interesan (ej: ICC)</li>
-              <li>Indicar las dificultades que te interesan (ej: 10H)</li>
-              <li>Indicar si eres quien arma (Raid Leader) (ej: RL)</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- Formato de la Nota -->
-        <section class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg">
-          <h2 class="text-2xl font-bold text-white mb-4">📝 Formato de la Nota</h2>
-          
-          <div class="grid md:grid-cols-2 gap-6">
-            <!-- Estructura Básica -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Estructura Básica</h3>
-              <div class="bg-steel-darker/80 p-4 rounded-lg border border-accent/20">
-                <code class="block text-green-300 font-mono text-sm mb-2">[M/A][Rol Principal][Rol Secundario] [GS] [Profesiones] [RaidLeader] [Horario] [Raids] [Dificultad]</code>
-                <p class="text-xs text-text-muted/70">Ejemplo: <span class="text-green-300">MTH 6.5 JC/EN 20:30x ICC 25H RS</span></p>
-              </div>
-              
-              <h4 class="text-md font-medium text-white mt-4 mb-2">Ejemplos Completos:</h4>
-              <ul class="space-y-2">
-                <li class="flex items-start">
-                  <span class="text-accent mr-2">•</span>
-                  <code class="text-green-300 font-mono">MT 6.2 JC/BS 21x</code>
-                  <span class="text-xs text-text-muted/70 ml-2">(Main Tank 6.2 Joyero Herrero online a las 21 hora server)</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-accent mr-2">•</span>
-                  <code class="text-green-300 font-mono">AD GS5.8 RL ICC 10H 20x </code>
-                  <span class="text-xs text-text-muted/70 ml-2">(Alt DPS 5.8 armo ICC 10H a las 20 hora server)</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-accent mr-2">•</span>
-                  <code class="text-green-300 font-mono">MTH 5.5 SR ICC 10n 18x</code>
-                  <span class="text-xs text-text-muted/70 ml-2">(Main Tank/Healer 5.5 busca SR e ICC 10N a las 18 hora server)</span>
-                </li>
-              </ul>
+      <div class="space-y-4">
+        <div class="relative">
+          <div class="relative">
+            <input
+              type="text"
+              id="notaInput"
+              placeholder="Pega tu nota pública aquí..."
+              class="w-full bg-steel-darker/80 border border-amber-900/30 rounded-lg px-4 py-3 text-white placeholder-amber-100/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all duration-200"
+            />
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <svg
+                class="h-5 w-5 text-amber-500/70"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
             </div>
-            
-            <!-- Guía Rápida -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">📋 Guía Rápida</h3>
-              <div class="bg-steel-darker/80 p-4 rounded-lg border border-accent/20 text-sm">
-                <div class="grid grid-cols-1 gap-2">
-                  <div class="flex items-start">
-                    <span class="text-accent font-mono w-12 shrink-0">M/A</span>
-                    <span>Indica si es tu personaje principal (M) o alternativo (A)</span>
-                  </div>
-                  <div class="flex items-start">
-                    <span class="text-accent font-mono w-12 shrink-0">T/H/D</span>
-                    <span>Rol principal (Tank/Healer/DPS)</span>
-                  </div>
-                  <div class="flex items-start">
-                    <span class="text-accent font-mono w-12 shrink-0">X.X</span>
-                    <span>Gear Score actual (ej: 6.2, 5.8)</span>
-                  </div>
-                  <div class="flex items-start">
-                    <span class="text-accent font-mono w-12 shrink-0">JC/BS</span>
-                    <span>Tus profesiones principales (ver sección de profesiones)</span>
-                  </div>
-                  <div class="flex items-start">
-                    <span class="text-accent font-mono w-12 shrink-0">20-23h</span>
-                    <span>Horario de juego (formato 24h)</span>
+          </div>
+          <div id="notaError" class="hidden text-red-400 text-sm mt-2 pl-1"></div>
+        </div>
+
+        <div id="notaResult" class="hidden">
+          <div class="p-4 bg-amber-900/10 rounded-lg border border-amber-900/30">
+            <h3 class="font-semibold text-amber-200 mb-3 flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2 text-amber-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              Análisis de la nota
+            </h3>
+            <div class="space-y-3 text-sm">
+              <div id="bloquePersonaje" class="flex items-start">
+                <span class="w-5 mt-0.5"
+                  ><span id="personajeIcon" class="text-green-400 font-bold">✓</span></span
+                >
+                <div>
+                  <span id="personajeText" class="font-medium">Bloque de Personaje</span>
+                  <div id="detallesPersonaje" class="text-xs text-amber-100/80 mt-1 space-y-0.5">
                   </div>
                 </div>
               </div>
-              
-              <div class="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                <h4 class="text-amber-300 font-medium mb-1">💡 Consejo</h4>
-                <p class="text-xs text-amber-100/90">Usa espacios para separar cada sección. No uses caracteres especiales como paréntesis o guiones, excepto para rangos de horario.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Sección de Roles y Especializaciones -->
-        <section class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg">
-          <h2 class="text-2xl font-bold text-white mb-4">🎮 Roles y Especializaciones</h2>
-          
-          <div class="grid md:grid-cols-3 gap-6">
-            <!-- Rol Principal -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Rol Principal</h3>
-              <div class="space-y-2">
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">T</span>
-                  <span>Tank</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">H</span>
-                  <span>Healer</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">D</span>
-                  <span>DPS</span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Rol Secundario -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Rol Secundario (Opcional)</h3>
-              <p class="text-sm text-text-muted/80 mb-2">Si tienes doble especialización, indícalo después del rol principal:</p>
-              <div class="space-y-2">
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono">TH</span>
-                  <span class="ml-2">Tank/Healer</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono">TD</span>
-                  <span class="ml-2">Tank/DPS</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono">HD</span>
-                  <span class="ml-2">Healer/DPS</span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Ejemplos -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Ejemplos de Combinaciones</h3>
-              <ul class="space-y-2 text-sm">
-                <li class="flex items-start">
-                  <span class="text-accent mr-2">•</span>
-                  <code class="text-green-300 font-mono">MT</code> = Main Tank
-                </li>
-                <li class="flex items-start">
-                  <span class="text-accent mr-2">•</span>
-                  <code class="text-green-300 font-mono">AD</code> = Alt DPS
-                </li>
-                <li class="flex items-start">
-                  <span class="text-accent mr-2">•</span>
-                  <code class="text-green-300 font-mono">MTH</code> = Main Tank/Healer
-                </li>
-                <li class="flex items-start">
-                  <span class="text-accent mr-2">•</span>
-                  <code class="text-green-300 font-mono">AHD</code> = Alt Healer/DPS
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- Sección de Profesiones -->
-        <section class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg">
-          <h2 class="text-2xl font-bold text-white mb-4">🔨 Profesiones</h2>
-          <p class="text-text-muted/90 mb-4">
-            Especifica tus dos profesiones principales usando las abreviaturas de 2 letras. Sepáralas con una barra (/).
-          </p>
-          
-          <div class="grid md:grid-cols-2 gap-6">
-            <!-- Profesiones de Producción -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Profesiones de Producción</h3>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">JC</span>
-                  <span>Joyería</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">BS</span>
-                  <span>Herrería</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">EN</span>
-                  <span>Encantamiento</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">EG</span>
-                  <span>Ingeniería</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">LW</span>
-                  <span>Peletería</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">AL</span>
-                  <span>Alquimia</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">TL</span>
-                  <span>Sastrería</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">IN</span>
-                  <span>Inscripción</span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Profesiones de Recolección -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Profesiones de Recolección</h3>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">HB</span>
-                  <span>Herboristería</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">MN</span>
-                  <span>Minería</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-8">SK</span>
-                  <span>Desuello</span>
-                </div>
-              </div>
-              
-              <div class="mt-6">
-                <h4 class="text-md font-semibold text-white mb-2">Ejemplos de Notas con Profesiones:</h4>
-                <ul class="space-y-2 text-sm">
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">MT JC/EN</code> = Joyería y Encantamiento
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">AD BS/EG</code> = Herrería e Ingeniería
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">MTH AL/HB</code> = Alquimia y Herboristería
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Sección de Bandas y Dificultades -->
-        <section class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg">
-          <h2 class="text-2xl font-bold text-white mb-4">🏰 Bandas y Dificultades</h2>
-          
-          <div class="grid md:grid-cols-2 gap-8">
-            <!-- Bandas -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Bandas Disponibles</h3>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">ICC</span>
-                  <span>Ciudadela del Corona de Hielo</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">TOC</span>
-                  <span>Prueba del Cruzado</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">ULD</span>
-                  <span>Ulduar</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">NAX</span>
-                  <span>Naxxramas</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">OS</span>
-                  <span>Santuario Obsidiana</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">RS</span>
-                  <span>Santuario Rubí</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">EOE</span>
-                  <span>Ojo de la Eternidad</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">VOA</span>
-                  <span>La Cámara de Archavon</span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Dificultades -->
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Dificultades</h3>
-              <div class="grid grid-cols-1 gap-2 text-sm">
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">10N</span>
-                  <span>10 Jugadores Normal</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">25N</span>
-                  <span>25 Jugadores Normal</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">10H</span>
-                  <span>10 Jugadores Heroico</span>
-                </div>
-                <div class="flex items-center bg-steel-darker/50 p-2 rounded">
-                  <span class="text-accent font-mono w-12">25H</span>
-                  <span>25 Jugadores Heroico</span>
-                </div>
-              </div>
-              
-              <div class="mt-6">
-                <h4 class="text-md font-semibold text-white mb-2">Ejemplos Completos:</h4>
-                <ul class="space-y-2 text-sm">
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">ICC 25H</code> = Ciudadela 25 Heroico
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">TOC 10N</code> = Prueba del Cruzado 10 Normal
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">RS 25H</code> = Santuario Rubí 25 Heroico
-                  </li>
-                </ul>
-                
-                <div class="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                  <h4 class="text-blue-300 font-medium mb-1">💡 Puedes especificar múltiples raids y multiples dificultades</h4>
-                  <p class="text-xs text-blue-100/90">Ejemplo: <code class="text-green-300">ICC RS TOC 10H 25N </code></p>
+              <div id="bloqueEvento" class="flex items-start pt-2 border-t border-amber-900/20">
+                <span class="w-5 mt-0.5"
+                  ><span id="eventoIcon" class="text-green-400 font-bold">✓</span></span
+                >
+                <div>
+                  <span id="eventoText" class="font-medium">Bloque de Evento</span>
+                  <div id="detallesEvento" class="text-xs text-amber-100/80 mt-1 space-y-0.5"></div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-
-        <!-- Horarios -->
-        <section class="bg-gradient-to-br from-steel-dark/90 to-steel-darker/90 backdrop-blur-sm p-6 rounded-xl border border-accent/20 shadow-lg">
-          <h2 class="text-2xl font-bold text-white mb-4">⏰ Horarios de Juego</h2>
-          
-          <div class="grid md:grid-cols-2 gap-6">
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Formato de Horario</h3>
-              <p class="text-text-muted/90 mb-4">
-                Especifica tus horas de juego en formato de 24 horas. Usa dos puntos para horas específicas.
-              </p>
-              
-              <div class="bg-steel-darker/80 p-4 rounded-lg border border-accent/20">
-                <h4 class="text-accent font-medium mb-2">Ejemplos:</h4>
-                <ul class="space-y-2 text-sm">
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">20:30x</code>
-                    <span class="ml-2 text-text-muted/80">A las 8:30 hora server</span>
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">00x</code>
-                    <span class="ml-2 text-text-muted/80">A las 00:00 hora server</span>
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-accent mr-2">•</span>
-                    <code class="text-green-300 font-mono">21x</code>
-                    <span class="ml-2 text-text-muted/80">A partir de las 21:00 hora server</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            
-            <div>
-              <h3 class="text-lg font-semibold text-white mb-3">Ejemplos Completos</h3>
-              <div class="space-y-3">
-                <div class="bg-steel-darker/50 p-3 rounded-lg">
-                  <code class="block text-green-300 font-mono mt-1">MT 6.4 JC/EN 20:30x ICC 25H</code>
-                </div>
-                
-                <div class="bg-steel-darker/50 p-3 rounded-lg">
-                  <code class="block text-green-300 font-mono mt-1">AD 5.8 BS/MN 18:30x TOC 10N ICC 10N</code>
-                </div>
-                
-                <div class="bg-steel-darker/50 p-3 rounded-lg">
-                  <code class="block text-green-300 font-mono mt-1">MTH 6.2 EN/AL 19:30x ICC 25H RS 25H</code>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Notas Importantes -->
-        <section class="bg-amber-500/10 border border-amber-500/30 p-6 rounded-xl">
-          <h2 class="text-2xl font-bold text-amber-300 mb-4">⚠️ Notas Importantes</h2>
-          
-          <div class="space-y-4">
-            <div class="flex items-start">
-              <span class="text-amber-300 text-xl mr-2">•</span>
-              <div>
-                <h3 class="font-semibold text-white">Actualización de Nota</h3>
-                <p class="text-amber-100/90 text-sm">Recuerda actualizar tu nota pública cuando cambies de equipo, profesiones o disponibilidad.</p>
-              </div>
-            </div>
-            
-            <div class="flex items-start">
-              <span class="text-amber-300 text-xl mr-2">•</span>
-              <div>
-                <h3 class="font-semibold text-white">Precisión del Gear Score</h3>
-                <p class="text-amber-100/90 text-sm">Mantén tu Gear Score actualizado para asegurar una correcta asignación en las incursiones.</p>
-              </div>
-            </div>
-            
-            <div class="flex items-start">
-              <span class="text-amber-300 text-xl mr-2">•</span>
-              <div>
-                <h3 class="font-semibold text-white">Contacto con Oficiales</h3>
-                <p class="text-amber-100/90 text-sm">Si tienes dudas sobre el formato o necesitas ayuda, contacta con un oficial de la hermandad.</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mt-6 p-4 bg-amber-500/20 rounded-lg border border-amber-500/30">
-            <h3 class="font-bold text-amber-200 text-center">¡Tu nota pública es tu tarjeta de presentación para las raids!</h3>
-            <p class="text-amber-100/90 text-sm text-center mt-1">Una nota clara y completa aumenta tus posibilidades de ser seleccionado para los grupos.</p>
-          </div>
-        </section>
-        
-        <!-- Ejemplo Final -->
-        <section class="bg-gradient-to-br from-green-500/10 to-green-900/10 backdrop-blur-sm p-6 rounded-xl border border-green-500/20 shadow-lg">
-          <h2 class="text-2xl font-bold text-white text-center mb-6">🎯 Ejemplo Final Completo</h2>
-          
-          <div class="bg-steel-darker/80 p-6 rounded-lg border border-green-500/30">
-            <div class="text-center mb-6">
-              <p class="text-text-muted/90 mb-2">Para un personaje main que es Tank/Healer con Gear Score 6.4, profesiones de Joyería y Encantamiento, disponible de lunes a viernes de 20:00 a 23:00, interesado en ICC 25H y Ruby Sanctum 25H:</p>
-              <div class="bg-black/30 p-4 rounded-lg mt-3">
-                <code class="text-2xl font-bold text-green-300 font-mono">MTH 6.4 JC/EN L-V 20-23h ICC25H RS25H</code>
-              </div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-6 mt-8">
-              <div>
-                <h3 class="text-lg font-semibold text-white mb-3">📝 Consejos para una Buena Nota</h3>
-                <ul class="space-y-2 text-sm">
-                  <li class="flex items-start">
-                    <span class="text-green-400 mr-2">✓</span>
-                    <span>Usa mayúsculas para mejor legibilidad</span>
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-green-400 mr-2">✓</span>
-                    <span>Separa cada sección con espacios</span>
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-green-400 mr-2">✓</span>
-                    <span>Mantén el orden sugerido</span>
-                  </li>
-                  <li class="flex items-start">
-                    <span class="text-green-400 mr-2">✓</span>
-                    <span>Actualiza tu nota regularmente</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div class="bg-black/20 p-4 rounded-lg border border-green-500/20">
-                <h3 class="text-green-300 font-medium mb-2">✅ Lista de Verificación</h3>
-                <ul class="space-y-1 text-sm">
-                  <li class="flex items-center">
-                    <input type="checkbox" class="mr-2 rounded border-green-500 text-green-500 focus:ring-green-500">
-                    <span>He incluido si es Main o Alt (M/A)</span>
-                  </li>
-                  <li class="flex items-center">
-                    <input type="checkbox" class="mr-2 rounded border-green-500 text-green-500 focus:ring-green-500">
-                    <span>He especificado mi(s) rol(es) (T/H/D)</span>
-                  </li>
-                  <li class="flex items-center">
-                    <input type="checkbox" class="mr-2 rounded border-green-500 text-green-500 focus:ring-green-500">
-                    <span>He incluido mi Gear Score actual</span>
-                  </li>
-                  <li class="flex items-center">
-                    <input type="checkbox" class="mr-2 rounded border-green-500 text-green-500 focus:ring-green-500">
-                    <span>He listado mis profesiones</span>
-                  </li>
-                  <li class="flex items-center">
-                    <input type="checkbox" class="mr-2 rounded border-green-500 text-green-500 focus:ring-green-500">
-                    <span>He indicado mi horario de juego</span>
-                  </li>
-                  <li class="flex items-center">
-                    <input type="checkbox" class="mr-2 rounded border-green-500 text-green-500 focus:ring-green-500">
-                    <span>He especificado las raids que me interesan</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
+        </div>
       </div>
-    </div>
+
+      <script>
+        // Elementos del DOM con tipos TypeScript
+        const notaInput = document.getElementById('notaInput') as HTMLInputElement | null;
+        const notaError = document.getElementById('notaError') as HTMLDivElement | null;
+        const notaResult = document.getElementById('notaResult') as HTMLDivElement | null;
+        const detallesPersonaje = document.getElementById(
+          'detallesPersonaje'
+        ) as HTMLDivElement | null;
+        const detallesEvento = document.getElementById('detallesEvento') as HTMLDivElement | null;
+
+        // Expresiones regulares mejoradas
+        const regexPersonaje = {
+          mainRole: /^[MA]/i,
+          spec: /[THDB]+/i,
+          gs: /\d+\.\d+/,
+          offSpec: /[THDB]+/i,
+          offGs: /\d+\.\d+/,
+          profs: /[A-Z]{2,4}$/i,
+        };
+
+        const regexEvento = {
+          dia: /^[a-z]/i,
+          hora: /\d+/,
+          lider: /[a-z]+/i,
+          banda: /[a-z]/i,
+          dificultad: /\d+[a-z]*$/i,
+        };
+
+        // Función para validar el bloque de personaje
+        function validarPersonaje(bloque: string): boolean {
+          const resultados = {
+            mainRole: regexPersonaje.mainRole.test(bloque),
+            spec: regexPersonaje.spec.test(bloque),
+            gs: regexPersonaje.gs.test(bloque),
+            offSpec: regexPersonaje.offSpec.test(bloque),
+            offGs: regexPersonaje.offGs.test(bloque),
+            profs: regexPersonaje.profs.test(bloque),
+          };
+
+          if (detallesPersonaje) {
+            detallesPersonaje.innerHTML = `
+                <div class="${resultados.mainRole ? 'text-green-400' : 'text-red-400'}">• Rol principal (M/A): ${resultados.mainRole ? '✓' : '✗'}</div>
+                <div class="${resultados.spec ? 'text-green-400' : 'text-red-400'}">• Especialización (T/H/D): ${resultados.spec ? '✓' : '✗'}</div>
+                <div class="${resultados.gs ? 'text-green-400' : 'text-red-400'}">• Gear Score: ${resultados.gs ? '✓' : '✗'}</div>
+                <div class="${resultados.offSpec ? 'text-green-400' : 'text-amber-400'}">• Especialización secundaria (opcional): ${resultados.offSpec ? '✓' : '✗'}</div>
+                <div class="${resultados.offGs ? 'text-green-400' : 'text-amber-400'}">• Gear Score secundario (opcional): ${resultados.offGs ? '✓' : '✗'}</div>
+                <div class="${resultados.profs ? 'text-green-400' : 'text-red-400'}">• Profesiones: ${resultados.profs ? '✓' : '✗'}</div>
+              `;
+          }
+
+          return (
+            Object.values(resultados).slice(0, 3).every(Boolean) &&
+            (resultados.profs || resultados.offSpec || resultados.offGs)
+          );
+        }
+
+        // Función para validar el bloque de evento
+        function validarEvento(bloque: string): boolean {
+          const resultados = {
+            dia: regexEvento.dia.test(bloque),
+            hora: regexEvento.hora.test(bloque),
+            lider: regexEvento.lider.test(bloque),
+            banda: regexEvento.banda.test(bloque),
+            dificultad: regexEvento.dificultad.test(bloque),
+          };
+
+          if (detallesEvento) {
+            detallesEvento.innerHTML = `
+                <div class="${resultados.dia ? 'text-green-400' : 'text-red-400'}">• Día: ${resultados.dia ? '✓' : '✗'}</div>
+                <div class="${resultados.hora ? 'text-green-400' : 'text-red-400'}">• Hora: ${resultados.hora ? '✓' : '✗'}</div>
+                <div class="${resultados.lider ? 'text-green-400' : 'text-red-400'}">• Líder: ${resultados.lider ? '✓' : '✗'}</div>
+                <div class="${resultados.banda ? 'text-green-400' : 'text-red-400'}">• Banda: ${resultados.banda ? '✓' : '✗'}</div>
+                <div class="${resultados.dificultad ? 'text-green-400' : 'text-red-400'}">• Dificultad: ${resultados.dificultad ? '✓' : '✗'}</div>
+              `;
+          }
+
+          return Object.values(resultados).every(Boolean);
+        }
+
+        // Manejador de eventos para el input
+        if (notaInput) {
+          notaInput.addEventListener('input', (e) => {
+            const target = e.target as HTMLInputElement;
+            if (!target) return;
+
+            const nota = target.value.trim();
+
+            if (!nota) {
+              if (notaError) notaError.classList.add('hidden');
+              if (notaResult) notaResult.classList.add('hidden');
+              return;
+            }
+
+            // Validar bloques separados por espacios
+            const bloques = nota.split(/\s+/);
+            const bloquePersonaje = bloques.find((bloque) => regexPersonaje.mainRole.test(bloque));
+            const bloqueEvento = bloques.find(
+              (bloque) => regexEvento.dia.test(bloque) && regexEvento.hora.test(bloque)
+            );
+
+            let tienePersonaje = false;
+            let tieneEvento = false;
+
+            if (bloquePersonaje) {
+              tienePersonaje = validarPersonaje(bloquePersonaje);
+            } else if (detallesPersonaje) {
+              detallesPersonaje.innerHTML =
+                '<div class="text-red-400">No se encontró el bloque de personaje</div>';
+            } else {
+              console.warn('Elemento detallesPersonaje no encontrado en el DOM');
+            }
+
+            if (bloqueEvento) {
+              tieneEvento = validarEvento(bloqueEvento);
+            } else if (detallesEvento) {
+              detallesEvento.innerHTML =
+                '<div class="text-red-400">No se encontró el bloque de evento</div>';
+            } else {
+              console.warn('Elemento detallesEvento no encontrado en el DOM');
+            }
+
+            // Actualizar iconos principales
+            const personajeIcon = document.getElementById('personajeIcon');
+            const personajeText = document.getElementById('personajeText');
+            const eventoIcon = document.getElementById('eventoIcon');
+            const eventoText = document.getElementById('eventoText');
+
+            if (personajeIcon && personajeText) {
+              personajeIcon.textContent = tienePersonaje ? '✓' : '✗';
+              personajeIcon.className = `w-5 mt-0.5 ${tienePersonaje ? 'text-green-400' : 'text-red-400'} font-bold`;
+              personajeText.className = tienePersonaje
+                ? 'font-medium'
+                : 'font-medium text-amber-100/70';
+            }
+
+            if (eventoIcon && eventoText) {
+              eventoIcon.textContent = tieneEvento ? '✓' : '✗';
+              eventoIcon.className = `w-5 mt-0.5 ${tieneEvento ? 'text-green-400' : 'text-red-400'} font-bold`;
+              eventoText.className = tieneEvento ? 'font-medium' : 'font-medium text-amber-100/70';
+            }
+
+            // Mostrar resultados
+            if (notaResult && (tienePersonaje || tieneEvento)) {
+              notaResult.classList.remove('hidden');
+              if (notaError) notaError.classList.add('hidden');
+            } else if (notaError) {
+              notaError.textContent =
+                'Formato de nota no reconocido. Asegúrate de seguir el formato mostrado.';
+              notaError.classList.remove('hidden');
+              if (notaResult) notaResult.classList.add('hidden');
+            }
+          });
+        }
+      </script>
+    </section>
+
+    <!-- Formato de la Nota -->
+    <section
+      class="bg-gradient-to-br from-steel-darker/90 to-steel-dark/90 backdrop-blur-sm p-6 rounded-xl border border-amber-900/30 shadow-lg mb-8 hover:border-amber-800/50 transition-colors duration-200"
+    >
+      <div class="flex items-center mb-6">
+        <div class="bg-amber-900/50 p-2 rounded-lg mr-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-amber-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-amber-200">Formato de la Nota</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Estructura Básica -->
+        <div
+          class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors duration-200"
+        >
+          <h2 class="text-lg font-semibold text-amber-200 mb-3 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2 text-amber-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            BLOQUE DE PERSONAJE
+          </h2>
+          <div class="flex flex-wrap gap-1 mb-2">
+            <span class="text-yellow-300 font-mono text-sm">[</span>
+            <span class="text-blue-300 font-mono text-sm">M/A</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-purple-300 font-mono text-sm">Rol Principal</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-green-300 font-mono text-sm">GS Principal</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-red-300 font-mono text-sm">Rol Secundario</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-pink-300 font-mono text-sm">GS Secundario</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-cyan-300 font-mono text-sm">Profesiones</span>
+            <span class="text-yellow-300 font-mono text-sm">]</span>
+          </div>
+          <div class="p-3 bg-steel-dark/50 rounded-lg">
+            <span class="text-xs font-medium text-text-muted/80 mb-1">Ejemplo:</span>
+            <div
+              class="px-3 py-2 bg-steel-darker rounded font-mono text-sm whitespace-nowrap overflow-x-auto"
+            >
+              <span class="text-blue-300 font-semibold">M</span><span
+                class="text-purple-300 font-semibold">T</span
+              ><span class="text-green-300 font-semibold">6.5</span><span
+                class="text-red-300 font-semibold">H</span
+              ><span class="text-pink-300 font-semibold">5.5</span><span
+                class="text-cyan-300 font-semibold">JCEN</span
+              >
+            </div>
+          </div>
+          <!-- Guía Rápida -->
+          <div class="relative group">
+            <h2 class="text-lg font-semibold text-amber-200 mb-3 flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2 text-amber-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H2m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                ></path>
+              </svg>
+              DATOS DEL PERSONAJE
+            </h2>
+            <div class="bg-amber-900/10 p-5 rounded-lg border border-amber-900/20 hover:border-amber-700/50 transition-colors duration-200 backdrop-blur-sm">
+              <div class="grid grid-cols-1 gap-3">
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">M/A</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Indica si es tu personaje principal (M) o alternativo (A)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">T/H/D</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Rol principal (Tank/Healer/DPS)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">X.X</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Gear Score Principal (ej: 6.2, 5.8)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">T/H/D</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Rol Secundario (Tank/Healer/DPS)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">X.X</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Gear Score Secundario (ej: 6.2, 5.8)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">JCBS</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Tus profesiones principales (ver sección de profesiones)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors duration-200">
+          <h2 class="text-lg font-semibold text-amber-200 mb-3 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2 text-amber-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            BLOQUE DE EVENTO
+          </h2>
+          <div class="flex flex-wrap gap-1 mb-2">
+            <span class="text-yellow-300 font-mono text-sm">[</span>
+            <span class="text-blue-300 font-mono text-sm">Dia/s</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-purple-300 font-mono text-sm">Horario</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-green-300 font-mono text-sm">Raid Leader</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-red-300 font-mono text-sm">Banda</span>
+            <span class="text-yellow-300 font-mono text-sm">][</span>
+            <span class="text-pink-300 font-mono text-sm">Dificultad</span>
+            <span class="text-yellow-300 font-mono text-sm">]</span>
+          </div>
+          <div class="p-3 bg-steel-dark/50 rounded-lg">
+            <span class="text-xs font-medium text-text-muted/80 mb-1">Ejemplo:</span>
+            <div
+              class="px-3 py-2 bg-steel-darker rounded font-mono text-sm whitespace-nowrap overflow-x-auto"
+            >
+              <span class="text-blue-300 font-semibold">x</span><span
+                class="text-purple-300 font-semibold">18</span
+              ><span class="text-green-300 font-semibold">rl</span><span
+                class="text-red-300 font-semibold">voa</span
+              ><span class="text-pink-300 font-semibold">25n</span>
+            </div>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-amber-100 mb-3 flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2 text-amber-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              DATOS DEL EVENTO
+            </h2>
+            <div class="bg-amber-900/10 p-5 rounded-lg border border-amber-900/20 hover:border-amber-700/50 transition-colors duration-200 backdrop-blur-sm">
+              <div class="grid grid-cols-1 gap-3">
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">LMXJVS</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Días de la semana conectado (ej: LJ, L-V)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">HORA</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Hora de conexión (ej: 18:00, 20)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">RL</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Raid Leader es quien arma y lidera el evento</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">BANDA</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Nombre de la banda (ej: VOA, ICC)</span>
+                </div>
+                <div class="flex items-start group">
+                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">DIF</span>
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Dificultad del evento (ej: 10n, 25H)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 p-4 bg-amber-900/20 border border-amber-800/30 rounded-lg backdrop-blur-sm">
+        <div class="flex items-center mb-2">
+          <div class="bg-amber-900/50 p-1.5 rounded-md mr-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 text-amber-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h4 class="text-amber-200 font-medium">Consejos importantes</h4>
+        </div>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 list-disc pl-5">
+          <li class="text-sm text-amber-100/90 hover:text-amber-50 transition-colors duration-150">
+            Usa espacios para separar cada tipo bloque.
+          </li>
+          <li class="text-sm text-amber-100/90 hover:text-amber-50 transition-colors duration-150">
+            No debe haber espacios entre los datos de cada bloque.
+          </li>
+          <li class="text-sm text-amber-100/90 hover:text-amber-50 transition-colors duration-150">
+            No uses caracteres especiales como paréntesis, espacios o guiones.
+          </li>
+          <li class="text-sm text-amber-100/90 hover:text-amber-50 transition-colors duration-150">
+            Para rangos de dias usa -, para rangos de horario :.
+          </li>
+          <li class="text-sm text-amber-100/90 hover:text-amber-50 transition-colors duration-150">
+            Recuerda actualizar tu nota pública cuando cambies de equipo, profesiones o
+            disponibilidad.
+          </li>
+          <li class="text-sm text-amber-100/90 hover:text-amber-50 transition-colors duration-150">
+            Si tienes dudas sobre el formato o necesitas ayuda, contacta con un oficial de la
+            hermandad.
+          </li>
+          <li class="text-sm text-amber-100/90 hover:text-amber-50 transition-colors duration-150">
+            Una nota clara y completa aumenta tus posibilidades de ser seleccionado para los
+            raideos.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Sección de Profesiones -->
+    <section
+      class="bg-gradient-to-br from-steel-darker/90 to-steel-dark/90 backdrop-blur-sm p-6 rounded-xl border border-amber-900/30 shadow-lg mb-8 hover:border-amber-800/50 transition-colors duration-200"
+    >
+      <div class="flex items-center mb-6">
+        <div class="bg-amber-900/50 p-2 rounded-lg mr-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-amber-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-amber-200">Profesiones</h2>
+      </div>
+
+      <p class="text-amber-100/90 mb-6">
+        Especifica tus dos profesiones principales usando las abreviaturas de 2 letras sin espacios.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Profesiones de Producción -->
+        <div
+          class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-amber-200 mb-4 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2 text-amber-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+            Producción
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >JC</span
+              >
+              <span class="text-amber-100">Joyería</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >BS</span
+              >
+              <span class="text-amber-100">Herrería</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >EN</span
+              >
+              <span class="text-amber-100">Encantamiento</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >EG</span
+              >
+              <span class="text-amber-100">Ingeniería</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >LW</span
+              >
+              <span class="text-amber-100">Peletería</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >AL</span
+              >
+              <span class="text-amber-100">Alquimia</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >TL</span
+              >
+              <span class="text-amber-100">Sastrería</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >IN</span
+              >
+              <span class="text-amber-100">Inscripción</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profesiones de Recolección -->
+        <div
+          class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-amber-200 mb-4 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2 text-amber-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"
+              ></path>
+            </svg>
+            Recolección
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >HB</span
+              >
+              <span class="text-amber-100">Herboristería</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >MN</span
+              >
+              <span class="text-amber-100">Minería</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-10 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >SK</span
+              >
+              <span class="text-amber-100">Desuello</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección de Bandas y Dificultades -->
+    <section
+      class="bg-gradient-to-br from-steel-darker/90 to-steel-dark/90 backdrop-blur-sm p-6 rounded-xl border border-amber-900/30 shadow-lg hover:border-amber-800/50 transition-colors duration-200"
+    >
+      <div class="flex items-center mb-6">
+        <div class="bg-amber-900/50 p-2 rounded-lg mr-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-amber-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-amber-200">Bandas y Dificultades</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Bandas -->
+        <div
+          class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-amber-200 mb-4 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2 text-amber-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              ></path>
+            </svg>
+            Bandas Disponibles
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >ICC</span
+              >
+              <span class="text-amber-100">Ciudadela del Corona de Hielo</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >TOC</span
+              >
+              <span class="text-amber-100">Prueba del Cruzado</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >ULD</span
+              >
+              <span class="text-amber-100">Ulduar</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >NAX</span
+              >
+              <span class="text-amber-100">Naxxramas</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >OS</span
+              >
+              <span class="text-amber-100">Santuario Obsidiana</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >RS</span
+              >
+              <span class="text-amber-100">Santuario Rubí</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >EOE</span
+              >
+              <span class="text-amber-100">Ojo de la Eternidad</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >VOA</span
+              >
+              <span class="text-amber-100">La Cámara de Archavon</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dificultades -->
+        <div
+          class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors"
+        >
+          <h3 class="text-lg font-semibold text-amber-200 mb-4 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 mr-2 text-amber-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+            Dificultades
+          </h3>
+          <div class="grid grid-cols-1 gap-3">
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >10N</span
+              >
+              <span class="text-amber-100">10 Jugadores Normal</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >25N</span
+              >
+              <span class="text-amber-100">25 Jugadores Normal</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >10H</span
+              >
+              <span class="text-amber-100">10 Jugadores Heroico</span>
+            </div>
+            <div
+              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
+            >
+              <span
+                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
+                >25H</span
+              >
+              <span class="text-amber-100">25 Jugadores Heroico</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </Layout>
