@@ -697,18 +697,62 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
 
   // 1. Detección de Main/Alt (M/A) - Prioridad a patrones con roles
   
-  // Patrón 1: M o A seguido de rol (ej: 'MT', 'AD', 'MH', 'AH')
+  // Patrón 1: M o A seguido de rol (ej: 'MT', 'AD', 'MH', 'AH', 'at', 'md')
   const mainAltWithRole = trimmedNote.match(/^([MA])([THD])(?:[^a-zA-Z]|$)/i);
   if (mainAltWithRole) {
     result.mainAlt = mainAltWithRole[1].toUpperCase() as MainAlt;
     result.role = mainAltWithRole[2].toUpperCase() as Role;
+    result.isValid = true;
   } 
   
-  // Patrón 2: M o A al inicio de la nota (ej: 'M 5.9', 'A TL/EN')
+  // Patrón 1.1: Patrones de dos letras (ej: 'at', 'md', 'AT', 'MD')
+  if (!result.role) {
+    const twoLetterPattern = trimmedNote.match(/^([a-zA-Z]{2})(?:\s|$)/);
+    if (twoLetterPattern) {
+      const [_, code] = twoLetterPattern;
+      const lowerCode = code.toLowerCase();
+      const validRoles = ['t', 'h', 'd'];
+      const validMains = ['m', 'a'];
+      
+      const firstChar = lowerCode[0];
+      const secondChar = lowerCode[1];
+      
+      // Caso 1: Primera letra es M/A y segunda es T/H/D (ej: MT, AD, MH)
+      if (validMains.includes(firstChar) && validRoles.includes(secondChar)) {
+        result.mainAlt = firstChar.toUpperCase() as MainAlt;
+        result.role = secondChar.toUpperCase() as Role;
+        result.isValid = true;
+      } 
+      // Caso 2: Primera letra es T/H/D y segunda es M/A (ej: TM, HA, DM)
+      else if (validRoles.includes(firstChar) && validMains.includes(secondChar)) {
+        result.role = firstChar.toUpperCase() as Role;
+        result.mainAlt = secondChar.toUpperCase() as MainAlt;
+        result.isValid = true;
+      }
+      // Caso 3: Cualquier combinación de dos letras de rol (ej: TH, HD, DT)
+      else if (validRoles.includes(firstChar) && validRoles.includes(secondChar)) {
+        result.role = firstChar.toUpperCase() as Role;
+        result.dualRole = secondChar.toUpperCase() as Role;
+        result.isValid = true;
+      }
+      // Caso 4: Primera letra es M/A y segunda es M/A (ej: MA, AM)
+      else if (validMains.includes(firstChar) && validMains.includes(secondChar)) {
+        result.mainAlt = firstChar.toUpperCase() as MainAlt;
+        result.isValid = true;
+      }
+    }
+  }
+  
+  // Patrón 2: M o A al inicio de la nota (ej: 'M 5.9', 'A TL/EN', 'a')
   if (!result.mainAlt) {
     const startWithMainAlt = trimmedNote.match(/^([MA])(?:\s+|$)/i);
     if (startWithMainAlt) {
       result.mainAlt = startWithMainAlt[1].toUpperCase() as MainAlt;
+      
+      // Si es solo 'a' o 'm', marcar como válido
+      if (trimmedNote.match(/^[ma]$/i)) {
+        result.isValid = true;
+      }
     }
   }
   
@@ -739,7 +783,15 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   }
 
   // 3. Buscar roles (T, H, D) y rol dual
-  // Primero buscar formato de 3 letras que comience con A o M (ej: MDT, AHT, etc.)
+  // Primero buscar formato de rol con GS (ej: d5.8, t6.2, D5.8, T6.2)
+  const roleWithGS = trimmedNote.match(/^([thdTHD])(\d\.?\d?\d?)$/);
+  if (roleWithGS && !result.role) {
+    result.role = roleWithGS[1].toUpperCase() as Role;
+    result.gearScore = roleWithGS[2];
+    result.isValid = true;
+  }
+  
+  // Buscar formato de 3 letras que comience con A o M (ej: MDT, AHT, etc.)
   const threeLetterRoleMatch = trimmedNote.match(/\b([MA]?)([THD])([THD]?)\b/i);
 
   if (threeLetterRoleMatch) {
@@ -808,6 +860,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   // 2. Extraer Gear Score - Múltiples formatos soportados:
   //    - Números de 4 dígitos (ej: 5585 -> 5.5)
   //    - Números decimales con punto o coma (ej: 5.9, 6,2)
+  //    - Números después de rol (ej: d5.8, t6.2)
   //    - Números rodeados de cualquier carácter
   //    - Prefijos comunes como 'GS', 'gs', 'ilvl', 'iLvl', etc.
   let gsValue: string | null = null;
@@ -999,6 +1052,11 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   if (foundProfs.size > 0) {
     // Guardamos los códigos de profesión directamente
     result.professions = Array.from(foundProfs);
+    
+    // Si solo hay una profesión y es una abreviatura de 2 letras (ej: 'EN'), marcar como válido
+    if (foundProfs.size === 1 && Array.from(foundProfs)[0].length === 2) {
+      result.isValid = true;
+    }
   }
 
   // La extracción de días ya se realizó anteriormente en la sección 3 del código
@@ -1341,31 +1399,39 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   result.missingFields = Array.from(missingFieldsSet);
 
   // 7. Determinar si la nota es válida
-  // La nota es válida si tiene al menos un campo válido
-  result.isValid = true;
+  // Verificar si es un formato simple (MT, MTH, MD, etc.)
+  const isSimpleFormat = /^[MA]?[THD]+$/i.test(trimmedNote) || 
+                        /^[MA]$/i.test(trimmedNote) ||
+                        /^[MA][THD]$/i.test(trimmedNote) ||
+                        /^[THD][MA]$/i.test(trimmedNote); // Añadido para formatos como 'MD', 'TM', etc.
 
-  // Si no hay ningún campo válido, marcar como inválido
-  const hasAnyValidField =
-    result.role ||
-    result.mainAlt ||
-    result.gearScore ||
+  // La nota es válida si es un formato simple o tiene al menos un campo válido
+  const hasAnyValidField = isSimpleFormat ||
+    result.mainAlt !== undefined ||
+    result.role !== undefined ||
+    result.gearScore !== undefined ||
     (result.professions && result.professions.length > 0) ||
-    (result.schedules && result.schedules.length > 0) ||
-    (result.raids && result.raids.length > 0);
+    (result.raids && result.raids.length > 0) ||
+    (result.schedules && result.schedules.length > 0);
 
-  if (!hasAnyValidField) {
-    result.isValid = false;
+  // Establecer el estado de validación
+  result.isValid = hasAnyValidField;
+  
+  // Asegurarse de que los campos principales estén definidos para formatos simples
+  if (isSimpleFormat) {
+    if (!result.mainAlt && /^[MA]/.test(trimmedNote)) {
+      result.mainAlt = trimmedNote[0].toUpperCase() as MainAlt;
+    }
+    if (!result.role && /[THD]$/i.test(trimmedNote)) {
+      result.role = trimmedNote[trimmedNote.length - 1].toUpperCase() as Role;
+    } else if (!result.role && /^[THD]/i.test(trimmedNote)) {
+      result.role = trimmedNote[0].toUpperCase() as Role;
+    }
+  }
+  
+  if (!result.isValid) {
     errors.push('Formato inválido - No se detectaron campos válidos');
   }
-
-  // Verificar si es un formato simple (MT, MTH, etc.)
-  const isSimpleFormat = /^[MA]?[THD]+$/i.test(trimmedNote) || /^[MA]$/i.test(trimmedNote);
-
-  // Si es un formato simple o tiene los campos requeridos, es válido
-  const finalIsValid = isSimpleFormat || (errors.length === 0 && hasAnyValidField);
-  
-  // Establecer el estado de validación
-  result.isValid = finalIsValid;
   
   // Si hay errores, agregarlos al resultado
   if (errors.length > 0) {
@@ -1458,17 +1524,32 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     });
   }
   
-  return {
+  // Asegurar que los campos principales estén definidos
+  const finalResult = {
     ...result,
-    isValid: true,
-    mainAlt: result.mainAlt as MainAlt,
-    role: result.role as Role,
-    dualRole: result.dualRole as Role | undefined,
-    gearScore: result.gearScore,
-    professions: result.professions,
-    schedules: result.schedules,
+    // Asegurar que mainRole esté definido para compatibilidad
+    mainRole: result.role,
+    // Asegurar que los campos principales tengan valores por defecto si faltan
+    mainAlt: result.mainAlt || 'M',
+    role: result.role || 'D',
+    // Limpiar campos faltantes si es válido
+    missingFields: result.isValid ? [] : result.missingFields,
+    // Asegurar que los arrays estén definidos
+    professions: result.professions || [],
+    schedules: result.schedules || [],
     raids: result.raids || [],
+    // Depuración
+    _debug: {
+      originalNote: note,
+      trimmedNote,
+      isValid: result.isValid
+    }
   };
+
+  // Depuración
+  console.log('Validation result:', JSON.stringify(finalResult, null, 2));
+  
+  return finalResult;
 }
 
 // Mapa de colores y nombres de profesión
@@ -2179,17 +2260,17 @@ const totalRaiders = rosterData.members.filter(
                                     
                                     // Días - Convertir códigos de días a nombres completos
                                     const daysToShow = eventData.days?.length ? eventData.days : validation.days;
+                                    const dayNames = {
+                                      'L': 'Lunes',
+                                      'M': 'Martes',
+                                      'X': 'Miércoles',
+                                      'J': 'Jueves',
+                                      'V': 'Viernes',
+                                      'S': 'Sábado',
+                                      'D': 'Domingo'
+                                    };
+                                    
                                     if (daysToShow?.length) {
-                                      const dayNames = {
-                                        'L': 'Lunes',
-                                        'M': 'Martes',
-                                        'X': 'Miércoles',
-                                        'J': 'Jueves',
-                                        'V': 'Viernes',
-                                        'S': 'Sábado',
-                                        'D': 'Domingo'
-                                      };
-                                      
                                       // Usar la función formatDays para manejar rangos
                                       const days = formatDays(daysToShow)
                                         .map(day => dayNames[day] || day)
@@ -2474,32 +2555,41 @@ const totalRaiders = rosterData.members.filter(
                                           'J': 'Jue', 'V': 'Vie', 'S': 'Sáb', 'D': 'Dom'
                                         };
                                         
-                                        // Manejar rangos como "L-V"
-                                        if (daysStr.includes('-')) {
-                                          const [startDay, endDay] = daysStr.split('-');
-                                          const dayOrder = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-                                          const startIndex = dayOrder.indexOf(startDay);
-                                          const endIndex = dayOrder.indexOf(endDay);
-                                          
-                                          if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
-                                            // Crear rango de días
-                                            const rangeDays = [];
-                                            for (let i = startIndex; i <= endIndex; i++) {
-                                              rangeDays.push(dayOrder[i]);
+                                        // Solo agregar días si hay algo que mostrar
+                                        if (daysStr.trim()) {
+                                          // Manejar rangos como "L-V"
+                                          if (daysStr.includes('-')) {
+                                            const [startDay, endDay] = daysStr.split('-');
+                                            const dayOrder = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+                                            const startIndex = dayOrder.indexOf(startDay);
+                                            const endIndex = dayOrder.indexOf(endDay);
+                                            
+                                            if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+                                              // Crear rango de días
+                                              const rangeDays = [];
+                                              for (let i = startIndex; i <= endIndex; i++) {
+                                                rangeDays.push(dayOrder[i]);
+                                              }
+                                              const formattedDays = rangeDays.map(day => dayMap[day] || day).join(', ');
+                                              if (formattedDays) {
+                                                eventTags.push({label: formattedDays, class: 'bg-blue-500/20 border-blue-500/50'});
+                                              }
+                                            } else if (daysStr.trim()) {
+                                              // Si no se puede formar un rango válido, mostrar el texto original solo si no está vacío
+                                              eventTags.push({label: daysStr.trim(), class: 'bg-blue-500/20 border-blue-500/50'});
                                             }
-                                            const formattedDays = rangeDays.map(day => dayMap[day] || day).join(', ');
-                                            eventTags.push({label: formattedDays, class: 'bg-blue-500/20 border-blue-500/50'});
                                           } else {
-                                            // Si no se puede formar un rango válido, mostrar el texto original
-                                            eventTags.push({label: daysStr, class: 'bg-blue-500/20 border-blue-500/50'});
+                                            // Si no es un rango, mostrar los días individuales
+                                            const formattedDays = daysStr
+                                              .split('')
+                                              .map(day => dayMap[day] || day)
+                                              .filter(day => day) // Filtrar días vacíos
+                                              .join(', ');
+                                            
+                                            if (formattedDays) {
+                                              eventTags.push({label: formattedDays, class: 'bg-blue-500/20 border-blue-500/50'});
+                                            }
                                           }
-                                        } else {
-                                          // Si no es un rango, mostrar los días individuales
-                                          const formattedDays = daysStr
-                                            .split('')
-                                            .map(day => dayMap[day] || day)
-                                            .join(', ');
-                                          eventTags.push({label: formattedDays, class: 'bg-blue-500/20 border-blue-500/50'});
                                         }
                                       }
                                       
@@ -2523,9 +2613,13 @@ const totalRaiders = rosterData.members.filter(
                                       }
                                       
                                       // Verificar campos faltantes en evento
-                                      if (!eventData.days) eventMissingFields.push('Días');
-                                      if (!eventData.time) eventMissingFields.push('Hora');
-                                      if (!eventData.raid) eventMissingFields.push('Raid');
+                                      const hasDays = eventData.days?.length > 0;
+                                      const hasTime = !!eventData.time;
+                                      const hasRaid = !!eventData.raid;
+                                      
+                                      if (!hasDays) eventMissingFields.push('Día/s');
+                                      if (!hasTime) eventMissingFields.push('Hora');
+                                      if (!hasRaid) eventMissingFields.push('Raid');
                                       
                                       // Agregar el evento procesado al array
                                       processedEvents.push({
@@ -3182,7 +3276,7 @@ const totalRaiders = rosterData.members.filter(
     >
       Estadísticas del Roster
     </h2>
-    <div class="grid grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Columna 1: Distribución por Rango -->
       <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
         <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">

@@ -370,9 +370,9 @@ const parseEventBlock = (content: string): EventBlock | null => {
     'D': 'Dom'
   };
   
-  // 1. Extraer días (soporta L-V, l-v, L-v, l-V, etc.)
+  // 1. Extraer días (soporta L-V, l-v, L-v, l-V, etc.) - Opcional
   // Días en español: L (lunes), M (martes), X (miércoles), J (jueves), V (viernes), S (sábado), D (domingo)
-  const daysMatch = remaining.match(/([LMXJVSD]+(?:-[LMXJVSD])?)/i);
+  const daysMatch = remaining.match(/^([LMXJVSD]+(?:-[LMXJVSD])?)/i);
   if (daysMatch && daysMatch.index === 0) {  // Solo si el match está al inicio
     const daysStr = daysMatch[0].toUpperCase();
     
@@ -396,20 +396,19 @@ const parseEventBlock = (content: string): EventBlock | null => {
     // Validar que todos los días sean válidos
     const validDays = new Set('LMXJVSD');
     if (!days.every(day => validDays.has(day))) {
-      return null;
+      days = []; // No fallar, simplemente no usar días inválidos
     }
     
     remaining = remaining.substring(daysMatch[0].length).trim();
   }
 
-  // 2. Extraer RL (Raid Leader) - puede estar antes o después de la hora
+  // 2. Extraer RL (Raid Leader) - puede estar en cualquier lugar - Opcional
   if (remaining.toLowerCase().includes('rl')) {
     isRaidLeader = true;
     remaining = remaining.replace(/rl/gi, '').trim();
   }
   
-  // 2. Extraer hora (formato HH o HH:MM)
-  // Primero verificar si hay una hora después de los días
+  // 3. Extraer hora (formato HH o HH:MM) - Opcional
   const timeMatch = remaining.match(/^(\d{1,2})(?::(\d{2}))?/);
   if (timeMatch) {
     // Verificar si es un caso especial donde 'M' es seguido de números
@@ -424,17 +423,15 @@ const parseEventBlock = (content: string): EventBlock | null => {
       if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
         time = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         remaining = remaining.substring(timeMatch[0].length).trim();
-      } else {
-        // Si la hora no es válida, no procesar este bloque
-        return null;
       }
+      // Si la hora no es válida, simplemente la ignoramos
     } else if (isMDayWithTime) {
       // Si es solo 'M' sin hora, continuar sin extraer hora
       remaining = remaining.substring(1).trim();
     }
   }
 
-  // 4. Extraer raid y dificultad
+  // 4. Extraer raid y dificultad - Obligatorio
   // Formato: raid + número + n/h (ej: icc10n, voa25h)
   // Primero intentamos hacer match con cualquier texto que parezca un código de raid
   const raidMatch = remaining.match(/^([a-zA-Z]+)(\d{1,2}[NHnh])/i);
@@ -457,10 +454,10 @@ const parseEventBlock = (content: string): EventBlock | null => {
         difficulty = difficultyCode;
         remaining = remaining.substring(raidMatch[0].length).trim();
       } else {
-        return null;
+        return null; // Raid no válido
       }
     } else {
-      return null;
+      return null; // Formato de raid no válido
     }
   }
   // Si no coincide, intentar con el formato de dificultad separado
@@ -480,9 +477,9 @@ const parseEventBlock = (content: string): EventBlock | null => {
     }
   }
   
-  // 5. Validar que tengamos toda la información necesaria
-  if (!time || !raid || !difficulty) {
-    return null; // No devolver evento si falta información crítica
+  // 5. Validar que tengamos raid y dificultad (únicos campos obligatorios)
+  if (!raid || !difficulty) {
+    return null; // No devolver evento si falta raid o dificultad
   }
   
   // 6. Validar valores de raid y dificultad
@@ -493,11 +490,6 @@ const parseEventBlock = (content: string): EventBlock | null => {
     
   // 7. Si no hay raid o dificultad válida, no devolver evento
   if (!validRaid || !validDifficulty) {
-    return null;
-  }
-
-  // 8. Si no hay días definidos, no es un evento válido
-  if (days.length === 0) {
     return null;
   }
     
