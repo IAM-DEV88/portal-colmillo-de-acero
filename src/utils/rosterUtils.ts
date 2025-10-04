@@ -290,7 +290,10 @@ export const calculateMainAltDistribution = (members: RosterMember[]): { M: numb
  */
 const parseCharacterBlock = (content: string): CharacterBlock | null => {
   // Verificar que el bloque coincida con el patrón de personaje
-  const match = content.match(/^([MA])([THD])?(\d+(?:\.\d+)?)?([THD]\d+(?:\.\d+)?)?([A-Za-z]{2,6})?/i);
+  const match = content.match(/^([MA])([THD])(\d+(?:\.\d+)?)([THD]\d+(?:\.\d+)?)?([A-Za-z]{2,6})?/i) || 
+                content.match(/^([MA])([THD])([A-Za-z]{2,6})?/i) ||
+                content.match(/^([MA])$/i);
+                
   if (!match) return null;
   
   const [, mainAlt, mainRole, gs, dualInfo, profs] = match;
@@ -312,10 +315,17 @@ const parseCharacterBlock = (content: string): CharacterBlock | null => {
   let dualGearScore: number | undefined;
   
   if (dualInfo) {
+    // Manejar el formato de rol dual con gear score (ej: d5.9)
     const dualMatch = dualInfo.match(/^([THD])(\d+(?:\.\d+)?)/i);
     if (dualMatch) {
       dualRole = dualMatch[1].toUpperCase() as Role;
       dualGearScore = parseFloat(dualMatch[2]);
+    } else {
+      // Si no coincide con el formato de gear score, verificar si es solo el rol dual
+      const roleOnlyMatch = dualInfo.match(/^([THD])/i);
+      if (roleOnlyMatch) {
+        dualRole = roleOnlyMatch[1].toUpperCase() as Role;
+      }
     }
   }
   
@@ -368,10 +378,8 @@ const parseCharacterBlock = (content: string): CharacterBlock | null => {
     professions
   };
   
-  // Validar que el rol dual sea diferente al principal
-  if (validDualRole && validDualRole === validMainRole) {
-    return null;
-  }
+  // Permitir el mismo rol para main y dual (ej: DPS/DPS)
+  // Solo validar que los roles sean válidos, no que sean diferentes
 
   return result;
 };
