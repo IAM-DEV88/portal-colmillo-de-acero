@@ -18,11 +18,11 @@ const defaultClassInfo: Record<string, { name: string; color: string }> = {
   Chamán: { color: '0070DE', name: 'Chamán' },
   Mago: { color: '69CCF0', name: 'Mago' },
   Brujo: { color: '9482C9', name: 'Brujo' },
-  Druida: { color: 'FF7D0A', name: 'Druida' }
+  Druida: { color: 'FF7D0A', name: 'Druida' },
 };
 
 // Import types and constants from roster types
-import type { 
+import type {
   RosterMember as RosterMemberType,
   RosterData as RosterDataType,
   EventBlock,
@@ -37,31 +37,31 @@ import type {
   NoteBlock,
   Member,
   RosterStats,
-  RaidInfo
+  RaidInfo,
 } from '../../types/roster';
 
 // Usar los tipos directamente desde la importación
 
 // Import roster utilities
-import { 
+import {
   validatePublicNote as validateRosterNote,
   calculateRoleDistribution as calculateRoleDistro,
   calculateGearScoreStats as calculateGSStats,
   countRaidLeaders as countLeaders,
   calculateMainAltDistribution as calculateMainAlts,
-  PROFESSION_CODES
+  PROFESSION_CODES,
 } from '../../utils/rosterUtils';
 
 type ProfessionCode = (typeof PROFESSION_CODES)[number];
 
 // Variables para las estadísticas de Gear Score
-let gearScoreStats = { 
-  min: 0, 
-  max: 0, 
-  avg: 0, 
-  total: 0, 
-  mainGearScore: 0, 
-  dualGearScore: null as number | null 
+let gearScoreStats = {
+  min: 0,
+  max: 0,
+  avg: 0,
+  total: 0,
+  mainGearScore: 0,
+  dualGearScore: null as number | null,
 };
 let averageGearScore = 'N/A';
 let minGearScore = 'N/A';
@@ -78,7 +78,7 @@ import {
   DAY_NAMES,
   RAID_CODES,
   DIFFICULTIES,
-  STATUS
+  STATUS,
 } from '../../types/roster';
 
 // Define initial stats structure
@@ -89,19 +89,21 @@ const initialStats: RosterStats = {
     min: 0,
     max: 0,
     avg: 0,
-    total: 0
+    total: 0,
   },
   raidLeadersCount: 0,
   mainAltDistribution: { M: 0, A: 0 },
   professions: {},
-  validNotesCount: 0
+  validNotesCount: 0,
 };
 
 // Define RAIDS constant with proper typing
-const RAIDS: Array<{code: RaidCode; name: string}> = Object.entries(RAID_NAMES).map(([code, name]) => ({
-  code: code as RaidCode,
-  name: String(name)
-}));
+const RAIDS: Array<{ code: RaidCode; name: string }> = Object.entries(RAID_NAMES).map(
+  ([code, name]) => ({
+    code: code as RaidCode,
+    name: String(name),
+  })
+);
 
 // Initialize stats with default values
 let stats: RosterStats = { ...initialStats };
@@ -125,7 +127,8 @@ export interface RosterTableProps {
 }
 
 // Get props from Astro
-const { rosterData: initialRosterData, status = { isLoading: false, error: null } } = Astro.props as RosterTableProps;
+const { rosterData: initialRosterData, status = { isLoading: false, error: null } } =
+  Astro.props as RosterTableProps;
 
 // Define default roster data structure
 const defaultRosterData: RosterData = {
@@ -140,7 +143,7 @@ const defaultRosterData: RosterData = {
     faction: 0,
     level: 25,
     memberCount: 0,
-    achievementPoints: 0
+    achievementPoints: 0,
   },
   stats: {
     ...initialStats,
@@ -148,26 +151,31 @@ const defaultRosterData: RosterData = {
     raidLeadersCount: 0,
     mainAltDistribution: { M: 0, A: 0 },
     professions: {},
-    validNotesCount: 0
-  }
+    validNotesCount: 0,
+  },
 } as const;
 
 // Usar directamente las funciones importadas con sus alias
 
 // Process members with proper typing
 const processRosterMember = (member: any): RosterMemberType => {
-  const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).includes(member.class) 
-    ? member.class as keyof typeof defaultClassInfo 
-    : 'Desconocido' as const;
-    
+  const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).includes(
+    member.class
+  )
+    ? (member.class as keyof typeof defaultClassInfo)
+    : ('Desconocido' as const);
+
   // Ensure mainAlt is either 'M' or 'A'
-  const mainAlt = member.mainAlt === 'main' ? 'M' : 
-                 member.mainAlt === 'alt' ? 'A' : 
-                 member.mainAlt || 'A';
-  
+  const mainAlt =
+    member.mainAlt === 'main' ? 'M' : member.mainAlt === 'alt' ? 'A' : member.mainAlt || 'A';
+
   // Validar la nota pública usando el alias importado
-  const noteValidation = validateRosterNote(member.publicNote || '', member.name || '', member.officerNote || '');
-  
+  const noteValidation = validateRosterNote(
+    member.publicNote || '',
+    member.name || '',
+    member.officerNote || ''
+  );
+
   // Asegurar que noteValidation cumpla con PublicNoteValidation
   const validNoteValidation: RosterPublicNoteValidation = {
     isValid: noteValidation.isValid || false,
@@ -184,9 +192,9 @@ const processRosterMember = (member: any): RosterMemberType => {
     schedules: noteValidation.schedules || [],
     raids: noteValidation.raids || [],
     error: noteValidation.error,
-    missingFields: noteValidation.missingFields || []
+    missingFields: noteValidation.missingFields || [],
   };
-    
+
   // Create a valid RosterMember object with required properties
   const processedMember: RosterMemberType = {
     ...member,
@@ -196,21 +204,19 @@ const processRosterMember = (member: any): RosterMemberType => {
     publicNote: member.publicNote || '',
     officerNote: member.officerNote || '',
     noteValidation: validNoteValidation,
-    mainAlt: mainAlt as MainAlt
+    mainAlt: mainAlt as MainAlt,
   };
-  
+
   return processedMember;
 };
 
 // Las funciones de cálculo ahora se importan desde rosterUtils.ts
 
-
-
 // Define the roster data with proper typing
 // Procesar los miembros del roster
 const members = rosterDataFromProps.map(processRosterMember);
 const totalMembers = members.length;
-const validNotesCount = members.filter(m => m.publicNote).length;
+const validNotesCount = members.filter((m) => m.publicNote).length;
 
 // Utility function to get role percentage
 const getRolePercentage = (count: number, total: number = totalMembers) => {
@@ -226,7 +232,10 @@ const updateGearScoreStats = () => {
     minGearScore = stats.min > 0 ? stats.min.toFixed(1) : 'N/A';
     maxGearScore = stats.max > 0 ? stats.max.toFixed(1) : 'N/A';
     mainGearScore = stats.mainGearScore > 0 ? stats.mainGearScore.toFixed(1) : 'N/A';
-    dualGearScore = stats.dualGearScore !== null && stats.dualGearScore > 0 ? stats.dualGearScore.toFixed(1) : 'N/A';
+    dualGearScore =
+      stats.dualGearScore !== null && stats.dualGearScore > 0
+        ? stats.dualGearScore.toFixed(1)
+        : 'N/A';
   } catch (error) {
     gearScoreStats = { min: 0, max: 0, avg: 0, total: 0 };
     averageGearScore = 'N/A';
@@ -255,14 +264,16 @@ function ensureRosterMember(member: Partial<RosterMember>): RosterMember {
       raids: [],
       schedules: [],
       missingFields: [],
-      error: 'No note provided'
+      error: 'No note provided',
     },
-    ...member
+    ...member,
   };
 }
 
 // Process members to ensure they have required properties
-const processedMembers = members.map(member => ensureRosterMember(member as Partial<RosterMember>));
+const processedMembers = members.map((member) =>
+  ensureRosterMember(member as Partial<RosterMember>)
+);
 
 // Create the rosterData object with the expected structure
 const rosterData: RosterDataWithRankInfo = {
@@ -270,7 +281,7 @@ const rosterData: RosterDataWithRankInfo = {
   members: processedMembers,
   totalMembers,
   classInfo: {
-    ...defaultClassInfo
+    ...defaultClassInfo,
   },
   stats: {
     ...initialStats,
@@ -280,80 +291,92 @@ const rosterData: RosterDataWithRankInfo = {
     gearScoreStats: calculateGSStats(processedMembers),
     raidLeadersCount: countLeaders(processedMembers),
     mainAltDistribution: calculateMainAlts(processedMembers),
-    professions: {}
+    professions: {},
   },
   raids: [],
   raidDays: {},
   raidTimes: {},
-  rankInfo: {}
+  rankInfo: {},
 } as unknown as RosterDataWithRankInfo;
 
 // Calculate statistics - single implementation
 const calculateStats = (members: RosterMember[]): RosterStats => {
-  if (!members.length) return { 
-    ...initialStats,
-    totalMembers: 0,
-    roleDistribution: {},
-    gearScoreStats: { min: 0, max: 0, avg: 0, total: 0, mainGearScore: 0, dualGearScore: null },
-    raidLeadersCount: 0,
-    mainAltDistribution: { M: 0, A: 0 },
-    professions: {},
-    validNotesCount: 0
-  } as RosterStats;
-  
+  if (!members.length)
+    return {
+      ...initialStats,
+      totalMembers: 0,
+      roleDistribution: {},
+      gearScoreStats: { min: 0, max: 0, avg: 0, total: 0, mainGearScore: 0, dualGearScore: null },
+      raidLeadersCount: 0,
+      mainAltDistribution: { M: 0, A: 0 },
+      professions: {},
+      validNotesCount: 0,
+    } as RosterStats;
+
   // Use members directly with proper type
   const roleDistribution = calculateRoleDistro(members);
   const gearScoreStats = calculateGSStats(members);
   const raidLeadersCount = countLeaders(members);
   const mainAltDistribution = calculateMainAlts(members);
-  const validNotesCount = members.filter(m => m.noteValidation?.isValid).length;
-  
+  const validNotesCount = members.filter((m) => m.noteValidation?.isValid).length;
+
   // Initialize professions object with all possible profession codes set to 0
   const professions: Record<string, number> = {
-    JC: 0, BS: 0, EN: 0, EG: 0, LW: 0, AL: 0, TL: 0, IN: 0, HB: 0, MN: 0, SK: 0
+    JC: 0,
+    BS: 0,
+    EN: 0,
+    EG: 0,
+    LW: 0,
+    AL: 0,
+    TL: 0,
+    IN: 0,
+    HB: 0,
+    MN: 0,
+    SK: 0,
   };
-  
+
   // Initialize profession counts to 0
-  PROFESSION_CODES.forEach(code => {
+  PROFESSION_CODES.forEach((code) => {
     professions[code] = 0;
   });
-  
+
   let totalProcessed = 0;
   let membersWithValidNotes = 0;
-  
+
   // Process each member's professions
   for (const member of members) {
     // Only process if the note is valid
     if (!member.noteValidation?.isValid) {
       continue;
     }
-    
+
     membersWithValidNotes++;
-    
+
     // Get professions from all possible sources
     const profSources: string[] = [];
-    
+
     // 1. Get professions directly from noteValidation
     if (member.noteValidation?.professions?.length) {
       profSources.push(...member.noteValidation.professions);
     }
-    
+
     // 2. Get professions from character blocks
-    const characterBlocks = (member.noteValidation?.blocks || [])
-      .filter(b => b.type === 'character' && b.parsedData?.professions?.length);
-      
+    const characterBlocks = (member.noteValidation?.blocks || []).filter(
+      (b) => b.type === 'character' && b.parsedData?.professions?.length
+    );
+
     if (characterBlocks.length > 0) {
-      characterBlocks.forEach(block => {
+      characterBlocks.forEach((block) => {
         if (block.parsedData?.professions?.length) {
           profSources.push(...block.parsedData.professions);
         }
       });
     }
-    
+
     // Filter and normalize profession codes
     const allProfs: string[] = [...new Set(profSources)]
       .filter((code): code is string => Boolean(code)) // Filter and ensure they are strings
-      .map(code => {
+      .map((code) => {
         const normalizedCode = code.trim().toUpperCase();
         // Ensure the code has exactly 2 characters
         return normalizedCode.length === 2 ? normalizedCode : null;
@@ -366,9 +389,9 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
         }
         return isValid;
       }) as ProfessionCode[]; // Ensure TypeScript knows these are valid profession codes
-    
+
     // Count the professions
-    allProfs.forEach(profCode => {
+    allProfs.forEach((profCode) => {
       if (profCode in professions) {
         professions[profCode]++;
         totalProcessed++;
@@ -377,18 +400,18 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
       }
     });
   }
-  
+
   // Verificar si hay alguna profesión con conteo > 0
-  const hasProfessions = Object.values(professions).some(count => count > 0);
-  
+  const hasProfessions = Object.values(professions).some((count) => count > 0);
+
   if (!hasProfessions) {
     console.warn('No se encontraron profesiones en ninguna nota. Revisar el formato de las notas.');
   }
-  
+
   // Actualizar las estadísticas globales
   stats.validNotesCount = membersWithValidNotes;
   stats.professions = professions;
-  
+
   return {
     totalMembers: members.length,
     roleDistribution,
@@ -396,7 +419,7 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
     raidLeadersCount,
     mainAltDistribution,
     professions,
-    validNotesCount: membersWithValidNotes
+    validNotesCount: membersWithValidNotes,
   };
 };
 
@@ -410,46 +433,46 @@ stats = {
   ...stats,
   totalMembers: rosterData.totalMembers,
   validNotesCount: calculatedStats.validNotesCount || 0,
-  professions: calculatedStats.professions || {}
+  professions: calculatedStats.professions || {},
 };
 
 // Asegurarse de que rosterData.stats tenga las estadísticas actualizadas
 rosterData.stats = {
   ...rosterData.stats,
-  ...calculatedStats
+  ...calculatedStats,
 };
 
 // Inicializar roleStats contando cada rol (T, H, D) independientemente de si es rol principal o dual
 // Un jugador puede contribuir a múltiples roles si tiene un rol dual
 const roleStats = {
-  T: rosterData.members.filter(member => 
-    member.noteValidation?.role === 'T' || 
-    member.noteValidation?.dualRole === 'T'
+  T: rosterData.members.filter(
+    (member) => member.noteValidation?.role === 'T' || member.noteValidation?.dualRole === 'T'
   ).length,
-  H: rosterData.members.filter(member => 
-    member.noteValidation?.role === 'H' || 
-    member.noteValidation?.dualRole === 'H'
+  H: rosterData.members.filter(
+    (member) => member.noteValidation?.role === 'H' || member.noteValidation?.dualRole === 'H'
   ).length,
-  D: rosterData.members.filter(member => 
-    member.noteValidation?.role === 'D' || 
-    member.noteValidation?.dualRole === 'D'
-  ).length
+  D: rosterData.members.filter(
+    (member) => member.noteValidation?.role === 'D' || member.noteValidation?.dualRole === 'D'
+  ).length,
 };
 
 // Contar roles duales por separado
 const dualRoleStats = {
-  TH: rosterData.members.filter(member => 
-    (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'H') ||
-    (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'T')
+  TH: rosterData.members.filter(
+    (member) =>
+      (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'H') ||
+      (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'T')
   ).length,
-  TD: rosterData.members.filter(member => 
-    (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'D') ||
-    (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'T')
+  TD: rosterData.members.filter(
+    (member) =>
+      (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'D') ||
+      (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'T')
   ).length,
-  HD: rosterData.members.filter(member => 
-    (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'D') ||
-    (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'H')
-  ).length
+  HD: rosterData.members.filter(
+    (member) =>
+      (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'D') ||
+      (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'H')
+  ).length,
 };
 
 // Format role distribution for display
@@ -458,7 +481,7 @@ const formattedRoleDistribution = Object.entries(rosterData.stats.roleDistributi
   .map(([role, count]) => ({
     role,
     count: Number(count) || 0,
-    percentage: getRolePercentage(Number(count) || 0, stats.totalMembers)
+    percentage: getRolePercentage(Number(count) || 0, stats.totalMembers),
   }));
 
 // Mapeo de roles a nombres completos y colores
@@ -486,7 +509,7 @@ const professionColors: Record<string, string> = {
   IN: 'bg-indigo-500/20 text-indigo-300',
   MN: 'bg-gray-600/20 text-gray-400',
   SK: 'bg-orange-500/20 text-orange-300',
-  LW: 'bg-amber-500/20 text-amber-300'
+  LW: 'bg-amber-500/20 text-amber-300',
 };
 
 // Mapeo de colores para las dificultades
@@ -546,16 +569,16 @@ interface MainAltDistributionItem extends DistributionItem {
 }
 
 // Import types from the types file
-import type { 
-  RosterMember as RosterMemberType, 
-  PublicNoteValidation as RosterPublicNoteValidation, 
+import type {
+  RosterMember as RosterMemberType,
+  PublicNoteValidation as RosterPublicNoteValidation,
   RosterData as BaseRosterData,
   RosterStats,
   ClassName,
   Role,
   MainAlt,
   Member,
-  PublicNoteValidation
+  PublicNoteValidation,
 } from '../../types/roster';
 
 // Define the default note validation object
@@ -564,7 +587,7 @@ const defaultNoteValidation: PublicNoteValidation = {
   blocks: [],
   isRaidLeader: false,
   hasSchedule: false,
-  hasRaids: false
+  hasRaids: false,
 };
 
 // Define a type for the roster member with all required properties
@@ -583,13 +606,14 @@ type RosterMember = Omit<RosterMemberType, 'noteValidation'> & {
 };
 
 // Type guard to check if a member has noteValidation
-function hasNoteValidation(member: RosterMember): member is RosterMember & { noteValidation: RosterPublicNoteValidation } {
+function hasNoteValidation(
+  member: RosterMember
+): member is RosterMember & { noteValidation: RosterPublicNoteValidation } {
   return member.noteValidation !== undefined;
 }
 
 // Type for the member parameter in array methods
 type MemberCallback = (member: RosterMember) => void;
-
 
 // Extend the base RosterData type to include rankInfo
 type RosterDataWithRankInfo = Omit<BaseRosterData, 'members' | 'stats' | 'rankInfo'> & {
@@ -610,23 +634,20 @@ type RosterDataWithRankInfo = Omit<BaseRosterData, 'members' | 'stats' | 'rankIn
 // Type for the member parameter in array methods
 type MemberCallback = (member: RosterMember) => void;
 
-
-
 // Calculate main/alt distribution
 const calculateMainAltDistribution = (members: Member[]): { M: number; A: number } => {
   const result = { M: 0, A: 0 };
-  
+
   for (const member of members) {
-    const validation = member.noteValidation;
-    if (!validation?.isValid) continue;
-    
-    if (validation.mainAlt === 'M') {
-      result.M = result.M + 1;
-    } else if (validation.mainAlt === 'A') {
-      result.A = result.A + 1;
+    const mainAlt = member.noteValidation?.mainAlt || 'A'; // Default to 'A' if not specified
+    if (mainAlt === 'M') {
+      result.M++;
+    } else {
+      // Count as Alt if not explicitly marked as Main
+      result.A++;
     }
   }
-  
+
   return result;
 };
 
@@ -643,16 +664,16 @@ const formatEventBlock = (event: {
   isRaidLeader?: boolean;
 }): string[] => {
   if (!event) return [];
-  
+
   const formatted: string[] = [];
-  
+
   // Format days
   if (event.days?.length) {
-    const dayNames = event.days.map(day => {
+    const dayNames = event.days.map((day) => {
       const dayCode = day.toUpperCase();
       return DAY_NAMES[dayCode as keyof typeof DAY_NAMES] || day;
     });
-    
+
     let daysText = '';
     if (dayNames.length === 1) {
       daysText = dayNames[0];
@@ -660,34 +681,35 @@ const formatEventBlock = (event: {
       const lastDay = dayNames.pop();
       daysText = `${dayNames.join(', ')} y ${lastDay}`;
     }
-    
+
     if (daysText) {
       formatted.push(`<span class="text-yellow-400">${daysText}</span>`);
     }
   }
-  
+
   // Format time
   if (event.time) {
     formatted.push(`<span class="text-blue-300">${event.time}</span>`);
   }
-  
+
   // Format raid
   if (event.raid) {
     const raidName = RAID_NAMES[event.raid as keyof typeof RAID_NAMES] || event.raid;
     formatted.push(`<span class="text-purple-300">${raidName}</span>`);
   }
-  
+
   // Format difficulty
   if (event.difficulty) {
-    const difficultyName = DIFFICULTY_NAMES[event.difficulty as keyof typeof DIFFICULTY_NAMES] || event.difficulty;
+    const difficultyName =
+      DIFFICULTY_NAMES[event.difficulty as keyof typeof DIFFICULTY_NAMES] || event.difficulty;
     formatted.push(`<span class="text-green-300">${difficultyName}</span>`);
   }
-  
+
   // Add Raid Leader tag if needed
   if (event.isRaidLeader) {
     formatted.push('<span class="text-yellow-300 font-bold">RL</span>');
   }
-  
+
   return formatted;
 };
 
@@ -739,10 +761,14 @@ interface RosterData {
 }
 
 // Validar nota pública según el formato requerido
-function validatePublicNote(note: string | undefined, characterName: string = 'Desconocido', officerNote: string = ''): RosterPublicNoteValidation {
+function validatePublicNote(
+  note: string | undefined,
+  characterName: string = 'Desconocido',
+  officerNote: string = ''
+): RosterPublicNoteValidation {
   // Usar la función importada que combina notas públicas y oficiales
   const result = validateRosterNote(note, characterName, officerNote);
-  
+
   // Crear un objeto con los valores por defecto según la interfaz
   const validated: RosterPublicNoteValidation = {
     isValid: result.isValid || false,
@@ -759,21 +785,25 @@ function validatePublicNote(note: string | undefined, characterName: string = 'D
     professions: result.professions,
     schedules: result.schedules,
     raids: result.raids,
-    error: result.error
+    error: result.error,
   };
-  
+
   return validated;
 }
 
 // Función auxiliar para validar notas (mantener para compatibilidad)
-function validateNoteLegacy(note: string | undefined, characterName: string = 'Desconocido'): RosterPublicNoteValidation {
+function validateNoteLegacy(
+  note: string | undefined,
+  characterName: string = 'Desconocido'
+): RosterPublicNoteValidation {
   const errors: string[] = [];
   const missingFields: string[] = [];
-  const result: RosterPublicNoteValidation & { blocks?: Array<{ type: string; parsedData: any }> } = {
-    isValid: false,
-    raids: [],
-    blocks: []
-  };
+  const result: RosterPublicNoteValidation & { blocks?: Array<{ type: string; parsedData: any }> } =
+    {
+      isValid: false,
+      raids: [],
+      blocks: [],
+    };
 
   if (!note?.trim()) {
     return { ...result, error: 'La nota pública no puede estar vacía' };
@@ -783,24 +813,29 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   const parts = trimmedNote.split(/\s+/); // Dividir por cualquier espacio en blanco
 
   // 1. Detección de Main/Alt (M/A) - Prioridad a patrones con roles
-  
+
   // Patrón 1: M o A seguido de rol (ej: 'MT', 'AD', 'MH', 'AH', 'at', 'md')
   const mainAltWithRole = trimmedNote.match(/^([MA])([THD])(?![a-zA-Z])/i);
-  
+
   // Patrón para notas con gear score (ej: 'AD5.9', 'at5.7')
   const gearScorePattern = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)/i);
-  
+
   // Patrón para notas con profesiones (ej: 'adALHB', 'ad6.6TLBS')
   const professionPattern = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)?([A-Za-z]{2,})/i);
-  
+
   // Patrón para notas de raid (ej: 'AT5.9 M20RLTOC25N')
-  const raidPatternMatch = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)?(?:\s+([A-Za-z0-9]+))?/i);
-  
+  const raidPatternMatch = trimmedNote.match(
+    /^([MA])([THD])(\d+(?:\.\d+)?)?(?:\s+([A-Za-z0-9]+))?/i
+  );
+
   if (mainAltWithRole || gearScorePattern || professionPattern || raidPatternMatch) {
     // Extraer la información del patrón coincidente
-    let mainAlt, role, gearScore = 0, professions = [];
+    let mainAlt,
+      role,
+      gearScore = 0,
+      professions = [];
     let raidInfo = null;
-    
+
     if (mainAltWithRole) {
       mainAlt = mainAltWithRole[1].toUpperCase() as MainAlt;
       role = mainAltWithRole[2].toUpperCase() as Role;
@@ -816,7 +851,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       }
       // Extraer códigos de profesión (2 letras cada uno)
       const profCodes = (professionPattern[4] || '').match(/[A-Za-z]{2}/g) || [];
-      professions = profCodes.map(p => p.toUpperCase() as ProfessionCode);
+      professions = profCodes.map((p) => p.toUpperCase() as ProfessionCode);
     } else if (raidPatternMatch) {
       mainAlt = raidPatternMatch[1].toUpperCase() as MainAlt;
       role = raidPatternMatch[2].toUpperCase() as Role;
@@ -830,12 +865,12 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
           raidInfo = {
             code: raidMatch[1].toUpperCase(),
             difficulty: raidMatch[3] ? `${raidMatch[2]}${raidMatch[3]}` : undefined,
-            isRaidLeader: raidPattern[4].toLowerCase().includes('rl')
+            isRaidLeader: raidPattern[4].toLowerCase().includes('rl'),
           };
         }
       }
     }
-    
+
     // Crear el bloque de personaje
     const characterBlock: NoteBlock = {
       type: 'character',
@@ -846,10 +881,10 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
         role,
         mainRole: role,
         mainGearScore: gearScore,
-        professions: professions
-      }
+        professions: professions,
+      },
     };
-    
+
     // Crear el objeto de resultado
     const validationResult: RosterPublicNoteValidation = {
       isValid: true,
@@ -860,19 +895,23 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       gearScore: gearScore,
       professions: professions,
       schedules: [],
-      raids: raidInfo ? [{
-        code: raidInfo.code as RaidCode,
-        difficulty: raidInfo.difficulty as DifficultyCode || '10N',
-        name: raidInfo.code,
-        difficultyCode: (raidInfo.difficulty as DifficultyCode) || '10N',
-        isRaidLeader: raidInfo.isRaidLeader || false
-      }] : [],
+      raids: raidInfo
+        ? [
+            {
+              code: raidInfo.code as RaidCode,
+              difficulty: (raidInfo.difficulty as DifficultyCode) || '10N',
+              name: raidInfo.code,
+              difficultyCode: (raidInfo.difficulty as DifficultyCode) || '10N',
+              isRaidLeader: raidInfo.isRaidLeader || false,
+            },
+          ]
+        : [],
       isRaidLeader: raidInfo?.isRaidLeader || false,
       hasSchedule: false,
       hasRaids: !!raidInfo,
-      missingFields: []
+      missingFields: [],
     };
-    
+
     // Si es un patrón simple (AD, AT, etc.), marcar como válido y salir
     if (trimmedNote.length === 2 || (gearScore && trimmedNote.length <= 10)) {
       // Asegurarse de que el bloque de personaje tenga toda la información necesaria
@@ -885,10 +924,10 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
           role,
           mainRole: role,
           mainGearScore: 0,
-          professions: []
-        }
+          professions: [],
+        },
       };
-      
+
       // Crear el resultado final
       const finalResult: RosterPublicNoteValidation = {
         isValid: true,
@@ -903,12 +942,12 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
         isRaidLeader: false,
         hasSchedule: false,
         hasRaids: false,
-        missingFields: []
+        missingFields: [],
       };
-      
+
       return finalResult;
     }
-    
+
     // Actualizar el resultado actual
     Object.assign(result, validationResult);
   } else {
@@ -916,13 +955,13 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     const twoLetterPattern = trimmedNote.match(/^([a-zA-Z]{2})(?:\s|$)/i);
     if (twoLetterPattern) {
       const code = twoLetterPattern[1].toUpperCase();
-      
+
       // Verificar si el código es un patrón de rol (primera letra M/A, segunda T/H/D)
       const roleMatch = code.match(/^([MA])([THD])$/i);
       if (roleMatch) {
         const mainAlt = roleMatch[1].toUpperCase() as MainAlt;
         const role = roleMatch[2].toUpperCase() as Role;
-        
+
         const charBlock: NoteBlock = {
           type: 'character',
           content: code,
@@ -932,10 +971,10 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
             role,
             mainRole: role,
             mainGearScore: 0,
-            professions: []
-          }
+            professions: [],
+          },
         };
-        
+
         return {
           isValid: true,
           blocks: [charBlock],
@@ -949,12 +988,12 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
           isRaidLeader: false,
           hasSchedule: false,
           hasRaids: false,
-          missingFields: []
+          missingFields: [],
         };
       }
     }
   }
-  
+
   // Patrones adicionales...
   if (!result.role) {
     const twoLetterPattern = trimmedNote.match(/^([a-zA-Z]{2})(?:\s|$)/i);
@@ -963,47 +1002,51 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       const upperCode = code.toUpperCase();
       const validRoles = ['T', 'H', 'D'];
       const validMains = ['M', 'A'];
-      
+
       const firstChar = upperCode[0];
       const secondChar = upperCode[1];
-      
+
       // Caso 1: Primera letra es M/A y segunda es T/H/D (ej: MT, AD, MH, MD)
       if (validMains.includes(firstChar) && validRoles.includes(secondChar)) {
         result.mainAlt = firstChar as MainAlt;
         result.role = secondChar as Role;
         result.mainRole = secondChar as Role;
         result.isValid = true;
-        
+
         // Crear bloque de personaje para el renderizado
-        result.blocks = [{
-          type: 'character',
-          parsedData: {
-            mainAlt: result.mainAlt,
-            role: result.role,
-            mainRole: result.role,
-            mainGearScore: 0,
-            professions: []
-          }
-        }];
-      } 
+        result.blocks = [
+          {
+            type: 'character',
+            parsedData: {
+              mainAlt: result.mainAlt,
+              role: result.role,
+              mainRole: result.role,
+              mainGearScore: 0,
+              professions: [],
+            },
+          },
+        ];
+      }
       // Caso 2: Primera letra es T/H/D y segunda es M/A (ej: TM, HA, DM)
       else if (validRoles.includes(firstChar) && validMains.includes(secondChar)) {
         result.role = firstChar as Role;
         result.mainRole = firstChar as Role;
         result.mainAlt = secondChar as MainAlt;
         result.isValid = true;
-        
+
         // Crear bloque de personaje para el renderizado
-        result.blocks = [{
-          type: 'character',
-          parsedData: {
-            mainAlt: result.mainAlt,
-            role: result.role,
-            mainRole: result.role,
-            mainGearScore: 0,
-            professions: []
-          }
-        }];
+        result.blocks = [
+          {
+            type: 'character',
+            parsedData: {
+              mainAlt: result.mainAlt,
+              role: result.role,
+              mainRole: result.role,
+              mainGearScore: 0,
+              professions: [],
+            },
+          },
+        ];
       }
       // Caso 3: Cualquier combinación de dos letras de rol (ej: TH, HD, DT)
       else if (validRoles.includes(firstChar) && validRoles.includes(secondChar)) {
@@ -1011,35 +1054,39 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
         result.mainRole = firstChar as Role;
         result.dualRole = secondChar as Role;
         result.isValid = true;
-        
+
         // Crear bloque de personaje para el renderizado
-        result.blocks = [{
-          type: 'character',
-          parsedData: {
-            role: result.role,
-            mainRole: result.role,
-            dualRole: result.dualRole,
-            mainGearScore: 0,
-            professions: []
-          }
-        }];
+        result.blocks = [
+          {
+            type: 'character',
+            parsedData: {
+              role: result.role,
+              mainRole: result.role,
+              dualRole: result.dualRole,
+              mainGearScore: 0,
+              professions: [],
+            },
+          },
+        ];
       }
       // Caso 4: Primera letra es M/A y segunda es M/A (ej: MA, AM)
       else if (validMains.includes(firstChar) && validMains.includes(secondChar)) {
         result.mainAlt = firstChar as MainAlt;
         result.isValid = true;
-        
+
         // Crear bloque de personaje mínimo
-        result.blocks = [{
-          type: 'character',
-          parsedData: {
-            mainAlt: result.mainAlt,
-            mainGearScore: 0,
-            professions: []
-          }
-        }];
+        result.blocks = [
+          {
+            type: 'character',
+            parsedData: {
+              mainAlt: result.mainAlt,
+              mainGearScore: 0,
+              professions: [],
+            },
+          },
+        ];
       }
-      
+
       // Si encontramos un patrón válido de dos letras, asegurar que los campos requeridos estén establecidos
       if (result.isValid) {
         // Asegurar que siempre haya un valor para mainRole
@@ -1048,20 +1095,20 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       }
     }
   }
-  
+
   // Patrón 2: M o A al inicio de la nota (ej: 'M 5.9', 'A TL/EN', 'a')
   if (!result.mainAlt) {
     const startWithMainAlt = trimmedNote.match(/^([MA])(?:\s+|$)/i);
     if (startWithMainAlt) {
       result.mainAlt = startWithMainAlt[1].toUpperCase() as MainAlt;
-      
+
       // Si es solo 'a' o 'm', marcar como válido
       if (trimmedNote.match(/^[ma]$/i)) {
         result.isValid = true;
       }
     }
   }
-  
+
   // Patrón 3: M o A con separador (ej: 'M/Tank', 'A-Healer')
   if (!result.mainAlt) {
     const mainAltWithSeparator = trimmedNote.match(/(?:^|[\s/\-|])([MA])(?=$|[\s/\-|])/i);
@@ -1069,7 +1116,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       result.mainAlt = mainAltWithSeparator[1].toUpperCase() as MainAlt;
     }
   }
-  
+
   // Patrón 4: M o A en cualquier parte como palabra completa (último recurso)
   if (!result.mainAlt) {
     const mainAltAnywhere = trimmedNote.match(/(?:^|\s)([MA])(?:\s|$)/i);
@@ -1081,11 +1128,13 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   // 2. Buscar si es Raid Leader (RL o rl)
   // Primero buscar el formato específico '20:00xRLICC25N' o similar
   result.isRaidLeader = /\d{1,2}[:.]?\d{0,2}xRL/.test(trimmedNote);
-  
+
   // Si no se encontró, buscar otros patrones comunes
   if (!result.isRaidLeader) {
     // Buscar patrones como 'RL', 'rl', 'RaidLeader', 'raid leader', etc.
-    result.isRaidLeader = /(?:^|\s|\d*[xX]?\s*)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl)\b/i.test(trimmedNote);
+    result.isRaidLeader = /(?:^|\s|\d*[xX]?\s*)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl)\b/i.test(
+      trimmedNote
+    );
   }
 
   // 3. Buscar roles (T, H, D) y rol dual
@@ -1096,13 +1145,13 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     result.gearScore = roleWithGS[2];
     result.isValid = true;
   }
-  
+
   // Buscar formato de 3 letras que comience con A o M (ej: MDT, AHT, etc.)
   const threeLetterRoleMatch = trimmedNote.match(/\b([MA]?)([THD])([THD]?)\b/i);
 
   if (threeLetterRoleMatch) {
     const [, mainAlt, primaryRole, dualRole] = threeLetterRoleMatch;
-    
+
     // Si hay un prefijo M o A, establecer mainAlt
     if (mainAlt) {
       result.mainAlt = mainAlt.toUpperCase() as MainAlt;
@@ -1110,10 +1159,10 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       // Si no hay mainAlt pero el match empieza con M, asumir que es Main
       result.mainAlt = 'M';
     }
-    
+
     // Establecer rol principal
     result.role = primaryRole.toUpperCase() as Role;
-    
+
     // Si hay un rol dual, establecerlo
     if (dualRole) {
       const dual = dualRole.toUpperCase() as Role;
@@ -1124,18 +1173,18 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       }
     }
   }
-  
+
   // Si no se encontró un rol dual, buscar cualquier otro rol en la nota
   if (!result.dualRole) {
     // Buscar cualquier letra T, H o D que no sea parte de otra palabra
     const roleMatches = [...trimmedNote.matchAll(/\b([THD])\b/gi)];
     const roles = Array.from(new Set(roleMatches.map((m) => m[1].toUpperCase())));
-    
+
     // Si hay más de un rol, establecer el segundo como dual
     if (roles.length > 1) {
       const primary = result.role || roles[0];
-      const secondary = roles.find(r => r !== primary) as Role;
-      
+      const secondary = roles.find((r) => r !== primary) as Role;
+
       if (secondary) {
         if (!result.role) result.role = primary as Role;
         result.dualRole = secondary;
@@ -1145,7 +1194,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       result.role = roles[0] as Role;
     }
   }
-  
+
   // Si aún no se ha encontrado un rol, buscar en otros formatos
   if (!result.role) {
     // Último intento: buscar cualquier combinación de roles (ej: TH, HD, DT, etc.)
@@ -1170,13 +1219,13 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   //    - Números rodeados de cualquier carácter
   //    - Prefijos comunes como 'GS', 'gs', 'ilvl', 'iLvl', etc.
   let gsValue: string | null = null;
-  
+
   // Patrón 1: Buscar formato XXXX (4 dígitos) en cualquier parte
   const fourDigitMatch = trimmedNote.match(/\b(\d{4})\b/);
   if (fourDigitMatch) {
     const num = parseInt(fourDigitMatch[1]);
     gsValue = (num / 1000).toFixed(1);
-  } 
+  }
   // Patrón 2: Buscar números decimales con punto o coma
   else {
     const decimalMatch = trimmedNote.match(/(\d[\.,]\d\d?)/);
@@ -1184,10 +1233,12 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       gsValue = decimalMatch[1].replace(',', '.');
     }
   }
-  
+
   // Patrón 3: Buscar después de prefijos comunes (GS, ilvl, etc.)
   if (!gsValue) {
-    const prefixMatch = trimmedNote.match(/(?:GS|gs|ilvl|iLvl|gear|Gear|gs:?\s*)(?:\s*[:=]?\s*)(\d[\.,]?\d?\d?)/i);
+    const prefixMatch = trimmedNote.match(
+      /(?:GS|gs|ilvl|iLvl|gear|Gear|gs:?\s*)(?:\s*[:=]?\s*)(\d[\.,]?\d?\d?)/i
+    );
     if (prefixMatch) {
       gsValue = prefixMatch[1].replace(',', '.');
       // Asegurar formato decimal correcto
@@ -1196,7 +1247,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       }
     }
   }
-  
+
   // Validar y guardar el Gear Score encontrado
   if (gsValue) {
     const gsNumber = parseFloat(gsValue);
@@ -1214,17 +1265,17 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   const dayPattern = /([LMXJVSD])(?:-([LMXJVSD]))?/g;
   const daysSet = new Set<string>();
   let dayMatch;
-  
+
   while ((dayMatch = dayPattern.exec(trimmedNote)) !== null) {
     const startDay = dayMatch[1];
     const endDay = dayMatch[2];
-    
+
     if (endDay) {
       // Es un rango de días (ej: L-V)
       const dayOrder = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
       const startIndex = dayOrder.indexOf(startDay);
       const endIndex = dayOrder.indexOf(endDay);
-      
+
       if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
         for (let i = startIndex; i <= endIndex; i++) {
           daysSet.add(dayOrder[i]);
@@ -1239,58 +1290,61 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       daysSet.add(startDay);
     }
   }
-  
+
   // Convertir a array y ordenar según el orden de la semana
   const daysArray = Array.from(daysSet).sort((a, b) => {
-    const order = { 'L': 1, 'M': 2, 'X': 3, 'J': 4, 'V': 5, 'S': 6, 'D': 7 };
+    const order = { L: 1, M: 2, X: 3, J: 4, V: 5, S: 6, D: 7 };
     return (order[a as keyof typeof order] || 0) - (order[b as keyof typeof order] || 0);
   });
-  
+
   // Agregar los días al resultado
   if (daysArray.length > 0) {
     result.days = daysArray;
   }
-  
+
   // 4. Extraer Profesiones - Opcionales pero recomendadas
   const profCodes = Object.keys(PROFESSIONS);
   const profCodesStr = profCodes.join('|');
-  
+
   const foundProfs = new Set<string>();
-  
+
   // Caso especial para 'ALMN' (Alquimia + Minería)
   if (trimmedNote.includes('ALMN')) {
     foundProfs.add('AL');
     foundProfs.add('MN');
   } else {
     // Búsqueda normal de códigos de profesión
-    const singleProfRegex = new RegExp(`(?:^|[^a-zA-Z])(${profCodesStr})(?![a-zA-Z])|(${profCodesStr})$`, 'gi');
+    const singleProfRegex = new RegExp(
+      `(?:^|[^a-zA-Z])(${profCodesStr})(?![a-zA-Z])|(${profCodesStr})$`,
+      'gi'
+    );
     let singleMatch;
-    
+
     singleProfRegex.lastIndex = 0;
-    
+
     while ((singleMatch = singleProfRegex.exec(trimmedNote)) !== null) {
       const code = (singleMatch[1] || singleMatch[2]).toUpperCase() as ProfessionCode;
-      
+
       if (profCodes.includes(code) && !foundProfs.has(code)) {
         foundProfs.add(code);
         if (foundProfs.size >= 2) break;
       }
     }
   }
-  
+
   // Si no encontramos códigos individuales, buscar códigos juntos sin separador
   if (foundProfs.size < 2) {
     const combinedProfRegex = /[A-Z]{4,6}/g;
     let combinedMatch;
-    
+
     while ((combinedMatch = combinedProfRegex.exec(trimmedNote.toUpperCase())) !== null) {
       const combinedText = combinedMatch[0];
-      
+
       // Buscar códigos de profesión dentro del texto combinado
       let index = 0;
       while (index < combinedText.length) {
         let found = false;
-        
+
         // Probar con códigos de 2 caracteres primero (más comunes)
         if (index + 2 <= combinedText.length) {
           const possibleCode = combinedText.substring(index, index + 2);
@@ -1300,7 +1354,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
             found = true;
           }
         }
-        
+
         // Si no se encontró un código de 2 caracteres, probar con 3
         if (!found && index + 3 <= combinedText.length) {
           const possibleCode = combinedText.substring(index, index + 3);
@@ -1310,27 +1364,30 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
             found = true;
           }
         }
-        
+
         // Si no se encontró ningún código, avanzar un carácter
         if (!found) {
           index++;
         }
-        
+
         // No buscar más de 2 profesiones (máximo razonable)
         if (foundProfs.size >= 2) break;
       }
-      
+
       // Si ya encontramos 2 profesiones, no es necesario seguir buscando
       if (foundProfs.size >= 2) break;
     }
   }
-  
+
   // Si no encontramos códigos juntos, buscar otros patrones
   if (foundProfs.size < 2) {
     // Patrón 2: Buscar el patrón específico 'TL/en' o similar
-    const directProfRegex = new RegExp(`(?:^|[^a-zA-Z])(${profCodesStr})[/,\s-](${profCodesStr})(?![a-zA-Z])`, 'gi');
+    const directProfRegex = new RegExp(
+      `(?:^|[^a-zA-Z])(${profCodesStr})[/,\s-](${profCodesStr})(?![a-zA-Z])`,
+      'gi'
+    );
     let directMatch;
-    
+
     while ((directMatch = directProfRegex.exec(trimmedNote)) !== null) {
       const code1 = directMatch[1].toUpperCase() as ProfessionCode;
       const code2 = directMatch[2].toUpperCase() as ProfessionCode;
@@ -1338,12 +1395,12 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       if (profCodes.includes(code2)) foundProfs.add(code2);
       if (foundProfs.size >= 2) break;
     }
-    
+
     // Patrón 3: Buscar códigos individuales
     if (foundProfs.size < 2) {
       const singleProfRegex = new RegExp(`(?:^|[^a-zA-Z])(${profCodesStr})(?![a-zA-Z])`, 'gi');
       let singleMatch;
-      
+
       while ((singleMatch = singleProfRegex.exec(trimmedNote)) !== null) {
         const code = singleMatch[1].toUpperCase() as ProfessionCode;
         if (profCodes.includes(code)) {
@@ -1353,12 +1410,12 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       }
     }
   }
-  
+
   // Si encontramos al menos una profesión, actualizar el resultado
   if (foundProfs.size > 0) {
     // Guardamos los códigos de profesión directamente
     result.professions = Array.from(foundProfs);
-    
+
     // Si solo hay una profesión y es una abreviatura de 2 letras (ej: 'EN'), marcar como válido
     if (foundProfs.size === 1 && Array.from(foundProfs)[0].length === 2) {
       result.isValid = true;
@@ -1367,20 +1424,20 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
 
   // La extracción de días ya se realizó anteriormente en la sección 3 del código
   // y ya está disponible en result.days
-  
+
   // 5. Extraer horarios (pueden ser individuales o rangos con formato HHX-HHX)
   const uniqueHours = new Set<string>();
 
   // Primero buscamos rangos de días con horario (ej: L-V20:00x, L-V20:00, L-V20x, etc.)
   const dayRangeWithTimeRegex = /([LMXJVS])(?:-([LMXJVS]))?(\d{1,2}:?\d{0,2})X?/gi;
   let dayRangeMatch;
-  
+
   // Buscar rangos de días con horario
   while ((dayRangeMatch = dayRangeWithTimeRegex.exec(trimmedNote)) !== null) {
     const startDay = dayRangeMatch[1];
     const endDay = dayRangeMatch[2] || startDay; // Si no hay día final, usamos el día inicial
     const timePart = dayRangeMatch[3] || '';
-    
+
     // Formatear la hora correctamente
     let formattedTime = '';
     if (timePart.includes(':')) {
@@ -1389,7 +1446,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     } else if (timePart) {
       formattedTime = `${timePart.padStart(2, '0')}:00`;
     }
-    
+
     if (formattedTime) {
       // Si hay un rango de días (ej: L-V)
       if (startDay && endDay && startDay !== endDay) {
@@ -1402,7 +1459,8 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   }
 
   // Luego buscamos rangos de horas (ej: 20X-23X, 20-23X, 20X-23, 20-23)
-  const rangeRegex = /(?:^|[^\d])(\d{1,2})(?::(\d{2}))?X?\s*-\s*(\d{1,2})(?::(\d{2}))?X(?:$|[^\d])/gi;
+  const rangeRegex =
+    /(?:^|[^\d])(\d{1,2})(?::(\d{2}))?X?\s*-\s*(\d{1,2})(?::(\d{2}))?X(?:$|[^\d])/gi;
   const rangeMatches = [];
   let rangeMatch;
 
@@ -1468,20 +1526,22 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
 
   // 5. Extraer raids y dificultades por separado
   const allRaidCodes = Object.keys(RAID_NAMES) as RaidCode[];
-  const raidCodesPattern = allRaidCodes.map(rc => rc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-  
+  const raidCodesPattern = allRaidCodes
+    .map((rc) => rc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+
   // Inicializar el conjunto de raids encontradas
   result.raids = [];
   const usedRaids = new Set<string>();
   const usedIndices = new Set<string>();
-  
+
   // 1. Buscar menciones directas de raids
   const raidPattern = new RegExp(`\\b(${raidCodesPattern})\\b`, 'gi');
   let raidMatch;
-  
+
   while ((raidMatch = raidPattern.exec(trimmedNote)) !== null) {
     const raidCode = raidMatch[1].toUpperCase();
-    
+
     if (raidCode in RAID_NAMES && !usedRaids.has(raidCode)) {
       result.raids.push({
         code: raidCode as RaidCode,
@@ -1492,12 +1552,12 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       usedRaids.add(raidCode);
     }
   }
-  
+
   // 2. Buscar dificultades (10n, 25h, etc.)
   const difficultyPattern = /\b(10|25)([hn])\b/gi;
   const foundDifficulties = new Set<string>();
   let diffMatch;
-  
+
   while ((diffMatch = difficultyPattern.exec(trimmedNote)) !== null) {
     const number = diffMatch[1];
     const difficulty = diffMatch[2].toUpperCase() as 'N' | 'H';
@@ -1507,26 +1567,39 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
 
   // Si no encontramos raids con los patrones anteriores, buscar solo los códigos de raid
   if (result.raids.length === 0) {
-    const raidCodePattern = new RegExp(`(?:^|[^a-zA-Z])(${raidCodesPattern})(?=$|[^a-zA-Z0-9])`, 'gi');
+    const raidCodePattern = new RegExp(
+      `(?:^|[^a-zA-Z])(${raidCodesPattern})(?=$|[^a-zA-Z0-9])`,
+      'gi'
+    );
     const raidCodeMatches = Array.from(trimmedNote.matchAll(raidCodePattern));
-    
+
     for (const match of raidCodeMatches) {
       const raidCodeStr = match[0].toUpperCase();
       // Verificar que el código de raid sea uno de los permitidos
-      const validRaidCodes: RaidCode[] = ['ICC', 'TOC', 'ULD', 'NAX', 'OS', 'VOA', 'EOE', 'ONY', 'RS'];
+      const validRaidCodes: RaidCode[] = [
+        'ICC',
+        'TOC',
+        'ULD',
+        'NAX',
+        'OS',
+        'VOA',
+        'EOE',
+        'ONY',
+        'RS',
+      ];
       if (validRaidCodes.includes(raidCodeStr as RaidCode)) {
         const raidCode = raidCodeStr as RaidCode;
         if (!usedRaids.has(raidCode)) {
           // Buscar el raid en el array RAIDS
-          const raidInfo = RAIDS.find(r => r.code === raidCode);
+          const raidInfo = RAIDS.find((r) => r.code === raidCode);
           const raidName = raidInfo ? raidInfo.name : raidCode;
-          
+
           const raidData: RaidInfo = {
             code: raidCode,
             difficulty: 'Normal', // Valor por defecto
             name: raidName,
             difficultyCode: '10N' as DifficultyCode, // Valor por defecto
-            isRaidLeader: false // Propiedad opcional
+            isRaidLeader: false, // Propiedad opcional
           };
           result.raids.push(raidData);
           usedRaids.add(raidCode);
@@ -1537,31 +1610,33 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
 
   // Si no encontramos raids aún, intentar con un patrón más flexible
   if (result.raids.length === 0) {
-    const escapedRaidCodes = allRaidCodes.map(raid => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    const escapedRaidCodes = allRaidCodes
+      .map((raid) => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join('|');
     const raidPatterns2 = [
       // Patrón para 'icc10n' o 'voa25h' (sin espacios)
       new RegExp(`(${escapedRaidCodes})(\\d+)([NH])`, 'gi'),
       // Patrón para 'icc 10n' o 'voa 25h' (con espacios)
       new RegExp(`(${escapedRaidCodes})\\s*(\\d+)([NH])`, 'gi'),
       // Patrón para solo el código de raid
-      new RegExp(`\\b(${escapedRaidCodes})\\b`, 'gi')
+      new RegExp(`\\b(${escapedRaidCodes})\\b`, 'gi'),
     ];
-    
+
     for (const pattern of raidPatterns) {
       let match;
       while ((match = pattern.exec(trimmedNote)) !== null) {
         const raidCode = match[1]?.toUpperCase() as RaidCode;
         if (!raidCode) continue;
-        
+
         // Type assertion to handle the indexing
         const raidName = raidCode in RAIDS ? RAIDS[raidCode as keyof typeof RAIDS] : raidCode;
-        
+
         // Si es un patrón con dificultad (ej: 'icc10n' o 'icc 10n')
         if (match[2] && match[3]) {
           const difficultyNumber = match[2];
           const difficultyLetter = match[3].toUpperCase();
           const difficultyCode = `${difficultyNumber}${difficultyLetter}` as DifficultyCode;
-          
+
           if (['10N', '10H', '25N', '25H'].includes(difficultyCode)) {
             const raidKey = `${raidCode}${difficultyCode}`;
             if (!usedRaids.has(raidKey)) {
@@ -1584,7 +1659,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
           });
           usedRaids.add(raidCode);
         }
-        
+
         if (match.index === pattern.lastIndex) {
           pattern.lastIndex++; // Evitar bucle infinito
         }
@@ -1600,12 +1675,15 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodesPattern})(?![a-z0-9])(?:$|\\s|\\)|\\]|\/)`, 'i'),
       new RegExp(`(${raidCodesPattern})\\s*\\d+[NH]`, 'i'),
       new RegExp(`(${raidCodesPattern})\\d+[NH]`, 'i'),
-      new RegExp(`(10|25)[NH](${raidCodesPattern})`, 'i')  // Para formato 10Nicc, 25Hvoa
+      new RegExp(`(10|25)[NH](${raidCodesPattern})`, 'i'), // Para formato 10Nicc, 25Hvoa
     ];
-    
-    const hasAnyRaidMention = raidPatterns.some(pattern => pattern.test(trimmedNote));
-    const hasRaidWithDifficulty = new RegExp(`(?:${raidCodesPattern})(?:\\s*\\d+[NH]|\\d+[NH]|(?:10|25)[NH](?=${raidCodesPattern}))`, 'i').test(trimmedNote);
-    
+
+    const hasAnyRaidMention = raidPatterns.some((pattern) => pattern.test(trimmedNote));
+    const hasRaidWithDifficulty = new RegExp(
+      `(?:${raidCodesPattern})(?:\\s*\\d+[NH]|\\d+[NH]|(?:10|25)[NH](?=${raidCodesPattern}))`,
+      'i'
+    ).test(trimmedNote);
+
     if (hasAnyRaidMention && !hasRaidWithDifficulty) {
       // Solo agregar el mensaje de dificultad faltante si no está ya en el array
       if (!missingFields.some((mf) => mf.includes('Dificultad'))) {
@@ -1613,7 +1691,10 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
       }
     } else if (!hasAnyRaidMention) {
       // Verificar si hay menciones de raid en el texto sin formato específico
-      const raidMentionPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${allRaidCodes.join('|')})(?=$|[^a-zA-Z0-9])`, 'i');
+      const raidMentionPattern = new RegExp(
+        `(?:^|\\s|\\(|\\[)(${allRaidCodes.join('|')})(?=$|[^a-zA-Z0-9])`,
+        'i'
+      );
       if (!raidMentionPattern.test(trimmedNote)) {
         missingFields.push('Raids que busca/arma (ej: ICC, TOC)');
       }
@@ -1660,16 +1741,21 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   }
 
   // 7. Verificar raids en la nota
-  const raidCodes = Object.keys(RAID_NAMES).map(raid => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-  
+  const raidCodes = Object.keys(RAID_NAMES)
+    .map((raid) => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+
   // Buscar cualquier mención de raid, con o sin dificultad
-  const raidSearchPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodes})(?![a-z0-9])(?:$|\\s|\\)|\\]|\\/|\\d|\\s*\\d*[NH])`, 'i');
+  const raidSearchPattern = new RegExp(
+    `(?:^|\\s|\\(|\\[)(${raidCodes})(?![a-z0-9])(?:$|\\s|\\)|\\]|\\/|\\d|\\s*\\d*[NH])`,
+    'i'
+  );
   const hasAnyRaid = raidSearchPattern.test(trimmedNote);
-  
+
   // Buscar específicamente patrones como 'icc10n' o 'voa25h'
   const raidWithNumberPattern = new RegExp(`(?:^|\\s|\\(|\\[)(${raidCodes})\\s*\\d+[NH]`, 'i');
   const hasAnyRaidWithNumber = raidWithNumberPattern.test(trimmedNote);
-  
+
   if (!hasAnyRaid && !hasAnyRaidWithNumber) {
     orderedMissingFields.push('Raids que busca (ej: ICC 25H)');
   } else if (!result.raids || result.raids.length === 0) {
@@ -1686,10 +1772,14 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   }
 
   // 8. Raid Leader (opcional, solo si se especifica RL pero no está marcado)
-  const hasRLNotation = /(?:^|\s)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl|\d*[xX]\s*rl)\b/i.test(trimmedNote);
+  const hasRLNotation = /(?:^|\s)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl|\d*[xX]\s*rl)\b/i.test(
+    trimmedNote
+  );
   if (hasRLNotation && !result.isRaidLeader) {
     // Verificar si el formato es válido pero no se pudo marcar
-    orderedMissingFields.push('RaidLeader (RL) - Verificar formato (ej: RL, rl, RaidLeader, 18xrl)');
+    orderedMissingFields.push(
+      'RaidLeader (RL) - Verificar formato (ej: RL, rl, RaidLeader, 18xrl)'
+    );
   }
 
   // 2. Rol principal
@@ -1718,49 +1808,55 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   }
 
   // 8. Raid Leader (opcional, solo si se especifica RL pero no está marcado)
-  const hasRLNotationFlag = /(?:^|\s)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl|\d*[xX]\s*rl)\b/i.test(trimmedNote);
+  const hasRLNotationFlag =
+    /(?:^|\s)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl|\d*[xX]\s*rl)\b/i.test(trimmedNote);
   if (hasRLNotationFlag && !result.isRaidLeader) {
     // Verificar si el formato es válido pero no se pudo marcar
-    orderedMissingFields.push('RaidLeader (RL) - Verificar formato (ej: RL, rl, RaidLeader, 18xrl)');
+    orderedMissingFields.push(
+      'RaidLeader (RL) - Verificar formato (ej: RL, rl, RaidLeader, 18xrl)'
+    );
   }
 
   // Agregar cualquier otro campo faltante que no esté en la lista ordenada
   const otherMissingFields = missingFields.filter(
-    (field: string) => !orderedMissingFields.some((omf: string) => field.includes(omf.split(' ')[0]))
+    (field: string) =>
+      !orderedMissingFields.some((omf: string) => field.includes(omf.split(' ')[0]))
   );
 
   // Combinar los campos ordenados con los demás campos faltantes
   const allMissingFields = [...orderedMissingFields, ...otherMissingFields];
   const missingFieldsSet = new Set(allMissingFields);
 
-// Actualizar el array de missingFields
-result.missingFields = Array.from(missingFieldsSet);
+  // Actualizar el array de missingFields
+  result.missingFields = Array.from(missingFieldsSet);
 
-// Determinar si la nota es válida
-// Verificar si es un formato simple (MT, MTH, MD, etc.)
-const isSimpleFormat = /^[MA]?[THD]+$/i.test(trimmedNote) || 
-                      /^[MA]$/i.test(trimmedNote) ||
-                      /^[MA][THD]$/i.test(trimmedNote) ||
-                      /^[THD][MA]$/i.test(trimmedNote) ||
-                      /^[THD]$/i.test(trimmedNote) ||
-                      /^[MA]\d+\.?\d*[THD]?$/i.test(trimmedNote) ||
-                      /^[MA]\d+\.?\d*[A-Za-z]+$/i.test(trimmedNote);
+  // Determinar si la nota es válida
+  // Verificar si es un formato simple (MT, MTH, MD, etc.)
+  const isSimpleFormat =
+    /^[MA]?[THD]+$/i.test(trimmedNote) ||
+    /^[MA]$/i.test(trimmedNote) ||
+    /^[MA][THD]$/i.test(trimmedNote) ||
+    /^[THD][MA]$/i.test(trimmedNote) ||
+    /^[THD]$/i.test(trimmedNote) ||
+    /^[MA]\d+\.?\d*[THD]?$/i.test(trimmedNote) ||
+    /^[MA]\d+\.?\d*[A-Za-z]+$/i.test(trimmedNote);
 
-// Debug: Log simple format detection
-console.group('Simple format detection');
-console.log('Note:', trimmedNote);
-console.log('Is simple format:', isSimpleFormat);
-if (isSimpleFormat) {
-  console.log('Matched as simple format');
-} else {
-  console.log('Did not match any simple format pattern');
-}
-console.groupEnd();
+  // Debug: Log simple format detection
+  console.group('Simple format detection');
+  console.log('Note:', trimmedNote);
+  console.log('Is simple format:', isSimpleFormat);
+  if (isSimpleFormat) {
+    console.log('Matched as simple format');
+  } else {
+    console.log('Did not match any simple format pattern');
+  }
+  console.groupEnd();
   // 4. Tiene profesiones
   // 5. Tiene raids
   // 6. Tiene un gear score
   // 7. Es solo 'A' o 'M' (main/alt sin rol)
-  const hasAnyValidField = isSimpleFormat ||
+  const hasAnyValidField =
+    isSimpleFormat ||
     result.role !== undefined ||
     result.mainAlt !== undefined ||
     (result.professions && result.professions.length > 0) ||
@@ -1768,7 +1864,7 @@ console.groupEnd();
     (result.schedules && result.schedules.length > 0) ||
     (result.gearScore !== undefined && result.gearScore !== null) ||
     /^[MA]$/i.test(trimmedNote);
-    
+
   // Debug: Log validation criteria
   console.group('Validation criteria');
   console.log('isSimpleFormat:', isSimpleFormat);
@@ -1784,7 +1880,7 @@ console.groupEnd();
 
   // Establecer el estado de validación
   result.isValid = hasAnyValidField;
-  
+
   // Si no es válido, agregar un mensaje de error
   if (!result.isValid) {
     errors.push('Formato inválido - No se detectaron campos válidos');
@@ -1792,7 +1888,7 @@ console.groupEnd();
     // Limpiar errores si la nota es válida
     errors.length = 0;
   }
-  
+
   // Asegurarse de que los campos principales estén definidos para formatos simples
   if (isSimpleFormat) {
     // Extraer main/alt si está presente
@@ -1817,29 +1913,29 @@ console.groupEnd();
     const profMatch = trimmedNote.match(/[MA]\d*(?:\.\d+)?([A-Z]{2,})/i);
     if (profMatch && (!result.professions || result.professions.length === 0)) {
       const profs = profMatch[1].match(/[A-Z]{2}/g) || [];
-      result.professions = profs.map(p => p.toUpperCase() as ProfessionCode);
+      result.professions = profs.map((p) => p.toUpperCase() as ProfessionCode);
     }
   }
-  
+
   // Si hay errores, agregarlos al resultado
   if (errors.length > 0) {
     result.error = errors.join('; ');
   }
-  
+
   // Si faltan campos, agregarlos al resultado
   if (missingFields.length > 0) {
     result.missingFields = [...new Set(missingFields)]; // Eliminar duplicados
   }
-  
+
   // Procesar bloques de personaje
   if (result.mainAlt || result.role || result.gearScore) {
     result.blocks = result.blocks || [];
-    
+
     // Asegurarnos de que los valores requeridos no sean undefined
     const mainAlt = result.mainAlt || 'M'; // Valor por defecto 'M' si no está definido
     const mainRole = result.role || 'D'; // Valor por defecto 'D' si no está definido
     const gearScore = result.gearScore ? Number(result.gearScore) : 0;
-    
+
     // Crear bloque de personaje con tipos seguros
     const characterData = {
       type: 'character' as const,
@@ -1851,18 +1947,18 @@ console.groupEnd();
         dualRole: result.dualRole as Role | undefined,
         mainGearScore: gearScore,
         professions: (result.professions || []) as ProfessionCode[],
-        dualGearScore: undefined
-      }
+        dualGearScore: undefined,
+      },
     };
-    
+
     result.blocks.push(characterData);
   }
-  
+
   // Procesar bloques de evento
   if (result.raids && result.raids.length > 0) {
     result.blocks = result.blocks || [];
-    
-    result.raids.forEach(raid => {
+
+    result.raids.forEach((raid) => {
       // Crear bloque de evento con valores por defecto
       const eventData = {
         type: 'event' as const,
@@ -1875,17 +1971,19 @@ console.groupEnd();
           raid: raid.code as RaidCode,
           difficulty: raid.difficultyCode as DifficultyCode,
           isRaidLeader: false,
-          isLookingForGroup: false
-        }
+          isLookingForGroup: false,
+        },
       };
-      
+
       // Si hay información de horario, intentar extraer días y hora
       if (result.schedules && result.schedules.length > 0) {
         const schedule = result.schedules[0];
         // Verificar si el horario incluye un rango de días (ej: L-V 20:00)
-        const dayRangeMatch = String(schedule).match(/^([LMXJVS])-([LMXJVS])\s+(\d{1,2}:?\d{0,2})/i);
+        const dayRangeMatch = String(schedule).match(
+          /^([LMXJVS])-([LMXJVS])\s+(\d{1,2}:?\d{0,2})/i
+        );
         const singleDayMatch = String(schedule).match(/^([LMXJVS])\s+(\d{1,2}:?\d{0,2})/i);
-        
+
         if (dayRangeMatch) {
           // Formato: L-V 20:00
           const [, startDay, endDay, timePart] = dayRangeMatch;
@@ -1901,17 +1999,17 @@ console.groupEnd();
           eventData.parsedData.time = String(schedule);
         }
       }
-      
+
       // Verificar si es raid leader (RL al inicio del código de raid)
       if (raid.code && String(raid.code).startsWith('RL')) {
         eventData.parsedData.isRaidLeader = true;
         eventData.parsedData.raid = String(raid.code).substring(2) as RaidCode;
       }
-      
+
       result.blocks.push(eventData);
     });
   }
-  
+
   // Asegurar que los campos principales estén definidos
   const finalResult = {
     ...result,
@@ -1930,8 +2028,8 @@ console.groupEnd();
     _debug: {
       originalNote: note,
       trimmedNote,
-      isValid: result.isValid
-    }
+      isValid: result.isValid,
+    },
   };
 
   // Debug logging for validation results
@@ -1950,66 +2048,66 @@ console.groupEnd();
   console.log('Missing fields:', finalResult.missingFields);
   console.log('Full validation result:', finalResult);
   console.groupEnd();
-  
+
   return finalResult;
 }
 
 // Mapa de colores y nombres de profesión
 const PROFESSION_INFO = {
-  'JC': { 
+  JC: {
     name: 'Joyería',
-    colors: { light: '#fde047', dark: '#d97706' }
+    colors: { light: '#fde047', dark: '#d97706' },
   },
-  'BS': { 
+  BS: {
     name: 'Herrería',
-    colors: { light: '#60a5fa', dark: '#1d4ed8' }
+    colors: { light: '#60a5fa', dark: '#1d4ed8' },
   },
-  'EN': { 
+  EN: {
     name: 'Encantamiento',
-    colors: { light: '#c084fc', dark: '#7e22ce' }
+    colors: { light: '#c084fc', dark: '#7e22ce' },
   },
-  'EG': { 
+  EG: {
     name: 'Ingeniería',
-    colors: { light: '#2dd4bf', dark: '#0d9488' }
+    colors: { light: '#2dd4bf', dark: '#0d9488' },
   },
-  'AL': { 
+  AL: {
     name: 'Alquimia',
-    colors: { light: '#4ade80', dark: '#15803d' }
+    colors: { light: '#4ade80', dark: '#15803d' },
   },
-  'TL': { 
+  TL: {
     name: 'Sastrería',
-    colors: { light: '#f472b6', dark: '#db2777' }
+    colors: { light: '#f472b6', dark: '#db2777' },
   },
-  'IN': { 
+  IN: {
     name: 'Inscripción',
-    colors: { light: '#818cf8', dark: '#4f46e5' }
+    colors: { light: '#818cf8', dark: '#4f46e5' },
   },
-  'HB': { 
+  HB: {
     name: 'Herboristería',
-    colors: { light: '#84cc16', dark: '#65a30d' }
+    colors: { light: '#84cc16', dark: '#65a30d' },
   },
-  'LW': { 
+  LW: {
     name: 'Peletería',
-    colors: { light: '#f59e0b', dark: '#d97706' }
+    colors: { light: '#f59e0b', dark: '#d97706' },
   },
-  'MN': { 
+  MN: {
     name: 'Minería',
-    colors: { light: '#f97316', dark: '#c2410c' }
+    colors: { light: '#f97316', dark: '#c2410c' },
   },
-  'SK': { 
+  SK: {
     name: 'Desuello',
-    colors: { light: '#f43f5e', dark: '#be123c' }
-  }
+    colors: { light: '#f43f5e', dark: '#be123c' },
+  },
 } as const;
 
 // Función para obtener el nombre del rol
 const getRoleName = (role: string): string => {
   const roleNames: Record<string, string> = {
-    'T': 'Tanque',
-    'H': 'Sanador',
-    'D': 'DPS',
-    'M': 'Melee',
-    'R': 'Rango'
+    T: 'Tanque',
+    H: 'Sanador',
+    D: 'DPS',
+    M: 'Melee',
+    R: 'Rango',
   };
   return roleNames[role] || role;
 };
@@ -2017,11 +2115,11 @@ const getRoleName = (role: string): string => {
 // Función para obtener la clase de color según el rol
 const getRoleColorClass = (role: string): string => {
   const roleColors: Record<string, string> = {
-    'T': 'bg-blue-500/20 border-blue-500/50',
-    'H': 'bg-green-500/20 border-green-500/50',
-    'D': 'bg-red-500/20 border-red-500/50',
-    'M': 'bg-purple-500/20 border-purple-500/50',
-    'R': 'bg-yellow-500/20 border-yellow-500/50'
+    T: 'bg-blue-500/20 border-blue-500/50',
+    H: 'bg-green-500/20 border-green-500/50',
+    D: 'bg-red-500/20 border-red-500/50',
+    M: 'bg-purple-500/20 border-purple-500/50',
+    R: 'bg-yellow-500/20 border-yellow-500/50',
   };
   return roleColors[role] || 'bg-gray-500/20 border-gray-500/50';
 };
@@ -2038,7 +2136,7 @@ const professionNames: Record<ProfessionCode, { name: string; color: string; bgC
   IN: { name: 'Inscripción', color: 'text-pink-300', bgColor: 'bg-pink-500/20' },
   MN: { name: 'Minería', color: 'text-gray-400', bgColor: 'bg-gray-600/20' },
   SK: { name: 'Desuello', color: 'text-red-200', bgColor: 'bg-red-700/20' },
-  LW: { name: 'Peletería', color: 'text-amber-200', bgColor: 'bg-amber-700/20' }
+  LW: { name: 'Peletería', color: 'text-amber-200', bgColor: 'bg-amber-700/20' },
 };
 
 // Mapeo de profesiones a nombres completos y colores
@@ -2053,7 +2151,7 @@ const professionInfo: Record<ProfessionCode, { name: string; color: string; bgCo
   HB: { name: 'Herboristería', color: 'text-lime-300', bgColor: 'bg-lime-500/20' },
   MN: { name: 'Minería', color: 'text-gray-400', bgColor: 'bg-gray-600/20' },
   SK: { name: 'Desuello', color: 'text-red-200', bgColor: 'bg-red-700/20' },
-  LW: { name: 'Peletería', color: 'text-amber-200', bgColor: 'bg-amber-700/20' }
+  LW: { name: 'Peletería', color: 'text-amber-200', bgColor: 'bg-amber-700/20' },
 } as const;
 
 // roleStats ya está definido más arriba en el código
@@ -2062,24 +2160,44 @@ const professionInfo: Record<ProfessionCode, { name: string; color: string; bgCo
 
 // Variable para compatibilidad con código existente que espera un array
 const sortedDualRoles = [
-  { combo: 'TH', label: 'Tank / Heal', count: dualRoleStats.TH, color: 'bg-blue-400/20', textColor: 'text-blue-400' },
-  { combo: 'TD', label: 'Tank / DPS', count: dualRoleStats.TD, color: 'bg-purple-400/20', textColor: 'text-purple-400' },
-  { combo: 'HD', label: 'Heal / DPS', count: dualRoleStats.HD, color: 'bg-green-400/20', textColor: 'text-green-400' }
+  {
+    combo: 'TH',
+    label: 'Tank / Heal',
+    count: dualRoleStats.TH,
+    color: 'bg-blue-400/20',
+    textColor: 'text-blue-400',
+  },
+  {
+    combo: 'TD',
+    label: 'Tank / DPS',
+    count: dualRoleStats.TD,
+    color: 'bg-purple-400/20',
+    textColor: 'text-purple-400',
+  },
+  {
+    combo: 'HD',
+    label: 'Heal / DPS',
+    count: dualRoleStats.HD,
+    color: 'bg-green-400/20',
+    textColor: 'text-green-400',
+  },
 ].sort((a, b) => b.count - a.count);
 
 // Calcular estadísticas de mains/alts
 const mainAltStats = rosterData.members.reduce(
   (acc, member) => {
     const validation = member.noteValidation;
-    if (validation?.isValid && validation.mainAlt) {
-      acc[validation.mainAlt] = (acc[validation.mainAlt] || 0) + 1;
+    if (validation?.isValid) {
+      // Usar 'A' (Alt) como valor predeterminado si no se especifica mainAlt
+      const mainAlt = validation.mainAlt || 'A';
+      acc[mainAlt] = (acc[mainAlt] || 0) + 1;
     } else {
-      // Si no está especificado, asumir que es main
-      acc['M'] = (acc['M'] || 0) + 1;
+      // Si la validación no es válida, contar como Alt
+      acc['A'] = (acc['A'] || 0) + 1;
     }
     return acc;
   },
-  {} as Record<MainAlt, number>
+  { M: 0, A: 0 } as Record<MainAlt, number>
 );
 
 // Usamos gearScoreStats ya definido anteriormente
@@ -2109,11 +2227,11 @@ const sortedMembers = [...rosterData.members].sort((a, b) => {
   // Primero ordenar por prioridad de rango
   const priorityA = getRankPriority(a.rank);
   const priorityB = getRankPriority(b.rank);
-  
+
   if (priorityA !== priorityB) {
     return priorityA - priorityB;
   }
-  
+
   // Si tienen la misma prioridad, ordenar alfabéticamente
   return a.name.localeCompare(b.name);
 });
@@ -2122,7 +2240,7 @@ const sortedMembers = [...rosterData.members].sort((a, b) => {
 const rosterClientData: RosterData = {
   ...rosterData,
   members: sortedMembers as RosterMemberType[],
-  classes: Object.keys(rosterData.classInfo || {})
+  classes: Object.keys(rosterData.classInfo || {}),
 };
 
 // Definir tipos para las distribuciones
@@ -2173,8 +2291,9 @@ function calculateRankDistribution(
     .map(([name, count]) => ({
       name,
       count: count as number,
-      percentage: totalMembers > 0 ? Math.round(((count as number) / totalMembers) * 100 * 10) / 10 : 0,
-      order: rankOrder.indexOf(name) // Añadir orden para el sort
+      percentage:
+        totalMembers > 0 ? Math.round(((count as number) / totalMembers) * 100 * 10) / 10 : 0,
+      order: rankOrder.indexOf(name), // Añadir orden para el sort
     }))
     .sort((a, b) => {
       // Si un rango no está en la lista, lo colocamos al final
@@ -2185,7 +2304,7 @@ function calculateRankDistribution(
     .map(({ name, count, percentage }) => ({
       name,
       count,
-      percentage
+      percentage,
     }));
 }
 
@@ -2228,9 +2347,8 @@ const mainAltDistribution: MainAltDistributionItem[] = [
 ];
 
 // Usar gearScoreStats ya definido al inicio del archivo
-const gearScorePercentage = gearScoreStats.avg > 0
-  ? Math.min(100, Math.max(0, (gearScoreStats.avg / 6.8) * 100))
-  : 0;
+const gearScorePercentage =
+  gearScoreStats.avg > 0 ? Math.min(100, Math.max(0, (gearScoreStats.avg / 6.8) * 100)) : 0;
 
 // Usar validNotesCount ya calculado anteriormente
 
@@ -2395,7 +2513,7 @@ const totalRaiders = rosterData.members.filter(
 
         // Use the pre-sorted members from the server
         allMembers = [...rosterInfo.members];
-        
+
         // Apply the same sorting logic on the client side
         allMembers.sort((a, b) => {
           const getRankPriority = (rank) => {
@@ -2404,17 +2522,17 @@ const totalRaiders = rosterData.members.filter(
             if (rankLower.includes('alter')) return 1;
             return 2;
           };
-          
+
           const priorityA = getRankPriority(a.rank);
           const priorityB = getRankPriority(b.rank);
-          
+
           if (priorityA !== priorityB) {
             return priorityA - priorityB;
           }
-          
+
           return (a.name || '').localeCompare(b.name || '');
         });
-        
+
         filteredMembers = [...allMembers];
 
         // Llenar filtros
@@ -2478,9 +2596,10 @@ const totalRaiders = rosterData.members.filter(
                               const missingFields = [];
 
                               // 1. Procesar bloques de personaje
-                              const characterBlocks = validation.blocks?.filter(b => b.type === 'character') || [];
+                              const characterBlocks =
+                                validation.blocks?.filter((b) => b.type === 'character') || [];
                               let charData = {};
-                              
+
                               // Usar datos del bloque de personaje si existe, si no, usar los del nivel superior
                               if (characterBlocks.length > 0 && characterBlocks[0]?.parsedData) {
                                 charData = characterBlocks[0].parsedData;
@@ -2491,73 +2610,82 @@ const totalRaiders = rosterData.members.filter(
                                   mainRole: validation.role,
                                   mainGearScore: parseFloat(validation.gearScore) || 0,
                                   professions: validation.professions || [],
-                                  dualRole: validation.dualRole
+                                  dualRole: validation.dualRole,
                                 };
                               }
-                              
+
                               // Extraer todos los GS de la nota pública
-                              const gearScores = (member.publicNote?.match(/(\d+\.?\d*)/g) || []).map(Number).filter(gs => gs > 0);
-                              
+                              const gearScores = (member.publicNote?.match(/(\d+\.?\d*)/g) || [])
+                                .map(Number)
+                                .filter((gs) => gs > 0);
+
                               // Main/Alt
                               if (charData.mainAlt) {
                                 formattedInfo.push({
                                   label: charData.mainAlt === 'M' ? 'Main' : 'Alt',
-                                  class: charData.mainAlt === 'M' 
-                                    ? 'text-blue-300 font-medium' 
-                                    : 'text-purple-300 font-medium',
+                                  class:
+                                    charData.mainAlt === 'M'
+                                      ? 'text-blue-300 font-medium'
+                                      : 'text-purple-300 font-medium',
                                 });
                               }
 
                               // Rol principal con su GS
                               if (charData.mainRole) {
-                                const roleName = roleNamesData[charData.mainRole]?.name || charData.mainRole;
+                                const roleName =
+                                  roleNamesData[charData.mainRole]?.name || charData.mainRole;
                                 const mainGS = gearScores[0] || charData.mainGearScore;
-                                
+
                                 // Agregar rol principal
                                 formattedInfo.push({
                                   label: roleName,
-                                  class: charData.mainRole === 'T'
-                                    ? 'text-blue-300 font-medium'
-                                    : charData.mainRole === 'H'
-                                      ? 'text-green-300 font-medium'
-                                      : 'text-red-300 font-medium',
+                                  class:
+                                    charData.mainRole === 'T'
+                                      ? 'text-blue-300 font-medium'
+                                      : charData.mainRole === 'H'
+                                        ? 'text-green-300 font-medium'
+                                        : 'text-red-300 font-medium',
                                 });
-                                
+
                                 // Agregar GS del rol principal si existe
                                 if (mainGS) {
                                   formattedInfo.push({
                                     label: `GS ${mainGS}`,
                                     class: 'bg-amber-500/20 border-amber-500/50',
-                                    inline: true
+                                    inline: true,
                                   });
                                 }
                               }
-                              
+
                               // Rol dual (si existe) con su GS
-                              const dualRoleToShow = charData.dualRole || 
-                                (member.publicNote?.match(/[dD](\d+\.?\d*)([tThHdD])/i)?.[2]?.toUpperCase());
-                              
+                              const dualRoleToShow =
+                                charData.dualRole ||
+                                member.publicNote
+                                  ?.match(/[dD](\d+\.?\d*)([tThHdD])/i)?.[2]
+                                  ?.toUpperCase();
+
                               if (dualRoleToShow) {
-                                const dualRoleName = roleNamesData[dualRoleToShow]?.name || dualRoleToShow;
+                                const dualRoleName =
+                                  roleNamesData[dualRoleToShow]?.name || dualRoleToShow;
                                 const dualGS = gearScores[1]; // Segundo GS para el rol dual
-                                
+
                                 // Agregar rol dual
                                 formattedInfo.push({
                                   label: `Dual ${dualRoleName}`,
                                   class: 'bg-yellow-500/20 border-yellow-500/50',
-                                  inline: true
+                                  inline: true,
                                 });
-                                
+
                                 // Agregar GS del rol dual si existe
                                 if (dualGS) {
                                   formattedInfo.push({
                                     label: `GS ${dualGS}`,
                                     class: 'bg-amber-500/20 border-amber-500/50',
-                                    inline: true
+                                    inline: true,
                                   });
                                 }
                               }
-                              
+
                               // Función para obtener el código de profesión a partir del nombre
                               const getProfessionCode = (profName) => {
                                 if (!profName) return null;
@@ -2569,73 +2697,86 @@ const totalRaiders = rosterData.members.filter(
                                 return entry ? entry[0] : null;
                               };
 
-                              const professionsToShow = (charData.professions?.length 
-                                ? charData.professions 
-                                : validation.professions || [])
-                                .filter(prof => prof && !/^\d+\.?\d*$/.test(prof)); // Filtrar posibles GS mal interpretados
-                              
+                              const professionsToShow = (
+                                charData.professions?.length
+                                  ? charData.professions
+                                  : validation.professions || []
+                              ).filter((prof) => prof && !/^\d+\.?\d*$/.test(prof)); // Filtrar posibles GS mal interpretados
+
                               if (professionsToShow.length) {
                                 // Procesar cada profesión
                                 const processedProfs = new Set(); // Para evitar duplicados
-                                
-                                professionsToShow.forEach(prof => {
+
+                                professionsToShow.forEach((prof) => {
                                   try {
                                     // Primero intentamos obtener el código de profesión
                                     let profCode = getProfessionCode(prof) || prof.toUpperCase();
                                     const profName = professionNamesData[profCode]?.name || prof;
-                                    
+
                                     // Evitar duplicados
                                     if (processedProfs.has(profCode)) return;
                                     processedProfs.add(profCode);
-                                    
+
                                     if (profName) {
                                       // Usar los estilos definidos o los predeterminados
                                       const profStyle = professionNamesData[profCode] || {
                                         name: profName,
                                         color: 'text-indigo-300',
                                         bgColor: 'bg-indigo-500/20',
-                                        borderColor: 'border-indigo-500/50'
+                                        borderColor: 'border-indigo-500/50',
                                       };
-                                      
+
                                       formattedInfo.push({
                                         label: profName,
                                         class: `${profStyle.bgColor || 'bg-indigo-500/20'} ${profStyle.borderColor || 'border-indigo-500/50'}`,
-                                        inline: true
+                                        inline: true,
                                       });
                                     }
                                   } catch (error) {
-                                    console.error(`[${member.name}] Error procesando profesión ${prof}:`, error);
+                                    console.error(
+                                      `[${member.name}] Error procesando profesión ${prof}:`,
+                                      error
+                                    );
                                   }
                                 });
                               }
 
                               // 2. Procesar bloques de evento
-                              const eventBlocks = validation.blocks?.filter(b => b.type === 'event') || [];
-                              
+                              const eventBlocks =
+                                validation.blocks?.filter((b) => b.type === 'event') || [];
+
                               // Si no hay bloques de evento pero hay datos en el nivel superior, crear uno
-                              if (eventBlocks.length === 0 && (validation.days?.length || validation.raids?.length || validation.schedules?.length)) {
+                              if (
+                                eventBlocks.length === 0 &&
+                                (validation.days?.length ||
+                                  validation.raids?.length ||
+                                  validation.schedules?.length)
+                              ) {
                                 const eventData = {
                                   days: validation.days,
-                                  time: validation.schedules?.[0]?.match(/\d{1,2}:?\d{0,2}/)?.[0] || '',
+                                  time:
+                                    validation.schedules?.[0]?.match(/\d{1,2}:?\d{0,2}/)?.[0] || '',
                                   raid: validation.raids?.[0]?.name || '',
                                   difficulty: validation.raids?.[0]?.difficultyCode || '',
                                   isRaidLeader: validation.isRaidLeader,
-                                  isLookingForGroup: false
+                                  isLookingForGroup: false,
                                 };
                                 eventBlocks.push({
                                   type: 'event',
                                   isValid: true,
-                                  parsedData: eventData
+                                  parsedData: eventData,
                                 });
                               }
-                              
+
                               // Si aún no hay bloques de evento, verificar si hay datos en el nivel superior
                               if (eventBlocks.length === 0) {
                                 // Intentar extraer información de la nota pública
                                 const publicNote = member.publicNote || '';
-                                const raidMatch = publicNote.match(/([A-Za-z]+)(?:\s+([0-9]+[NH]))?/);
+                                const raidMatch = publicNote.match(
+                                  /([A-Za-z]+)(?:\s+([0-9]+[NH]))?/
+                                );
                                 const timeMatch = publicNote.match(/(\d{1,2}:?\d{0,2})/);
-                                
+
                                 if (raidMatch || timeMatch) {
                                   const eventData = {
                                     days: validation.days || [],
@@ -2643,61 +2784,65 @@ const totalRaiders = rosterData.members.filter(
                                     raid: raidMatch ? raidMatch[1] : '',
                                     difficulty: raidMatch ? raidMatch[2] || '' : '',
                                     isRaidLeader: /RL/i.test(publicNote),
-                                    isLookingForGroup: /LFG/i.test(publicNote)
+                                    isLookingForGroup: /LFG/i.test(publicNote),
                                   };
-                                  
+
                                   eventBlocks.push({
                                     type: 'event',
                                     isValid: true,
-                                    parsedData: eventData
+                                    parsedData: eventData,
                                   });
                                 }
                               }
-                              
+
                               if (eventBlocks.length > 0) {
-                                eventBlocks.forEach(eventBlock => {
+                                eventBlocks.forEach((eventBlock) => {
                                   if (eventBlock.parsedData) {
                                     const eventData = eventBlock.parsedData;
                                     const formattedEventInfo = [];
-                                    
+
                                     // Días - Convertir códigos de días a nombres completos
-                                    const daysToShow = eventData.days?.length ? eventData.days : validation.days;
+                                    const daysToShow = eventData.days?.length
+                                      ? eventData.days
+                                      : validation.days;
                                     const dayNames = {
-                                      'L': 'Lunes',
-                                      'M': 'Martes',
-                                      'X': 'Miércoles',
-                                      'J': 'Jueves',
-                                      'V': 'Viernes',
-                                      'S': 'Sábado',
-                                      'D': 'Domingo'
+                                      L: 'Lunes',
+                                      M: 'Martes',
+                                      X: 'Miércoles',
+                                      J: 'Jueves',
+                                      V: 'Viernes',
+                                      S: 'Sábado',
+                                      D: 'Domingo',
                                     };
-                                    
+
                                     if (daysToShow?.length) {
                                       // Usar la función formatDays para manejar rangos
                                       const days = formatDays(daysToShow)
-                                        .map(day => dayNames[day] || day)
+                                        .map((day) => dayNames[day] || day)
                                         .filter(Boolean);
-                                      
+
                                       // Formatear días como "Lun, Mar, Mié..."
                                       const shortDayNames = {
-                                        'Lunes': 'Lun',
-                                        'Martes': 'Mar',
-                                        'Miércoles': 'Mié',
-                                        'Jueves': 'Jue',
-                                        'Viernes': 'Vie',
-                                        'Sábado': 'Sáb',
-                                        'Domingo': 'Dom'
+                                        Lunes: 'Lun',
+                                        Martes: 'Mar',
+                                        Miércoles: 'Mié',
+                                        Jueves: 'Jue',
+                                        Viernes: 'Vie',
+                                        Sábado: 'Sáb',
+                                        Domingo: 'Dom',
                                       };
-                                      
-                                      const shortDays = days.map(day => shortDayNames[day] || day);
-                                      
+
+                                      const shortDays = days.map(
+                                        (day) => shortDayNames[day] || day
+                                      );
+
                                       // Agregar cada día como una etiqueta separada
-                                      shortDays.forEach(day => {
+                                      shortDays.forEach((day) => {
                                         if (day) {
                                           formattedInfo.push({
                                             label: day,
                                             class: 'bg-blue-500/20 border-blue-500/50',
-                                            inline: true
+                                            inline: true,
                                           });
                                         }
                                       });
@@ -2710,15 +2855,16 @@ const totalRaiders = rosterData.members.filter(
                                       timeToShow = timeToShow.replace(/x$/i, '');
                                       // Asegurar formato HH:MM
                                       if (!timeToShow.includes(':')) {
-                                        timeToShow = timeToShow.length <= 2 
-                                          ? `${timeToShow}:00` 
-                                          : `${timeToShow.slice(0, 2)}:${timeToShow.slice(2)}`;
+                                        timeToShow =
+                                          timeToShow.length <= 2
+                                            ? `${timeToShow}:00`
+                                            : `${timeToShow.slice(0, 2)}:${timeToShow.slice(2)}`;
                                       }
-                                      
+
                                       formattedInfo.push({
                                         label: timeToShow,
                                         class: 'bg-green-500/20 border-green-500/50',
-                                        inline: true
+                                        inline: true,
                                       });
                                     }
 
@@ -2727,12 +2873,13 @@ const totalRaiders = rosterData.members.filter(
 
                                     // Verificar si es raid leader (compatibilidad con string 'YES' o booleano true)
                                     // o si la validación general indica que es raid leader
-                                    const isLeader = eventData.isRaidLeader === true || 
-                                                   eventData.isRaidLeader === 'YES' || 
-                                                   (typeof eventData.isRaidLeader === 'string' && 
-                                                    eventData.isRaidLeader.toUpperCase() === 'YES') ||
-                                                   validation.isRaidLeader === true;
-                                    
+                                    const isLeader =
+                                      eventData.isRaidLeader === true ||
+                                      eventData.isRaidLeader === 'YES' ||
+                                      (typeof eventData.isRaidLeader === 'string' &&
+                                        eventData.isRaidLeader.toUpperCase() === 'YES') ||
+                                      validation.isRaidLeader === true;
+
                                     // Solo mostrar información de raid si no se ha mostrado ya
                                     if (eventData.raid) {
                                       const difficultyNames = {
@@ -2740,25 +2887,30 @@ const totalRaiders = rosterData.members.filter(
                                         '10H': '10 Heroico',
                                         '25N': '25 Normal',
                                         '25H': '25 Heroico',
-                                        'N': 'Normal',
-                                        'H': 'Heroico'
+                                        N: 'Normal',
+                                        H: 'Heroico',
                                       };
-                                      
+
                                       // Formatear dificultad
-                                      const difficultyText = eventData.difficulty 
-                                        ? difficultyNames[eventData.difficulty] || eventData.difficulty 
+                                      const difficultyText = eventData.difficulty
+                                        ? difficultyNames[eventData.difficulty] ||
+                                          eventData.difficulty
                                         : '';
-                                      
+
                                       // Usar formatRaidInfo para mostrar raid y dificultad juntas
-                                      const raidInfo = formatRaidInfo(eventData.raid, difficultyText);
-                                      
+                                      const raidInfo = formatRaidInfo(
+                                        eventData.raid,
+                                        difficultyText
+                                      );
+
                                       // Agregar etiqueta de Raid Leader si corresponde
                                       if (isLeader) {
                                         formattedInfo.unshift({
                                           label: 'Raid Leader',
-                                          class: 'text-yellow-300 font-bold border-b border-yellow-500/60 pb-0.5',
+                                          class:
+                                            'text-yellow-300 font-bold border-b border-yellow-500/60 pb-0.5',
                                         });
-                                        
+
                                         // Mostrar "Armo" en lugar de "Busco" para raid leaders
                                         formattedInfo.push({
                                           label: `Armo: ${raidInfo}`,
@@ -2784,14 +2936,14 @@ const totalRaiders = rosterData.members.filter(
                                 });
                               } else if (validation.raids?.length) {
                                 // Si no hay bloques de evento pero hay raids en la validación
-                                validation.raids.forEach(raid => {
+                                validation.raids.forEach((raid) => {
                                   // Mostrar días si están disponibles
                                   if (raid.days) {
                                     const dayNames = raid.days
                                       .split('')
-                                      .map(day => DAY_NAMES[day] || day)
+                                      .map((day) => DAY_NAMES[day] || day)
                                       .join(', ');
-                                    
+
                                     formattedInfo.push({
                                       label: dayNames,
                                       class: 'text-blue-300 font-medium',
@@ -2810,24 +2962,25 @@ const totalRaiders = rosterData.members.filter(
                                   if (raid.name) {
                                     const isLeader = raid.isRaidLeader || validation.isRaidLeader;
                                     const raidAction = isLeader ? 'Armo' : 'Busco';
-                                    
+
                                     // Solo mostrar el estado de RL si es líder
                                     if (isLeader) {
                                       formattedInfo.unshift({
                                         label: 'Raid Leader',
-                                        class: 'text-yellow-300 font-bold border-b border-yellow-500/60 pb-0.5',
+                                        class:
+                                          'text-yellow-300 font-bold border-b border-yellow-500/60 pb-0.5',
                                       });
                                     }
-                                    
+
                                     // Mostrar acción (Armo/Busco) y nombre de la raid
                                     formattedInfo.push({
                                       label: `${raidAction}: ${raid.name}`,
-                                      class: isLeader 
+                                      class: isLeader
                                         ? 'text-purple-300 font-medium border-b border-purple-500/60 pb-0.5'
                                         : 'text-purple-300 font-medium',
                                     });
                                   }
-                                  
+
                                   // Mostrar dificultad
                                   if (raid.difficulty) {
                                     formattedInfo.push({
@@ -2846,25 +2999,39 @@ const totalRaiders = rosterData.members.filter(
                               }
 
                               // 3. Verificar campos faltantes
-                              const hasCharacterData = 
-                                characterBlocks.length > 0 || 
-                                validation.mainAlt || 
-                                (validation.mainRole || validation.role) || 
+                              const hasCharacterData =
+                                characterBlocks.length > 0 ||
+                                validation.mainAlt ||
+                                validation.mainRole ||
+                                validation.role ||
                                 validation.gearScore;
-                              
+
                               // Solo marcar como faltante si no hay ningún dato de personaje
                               if (!hasCharacterData) {
                                 missingFields.push('Datos de personaje');
                               } else {
                                 // Verificar campos específicos faltantes
-                                if (!validation.mainAlt && !characterBlocks.some(b => b.parsedData?.mainAlt)) {
+                                if (
+                                  !validation.mainAlt &&
+                                  !characterBlocks.some((b) => b.parsedData?.mainAlt)
+                                ) {
                                   missingFields.push('Main/Alt');
                                 }
-                                if (!validation.mainRole && !validation.role && !characterBlocks.some(b => b.parsedData?.mainRole || b.parsedData?.role)) {
+                                if (
+                                  !validation.mainRole &&
+                                  !validation.role &&
+                                  !characterBlocks.some(
+                                    (b) => b.parsedData?.mainRole || b.parsedData?.role
+                                  )
+                                ) {
                                   missingFields.push('Rol principal');
                                 }
                               }
-                              if (eventBlocks.length === 0 && !validation.raids?.length && !validation.schedules?.length) {
+                              if (
+                                eventBlocks.length === 0 &&
+                                !validation.raids?.length &&
+                                !validation.schedules?.length
+                              ) {
                               }
 
                               // Función para procesar los bloques de la nota
@@ -2873,111 +3040,122 @@ const totalRaiders = rosterData.members.filter(
                                 const eventTags = [];
                                 const missingCharacterFields = [];
                                 const missingEventFields = [];
-                                
+
                                 // Obtener bloques de personaje y evento
-                                const characterBlocks = validation.blocks?.filter(b => b.type === 'character') || [];
-                                const eventBlocks = validation.blocks?.filter(b => b.type === 'event') || [];
-                                                                // Procesar bloques de personaje
+                                const characterBlocks =
+                                  validation.blocks?.filter((b) => b.type === 'character') || [];
+                                const eventBlocks =
+                                  validation.blocks?.filter((b) => b.type === 'event') || [];
+                                // Procesar bloques de personaje
                                 if (characterBlocks.length > 0) {
                                   const charData = characterBlocks[0]?.parsedData || {};
-                                  
+
                                   // Agregar etiquetas en el orden deseado
                                   if (charData.mainAlt) {
                                     characterTags.push({
-                                      label: charData.mainAlt === 'M' ? 'Main' : 'Alt', 
-                                      class: 'bg-blue-500/20 border-blue-500/50'
+                                      label: charData.mainAlt === 'M' ? 'Main' : 'Alt',
+                                      class: 'bg-blue-500/20 border-blue-500/50',
                                     });
                                   }
-                                  
+
                                   // Agregar rol principal (usar role como respaldo si mainRole no está definido)
                                   const roleToUse = charData.mainRole || charData.role;
                                   if (roleToUse) {
                                     characterTags.push({
-                                      label: roleNamesData[roleToUse]?.name || roleToUse, 
+                                      label: roleNamesData[roleToUse]?.name || roleToUse,
                                       class: 'bg-green-500/20 border-green-500/50',
-                                      title: `Rol: ${roleNamesData[roleToUse]?.name || roleToUse}`
+                                      title: `Rol: ${roleNamesData[roleToUse]?.name || roleToUse}`,
                                     });
-                                    
+
                                     // Agregar GS del rol principal
                                     const gsToUse = charData.mainGearScore || charData.gearScore;
                                     if (gsToUse) {
                                       characterTags.push({
-                                        label: `GS ${gsToUse}`, 
+                                        label: `GS ${gsToUse}`,
                                         class: 'bg-amber-500/20 border-amber-500/50',
-                                        title: `Gear Score: ${gsToUse}`
+                                        title: `Gear Score: ${gsToUse}`,
                                       });
                                     }
-                                    
+
                                     // Si hay un rol dual, mostrarlo también
                                     if (charData.dualRole) {
                                       characterTags.push({
-                                        label: roleNamesData[charData.dualRole]?.name || charData.dualRole, 
+                                        label:
+                                          roleNamesData[charData.dualRole]?.name ||
+                                          charData.dualRole,
                                         class: 'bg-purple-500/20 border-purple-500/50',
-                                        title: `Rol secundario: ${roleNamesData[charData.dualRole]?.name || charData.dualRole}`
+                                        title: `Rol secundario: ${roleNamesData[charData.dualRole]?.name || charData.dualRole}`,
                                       });
                                     }
                                   }
-                                  
+
                                   // Agregar rol dual si existe
                                   if (charData.dualRole) {
                                     characterTags.push({
-                                      label: `Dual ${roleNamesData[charData.dualRole]?.name || charData.dualRole}`, 
-                                      class: 'bg-yellow-500/20 border-yellow-500/50'
+                                      label: `Dual ${roleNamesData[charData.dualRole]?.name || charData.dualRole}`,
+                                      class: 'bg-yellow-500/20 border-yellow-500/50',
                                     });
-                                    
+
                                     // Agregar GS del rol dual si existe
                                     if (charData.dualGearScore) {
                                       characterTags.push({
-                                        label: `GS ${charData.dualGearScore}`, 
-                                        class: 'bg-amber-500/20 border-amber-500/50'
+                                        label: `GS ${charData.dualGearScore}`,
+                                        class: 'bg-amber-500/20 border-amber-500/50',
                                       });
                                     }
                                   }
-                                  
+
                                   // Agregar etiquetas de profesiones
                                   if (charData.professions && charData.professions.length > 0) {
-                                    charData.professions.forEach(profCode => {
+                                    charData.professions.forEach((profCode) => {
                                       const profInfo = professionNamesData[profCode];
                                       if (profInfo) {
                                         const tag = {
                                           label: profInfo.name,
-                                          class: `${profInfo.bgColor || 'bg-indigo-500/20'} border-${profInfo.color.replace('text-', '')}`
+                                          class: `${profInfo.bgColor || 'bg-indigo-500/20'} border-${profInfo.color.replace('text-', '')}`,
                                         };
                                         characterTags.push(tag);
                                       }
                                     });
                                   }
-                                  
+
                                   // Verificar campos faltantes en personaje
                                   if (!charData.mainAlt) missingCharacterFields.push('Main/Alt');
-                                  if (!charData.mainRole) missingCharacterFields.push('Rol principal');
-                                  if (!charData.mainGearScore) missingCharacterFields.push('Gear Score');
+                                  if (!charData.mainRole)
+                                    missingCharacterFields.push('Rol principal');
+                                  if (!charData.mainGearScore)
+                                    missingCharacterFields.push('Gear Score');
                                 }
-                                
+
                                 // Procesar bloques de evento
                                 if (eventBlocks.length > 0) {
                                   // Crear un array para almacenar los eventos procesados
                                   const processedEvents = [];
-                                  
+
                                   eventBlocks.forEach((eventBlock, index) => {
                                     if (eventBlock.parsedData) {
                                       const eventData = eventBlock.parsedData;
                                       const eventTags = [];
                                       const eventMissingFields = [];
-                                      
+
                                       // Procesar días
                                       if (eventData.days) {
                                         // Si days es un array, convertirlo a string primero
-                                        const daysStr = Array.isArray(eventData.days) 
-                                          ? eventData.days.join('') 
+                                        const daysStr = Array.isArray(eventData.days)
+                                          ? eventData.days.join('')
                                           : String(eventData.days);
-                                        
+
                                         // Mapear códigos de días a nombres cortos
                                         const dayMap = {
-                                          'L': 'Lun', 'M': 'Mar', 'X': 'Mié',
-                                          'J': 'Jue', 'V': 'Vie', 'S': 'Sáb', 'D': 'Dom'
+                                          L: 'Lun',
+                                          M: 'Mar',
+                                          X: 'Mié',
+                                          J: 'Jue',
+                                          V: 'Vie',
+                                          S: 'Sáb',
+                                          D: 'Dom',
                                         };
-                                        
+
                                         // Solo agregar días si hay algo que mostrar
                                         if (daysStr.trim()) {
                                           // Manejar rangos como "L-V"
@@ -2986,92 +3164,126 @@ const totalRaiders = rosterData.members.filter(
                                             const dayOrder = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
                                             const startIndex = dayOrder.indexOf(startDay);
                                             const endIndex = dayOrder.indexOf(endDay);
-                                            
-                                            if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+
+                                            if (
+                                              startIndex !== -1 &&
+                                              endIndex !== -1 &&
+                                              startIndex <= endIndex
+                                            ) {
                                               // Crear rango de días
                                               const rangeDays = [];
                                               for (let i = startIndex; i <= endIndex; i++) {
                                                 rangeDays.push(dayOrder[i]);
                                               }
-                                              const formattedDays = rangeDays.map(day => dayMap[day] || day).join(', ');
+                                              const formattedDays = rangeDays
+                                                .map((day) => dayMap[day] || day)
+                                                .join(', ');
                                               if (formattedDays) {
-                                                eventTags.push({label: formattedDays, class: 'bg-blue-500/20 border-blue-500/50'});
+                                                eventTags.push({
+                                                  label: formattedDays,
+                                                  class: 'bg-blue-500/20 border-blue-500/50',
+                                                });
                                               }
                                             } else if (daysStr.trim()) {
                                               // Si no se puede formar un rango válido, mostrar el texto original solo si no está vacío
-                                              eventTags.push({label: daysStr.trim(), class: 'bg-blue-500/20 border-blue-500/50'});
+                                              eventTags.push({
+                                                label: daysStr.trim(),
+                                                class: 'bg-blue-500/20 border-blue-500/50',
+                                              });
                                             }
                                           } else {
                                             // Si no es un rango, mostrar los días individuales
                                             const formattedDays = daysStr
                                               .split('')
-                                              .map(day => dayMap[day] || day)
-                                              .filter(day => day) // Filtrar días vacíos
+                                              .map((day) => dayMap[day] || day)
+                                              .filter((day) => day) // Filtrar días vacíos
                                               .join(', ');
-                                            
+
                                             if (formattedDays) {
-                                              eventTags.push({label: formattedDays, class: 'bg-blue-500/20 border-blue-500/50'});
+                                              eventTags.push({
+                                                label: formattedDays,
+                                                class: 'bg-blue-500/20 border-blue-500/50',
+                                              });
                                             }
                                           }
                                         }
                                       }
-                                      
+
                                       // Procesar hora
                                       if (eventData.time) {
-                                        eventTags.push({label: `Hora: ${eventData.time}`, class: 'bg-green-500/20 border-green-500/50'});
+                                        eventTags.push({
+                                          label: `Hora: ${eventData.time}`,
+                                          class: 'bg-green-500/20 border-green-500/50',
+                                        });
                                       }
-                                      
+
                                       // Procesar raid leader (Armo) o mostrar 'Busco' - se muestra antes de la raid
                                       if (eventData.isRaidLeader) {
-                                        eventTags.push({label: 'Armo', class: 'bg-yellow-500/20 border-yellow-500/50'});
+                                        eventTags.push({
+                                          label: 'Armo',
+                                          class: 'bg-yellow-500/20 border-yellow-500/50',
+                                        });
                                       } else if (eventData.raid) {
                                         // Si hay raid pero no hay RL, mostrar 'Busco'
-                                        eventTags.push({label: 'Busco', class: 'bg-red-500/20 border-red-500/50'});
+                                        eventTags.push({
+                                          label: 'Busco',
+                                          class: 'bg-red-500/20 border-red-500/50',
+                                        });
                                       }
-                                      
+
                                       // Procesar raid y dificultad
                                       if (eventData.raid) {
-                                        const difficulty = eventData.difficulty ? ` ${eventData.difficulty}` : '';
-                                        eventTags.push({label: `${eventData.raid}${difficulty}`, class: 'bg-purple-500/20 border-purple-500/50'});
+                                        const difficulty = eventData.difficulty
+                                          ? ` ${eventData.difficulty}`
+                                          : '';
+                                        eventTags.push({
+                                          label: `${eventData.raid}${difficulty}`,
+                                          class: 'bg-purple-500/20 border-purple-500/50',
+                                        });
                                       }
-                                      
+
                                       // Verificar campos faltantes en evento
                                       const hasDays = eventData.days?.length > 0;
                                       const hasTime = !!eventData.time;
                                       const hasRaid = !!eventData.raid;
-                                      
+
                                       if (!hasDays) eventMissingFields.push('Día/s');
                                       if (!hasTime) eventMissingFields.push('Hora');
                                       if (!hasRaid) eventMissingFields.push('Raid');
-                                      
+
                                       // Agregar el evento procesado al array
                                       processedEvents.push({
                                         id: `event-${index}`,
                                         tags: [...eventTags],
-                                        missingFields: [...eventMissingFields]
+                                        missingFields: [...eventMissingFields],
                                       });
                                     }
                                   });
-                                  
+
                                   // Retornar los eventos procesados
-                                  return { 
-                                    characterTags, 
+                                  return {
+                                    characterTags,
                                     processedEvents,
-                                    missingCharacterFields, 
-                                    missingEventFields 
+                                    missingCharacterFields,
+                                    missingEventFields,
                                   };
                                 }
-                                
-                                return { characterTags, eventTags, missingCharacterFields, missingEventFields };
+
+                                return {
+                                  characterTags,
+                                  eventTags,
+                                  missingCharacterFields,
+                                  missingEventFields,
+                                };
                               };
-                              
+
                               // Procesar los bloques de la nota
                               const processedBlocks = processNoteBlocks(validation);
                               const characterTags = processedBlocks.characterTags || [];
                               const processedEvents = processedBlocks.processedEvents || [];
-                              const missingCharacterFields = processedBlocks.missingCharacterFields || [];
+                              const missingCharacterFields =
+                                processedBlocks.missingCharacterFields || [];
                               const missingEventFields = processedBlocks.missingEventFields || [];
-                              
 
                               return `
                                 <div class="space-y-3">
@@ -3079,47 +3291,63 @@ const totalRaiders = rosterData.members.filter(
                                   <div class="space-y-1">
                                     <div class="flex flex-wrap gap-1.5 mb-1">
                                       ${characterTags
-                                        .map(item => {
+                                        .map((item) => {
                                           // Verificar si es una profesión para aplicar estilos
-                                          const professionEntry = Object.entries(professionNamesData)
-                                            .find(([_, prof]) => prof?.name === item.label);
-                                          
+                                          const professionEntry = Object.entries(
+                                            professionNamesData
+                                          ).find(([_, prof]) => prof?.name === item.label);
+
                                           if (professionEntry) {
                                             const [_, profData] = professionEntry;
                                             return `<span class="text-xs px-2 py-0.5 rounded border ${profData.bgColor || 'bg-indigo-500/20'} border-${profData.color.replace('text-', '')}">${item.label}</span>`;
                                           }
-                                          
+
                                           return `<span class="text-xs px-2 py-0.5 rounded border ${item.class || ''}">${item.label}</span>`;
                                         })
                                         .join('')}
                                     </div>
-                                    ${missingCharacterFields.length > 0 ? `
+                                    ${
+                                      missingCharacterFields.length > 0
+                                        ? `
                                       <div class="text-amber-400/90 text-xs">
                                         <span class="font-medium">Faltan:</span> ${missingCharacterFields.join(', ')}
                                       </div>
-                                    ` : ''}
+                                    `
+                                        : ''
+                                    }
                                   </div>
                                   
                                   <!-- Bloque de Eventos -->
                                   <div class="space-y-2">
                                     <div class="text-xs font-medium text-gray-400 mb-1">EVENTOS</div>
-                                    ${processedEvents.length > 0 
-                                      ? processedEvents.map(event => `
+                                    ${
+                                      processedEvents.length > 0
+                                        ? processedEvents
+                                            .map(
+                                              (event) => `
                                         <div class="space-y-1.5 bg-gray-800/30 rounded-lg p-2 border border-gray-700/50">
                                           <div class="flex flex-wrap gap-1.5">
                                             ${event.tags
-                                              .map(tag => 
-                                                `<span class="text-xs px-2 py-0.5 rounded border ${tag.class}">${tag.label}</span>`
-                                              ).join('')}
+                                              .map(
+                                                (tag) =>
+                                                  `<span class="text-xs px-2 py-0.5 rounded border ${tag.class}">${tag.label}</span>`
+                                              )
+                                              .join('')}
                                           </div>
-                                          ${event.missingFields.length > 0 ? `
+                                          ${
+                                            event.missingFields.length > 0
+                                              ? `
                                             <div class="text-amber-400/90 text-xs mt-1">
                                               <span class="font-medium">Faltan:</span> ${event.missingFields.join(', ')}
                                             </div>
-                                          ` : ''}
+                                          `
+                                              : ''
+                                          }
                                         </div>
-                                      `).join('')
-                                      : '<div class="text-text-muted/70 text-xs italic">No hay eventos programados</div>'
+                                      `
+                                            )
+                                            .join('')
+                                        : '<div class="text-text-muted/70 text-xs italic">No hay eventos programados</div>'
                                     }
                                   </div>
                                 </div>`;
@@ -3480,118 +3708,154 @@ const totalRaiders = rosterData.members.filter(
 
   <!-- Estadísticas del Roster -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-2">
-  <!-- Total de Miembros y Mains/Alts -->
-  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
-    <div class="flex justify-between items-center">
-      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Miembros Totales</h3>
-      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{stats.totalMembers || 0}</p>
-    </div>
-    <div class="grid grid-cols-2 justify-items-center">
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{mainAltStats.M || 0}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mains</p>
+    <!-- Total de Miembros y Mains/Alts -->
+    <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+      <div class="flex justify-between items-center">
+        <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">
+          Miembros Totales
+        </h3>
+        <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{stats.totalMembers || 0}</p>
       </div>
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{mainAltStats.A || 0}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Alts</p>
+      <div class="grid grid-cols-2 justify-items-center">
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{mainAltStats.M || 0}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mains</p>
+        </div>
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{mainAltStats.A || 0}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Alts</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Distribución de Roles -->
-  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
-    <div class="flex justify-between items-center">
-      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Roles Principales</h3>
-      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}</p>
-    </div>
-    <div class="grid grid-cols-3 gap-1 mt-1">
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.T || 0}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tanks</p>
-      </div>
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.H || 0}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Healers</p>
-      </div>
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.D || 0}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">DPS</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Combinaciones de Roles Duales -->
-  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
-    <div class="flex justify-between items-center">
-      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Roles Duales</h3>
-      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
-        {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
-      </p>
-    </div>
-    <div class="grid grid-cols-3 gap-1 mt-1">
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.TH}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tank / Heal</p>
-      </div>
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.TD}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tank / DPS</p>
-      </div>
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.HD}</p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Heal / DPS</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Gear Score -->
-  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
-    <div class="flex justify-between items-center">
-      <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Gear Score</h3>
-      <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
-        {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
-      </p>
-    </div>
-    <div class="grid grid-cols-2 gap-1 mt-1">
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">
-          {minGearScore !== 'N/A' ? minGearScore : 'N/A'}
+    <!-- Distribución de Roles -->
+    <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+      <div class="flex justify-between items-center">
+        <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">
+          Roles Principales
+        </h3>
+        <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
+          {Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}
         </p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mínimo</p>
       </div>
-      <div class="text-center">
-        <p class="text-[18px] sm:text-2xl font-bold text-white">
-          {maxGearScore !== 'N/A' ? maxGearScore : 'N/A'}
+      <div class="grid grid-cols-3 gap-1 mt-1">
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.T || 0}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tanks</p>
+        </div>
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.H || 0}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Healers</p>
+        </div>
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{roleStats.D || 0}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">DPS</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combinaciones de Roles Duales -->
+    <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+      <div class="flex justify-between items-center">
+        <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">
+          Roles Duales
+        </h3>
+        <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
+          {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
         </p>
-        <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Máximo</p>
+      </div>
+      <div class="grid grid-cols-3 gap-1 mt-1">
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.TH}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tank / Heal</p>
+        </div>
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.TD}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Tank / DPS</p>
+        </div>
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">{dualRoleStats.HD}</p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Heal / DPS</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gear Score -->
+    <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+      <div class="flex justify-between items-center">
+        <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">
+          Gear Score
+        </h3>
+        <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">
+          {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-1 mt-1">
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">
+            {minGearScore !== 'N/A' ? minGearScore : 'N/A'}
+          </p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Mínimo</p>
+        </div>
+        <div class="text-center">
+          <p class="text-[18px] sm:text-2xl font-bold text-white">
+            {maxGearScore !== 'N/A' ? maxGearScore : 'N/A'}
+          </p>
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">Máximo</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
 
   <!-- Tabla de miembros -->
-  <div
-    class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3"
-  >
+  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
     <div class="overflow-x-auto rounded-t-xl">
-      <table class="min-w-full divide-y divide-accent bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 p-2 sm:p-3">
+      <table
+        class="min-w-full divide-y divide-accent bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 p-2 sm:p-3"
+      >
         <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
           <tr>
-            <th data-column="name" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors" data-sort="name">
+            <th
+              data-column="name"
+              class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors"
+              data-sort="name"
+            >
               <div class="flex items-center justify-center">
                 <span class="py-2">Personaje</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3.5 w-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ml-1 h-3.5 w-3.5 opacity-70"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
                 </svg>
               </div>
             </th>
-            <th data-column="details" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors" data-sort="publicNote">
+            <th
+              data-column="details"
+              class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors"
+              data-sort="publicNote"
+            >
               <div class="flex items-center justify-center">
                 <span class="py-2">Detalles</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-3.5 w-3.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ml-1 h-3.5 w-3.5 opacity-70"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
                 </svg>
               </div>
             </th>
@@ -3604,251 +3868,268 @@ const totalRaiders = rosterData.members.filter(
     </div>
     <!-- Controles de paginación -->
     <div
-      class="px-2 md:px-6 py-4 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 flex flex-col sm:flex-row items-center justify-between gap-4"
+      class="px-2 md:px-6 py-4 bg-gray-900/50 backdrop-blur-sm border-t border-amber-900/30 flex flex-col sm:flex-row items-center justify-between gap-4"
     >
-      <div id="page-info" class="text-text-muted text-sm order-2 sm:order-1">
-        Página 1 de 1 (0 miembros)
+      <div id="page-info" class="text-sm text-text-muted/70">
+        Página <span class="font-medium text-white">1</span> de
+        <span class="font-medium text-white">1</span>
+        <span class="hidden sm:inline">
+          (<span class="font-medium text-white">0</span> miembros)
+        </span>
       </div>
-
-      <div
-        id="pagination-buttons"
-        class="flex items-center gap-1 bg-steel-darker/50 border border-accent/20 rounded-lg p-1 order-1 sm:order-2"
-      >
-        <!-- Los botones de página se generarán aquí dinámicamente -->
+      <div class="flex items-center gap-1">
         <button
           id="prev-button"
-          class="px-3 py-1 rounded-md opacity-50 cursor-not-allowed transition-colors"
+          class="px-3 py-1 rounded-md text-text-muted hover:bg-amber-500/20 hover:text-amber-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          title="Página anterior"
           disabled
         >
           &lt;
         </button>
-        <button class="px-3 py-1 rounded-md bg-accent/20 text-accent font-medium">1</button>
+        <div id="pageNumbers" class="flex items-center gap-1">
+          <button class="px-3 py-1 rounded-md transition-colors bg-amber-600 text-white">1</button>
+          <button
+            class="px-3 py-1 rounded-md transition-colors text-text-muted hover:bg-amber-500/20 hover:text-amber-300"
+            >2</button
+          >
+          <button
+            class="px-3 py-1 rounded-md transition-colors text-text-muted hover:bg-amber-500/20 hover:text-amber-300"
+            >3</button
+          >
+          <button
+            class="px-3 py-1 rounded-md transition-colors text-text-muted hover:bg-amber-500/20 hover:text-amber-300"
+            >4</button
+          >
+        </div>
         <button
           id="next-button"
-          class="px-3 py-1 rounded-md opacity-50 cursor-not-allowed transition-colors"
-          disabled
+          class="px-3 py-1 rounded-md text-text-muted hover:bg-amber-500/20 hover:text-amber-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          title="Página siguiente"
         >
           &gt;
         </button>
       </div>
     </div>
+    <!-- Filtros -->
+    <div class="p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="relative">
+          <label for="search" class="block text-sm font-medium text-text-muted/80 mb-2">
+            Buscar por nombre
+          </label>
+          <input
+            type="text"
+            id="search"
+            placeholder="Nombre..."
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
+          />
+        </div>
 
-    
-  <!-- Filtros -->
-  <div
-  class="p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30"
->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="relative">
-      <label for="search" class="block text-sm font-medium text-text-muted/80 mb-2">
-        Buscar por nombre o nota
-      </label>
-      <input
-        type="text"
-        id="search"
-        placeholder="Nombre o nota..."
-        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
-      />
-    </div>
+        <div class="relative">
+          <label for="class-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+            Filtrar por clase
+          </label>
+          <select
+            id="class-filter"
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
+          >
+            <option value="">Todas las clases</option>
+            {
+              Object.entries(rosterData.classInfo).map(([key, info]) => (
+                <option value={key} style={`color: #${info.color}`}>
+                  {info.name}
+                </option>
+              ))
+            }
+          </select>
+        </div>
 
-    <div class="relative">
-      <label for="class-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
-        Filtrar por clase
-      </label>
-      <select
-        id="class-filter"
-        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
-      >
-        <option value="">Todas las clases</option>
-        {
-          Object.entries(rosterData.classInfo).map(([key, info]) => (
-            <option value={key} style={`color: #${info.color}`}>
-              {info.name}
-            </option>
-          ))
-        }
-      </select>
-    </div>
-
-    <div class="relative">
-      <label for="rank-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
-        Filtrar por rango
-      </label>
-      <select
-        id="rank-filter"
-        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
-      >
-        <option value="">Todos los rangos</option>
-        {
-          ranks.map((rank) => (
-            <option value={rank} class="text-white">
-              {rank}
-            </option>
-          ))
-        }
-      </select>
+        <div class="relative">
+          <label for="rank-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+            Filtrar por rango
+          </label>
+          <select
+            id="rank-filter"
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
+          >
+            <option value="">Todos los rangos</option>
+            {
+              ranks.map((rank) => (
+                <option value={rank} class="text-white">
+                  {rank}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-  </div>
 
-  <!-- Sección de estadísticas -->
-  <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
-    <h2
-      class="text-xl font-semibold mb-6 text-center text-amber-200/90 uppercase tracking-wider"
+<!-- Sección de estadísticas -->
+<div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
+  <h2 class="text-xl font-semibold mb-6 text-center text-amber-200/90 uppercase tracking-wider">
+    Estadísticas del Roster
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Columna 1: Distribución por Rango -->
+    <div
+      class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors"
     >
-      Estadísticas del Roster
-    </h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Columna 1: Distribución por Rango -->
-      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
-        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
-          Por Rango
-        </h3>
-          <div class="space-y-3">
-            {
-              rankDistribution.map(({ name, count, percentage }) => {
-                // Asignar colores según el rango
-                let colorClass = 'from-accent to-accent-light';
-                if (name === 'Guild Master') colorClass = 'from-yellow-400 to-yellow-600';
-                else if (name === 'Alter') colorClass = 'from-purple-400 to-purple-600';
-                else if (name === 'Explorador') colorClass = 'from-blue-400 to-blue-600';
-                else if (name === 'Iniciado') colorClass = 'from-green-400 to-green-600';
-                else if (name === 'Aspirante') colorClass = 'from-gray-400 to-gray-600';
+      <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+        Por Rango
+      </h3>
+      <div class="space-y-3">
+        {
+          rankDistribution.map(({ name, count, percentage }) => {
+            // Asignar colores según el rango
+            let colorClass = 'from-accent to-accent-light';
+            if (name === 'Guild Master') colorClass = 'from-yellow-400 to-yellow-600';
+            else if (name === 'Alter') colorClass = 'from-purple-400 to-purple-600';
+            else if (name === 'Explorador') colorClass = 'from-blue-400 to-blue-600';
+            else if (name === 'Iniciado') colorClass = 'from-green-400 to-green-600';
+            else if (name === 'Aspirante') colorClass = 'from-gray-400 to-gray-600';
 
-                return (
-                  <div class="space-y-1.5">
-                    <div class="flex items-center justify-between text-xs">
-                      <span class="text-amber-100/80">{name}</span>
-                      <div class="flex items-center">
-                        <span class="text-white font-semibold mr-1">{count}</span>
-                        <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
-                      </div>
-                    </div>
-                    <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
-                      <div
-                        class="h-full rounded-full bg-gradient-to-r transition-all duration-500 ease-out"
-                        class:list={[colorClass]}
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
+            return (
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-amber-100/80">{name}</span>
+                  <div class="flex items-center">
+                    <span class="text-white font-semibold mr-1">{count}</span>
+                    <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
                   </div>
-                );
-              })
+                </div>
+                <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    class="h-full rounded-full bg-gradient-to-r transition-all duration-500 ease-out"
+                    class:list={[colorClass]}
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+
+    <!-- Columna 2: Distribución por Clase -->
+    <div
+      class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors"
+    >
+      <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+        Por Clase
+      </h3>
+      <div class="space-y-3">
+        {
+          classDistribution.map(({ name, count, color: classColor }) => {
+            const percentage = Math.round((count / rosterData.members.length) * 100);
+            return (
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center">
+                    <span
+                      class="w-2.5 h-2.5 rounded-full mr-2 border border-amber-900/30"
+                      style={`background-color: #${classColor}`}
+                    />
+                    <span class="text-amber-100/80">{name}</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="text-white font-semibold mr-1">{count}</span>
+                    <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                  </div>
+                </div>
+                <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    class="h-full rounded-full transition-all duration-500 ease-out"
+                    style={{
+                      width: `${percentage}%`,
+                      background: `linear-gradient(to right, #${classColor}cc, #${classColor}ff)`,
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+
+    <div
+      class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors"
+    >
+      <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+        Por Profesión
+      </h3>
+      <div class="space-y-3">
+        {
+          (() => {
+            // Verificar si hay estadísticas de profesiones
+            if (!stats.professions || Object.keys(stats.professions).length === 0) {
+              return (
+                <div class="text-center text-amber-100/60 text-sm py-4">
+                  No hay datos de profesiones disponibles
+                </div>
+              );
             }
-          </div>
-        </div>
 
-      <!-- Columna 2: Distribución por Clase -->
-      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
-        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
-          Por Clase
-        </h3>
-          <div class="space-y-3">
-            {
-              classDistribution.map(({ name, count, color: classColor }) => {
-                const percentage = Math.round((count / rosterData.members.length) * 100);
-                return (
-                  <div class="space-y-1.5">
-                    <div class="flex items-center justify-between text-xs">
-                      <div class="flex items-center">
-                        <span
-                          class="w-2.5 h-2.5 rounded-full mr-2 border border-amber-900/30"
-                          style={`background-color: #${classColor}`}
-                        />
-                        <span class="text-amber-100/80">{name}</span>
-                      </div>
-                      <div class="flex items-center">
-                        <span class="text-white font-semibold mr-1">{count}</span>
-                        <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
-                      </div>
-                    </div>
-                    <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
-                      <div
-                        class="h-full rounded-full transition-all duration-500 ease-out"
-                        style={{
-                          width: `${percentage}%`,
-                          background: `linear-gradient(to right, #${classColor}cc, #${classColor}ff)`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })
-            }
-          </div>
-        </div>
+            // Obtener el total de miembros con profesiones válidas
+            const totalWithProfessions = Object.values(stats.professions).reduce(
+              (sum, count) => sum + count,
+              0
+            );
 
-      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
-        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
-          Por Profesión
-        </h3>
-        <div class="space-y-3">
-          {
-            (() => {
-              // Verificar si hay estadísticas de profesiones
-              if (!stats.professions || Object.keys(stats.professions).length === 0) {
-                return (
-                  <div class="text-center text-amber-100/60 text-sm py-4">
-                    No hay datos de profesiones disponibles
-                  </div>
-                );
-              }
-              
-              // Obtener el total de miembros con profesiones válidas
-              const totalWithProfessions = Object.values(stats.professions).reduce((sum, count) => sum + count, 0);
-              
-              // Mostrar todas las profesiones ordenadas por conteo (de mayor a menor)
-              return Object.entries(PROFESSION_INFO)
-                .map(([code, info]) => {
-                  const count = stats.professions[code] || 0;
-                  const percentage = totalWithProfessions > 0 
+            // Mostrar todas las profesiones ordenadas por conteo (de mayor a menor)
+            return Object.entries(PROFESSION_INFO)
+              .map(([code, info]) => {
+                const count = stats.professions[code] || 0;
+                const percentage =
+                  totalWithProfessions > 0
                     ? Math.min(100, Math.round((count / totalWithProfessions) * 100))
                     : 0;
-                    
-                  return { 
-                    code, 
-                    name: info.name, 
-                    count, 
-                    percentage, 
-                    colors: info.colors,
-                    hasData: count > 0
-                  };
-                })
-                .sort((a, b) => b.count - a.count)
-                .map(({ code, name, count, percentage, colors, hasData }) => (
-                  <div class="space-y-1.5">
-                    <div class="flex items-center justify-between text-xs">
-                      <div class="flex items-center">
-                        <span 
-                          class="w-2.5 h-2.5 rounded-full mr-2 border border-amber-900/30"
-                          style={`background-color: ${colors.dark}`}
-                        />
-                        <span class="text-amber-100/80">{name}</span>
-                      </div>
-                      <div class="flex items-center">
-                        <span class="text-white font-semibold mr-1">{count}</span>
-                        <span class="text-amber-100/60 text-[11px]">
-                          ({percentage}%)
-                        </span>
-                      </div>
-                    </div>
-                    <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
-                      <div
-                        class="h-full rounded-full transition-all duration-500 ease-out"
-                        style={{
-                          width: `${percentage}%`,
-                          background: `linear-gradient(to right, ${colors.light}, ${colors.dark})`,
-                          opacity: hasData ? 1 : 0.5
-                        }}
+
+                return {
+                  code,
+                  name: info.name,
+                  count,
+                  percentage,
+                  colors: info.colors,
+                  hasData: count > 0,
+                };
+              })
+              .sort((a, b) => b.count - a.count)
+              .map(({ code, name, count, percentage, colors, hasData }) => (
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <div class="flex items-center">
+                      <span
+                        class="w-2.5 h-2.5 rounded-full mr-2 border border-amber-900/30"
+                        style={`background-color: ${colors.dark}`}
                       />
+                      <span class="text-amber-100/80">{name}</span>
+                    </div>
+                    <div class="flex items-center">
+                      <span class="text-white font-semibold mr-1">{count}</span>
+                      <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
                     </div>
                   </div>
-                ));
-            })()
-          }
-        </div>
+                  <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full transition-all duration-500 ease-out"
+                      style={{
+                        width: `${percentage}%`,
+                        background: `linear-gradient(to right, ${colors.light}, ${colors.dark})`,
+                        opacity: hasData ? 1 : 0.5,
+                      }}
+                    />
+                  </div>
+                </div>
+              ));
+          })()
+        }
       </div>
+    </div>
   </div>
 
   <!-- Script para el manejo de pestañas -->

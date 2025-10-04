@@ -32,7 +32,7 @@ const formattedRosterData = (Array.isArray(rosterData) ? rosterData : []).map((m
       publicNote,
       noteValidation,
       officerNote: String(member.officerNote || '').trim(),
-      mainAlt: member.mainAlt || 'M',
+      mainAlt: member.mainAlt || 'A',
       level: Number(member.level) || 80,
       gearScore: Number(member.gearScore) || 0,
       // Asegurar que los campos de validación estén presentes
