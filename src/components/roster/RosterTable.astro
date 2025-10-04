@@ -3474,50 +3474,88 @@ const totalRaiders = rosterData.members.filter(
         updatePageButtons(totalPages);
       }
 
+      // Función para manejar el cambio de página
+      function handlePageChange(page) {
+        if (page >= 1 && page <= Math.ceil(filteredMembers.length / itemsPerPage)) {
+          currentPage = page;
+          updateTable();
+        }
+      }
+
       // Función para actualizar los botones de página
       function updatePageButtons(totalPages) {
-        const paginationContainer = document.getElementById('pagination-buttons');
-        if (!paginationContainer) return;
-
-        let buttons = [];
-        const maxVisiblePages = 5; // Número máximo de páginas visibles
-        let startPage, endPage;
-
-        if (totalPages <= maxVisiblePages) {
-          // Mostrar todas las páginas
-          startPage = 1;
-          endPage = totalPages;
-        } else {
-          // Calcular qué páginas mostrar
-          if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
-            // Estamos cerca del inicio
-            startPage = 1;
-            endPage = maxVisiblePages - 2; // Dejamos espacio para "..." y la última página
-          } else if (currentPage + Math.floor(maxVisiblePages / 2) >= totalPages) {
-            // Estamos cerca del final
-            startPage = totalPages - maxVisiblePages + 3; // Dejamos espacio para la primera página y "..."
-            endPage = totalPages;
-          } else {
-            // Estamos en el medio
-            startPage = currentPage - Math.floor((maxVisiblePages - 2) / 2);
-            endPage = currentPage + Math.floor((maxVisiblePages - 2) / 2);
-          }
-
-          // Asegurarnos de no salirnos de los límites
-          if (startPage < 1) startPage = 1;
-          if (endPage > totalPages) endPage = totalPages;
+        const paginationContainer = document.getElementById('pagination-container');
+        if (!paginationContainer || totalPages <= 0) {
+          return;
         }
 
+        // Usar event delegation en el contenedor de paginación
+        const handlePaginationClick = (e) => {
+          const target = e.target.closest('button');
+          if (!target) return;
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (target.id === 'prev-button' && currentPage > 1) {
+            handlePageChange(currentPage - 1);
+          } else if (target.id === 'next-button' && currentPage < totalPages) {
+            handlePageChange(currentPage + 1);
+          } else if (target.classList.contains('page-button')) {
+            const page = parseInt(target.getAttribute('data-page'));
+            if (!isNaN(page)) {
+              handlePageChange(page);
+            }
+          }
+        };
+
+        // Remover el event listener anterior si existe
+        if (paginationContainer._clickHandler) {
+          paginationContainer.removeEventListener('click', paginationContainer._clickHandler);
+        }
+        // Guardar la referencia a la función para poder eliminarla después
+        paginationContainer._clickHandler = handlePaginationClick;
+        paginationContainer.addEventListener('click', handlePaginationClick);
+
+        let buttons = [];
+        
         // Botón Anterior
         buttons.push(`
           <button 
             id="prev-button"
-            class="px-3 py-1 rounded-md ${currentPage <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-steel-dark'} transition-colors"
+            class="px-3 py-1 rounded-md ${currentPage <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-500/20 hover:text-amber-300'} transition-colors"
+            title="Página anterior"
             ${currentPage <= 1 ? 'disabled' : ''}
           >
             &lt;
           </button>
         `);
+
+        const maxVisiblePages = 5;
+        let startPage, endPage;
+
+        if (totalPages <= maxVisiblePages) {
+          startPage = 1;
+          endPage = totalPages;
+        } else {
+          // Calcular qué páginas mostrar
+          if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
+            startPage = 1;
+            endPage = maxVisiblePages - 2;
+          } else if (currentPage + Math.floor(maxVisiblePages / 2) >= totalPages) {
+            startPage = totalPages - maxVisiblePages + 3;
+            endPage = totalPages;
+          } else {
+            startPage = currentPage - Math.floor((maxVisiblePages - 2) / 2);
+            endPage = currentPage + Math.floor((maxVisiblePages - 2) / 2);
+          }
+
+          // Asegurarnos de no salirnos de los límites
+          startPage = Math.max(1, startPage);
+          endPage = Math.min(totalPages, endPage);
+        }
+
+
 
         // Primera página
         if (startPage > 1) {
@@ -3539,8 +3577,9 @@ const totalRaiders = rosterData.members.filter(
         for (let i = startPage; i <= endPage; i++) {
           buttons.push(`
             <button 
-              class="px-3 py-1 rounded-md ${currentPage === i ? 'bg-accent/20 text-accent font-medium' : 'hover:bg-steel-dark'} transition-colors page-button"
+              class="px-3 py-1 rounded-md ${currentPage === i ? 'bg-amber-600 text-white' : 'hover:bg-amber-500/20 hover:text-amber-300 text-text-muted'} transition-colors page-button"
               data-page="${i}"
+              title="Ir a la página ${i}"
             >
               ${i}
             </button>
@@ -3567,7 +3606,8 @@ const totalRaiders = rosterData.members.filter(
         buttons.push(`
           <button 
             id="next-button"
-            class="px-3 py-1 rounded-md ${currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-steel-dark'} transition-colors"
+            class="px-3 py-1 rounded-md ${currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-500/20 hover:text-amber-300'} transition-colors"
+            title="Página siguiente"
             ${currentPage >= totalPages ? 'disabled' : ''}
           >
             &gt;
@@ -3575,39 +3615,6 @@ const totalRaiders = rosterData.members.filter(
         `);
 
         paginationContainer.innerHTML = buttons.join('');
-
-        // Agregar event listeners a los botones de página
-        document.querySelectorAll('.page-button').forEach((button) => {
-          button.addEventListener('click', (e) => {
-            const page = parseInt(e.target.getAttribute('data-page'));
-            if (page && !isNaN(page)) {
-              currentPage = page;
-              updateTable();
-            }
-          });
-        });
-
-        // Actualizar botones anterior/siguiente
-        const prevBtn = document.getElementById('prev-button');
-        const nextBtn = document.getElementById('next-button');
-
-        if (prevBtn) {
-          prevBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-              currentPage--;
-              updateTable();
-            }
-          });
-        }
-
-        if (nextBtn) {
-          nextBtn.addEventListener('click', () => {
-            if (currentPage < totalPages) {
-              currentPage++;
-              updateTable();
-            }
-          });
-        }
       }
 
       // Función para actualizar los indicadores de ordenación
@@ -3877,37 +3884,8 @@ const totalRaiders = rosterData.members.filter(
           (<span class="font-medium text-white">0</span> miembros)
         </span>
       </div>
-      <div class="flex items-center gap-1">
-        <button
-          id="prev-button"
-          class="px-3 py-1 rounded-md text-text-muted hover:bg-amber-500/20 hover:text-amber-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          title="Página anterior"
-          disabled
-        >
-          &lt;
-        </button>
-        <div id="pageNumbers" class="flex items-center gap-1">
-          <button class="px-3 py-1 rounded-md transition-colors bg-amber-600 text-white">1</button>
-          <button
-            class="px-3 py-1 rounded-md transition-colors text-text-muted hover:bg-amber-500/20 hover:text-amber-300"
-            >2</button
-          >
-          <button
-            class="px-3 py-1 rounded-md transition-colors text-text-muted hover:bg-amber-500/20 hover:text-amber-300"
-            >3</button
-          >
-          <button
-            class="px-3 py-1 rounded-md transition-colors text-text-muted hover:bg-amber-500/20 hover:text-amber-300"
-            >4</button
-          >
-        </div>
-        <button
-          id="next-button"
-          class="px-3 py-1 rounded-md text-text-muted hover:bg-amber-500/20 hover:text-amber-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          title="Página siguiente"
-        >
-          &gt;
-        </button>
+      <div id="pagination-container" class="flex items-center gap-1">
+        <!-- Los botones de paginación se generarán aquí dinámicamente -->
       </div>
     </div>
     <!-- Filtros -->
