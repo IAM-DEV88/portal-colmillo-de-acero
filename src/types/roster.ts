@@ -20,7 +20,7 @@ export interface RaidInfo {
   difficulty: string;  // Changed from DifficultyCode to string to allow for display names
   name: string;
   difficultyCode: DifficultyCode;
-  isRaidLeader?: boolean;
+  isRaidLeader: boolean;  // Made required since it's being used as a required field
   days?: string[];
   dayRange?: string; // Para rangos como 'L-V'
   time?: string;
@@ -61,6 +61,7 @@ export interface PublicNoteValidation {
   blocks: NoteBlock[];
   mainAlt?: MainAlt;
   role?: Role;
+  mainRole?: Role;  // Added mainRole property
   dualRole?: Role;
   gearScore?: number;
   dualGearScore?: number;

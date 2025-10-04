@@ -115,13 +115,9 @@ interface RoleInfo {
 
 // Usar RosterMemberType importado directamente
 
-
-// Usar RosterDataType directamente ya que coincide con nuestra estructura
-type RosterData = RosterDataType;
-
 // Component props interface
 export interface RosterTableProps {
-  rosterData: RosterData;
+  rosterData: RosterDataType;
   status?: {
     isLoading: boolean;
     error: string | null;
@@ -242,10 +238,36 @@ const updateGearScoreStats = () => {
 // Ejecutar el cálculo inicial
 updateGearScoreStats();
 
-// Crear el objeto rosterData con la estructura esperada
-const rosterData: RosterData = {
+// Function to ensure roster members have all required properties
+function ensureRosterMember(member: Partial<RosterMember>): RosterMember {
+  return {
+    name: member.name || 'Unknown',
+    class: member.class || 'Guerrero',
+    rank: member.rank || 'Aspirante',
+    publicNote: member.publicNote || '',
+    officerNote: member.officerNote || '',
+    noteValidation: member.noteValidation || {
+      isValid: false,
+      mainAlt: 'M',
+      role: 'D',
+      gearScore: 0,
+      professions: [],
+      raids: [],
+      schedules: [],
+      missingFields: [],
+      error: 'No note provided'
+    },
+    ...member
+  };
+}
+
+// Process members to ensure they have required properties
+const processedMembers = members.map(member => ensureRosterMember(member as Partial<RosterMember>));
+
+// Create the rosterData object with the expected structure
+const rosterData: RosterDataWithRankInfo = {
   ...defaultRosterData,
-  members: members as unknown as Member[], // Conversión temporal hasta resolver la discrepancia de tipos
+  members: processedMembers,
   totalMembers,
   classInfo: {
     ...defaultClassInfo
@@ -254,34 +276,44 @@ const rosterData: RosterData = {
     ...initialStats,
     totalMembers,
     validNotesCount,
-    roleDistribution: calculateRoleDistro(members as unknown as RosterMemberType[]),
-    gearScoreStats: calculateGSStats(members as unknown as RosterMemberType[]),
-    raidLeadersCount: countLeaders(members as unknown as RosterMemberType[]),
-    mainAltDistribution: calculateMainAlts(members as unknown as RosterMemberType[]),
+    roleDistribution: calculateRoleDistro(processedMembers),
+    gearScoreStats: calculateGSStats(processedMembers),
+    raidLeadersCount: countLeaders(processedMembers),
+    mainAltDistribution: calculateMainAlts(processedMembers),
     professions: {}
   },
   raids: [],
   raidDays: {},
-  raidTimes: {}
-};
+  raidTimes: {},
+  rankInfo: {}
+} as unknown as RosterDataWithRankInfo;
 
 // Calculate statistics - single implementation
-const calculateStats = (members: Member[]): RosterStats => {
-  if (!members.length) return { ...initialStats };
+const calculateStats = (members: RosterMember[]): RosterStats => {
+  if (!members.length) return { 
+    ...initialStats,
+    totalMembers: 0,
+    roleDistribution: {},
+    gearScoreStats: { min: 0, max: 0, avg: 0, total: 0, mainGearScore: 0, dualGearScore: null },
+    raidLeadersCount: 0,
+    mainAltDistribution: { M: 0, A: 0 },
+    professions: {},
+    validNotesCount: 0
+  } as RosterStats;
   
-  // Cast members to RosterMember[] to satisfy type requirements
-  const rosterMembers = members as unknown as RosterMember[];
+  // Use members directly with proper type
+  const roleDistribution = calculateRoleDistro(members);
+  const gearScoreStats = calculateGSStats(members);
+  const raidLeadersCount = countLeaders(members);
+  const mainAltDistribution = calculateMainAlts(members);
+  const validNotesCount = members.filter(m => m.noteValidation?.isValid).length;
   
-  const roleDistribution = calculateRoleDistro(rosterMembers);
-  const gearScoreStats = calculateGSStats(rosterMembers);
-  const raidLeadersCount = countLeaders(rosterMembers);
-  const mainAltDistribution = calculateMainAlts(rosterMembers);
-  const validNotesCount = rosterMembers.filter(m => m.noteValidation?.isValid).length;
+  // Initialize professions object with all possible profession codes set to 0
+  const professions: Record<string, number> = {
+    JC: 0, BS: 0, EN: 0, EG: 0, LW: 0, AL: 0, TL: 0, IN: 0, HB: 0, MN: 0, SK: 0
+  };
   
-  // Calculate profession distribution
-  const professions: Record<string, number> = {};
-  
-  // Initialize all professions with 0
+  // Initialize profession counts to 0
   PROFESSION_CODES.forEach(code => {
     professions[code] = 0;
   });
@@ -289,24 +321,24 @@ const calculateStats = (members: Member[]): RosterStats => {
   let totalProcessed = 0;
   let membersWithValidNotes = 0;
   
-  members.forEach((member, index) => {
-    
-    // Solo procesar si la nota es válida
+  // Process each member's professions
+  for (const member of members) {
+    // Only process if the note is valid
     if (!member.noteValidation?.isValid) {
-      return;
+      continue;
     }
     
     membersWithValidNotes++;
     
-    // Obtener profesiones de todas las fuentes posibles
-    const profSources = [];
+    // Get professions from all possible sources
+    const profSources: string[] = [];
     
-    // 1. Obtener profesiones directas de noteValidation
+    // 1. Get professions directly from noteValidation
     if (member.noteValidation?.professions?.length) {
       profSources.push(...member.noteValidation.professions);
     }
     
-    // 2. Obtener profesiones de los bloques de personaje
+    // 2. Get professions from character blocks
     const characterBlocks = (member.noteValidation?.blocks || [])
       .filter(b => b.type === 'character' && b.parsedData?.professions?.length);
       
@@ -318,33 +350,33 @@ const calculateStats = (members: Member[]): RosterStats => {
       });
     }
     
-    // Filtrar y normalizar códigos de profesión
-    const allProfs = [...new Set(profSources)]
-      .filter(Boolean) // Eliminar valores nulos o undefined
+    // Filter and normalize profession codes
+    const allProfs: string[] = [...new Set(profSources)]
+      .filter((code): code is string => Boolean(code)) // Filter and ensure they are strings
       .map(code => {
         const normalizedCode = code.trim().toUpperCase();
-        // Asegurarse de que el código tenga exactamente 2 caracteres
+        // Ensure the code has exactly 2 characters
         return normalizedCode.length === 2 ? normalizedCode : null;
       })
-      .filter(Boolean) // Eliminar códigos nulos después de la normalización
-      .filter((code): code is string => {
+      .filter((code): code is string => Boolean(code)) // Remove null codes after normalization
+      .filter((code): code is ProfessionCode => {
         const isValid = PROFESSION_CODES.includes(code as ProfessionCode);
         if (!isValid && code) {
-          console.warn(`  Código de profesión no reconocido: "${code}"`);
+          console.warn(`  Unrecognized profession code: "${code}"`);
         }
         return isValid;
-      }) as ProfessionCode[]; // Asegurar que TypeScript sepa que son códigos de profesión válidos
+      }) as ProfessionCode[]; // Ensure TypeScript knows these are valid profession codes
     
-    // Contar las profesiones
+    // Count the professions
     allProfs.forEach(profCode => {
       if (profCode in professions) {
         professions[profCode]++;
         totalProcessed++;
       } else {
-        console.warn(`  Código de profesión no reconocido: ${profCode}`);
+        console.warn(`  Unrecognized profession code: ${profCode}`);
       }
     });
-  });
+  }
   
   // Verificar si hay alguna profesión con conteo > 0
   const hasProfessions = Object.values(professions).some(count => count > 0);
@@ -513,15 +545,70 @@ interface MainAltDistributionItem extends DistributionItem {
   color?: string;
 }
 
-interface RosterMember extends RosterMemberType {
+// Import types from the types file
+import type { 
+  RosterMember as RosterMemberType, 
+  PublicNoteValidation as RosterPublicNoteValidation, 
+  RosterData as BaseRosterData,
+  RosterStats,
+  ClassName,
+  Role,
+  MainAlt,
+  Member,
+  PublicNoteValidation
+} from '../../types/roster';
+
+// Define the default note validation object
+const defaultNoteValidation: PublicNoteValidation = {
+  isValid: false,
+  blocks: [],
+  isRaidLeader: false,
+  hasSchedule: false,
+  hasRaids: false
+};
+
+// Define a type for the roster member with all required properties
+type RosterMember = Omit<RosterMemberType, 'noteValidation'> & {
   name: string;
   class: ClassName;
   rank: string;
   publicNote?: string;
   officerNote?: string;
-  noteValidation?: PublicNoteValidation;
+  noteValidation: PublicNoteValidation;
   _priority?: number;
+  mainAlt: MainAlt;
+  role?: Role;
+  // Add index signature to allow dynamic property access with type safety
+  [key: string]: unknown;
+};
+
+// Type guard to check if a member has noteValidation
+function hasNoteValidation(member: RosterMember): member is RosterMember & { noteValidation: RosterPublicNoteValidation } {
+  return member.noteValidation !== undefined;
 }
+
+// Type for the member parameter in array methods
+type MemberCallback = (member: RosterMember) => void;
+
+
+// Extend the base RosterData type to include rankInfo
+type RosterDataWithRankInfo = Omit<BaseRosterData, 'members' | 'stats' | 'rankInfo'> & {
+  members: RosterMember[];
+  stats: RosterStats;
+  rankInfo: Record<string, { name: string; order: number }>;
+  // Add missing properties from BaseRosterData
+  classInfo: Record<string, ClassInfo>;
+  name: string;
+  order: number;
+  classes: string[];
+  totalMembers: number;
+  raids: any[];
+  raidDays: Record<string, unknown>;
+  raidTimes: Record<string, unknown>;
+};
+
+// Type for the member parameter in array methods
+type MemberCallback = (member: RosterMember) => void;
 
 
 
@@ -698,47 +785,266 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   // 1. Detección de Main/Alt (M/A) - Prioridad a patrones con roles
   
   // Patrón 1: M o A seguido de rol (ej: 'MT', 'AD', 'MH', 'AH', 'at', 'md')
-  const mainAltWithRole = trimmedNote.match(/^([MA])([THD])(?:[^a-zA-Z]|$)/i);
-  if (mainAltWithRole) {
-    result.mainAlt = mainAltWithRole[1].toUpperCase() as MainAlt;
-    result.role = mainAltWithRole[2].toUpperCase() as Role;
-    result.isValid = true;
-  } 
+  const mainAltWithRole = trimmedNote.match(/^([MA])([THD])(?![a-zA-Z])/i);
   
-  // Patrón 1.1: Patrones de dos letras (ej: 'at', 'md', 'AT', 'MD')
+  // Patrón para notas con gear score (ej: 'AD5.9', 'at5.7')
+  const gearScorePattern = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)/i);
+  
+  // Patrón para notas con profesiones (ej: 'adALHB', 'ad6.6TLBS')
+  const professionPattern = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)?([A-Za-z]{2,})/i);
+  
+  // Patrón para notas de raid (ej: 'AT5.9 M20RLTOC25N')
+  const raidPatternMatch = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)?(?:\s+([A-Za-z0-9]+))?/i);
+  
+  if (mainAltWithRole || gearScorePattern || professionPattern || raidPatternMatch) {
+    // Extraer la información del patrón coincidente
+    let mainAlt, role, gearScore = 0, professions = [];
+    let raidInfo = null;
+    
+    if (mainAltWithRole) {
+      mainAlt = mainAltWithRole[1].toUpperCase() as MainAlt;
+      role = mainAltWithRole[2].toUpperCase() as Role;
+    } else if (gearScorePattern) {
+      mainAlt = gearScorePattern[1].toUpperCase() as MainAlt;
+      role = gearScorePattern[2].toUpperCase() as Role;
+      gearScore = parseFloat(gearScorePattern[3]);
+    } else if (professionPattern) {
+      mainAlt = professionPattern[1].toUpperCase() as MainAlt;
+      role = professionPattern[2].toUpperCase() as Role;
+      if (professionPattern[3]) {
+        gearScore = parseFloat(professionPattern[3]);
+      }
+      // Extraer códigos de profesión (2 letras cada uno)
+      const profCodes = (professionPattern[4] || '').match(/[A-Za-z]{2}/g) || [];
+      professions = profCodes.map(p => p.toUpperCase() as ProfessionCode);
+    } else if (raidPatternMatch) {
+      mainAlt = raidPatternMatch[1].toUpperCase() as MainAlt;
+      role = raidPatternMatch[2].toUpperCase() as Role;
+      if (raidPatternMatch[3]) {
+        gearScore = parseFloat(raidPatternMatch[3]);
+      }
+      // Procesar información de raid si está presente
+      if (raidPatternMatch[4]) {
+        const raidMatch = raidPatternMatch[4].match(/([A-Za-z]+)(\d+)([NH])?/i);
+        if (raidMatch) {
+          raidInfo = {
+            code: raidMatch[1].toUpperCase(),
+            difficulty: raidMatch[3] ? `${raidMatch[2]}${raidMatch[3]}` : undefined,
+            isRaidLeader: raidPattern[4].toLowerCase().includes('rl')
+          };
+        }
+      }
+    }
+    
+    // Crear el bloque de personaje
+    const characterBlock: NoteBlock = {
+      type: 'character',
+      content: trimmedNote,
+      isValid: true,
+      parsedData: {
+        mainAlt,
+        role,
+        mainRole: role,
+        mainGearScore: gearScore,
+        professions: professions
+      }
+    };
+    
+    // Crear el objeto de resultado
+    const validationResult: RosterPublicNoteValidation = {
+      isValid: true,
+      blocks: [characterBlock],
+      mainAlt,
+      role,
+      mainRole: role,
+      gearScore: gearScore,
+      professions: professions,
+      schedules: [],
+      raids: raidInfo ? [{
+        code: raidInfo.code as RaidCode,
+        difficulty: raidInfo.difficulty as DifficultyCode || '10N',
+        name: raidInfo.code,
+        difficultyCode: (raidInfo.difficulty as DifficultyCode) || '10N',
+        isRaidLeader: raidInfo.isRaidLeader || false
+      }] : [],
+      isRaidLeader: raidInfo?.isRaidLeader || false,
+      hasSchedule: false,
+      hasRaids: !!raidInfo,
+      missingFields: []
+    };
+    
+    // Si es un patrón simple (AD, AT, etc.), marcar como válido y salir
+    if (trimmedNote.length === 2 || (gearScore && trimmedNote.length <= 10)) {
+      // Asegurarse de que el bloque de personaje tenga toda la información necesaria
+      const charBlock: NoteBlock = {
+        type: 'character',
+        content: trimmedNote,
+        isValid: true,
+        parsedData: {
+          mainAlt,
+          role,
+          mainRole: role,
+          mainGearScore: 0,
+          professions: []
+        }
+      };
+      
+      // Crear el resultado final
+      const finalResult: RosterPublicNoteValidation = {
+        isValid: true,
+        blocks: [charBlock],
+        mainAlt,
+        role,
+        mainRole: role,
+        gearScore: 0,
+        professions: [],
+        schedules: [],
+        raids: [],
+        isRaidLeader: false,
+        hasSchedule: false,
+        hasRaids: false,
+        missingFields: []
+      };
+      
+      return finalResult;
+    }
+    
+    // Actualizar el resultado actual
+    Object.assign(result, validationResult);
+  } else {
+    // Si no coincide el primer patrón, intentar con el patrón de dos letras
+    const twoLetterPattern = trimmedNote.match(/^([a-zA-Z]{2})(?:\s|$)/i);
+    if (twoLetterPattern) {
+      const code = twoLetterPattern[1].toUpperCase();
+      
+      // Verificar si el código es un patrón de rol (primera letra M/A, segunda T/H/D)
+      const roleMatch = code.match(/^([MA])([THD])$/i);
+      if (roleMatch) {
+        const mainAlt = roleMatch[1].toUpperCase() as MainAlt;
+        const role = roleMatch[2].toUpperCase() as Role;
+        
+        const charBlock: NoteBlock = {
+          type: 'character',
+          content: code,
+          isValid: true,
+          parsedData: {
+            mainAlt,
+            role,
+            mainRole: role,
+            mainGearScore: 0,
+            professions: []
+          }
+        };
+        
+        return {
+          isValid: true,
+          blocks: [charBlock],
+          mainAlt,
+          role,
+          mainRole: role,
+          gearScore: 0,
+          professions: [],
+          schedules: [],
+          raids: [],
+          isRaidLeader: false,
+          hasSchedule: false,
+          hasRaids: false,
+          missingFields: []
+        };
+      }
+    }
+  }
+  
+  // Patrones adicionales...
   if (!result.role) {
-    const twoLetterPattern = trimmedNote.match(/^([a-zA-Z]{2})(?:\s|$)/);
+    const twoLetterPattern = trimmedNote.match(/^([a-zA-Z]{2})(?:\s|$)/i);
     if (twoLetterPattern) {
       const [_, code] = twoLetterPattern;
-      const lowerCode = code.toLowerCase();
-      const validRoles = ['t', 'h', 'd'];
-      const validMains = ['m', 'a'];
+      const upperCode = code.toUpperCase();
+      const validRoles = ['T', 'H', 'D'];
+      const validMains = ['M', 'A'];
       
-      const firstChar = lowerCode[0];
-      const secondChar = lowerCode[1];
+      const firstChar = upperCode[0];
+      const secondChar = upperCode[1];
       
-      // Caso 1: Primera letra es M/A y segunda es T/H/D (ej: MT, AD, MH)
+      // Caso 1: Primera letra es M/A y segunda es T/H/D (ej: MT, AD, MH, MD)
       if (validMains.includes(firstChar) && validRoles.includes(secondChar)) {
-        result.mainAlt = firstChar.toUpperCase() as MainAlt;
-        result.role = secondChar.toUpperCase() as Role;
+        result.mainAlt = firstChar as MainAlt;
+        result.role = secondChar as Role;
+        result.mainRole = secondChar as Role;
         result.isValid = true;
+        
+        // Crear bloque de personaje para el renderizado
+        result.blocks = [{
+          type: 'character',
+          parsedData: {
+            mainAlt: result.mainAlt,
+            role: result.role,
+            mainRole: result.role,
+            mainGearScore: 0,
+            professions: []
+          }
+        }];
       } 
       // Caso 2: Primera letra es T/H/D y segunda es M/A (ej: TM, HA, DM)
       else if (validRoles.includes(firstChar) && validMains.includes(secondChar)) {
-        result.role = firstChar.toUpperCase() as Role;
-        result.mainAlt = secondChar.toUpperCase() as MainAlt;
+        result.role = firstChar as Role;
+        result.mainRole = firstChar as Role;
+        result.mainAlt = secondChar as MainAlt;
         result.isValid = true;
+        
+        // Crear bloque de personaje para el renderizado
+        result.blocks = [{
+          type: 'character',
+          parsedData: {
+            mainAlt: result.mainAlt,
+            role: result.role,
+            mainRole: result.role,
+            mainGearScore: 0,
+            professions: []
+          }
+        }];
       }
       // Caso 3: Cualquier combinación de dos letras de rol (ej: TH, HD, DT)
       else if (validRoles.includes(firstChar) && validRoles.includes(secondChar)) {
-        result.role = firstChar.toUpperCase() as Role;
-        result.dualRole = secondChar.toUpperCase() as Role;
+        result.role = firstChar as Role;
+        result.mainRole = firstChar as Role;
+        result.dualRole = secondChar as Role;
         result.isValid = true;
+        
+        // Crear bloque de personaje para el renderizado
+        result.blocks = [{
+          type: 'character',
+          parsedData: {
+            role: result.role,
+            mainRole: result.role,
+            dualRole: result.dualRole,
+            mainGearScore: 0,
+            professions: []
+          }
+        }];
       }
       // Caso 4: Primera letra es M/A y segunda es M/A (ej: MA, AM)
       else if (validMains.includes(firstChar) && validMains.includes(secondChar)) {
-        result.mainAlt = firstChar.toUpperCase() as MainAlt;
+        result.mainAlt = firstChar as MainAlt;
         result.isValid = true;
+        
+        // Crear bloque de personaje mínimo
+        result.blocks = [{
+          type: 'character',
+          parsedData: {
+            mainAlt: result.mainAlt,
+            mainGearScore: 0,
+            professions: []
+          }
+        }];
+      }
+      
+      // Si encontramos un patrón válido de dos letras, asegurar que los campos requeridos estén establecidos
+      if (result.isValid) {
+        // Asegurar que siempre haya un valor para mainRole
+        result.mainRole = result.mainRole || result.role;
+        return result;
       }
     }
   }
@@ -1202,7 +1508,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   // Si no encontramos raids con los patrones anteriores, buscar solo los códigos de raid
   if (result.raids.length === 0) {
     const raidCodePattern = new RegExp(`(?:^|[^a-zA-Z])(${raidCodesPattern})(?=$|[^a-zA-Z0-9])`, 'gi');
-    const raidCodeMatches = trimmedNote.matchAll(raidCodePattern);
+    const raidCodeMatches = Array.from(trimmedNote.matchAll(raidCodePattern));
     
     for (const match of raidCodeMatches) {
       const raidCodeStr = match[0].toUpperCase();
@@ -1232,7 +1538,7 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
   // Si no encontramos raids aún, intentar con un patrón más flexible
   if (result.raids.length === 0) {
     const escapedRaidCodes = allRaidCodes.map(raid => raid.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-    const raidPatterns = [
+    const raidPatterns2 = [
       // Patrón para 'icc10n' o 'voa25h' (sin espacios)
       new RegExp(`(${escapedRaidCodes})(\\d+)([NH])`, 'gi'),
       // Patrón para 'icc 10n' o 'voa 25h' (con espacios)
@@ -1386,51 +1692,133 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     orderedMissingFields.push('RaidLeader (RL) - Verificar formato (ej: RL, rl, RaidLeader, 18xrl)');
   }
 
+  // 2. Rol principal
+  if (!result.role) {
+    orderedMissingFields.push('Rol (T/H/D)');
+  }
+
+  // 3. Dual - Solo mostrar si no se ha detectado un rol dual
+  if (!result.dualRole) {
+    orderedMissingFields.push('Dual (T/H/D)');
+  }
+
+  // 4. Gear Score
+  if (!result.gearScore) {
+    orderedMissingFields.push('Gear Score (ej: 6.2)');
+  }
+
+  // 5. Profesiones
+  if (!result.professions || result.professions.length === 0) {
+    orderedMissingFields.push('Profesiones (ej: JC/BS)');
+  }
+
+  // 6. Horario de juego
+  if (!result.schedules || result.schedules.length === 0) {
+    orderedMissingFields.push('Horario de juego (ej: 18X, 21:30X)');
+  }
+
+  // 8. Raid Leader (opcional, solo si se especifica RL pero no está marcado)
+  const hasRLNotationFlag = /(?:^|\s)(?:RL|Raid[\s-]?Leader|raid[\s-]?leader|rl|\d*[xX]\s*rl)\b/i.test(trimmedNote);
+  if (hasRLNotationFlag && !result.isRaidLeader) {
+    // Verificar si el formato es válido pero no se pudo marcar
+    orderedMissingFields.push('RaidLeader (RL) - Verificar formato (ej: RL, rl, RaidLeader, 18xrl)');
+  }
+
   // Agregar cualquier otro campo faltante que no esté en la lista ordenada
   const otherMissingFields = missingFields.filter(
-    (field) => !orderedMissingFields.some((omf) => field.includes(omf.split(' ')[0]))
+    (field: string) => !orderedMissingFields.some((omf: string) => field.includes(omf.split(' ')[0]))
   );
 
   // Combinar los campos ordenados con los demás campos faltantes
   const allMissingFields = [...orderedMissingFields, ...otherMissingFields];
   const missingFieldsSet = new Set(allMissingFields);
 
-  // Actualizar el array de missingFields
-  result.missingFields = Array.from(missingFieldsSet);
+// Actualizar el array de missingFields
+result.missingFields = Array.from(missingFieldsSet);
 
-  // 7. Determinar si la nota es válida
-  // Verificar si es un formato simple (MT, MTH, MD, etc.)
-  const isSimpleFormat = /^[MA]?[THD]+$/i.test(trimmedNote) || 
-                        /^[MA]$/i.test(trimmedNote) ||
-                        /^[MA][THD]$/i.test(trimmedNote) ||
-                        /^[THD][MA]$/i.test(trimmedNote); // Añadido para formatos como 'MD', 'TM', etc.
+// Determinar si la nota es válida
+// Verificar si es un formato simple (MT, MTH, MD, etc.)
+const isSimpleFormat = /^[MA]?[THD]+$/i.test(trimmedNote) || 
+                      /^[MA]$/i.test(trimmedNote) ||
+                      /^[MA][THD]$/i.test(trimmedNote) ||
+                      /^[THD][MA]$/i.test(trimmedNote) ||
+                      /^[THD]$/i.test(trimmedNote) ||
+                      /^[MA]\d+\.?\d*[THD]?$/i.test(trimmedNote) ||
+                      /^[MA]\d+\.?\d*[A-Za-z]+$/i.test(trimmedNote);
 
-  // La nota es válida si es un formato simple o tiene al menos un campo válido
+// Debug: Log simple format detection
+console.group('Simple format detection');
+console.log('Note:', trimmedNote);
+console.log('Is simple format:', isSimpleFormat);
+if (isSimpleFormat) {
+  console.log('Matched as simple format');
+} else {
+  console.log('Did not match any simple format pattern');
+}
+console.groupEnd();
+  // 4. Tiene profesiones
+  // 5. Tiene raids
+  // 6. Tiene un gear score
+  // 7. Es solo 'A' o 'M' (main/alt sin rol)
   const hasAnyValidField = isSimpleFormat ||
-    result.mainAlt !== undefined ||
     result.role !== undefined ||
-    result.gearScore !== undefined ||
+    result.mainAlt !== undefined ||
     (result.professions && result.professions.length > 0) ||
     (result.raids && result.raids.length > 0) ||
-    (result.schedules && result.schedules.length > 0);
+    (result.schedules && result.schedules.length > 0) ||
+    (result.gearScore !== undefined && result.gearScore !== null) ||
+    /^[MA]$/i.test(trimmedNote);
+    
+  // Debug: Log validation criteria
+  console.group('Validation criteria');
+  console.log('isSimpleFormat:', isSimpleFormat);
+  console.log('result.role:', result.role);
+  console.log('result.mainAlt:', result.mainAlt);
+  console.log('result.professions:', result.professions);
+  console.log('result.raids:', result.raids);
+  console.log('result.schedules:', result.schedules);
+  console.log('result.gearScore:', result.gearScore);
+  console.log("Matches 'A' or 'M':", /^[MA]$/i.test(trimmedNote));
+  console.log('hasAnyValidField:', hasAnyValidField);
+  console.groupEnd();
 
   // Establecer el estado de validación
   result.isValid = hasAnyValidField;
   
-  // Asegurarse de que los campos principales estén definidos para formatos simples
-  if (isSimpleFormat) {
-    if (!result.mainAlt && /^[MA]/.test(trimmedNote)) {
-      result.mainAlt = trimmedNote[0].toUpperCase() as MainAlt;
-    }
-    if (!result.role && /[THD]$/i.test(trimmedNote)) {
-      result.role = trimmedNote[trimmedNote.length - 1].toUpperCase() as Role;
-    } else if (!result.role && /^[THD]/i.test(trimmedNote)) {
-      result.role = trimmedNote[0].toUpperCase() as Role;
-    }
-  }
-  
+  // Si no es válido, agregar un mensaje de error
   if (!result.isValid) {
     errors.push('Formato inválido - No se detectaron campos válidos');
+  } else {
+    // Limpiar errores si la nota es válida
+    errors.length = 0;
+  }
+  
+  // Asegurarse de que los campos principales estén definidos para formatos simples
+  if (isSimpleFormat) {
+    // Extraer main/alt si está presente
+    const mainAltMatch = trimmedNote.match(/^([MA])/i);
+    if (mainAltMatch && !result.mainAlt) {
+      result.mainAlt = mainAltMatch[1].toUpperCase() as MainAlt;
+    }
+
+    // Extraer rol si está presente
+    const roleMatch = trimmedNote.match(/[THD]$/i) || trimmedNote.match(/^[THD]/i);
+    if (roleMatch && !result.role) {
+      result.role = roleMatch[0].toUpperCase() as Role;
+    }
+
+    // Extraer gear score si está presente (formato como AT5.9, ad5.5, etc.)
+    const gsMatch = trimmedNote.match(/[MA](\d+(?:\.\d+)?)/i);
+    if (gsMatch && !result.gearScore) {
+      result.gearScore = parseFloat(gsMatch[1]);
+    }
+
+    // Extraer profesiones si están presentes (letras mayúsculas después del gear score)
+    const profMatch = trimmedNote.match(/[MA]\d*(?:\.\d+)?([A-Z]{2,})/i);
+    if (profMatch && (!result.professions || result.professions.length === 0)) {
+      const profs = profMatch[1].match(/[A-Z]{2}/g) || [];
+      result.professions = profs.map(p => p.toUpperCase() as ProfessionCode);
+    }
   }
   
   // Si hay errores, agregarlos al resultado
@@ -1546,8 +1934,22 @@ function validateNoteLegacy(note: string | undefined, characterName: string = 'D
     }
   };
 
-  // Depuración
-  console.log('Validation result:', JSON.stringify(finalResult, null, 2));
+  // Debug logging for validation results
+  console.group(`Validation for note: "${note}"`);
+  console.log('Trimmed note:', trimmedNote);
+  console.log('Is simple format:', isSimpleFormat);
+  console.log('Has any valid field:', hasAnyValidField);
+  console.log('Main/Alt:', result.mainAlt);
+  console.log('Role:', result.role);
+  console.log('Gear Score:', result.gearScore);
+  console.log('Professions:', result.professions);
+  console.log('Raids:', result.raids);
+  console.log('Schedules:', result.schedules);
+  console.log('Is valid:', finalResult.isValid);
+  console.log('Errors:', errors);
+  console.log('Missing fields:', finalResult.missingFields);
+  console.log('Full validation result:', finalResult);
+  console.groupEnd();
   
   return finalResult;
 }
@@ -1943,7 +2345,7 @@ const totalRaiders = rosterData.members.filter(
       const pageInfo = document.getElementById('page-info');
 
       let currentPage = 1;
-      const itemsPerPage = 6;
+      const itemsPerPage = 2;
       let allMembers = [];
       let filteredMembers = [];
       let sortConfig = { key: 'name', direction: 'asc' };
@@ -2447,12 +2849,20 @@ const totalRaiders = rosterData.members.filter(
                               const hasCharacterData = 
                                 characterBlocks.length > 0 || 
                                 validation.mainAlt || 
-                                validation.mainRole || 
-                                validation.gearScore ||
-                                validation.role;
-                                
+                                (validation.mainRole || validation.role) || 
+                                validation.gearScore;
+                              
+                              // Solo marcar como faltante si no hay ningún dato de personaje
                               if (!hasCharacterData) {
                                 missingFields.push('Datos de personaje');
+                              } else {
+                                // Verificar campos específicos faltantes
+                                if (!validation.mainAlt && !characterBlocks.some(b => b.parsedData?.mainAlt)) {
+                                  missingFields.push('Main/Alt');
+                                }
+                                if (!validation.mainRole && !validation.role && !characterBlocks.some(b => b.parsedData?.mainRole || b.parsedData?.role)) {
+                                  missingFields.push('Rol principal');
+                                }
                               }
                               if (eventBlocks.length === 0 && !validation.raids?.length && !validation.schedules?.length) {
                               }
@@ -2479,18 +2889,31 @@ const totalRaiders = rosterData.members.filter(
                                     });
                                   }
                                   
-                                  // Agregar rol principal
-                                  if (charData.mainRole) {
+                                  // Agregar rol principal (usar role como respaldo si mainRole no está definido)
+                                  const roleToUse = charData.mainRole || charData.role;
+                                  if (roleToUse) {
                                     characterTags.push({
-                                      label: roleNamesData[charData.mainRole]?.name || charData.mainRole, 
-                                      class: 'bg-green-500/20 border-green-500/50'
+                                      label: roleNamesData[roleToUse]?.name || roleToUse, 
+                                      class: 'bg-green-500/20 border-green-500/50',
+                                      title: `Rol: ${roleNamesData[roleToUse]?.name || roleToUse}`
                                     });
                                     
                                     // Agregar GS del rol principal
-                                    if (charData.mainGearScore) {
+                                    const gsToUse = charData.mainGearScore || charData.gearScore;
+                                    if (gsToUse) {
                                       characterTags.push({
-                                        label: `GS ${charData.mainGearScore}`, 
-                                        class: 'bg-amber-500/20 border-amber-500/50'
+                                        label: `GS ${gsToUse}`, 
+                                        class: 'bg-amber-500/20 border-amber-500/50',
+                                        title: `Gear Score: ${gsToUse}`
+                                      });
+                                    }
+                                    
+                                    // Si hay un rol dual, mostrarlo también
+                                    if (charData.dualRole) {
+                                      characterTags.push({
+                                        label: roleNamesData[charData.dualRole]?.name || charData.dualRole, 
+                                        class: 'bg-purple-500/20 border-purple-500/50',
+                                        title: `Rol secundario: ${roleNamesData[charData.dualRole]?.name || charData.dualRole}`
                                       });
                                     }
                                   }
