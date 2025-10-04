@@ -274,21 +274,38 @@ export const calculateMainAltDistribution = (members: RosterMember[]): { M: numb
 
 /**
  * Parsea un bloque de personaje según el formato SNCD
- * Formato: [M/A][T/H/D]GS[?T/H/DGS][PROF1PROF2]
- * Ejemplo: MT6.2JCEN (Main Tanque 6.2 Joyería/Encantamiento)
- * Ejemplo con rol dual: MT6.2H5.3ALMN (Main Tanque 6.2k, Heal 5.3k, Alquimia/Minería)
+ * Formatos soportados:
+ * - [M/A][T/H/D][GS][T/H/DGS][PROF1PROF2]
+ * - [M/A][T/H/D] (sin GS)
+ * - [M/A][T/H/D][PROF1PROF2] (sin GS)
+ * - [M/A][T/H/D][GS] (sin profesiones)
+ * - [M/A] (solo main/alt)
+ * 
+ * Ejemplos:
+ * - MT6.2JCEN (Main Tanque 6.2 Joyería/Encantamiento)
+ * - MT6.2H5.3ALMN (Main Tanque 6.2k, Heal 5.3k, Alquimia/Minería)
+ * - MT (Solo rol)
+ * - MTAL (Rol + profesiones)
+ * - M (Solo main/alt)
  */
 const parseCharacterBlock = (content: string): CharacterBlock | null => {
   // Verificar que el bloque coincida con el patrón de personaje
-  // Debe comenzar con M/A seguido de T/H/D y un número
-  const match = content.match(/^([MA])([THD])(\d+(?:\.\d+)?)([THD]\d+(?:\.\d+)?)?([A-Za-z]{2,6})?/i);
+  const match = content.match(/^([MA])([THD])?(\d+(?:\.\d+)?)?([THD]\d+(?:\.\d+)?)?([A-Za-z]{2,6})?/i);
   if (!match) return null;
   
   const [, mainAlt, mainRole, gs, dualInfo, profs] = match;
   
-  // Validar que el gear score sea un número válido
-  const gearScore = parseFloat(gs);
-  if (isNaN(gearScore)) return null;
+  // Si no hay rol principal, solo se acepta si es solo M o A
+  if (!mainRole && content.length > 1) return null;
+  
+  // Procesar gear score principal
+  let gearScore = 0;
+  if (gs) {
+    const parsedGs = parseFloat(gs);
+    if (!isNaN(parsedGs)) {
+      gearScore = parsedGs;
+    }
+  }
   
   // Procesar rol dual si existe
   let dualRole: Role | undefined;
@@ -315,9 +332,27 @@ const parseCharacterBlock = (content: string): CharacterBlock | null => {
     }
   }
   
+  // Si no hay rol principal, solo permitir si es exactamente M o A
+  if (!mainRole) {
+    if (content.length === 1) {
+      return {
+        mainAlt: (mainAlt.toUpperCase() === 'M' ? 'M' : 'A') as 'M' | 'A',
+        mainRole: undefined,
+        mainGearScore: 0,
+        professions: []
+      };
+    }
+    return null; // No se permite otra cosa después de M/A sin rol
+  }
+  
   // Validar que el rol principal sea válido
-  const validMainRole: Role = ['T', 'H', 'D'].includes(mainRole.toUpperCase()) ? 
-    (mainRole.toUpperCase() as Role) : 'D';
+  const validMainRole: Role | undefined = ['T', 'H', 'D'].includes(mainRole.toUpperCase()) ? 
+    (mainRole.toUpperCase() as Role) : undefined;
+    
+  // Si el rol no es válido, rechazar el bloque
+  if (!validMainRole) {
+    return null;
+  }
     
   // Validar que el rol dual sea válido si existe
   const validDualRole: Role | undefined = dualRole && ['T', 'H', 'D'].includes(dualRole) ? 
@@ -432,48 +467,74 @@ const parseEventBlock = (content: string): EventBlock | null => {
   }
 
   // 4. Extraer raid y dificultad - Obligatorio
-  // Formato: raid + número + n/h (ej: icc10n, voa25h)
-  // Primero intentamos hacer match con cualquier texto que parezca un código de raid
-  const raidMatch = remaining.match(/^([a-zA-Z]+)(\d{1,2}[NHnh])/i);
+  // Soporta múltiples formatos:
+  // - Formato 1: ICC10N (raid + número + dificultad)
+  // - Formato 2: ICC 10N (raid separado de dificultad)
+  // - Formato 3: M20RLTOC25N (prefijo M + número + RL + raid + dificultad)
+  // - Formato 4: Icc10n (case insensitive)
   
-  if (raidMatch) {
-    const raidCode = raidMatch[1].toUpperCase();
-    const difficultyCode = raidMatch[2].toUpperCase() as DifficultyCode;
+  // Primero, normalizar el texto restante a mayúsculas para facilitar la comparación
+  const upperRemaining = remaining.toUpperCase();
+  
+  // Intentar encontrar cualquier código de raid en el texto restante
+  const raidCodeMatch = RAID_CODES.find(code => 
+    upperRemaining.includes(code.toUpperCase())
+  );
+
+  if (raidCodeMatch) {
+    const raidIndex = upperRemaining.indexOf(raidCodeMatch.toUpperCase());
+    const beforeRaid = remaining.substring(0, raidIndex);
+    const afterRaid = remaining.substring(raidIndex + raidCodeMatch.length);
     
-    // Verificar si el código de raid está en la lista de códigos permitidos
-    if (RAID_CODES.includes(raidCode as RaidCode)) {
-      raid = raidCode as RaidCode;
-      difficulty = difficultyCode;
-      remaining = remaining.substring(raidMatch[0].length).trim();
-    }
-    // Si no coincide, intentar con códigos de raid en minúsculas
-    else if (RAID_CODES.map(code => code.toLowerCase()).includes(raidCode.toLowerCase())) {
-      const validRaidCode = RAID_CODES.find(code => code.toLowerCase() === raidCode.toLowerCase());
-      if (validRaidCode) {
-        raid = validRaidCode;
-        difficulty = difficultyCode;
-        remaining = remaining.substring(raidMatch[0].length).trim();
-      } else {
-        return null; // Raid no válido
+    // Verificar si hay un prefijo M seguido de número (ej: M20)
+    const prefixMatch = beforeRaid.match(/M(\d+)$/i);
+    if (prefixMatch) {
+      // Es un formato como M20RLTOC25N
+      raid = raidCodeMatch as RaidCode;
+      
+      // Buscar la dificultad después del código de raid
+      const diffMatch = afterRaid.match(/^(\d{1,2})([NH])/);
+      if (diffMatch) {
+        difficulty = `${diffMatch[1]}${diffMatch[2]}` as DifficultyCode;
+        remaining = afterRaid.substring(diffMatch[0].length).trim();
       }
     } else {
-      return null; // Formato de raid no válido
+      // Formato estándar: raid + número + N/H
+      const raidMatch = remaining.substring(raidIndex).match(new RegExp(`^(${raidCodeMatch})(\\d{1,2})([NH])`, 'i'));
+      if (raidMatch) {
+        raid = raidMatch[1].toUpperCase() as RaidCode;
+        difficulty = `${raidMatch[2]}${raidMatch[3].toUpperCase()}` as DifficultyCode;
+        remaining = remaining.substring(raidIndex + raidMatch[0].length).trim();
+      } else {
+        // Formato con espacio: raid + espacio + número + N/H
+        const spaceMatch = remaining.substring(raidIndex).match(new RegExp(`^(${raidCodeMatch})\\s*(\\d{1,2})([NH])`, 'i'));
+        if (spaceMatch) {
+          raid = spaceMatch[1].toUpperCase() as RaidCode;
+          difficulty = `${spaceMatch[2]}${spaceMatch[3].toUpperCase()}` as DifficultyCode;
+          remaining = remaining.substring(raidIndex + spaceMatch[0].length).trim();
+        } else {
+          // Si no coincide con ningún formato, usar el código de raid y buscar dificultad por separado
+          raid = raidCodeMatch as RaidCode;
+          remaining = remaining.substring(raidIndex + raidCodeMatch.length).trim();
+          
+          // Buscar dificultad como número seguido de N/H
+          const diffMatch = remaining.match(/^(\d{1,2})([NH])/i);
+          if (diffMatch) {
+            difficulty = `${diffMatch[1]}${diffMatch[2].toUpperCase()}` as DifficultyCode;
+            remaining = remaining.substring(diffMatch[0].length).trim();
+          }
+        }
+      }
     }
   }
-  // Si no coincide, intentar con el formato de dificultad separado
-  else {
-    // Intentar encontrar raid
-    const raidMatch = remaining.match(new RegExp(`^(${RAID_CODES.join('|')})`, 'i'));
+  
+  // Si aún no tenemos raid, intentar el formato antiguo como respaldo
+  if (!raid) {
+    const raidMatch = remaining.match(new RegExp(`^(${RAID_CODES.join('|')})(\\d{1,2}[NH])`, 'i'));
     if (raidMatch) {
       raid = raidMatch[1].toUpperCase() as RaidCode;
+      difficulty = raidMatch[2].toUpperCase() as DifficultyCode;
       remaining = remaining.substring(raidMatch[0].length).trim();
-      
-      // Intentar extraer dificultad como número seguido de N/H (ej: 10n, 25h)
-      const diffMatch = remaining.match(/^(\d{1,2})([NHnh])/i);
-      if (diffMatch) {
-        difficulty = `${diffMatch[1]}${diffMatch[2].toUpperCase()}` as DifficultyCode;
-        remaining = remaining.substring(diffMatch[0].length).trim();
-      }
     }
   }
   

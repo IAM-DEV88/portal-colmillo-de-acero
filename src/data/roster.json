@@ -1,7 +1,7 @@
 [
     {
         "name": "Amunnat",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Cazador",
         "publicNote": "ad3.4",
         "rank": "Explorador"
@@ -134,7 +134,7 @@
     },
     {
         "name": "Aderyncc",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Mago",
         "publicNote": "",
         "rank": "Iniciado"
@@ -232,7 +232,7 @@
     },
     {
         "name": "Ashsin",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Mago",
         "publicNote": "",
         "rank": "Iniciado"
@@ -393,7 +393,7 @@
     },
     {
         "name": "Darkbrier",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "",
         "rank": "Iniciado"
@@ -554,7 +554,7 @@
     },
     {
         "name": "Falfurt",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Druida",
         "publicNote": "AD5.8",
         "rank": "Explorador"
@@ -589,7 +589,7 @@
     },
     {
         "name": "Garoagris",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Chamán",
         "publicNote": "",
         "rank": "Iniciado"
@@ -617,7 +617,7 @@
     },
     {
         "name": "Golemdp",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Druida",
         "publicNote": "",
         "rank": "Iniciado"
@@ -857,7 +857,7 @@
         "name": "Kitoz",
         "officerNote": "",
         "class": "Caballero de la Muerte",
-        "publicNote": "toc25",
+        "publicNote": "m toc25n",
         "rank": "Aspirante"
     },
     {
@@ -1009,9 +1009,9 @@
     },
     {
         "name": "Marculin",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Paladín",
-        "publicNote": "Alter Sashu - minero joyero",
+        "publicNote": "A",
         "rank": "Explorador"
     },
     {
@@ -1345,9 +1345,9 @@
     },
     {
         "name": "Renald",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Paladín",
-        "publicNote": "AT5.9 M20RLTOC25N Frost ",
+        "publicNote": "AT5.9 M20RLTOC25N",
         "rank": "Iniciado"
     },
     {
@@ -1375,7 +1375,7 @@
         "name": "Saintblack",
         "officerNote": "",
         "class": "Guerrero",
-        "publicNote": "at5.7 ICC10N ICC25 SR10 SR25",
+        "publicNote": "at5.7 ICC10N ICC25N RS10N RS25N",
         "rank": "Iniciado"
     },
     {
@@ -1436,7 +1436,7 @@
     },
     {
         "name": "Sashu",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Druida",
         "publicNote": "MD",
         "rank": "Iniciado"
@@ -1494,7 +1494,7 @@
         "name": "Stewen",
         "officerNote": "",
         "class": "Mago",
-        "publicNote": "AD5.9 Icc10n Icc25 SR10 SR25",
+        "publicNote": "AD5.9 Icc10n Icc25N RS10N RS25N",
         "rank": "Iniciado"
     },
     {
@@ -1541,7 +1541,7 @@
     },
     {
         "name": "Tiernis",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Guerrero",
         "publicNote": "ad6.6TLBS",
         "rank": "Iniciado"
@@ -1751,7 +1751,7 @@
     },
     {
         "name": "Zumbie",
-        "officerNote": "ESPIRITU",
+        "officerNote": "",
         "class": "Mago",
         "publicNote": "ad4.7",
         "rank": "Explorador"

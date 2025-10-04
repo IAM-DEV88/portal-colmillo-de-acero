@@ -29,7 +29,7 @@ export interface RaidInfo {
 // Bloque de personaje
 export interface CharacterBlock {
   mainAlt: MainAlt;
-  mainRole: Role;
+  mainRole?: Role;  // Hacer mainRole opcional
   dualRole?: Role;
   mainGearScore: number;
   dualGearScore?: number;
