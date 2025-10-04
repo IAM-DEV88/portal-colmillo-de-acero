@@ -1245,19 +1245,15 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
       const difficultyQuery = filterDifficulty.value.toLowerCase();
 
       filteredRows = allRows.filter((row) => {
-        const name = row.querySelector('td:first-child .text-sm')?.textContent?.toLowerCase() || '';
-        const raids = Array.from(row.querySelectorAll('td:nth-child(2) span')).map(
-          (span) => span.getAttribute('data-raid') || ''
-        );
-        const difficulties = Array.from(row.querySelectorAll('td:nth-child(3) span')).map(
-          (span) => span.textContent?.toLowerCase() || ''
-        );
+        // Get data from row attributes
+        const name = row.getAttribute('data-name') || '';
+        const raids = (row.getAttribute('data-raids') || '').toLowerCase().split(',').filter(Boolean);
+        const difficulties = (row.getAttribute('data-difficulties') || '').toLowerCase().split(',').filter(Boolean);
 
-        // Aplicar filtros
+        // Apply filters
         const nameMatch = name.includes(nameQuery);
-        const raidMatch = !raidQuery || raids.some((raid) => raid.includes(raidQuery));
-        const difficultyMatch =
-          !difficultyQuery || difficulties.some((diff) => diff.includes(difficultyQuery));
+        const raidMatch = !raidQuery || raids.some(raid => raid.includes(raidQuery));
+        const difficultyMatch = !difficultyQuery || difficulties.some(difficulty => difficulty.includes(difficultyQuery));
 
         return nameMatch && raidMatch && difficultyMatch;
       });
