@@ -11,56 +11,72 @@ const images = ["addon (1)", "addon (2)", "addon (3)", "addon (4)", "addon (5)",
           alt={`Image ${index + 1}`} 
           class="max-w-full max-h-full object-contain" 
           data-index={index}
+          loading="lazy"
         />
       </div>
     ))}
   </div>
-  <button id="prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 z-10"> &lt; </button>
-  <button id="next" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 z-10"> &gt; </button>
+  <button id="prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700 text-white px-3 py-2 z-10 rounded-r-md transition-colors">
+    &lt;
+  </button>
+  <button id="next" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700 text-white px-3 py-2 z-10 rounded-l-md transition-colors">
+    &gt;
+  </button>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const images = ["addon (1)", "addon (2)", "addon (3)", "addon (4)", "addon (5)", "addon (6)"];
     const slider = document.getElementById('slider');
     const prevButton = document.getElementById('prev');
     const nextButton = document.getElementById('next');
-
+    
+    if (!slider || !prevButton || !nextButton) return;
+    
+    const slides = Array.from(document.querySelectorAll('#slider > div'));
     let currentIndex = 0;
-
+    const totalSlides = slides.length;
+    
+    // Función para actualizar la posición del slider
     const updateSlider = () => {
-      if (!slider) return; // Asegurarse de que slider no es null
-      const slideWidth = window.innerWidth >= 1024 ? 560 : 280; // 1024px es el breakpoint para 'lg' en Tailwind por defecto
+      const slideWidth = slides[0].clientWidth;
       slider.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
     };
-
-    const preloadImages = () => {
-      return Promise.all(images.map((_, index) => {
-        return new Promise<void>((resolve) => {
-          const img = slider?.children[index].querySelector('img');
-          if (img && img.complete) {
-            resolve();
-          } else if (img) {
-            img.onload = () => resolve();
-          }
-        });
-      }));
+    
+    // Función para ir al slide anterior
+    const goToPrev = (e) => {
+      e.preventDefault();
+      currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalSlides - 1;
+      updateSlider();
     };
-
-    prevButton?.addEventListener('click', () => {
-      currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
+    
+    // Función para ir al siguiente slide
+    const goToNext = (e) => {
+      e.preventDefault();
+      currentIndex = (currentIndex < totalSlides - 1) ? currentIndex + 1 : 0;
       updateSlider();
+    };
+    
+    // Agregar event listeners
+    prevButton.addEventListener('click', goToPrev);
+    nextButton.addEventListener('click', goToNext);
+    
+    // Actualizar el slider cuando cambie el tamaño de la ventana
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        updateSlider();
+      }, 250);
     });
-
-    nextButton?.addEventListener('click', () => {
-      currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
-      updateSlider();
-    });
-
-    window.addEventListener('resize', updateSlider);
-
-    preloadImages().then(() => {
-      updateSlider();
-    });
+    
+    // Inicializar el slider
+    updateSlider();
+    
+    // Limpiar event listeners al desmontar el componente
+    return () => {
+      prevButton.removeEventListener('click', goToPrev);
+      nextButton.removeEventListener('click', goToNext);
+      window.removeEventListener('resize', updateSlider);
+    };
   });
 </script>
