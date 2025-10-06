@@ -64,6 +64,7 @@ const classIcons = {
             <input
               type="text"
               id="notaInput"
+              autocomplete="off"
               placeholder="Pega tu código aquí..."
               class="w-full bg-amber-900/50 border border-amber-900/30 rounded-lg px-4 py-3 text-white placeholder-amber-100/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all duration-200"
             />
@@ -219,178 +220,283 @@ const classIcons = {
         };
 
         // Función para validar el bloque de personaje
-        function validarPersonaje(bloque: string): boolean {
-          // Extraer partes del bloque
+        function validarPersonaje(bloque: string): { 
+          valido: boolean, 
+          mensaje: string, 
+          faltantes?: string[],
+          mainRole?: string,
+          spec?: string,
+          gs?: string,
+          offSpec?: string,
+          offGs?: string
+        } {
+          // Inicializar variables para almacenar los resultados
+          let mainRoleValid = false;
+          let specValid = false;
+          let gsValid = false;
+          let offSpecValid = false;
+          let offGsValid = false;
+          let profsValid = false;
+          
+          const errores: string[] = [];
+          const faltantes: string[] = [];
+          
+          // Si el bloque está vacío, es válido pero con advertencia
+          if (!bloque.trim()) {
+            return { 
+              valido: true, 
+              mensaje: 'El bloque de personaje está vacío (todos los campos son opcionales)',
+              faltantes: ['Main/Alt (M/A)', 'Especialización (T/H/D)']
+            };
+          }
+          
+          // Intentar extraer Main/Alt (opcional)
           const mainRoleMatch = bloque.match(/^([MA])/i);
-          const specMatch = bloque.match(/[MA]([THDB]+)/i);
-          const gsMatch = bloque.match(/(\d+\.\d+)/);
-          const offSpecMatch = bloque.match(/[THDB]+/gi)?.[1] ? true : false;
-          const offGsMatch = bloque.match(/(\d+\.\d+)/g)?.[1] ? true : false;
-          const profsMatch = bloque.match(/([A-Z]{2,4})$/i);
-
-          const resultados = {
-            mainRole: !!mainRoleMatch?.[1],
-            spec: !!specMatch?.[1],
-            gs: !!gsMatch?.[1],
-            offSpec: offSpecMatch,
-            offGs: offGsMatch,
-            profs: !!profsMatch?.[1],
-          };
-
-          // Extraer valores para la vista previa
-          const mainRole = mainRoleMatch?.[1] || '';
-          const spec = specMatch?.[1] || '';
-          const gs = gsMatch?.[1] || '';
-          const offSpec = bloque.match(/[THDB]+/gi)?.[1] || '';
-          const offGs = bloque.match(/\d+\.\d+/g)?.[1] || '';
-          const profs = profsMatch?.[1] || '';
-
-          // Generar etiquetas para la vista previa
-          const previewPersonaje = document.getElementById('previewPersonaje');
-          if (previewPersonaje) {
-            previewPersonaje.innerHTML = '';
-            
-            // Rol principal (Main/Alt)
-            if (mainRole) {
-              const tag = document.createElement('span');
-              const rolCompleto = STATUS[mainRole.toUpperCase() as keyof typeof STATUS] || mainRole.toUpperCase();
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.mainRole ? 'bg-blue-900/50 text-blue-200' : 'bg-red-900/50 text-red-200'
-              }`;
-              tag.textContent = rolCompleto;
-              tag.title = `Rol: ${rolCompleto}`;
-              previewPersonaje.appendChild(tag);
+          const mainRole = mainRoleMatch?.[1]?.toUpperCase() || '';
+          
+          // Validar rol principal (M o A)
+          if (mainRole) {
+            mainRoleValid = /^[MA]$/i.test(mainRole);
+            if (!mainRoleValid) {
+              errores.push('El rol principal debe ser M (Main) o A (Alt)');
             }
-
-            // Especialización principal
-            if (spec) {
-              const tag = document.createElement('span');
-              const specs = Array.from(spec).map(s => 
-                ROLES[s.toUpperCase()] || s.toUpperCase()
-              ).join('');
-              
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.spec ? 'bg-purple-900/50 text-purple-200' : 'bg-red-900/50 text-red-200'
-              }`;
-              tag.textContent = specs;
-              tag.title = `Especialización: ${specs}`;
-              previewPersonaje.appendChild(tag);
+          } else {
+            faltantes.push('Main/Alt (M/A)');
+          }
+          
+          // Extraer especialización principal
+          const specMatch = bloque.match(/[MA]?([THDB]+)/i);
+          const spec = specMatch?.[1]?.toUpperCase() || '';
+          
+          // Extraer especialización secundaria (después del primer número)
+          const offSpecMatch = bloque.match(/\d+(?:\.\d+)?\s*([THDB]+)/i);
+          const offSpec = offSpecMatch?.[1]?.toUpperCase() || '';
+          
+          // Validar especialización principal
+          if (spec) {
+            specValid = /^[THD]+$/i.test(spec);
+            if (!specValid) {
+              errores.push('Especialización inválida. Usa T (Tank), H (Healer) o D (DPS)');
             }
-
-            // Gear Score principal
-            if (gs) {
-              const tag = document.createElement('span');
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.gs ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'
-              }`;
-              tag.textContent = gs;
-              previewPersonaje.appendChild(tag);
+          } else {
+            faltantes.push('Especialización (T/H/D)');
+          }
+          
+          // Extraer Gear Scores (puede haber 1 o 2)
+          const gsMatches = [...bloque.matchAll(/(\d+(?:\.\d+)?)/g)].map(m => m[0]);
+          const gs = gsMatches[0] || '';
+          const offGs = gsMatches[1] || '';
+          
+          // Validar Gear Score principal
+          if (gs) {
+            const gsValue = parseFloat(gs);
+            gsValid = !isNaN(gsValue) && gsValue >= 1 && gsValue <= 10;
+            if (!gsValid) {
+              errores.push('El Gear Score debe ser un número entre 1.0 y 10.0');
             }
-
-            // Especialización secundaria
-            if (offSpec) {
-              const tag = document.createElement('span');
-              const offSpecs = Array.from(offSpec).map(s => 
-                ROLES[s.toUpperCase()] || s.toUpperCase()
-              ).join('');
-              
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.offSpec ? 'bg-yellow-900/50 text-yellow-200' : 'bg-amber-900/50 text-amber-200'
-              }`;
-              tag.textContent = `Dual: ${offSpecs}`;
-              tag.title = `Especialización secundaria: ${offSpecs}`;
-              previewPersonaje.appendChild(tag);
-            }
-
-            // Gear Score secundario
-            if (offGs) {
-              const tag = document.createElement('span');
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.offGs ? 'bg-pink-900/50 text-pink-200' : 'bg-amber-900/50 text-amber-200'
-              }`;
-              tag.textContent = offGs;
-              previewPersonaje.appendChild(tag);
-            }
-
-            // Profesiones
-            if (profs) {
-              const tag = document.createElement('span');
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.profs ? 'bg-cyan-900/50 text-cyan-200' : 'bg-red-900/50 text-red-200'
-              }`;
-              tag.textContent = profs.toUpperCase();
-              previewPersonaje.appendChild(tag);
+          } else if (bloque.length > 0) {
+            // Solo sugerir GS si hay algún dato en el bloque
+            faltantes.push('Gear Score (ej: 5.8)');
+          }
+          
+          // Validar Gear Score secundario si está presente
+          if (offGs) {
+            const offGsValue = parseFloat(offGs);
+            if (isNaN(offGsValue) || offGsValue < 1 || offGsValue > 10) {
+              errores.push('El Gear Score secundario debe ser un número entre 1.0 y 10.0');
             }
           }
+          
+          // Validar Profesiones (opcional)
+          const profsMatch = bloque.match(/([A-Z]{2,4})$/i);
+          const profs = profsMatch?.[1]?.toUpperCase() || '';
+          
+          // Validar formato de profesiones si están presentes
+          if (profs) {
+            profsValid = /^[A-Z]{2,4}$/i.test(profs);
+            if (!profsValid) {
+              errores.push('Formato de profesiones inválido. Usa códigos de 2-4 letras (ej: JC, BS, ENCH)');
+            }
+          } else if (bloque.length > 0) {
+            // Solo sugerir profesiones si hay algún dato en el bloque
+            faltantes.push('Profesiones (ej: JC, BS)');
+          }
 
-          return (
-            Object.values(resultados).slice(0, 3).every(Boolean) &&
-            (resultados.profs || resultados.offSpec || resultados.offGs)
-          );
+          // Obtener referencia al elemento de mensaje de error
+          const mensajeError = document.getElementById('notaError');
+          
+          // Manejar mensajes de error
+          if (errores.length > 0) {
+            if (mensajeError) {
+              mensajeError.innerHTML = errores.map((e: string) => `❌ ${e}`).join('<br>');
+              mensajeError.classList.remove('hidden');
+            }
+            return { 
+              valido: false, 
+              mensaje: errores.join('; '),
+              faltantes: faltantes,
+              mainRole: mainRole,
+              spec: spec,
+              gs: gs,
+              offSpec: offSpec,
+              offGs: offGs,
+              profs: profs
+            };
+          } else if (mensajeError) {
+            mensajeError.classList.add('hidden');
+          }
+          
+          // Mostrar advertencias si las hay
+          if (faltantes.length > 0 && mensajeError) {
+            mensajeError.innerHTML = `⚠️ Faltan campos: ${faltantes.join(', ')}`;
+            mensajeError.classList.remove('hidden');
+          }
+          
+          // Retornar resultado exitoso
+          return {
+            valido: true,
+            mensaje: 'Válido',
+            faltantes: faltantes,
+            mainRole: mainRole,
+            spec: spec,
+            gs: gs,
+            offSpec: offSpec,
+            offGs: offGs,
+            profs: profs
+          };
         }
 
         // Función para validar el bloque de evento
-        function validarEvento(bloque: string, { dias, bandas }: { dias: Record<string, string>, bandas: Record<string, string> }): boolean {
+        function validarEvento(bloque: string, { dias, bandas }: { dias: Record<string, string>, bandas: Record<string, string> }) {
           // Extraer partes del bloque de evento
           // Ahora permite códigos de banda de 1-3 letras
           const eventMatch = bloque.match(/^([a-z])(\d+)([a-z]*?)([a-z]{1,3})(\d+[a-z]*)$/i);
-          if (!eventMatch) return false;
+          
+          // Inicializar arrays para errores y campos faltantes
+          const errores: string[] = [];
+          const faltantes: string[] = [];
+          
+          // Validar formato básico
+          if (!eventMatch) {
+            return {
+              valido: false,
+              mensaje: 'Formato de evento inválido. Usa: DíaHora[Líder]BandaDificultad (ej: l20rlicc10h)',
+              faltantes: ['Día', 'Hora', 'Banda', 'Dificultad']
+            };
+          }
           
           const [_, dia, hora, lider, banda, dificultad] = eventMatch;
           
-          const resultados = {
-            dia: !!dia,
-            hora: !!hora,
-            lider: true, // Líder es opcional
-            banda: !!banda,
-            dificultad: !!dificultad,
-          };
+          // Validar día
+          let diaValido = false;
+          if (dia) {
+            diaValido = /^[a-z]$/i.test(dia);
+            if (!diaValido) {
+              errores.push('Día inválido. Usa una letra de L a D');
+            }
+          } else {
+            faltantes.push('Día (ej: L, M, X, J, V, S, D)');
+          }
+          
+          // Validar hora
+          let horaValida = false;
+          if (hora) {
+            const horaNum = parseInt(hora, 10);
+            horaValida = !isNaN(horaNum) && horaNum >= 0 && horaNum <= 23;
+            if (!horaValida) {
+              errores.push('Hora inválida. Usa un número entre 0 y 23');
+            }
+          } else {
+            faltantes.push('Hora (ej: 20 para las 8 PM)');
+          }
+          
+          // Validar banda
+          let bandaValida = false;
+          if (banda) {
+            bandaValida = /^[a-z]{1,3}$/i.test(banda);
+            if (!bandaValida) {
+              errores.push('Banda inválida. Usa 1-3 letras (ej: icc, toc, rs)');
+            }
+          } else {
+            faltantes.push('Banda (ej: icc, toc, rs)');
+          }
+          
+          // Validar dificultad
+          let dificultadValida = false;
+          let esHeroico = false;
+          let nivelDificultad = '10';
+          
+          if (dificultad) {
+            esHeroico = dificultad.toLowerCase().endsWith('h');
+            nivelDificultad = dificultad.replace(/[^0-9]/g, '') || '10';
+            const nivelNum = parseInt(nivelDificultad, 10);
+            dificultadValida = !isNaN(nivelNum) && nivelNum > 0 && nivelNum <= 30;
+            
+            if (!dificultadValida) {
+              errores.push('Dificultad inválida. Usa un número seguido opcionalmente de "h" para heroico (ej: 10, 25h)');
+            }
+          } else {
+            faltantes.push('Dificultad (ej: 10, 25h)');
+          }
           
           // Obtener nombres completos
-          const nombreDia = dias[dia.toLowerCase()] || dia.toUpperCase();
-          const nombreBanda = bandas[banda.toLowerCase()] || banda.toUpperCase();
-          const esHeroico = dificultad.toLowerCase().endsWith('h');
-          const nivelDificultad = dificultad.replace(/[^0-9]/g, '') || '10';
-
+          const nombreDia = dia ? (dias[dia.toLowerCase()] || dia.toUpperCase()) : '';
+          const nombreBanda = banda ? (bandas[banda.toLowerCase()] || banda.toUpperCase()) : '';
+          const nombreDificultad = dificultadValida ? 
+            (DIFFICULTY_NAMES[`${nivelDificultad}${esHeroico ? 'H' : 'N'}` as keyof typeof DIFFICULTY_NAMES] || 
+             `${nivelDificultad} ${esHeroico ? 'Heroico' : 'Normal'}`) : '';
+          
           // Generar etiquetas para la vista previa
           const previewEvento = document.getElementById('previewEvento');
+          const detallesEvento = document.getElementById('detallesEvento');
+          
           if (previewEvento) {
             previewEvento.innerHTML = '';
+            const previewTags = document.createElement('div');
+            previewTags.className = 'flex flex-wrap gap-1.5 mb-2';
             
             // Día
-            if (dia) {
+            if (dia && diaValido) {
               const tag = document.createElement('span');
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.dia ? 'bg-blue-900/50 text-blue-200' : 'bg-red-900/50 text-red-200'
-              }`;
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-900/50 text-blue-200';
               tag.textContent = DAY_NAMES[dia.toUpperCase() as keyof typeof DAY_NAMES] || dia.toUpperCase();
               tag.title = `Día: ${DAY_NAMES[dia.toUpperCase() as keyof typeof DAY_NAMES] || dia.toUpperCase()}`;
-              previewEvento.appendChild(tag);
+              previewTags.appendChild(tag);
+            } else if (dia) {
+              const tag = document.createElement('span');
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
+              tag.textContent = 'Día Inválido';
+              tag.title = 'Día inválido. Usa una letra de L a D';
+              previewTags.appendChild(tag);
             }
 
             // Hora
-            if (hora) {
+            if (hora && horaValida) {
               const tag = document.createElement('span');
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.hora ? 'bg-purple-900/50 text-purple-200' : 'bg-red-900/50 text-red-200'
-              }`;
-              const horaFormateada = `${hora}:00`;
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-900/50 text-purple-200';
+              const horaFormateada = `${hora.padStart(2, '0')}:00`;
               tag.textContent = horaFormateada;
               tag.title = `Hora: ${horaFormateada}`;
-              previewEvento.appendChild(tag);
+              previewTags.appendChild(tag);
+            } else if (hora) {
+              const tag = document.createElement('span');
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
+              tag.textContent = 'Hora Inválida';
+              tag.title = 'Hora inválida. Usa un número entre 0 y 23';
+              previewTags.appendChild(tag);
             }
 
             // Líder - Mostrar 'Busco' cuando no hay líder
-            const tag = document.createElement('span');
-            tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+            const tagLider = document.createElement('span');
+            tagLider.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
               lider && lider.toLowerCase() === 'rl' ? 'bg-green-900/50 text-green-200' : 'bg-amber-900/50 text-amber-200'
             }`;
-            tag.textContent = lider && lider.toLowerCase() === 'rl' ? 'Armo' : 'Busco';
-            tag.title = lider ? `Líder: ${lider.toUpperCase()}` : 'Buscando grupo';
-            previewEvento.appendChild(tag);
+            tagLider.textContent = lider && lider.toLowerCase() === 'rl' ? 'Armo' : 'Busco';
+            tagLider.title = lider ? `Líder: ${lider.toUpperCase()}` : 'Buscando grupo';
+            previewTags.appendChild(tagLider);
 
             // Banda
-            if (banda) {
+            if (banda && bandaValida) {
               const tag = document.createElement('span');
               // Primero intenta con el código completo (para códigos de 2-3 letras como ICC, TOC, etc.)
               const codigoBanda = banda.toUpperCase();
@@ -407,30 +513,73 @@ const classIcons = {
                 nombreBandaCompleto = codigoBanda;
               }
               
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.banda ? 'bg-yellow-900/50 text-yellow-200' : 'bg-red-900/50 text-red-200'
-              }`;
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-900/50 text-yellow-200';
               tag.textContent = nombreBandaCompleto;
               tag.title = `Banda: ${nombreBandaCompleto} (${codigoBanda})`;
-              previewEvento.appendChild(tag);
+              previewTags.appendChild(tag);
+            } else if (banda) {
+              const tag = document.createElement('span');
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
+              tag.textContent = 'Banda Inválida';
+              tag.title = 'Banda inválida. Usa 1-3 letras (ej: icc, toc, rs)';
+              previewTags.appendChild(tag);
             }
 
             // Dificultad
-            if (dificultad) {
+            if (dificultad && dificultadValida) {
               const tag = document.createElement('span');
               const dificultadKey = `${nivelDificultad}${esHeroico ? 'H' : 'N'}` as keyof typeof DIFFICULTY_NAMES;
               const nombreDificultad = DIFFICULTY_NAMES[dificultadKey] || `${nivelDificultad} ${esHeroico ? 'Heroico' : 'Normal'}`;
-              tag.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                resultados.dificultad ? 'bg-pink-900/50 text-pink-200' : 'bg-red-900/50 text-red-200'
-              }`;
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-pink-900/50 text-pink-200';
               tag.textContent = nombreDificultad;
               tag.title = `Dificultad: ${nombreDificultad}`;
-              previewEvento.appendChild(tag);
+              previewTags.appendChild(tag);
+            } else if (dificultad) {
+              const tag = document.createElement('span');
+              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
+              tag.textContent = 'Dificultad Inválida';
+              tag.title = 'Dificultad inválida. Usa un número seguido opcionalmente de "h" para heroico (ej: 10, 25h)';
+              previewTags.appendChild(tag);
+            }
+            
+            previewEvento.appendChild(previewTags);
+            
+            // Mostrar campos faltantes si existen
+            if (detallesEvento) {
+              detallesEvento.innerHTML = '';
+              
+              if (faltantes.length > 0) {
+                const faltantesDiv = document.createElement('div');
+                faltantesDiv.className = 'mt-2 text-xs text-amber-300/80';
+                faltantesDiv.innerHTML = `<span class="font-semibold">Faltan:</span> ${faltantes.join(', ')}`;
+                detallesEvento.appendChild(faltantesDiv);
+              }
+              
+              if (errores.length > 0) {
+                const erroresDiv = document.createElement('div');
+                erroresDiv.className = 'mt-2 text-xs text-red-300/80';
+                erroresDiv.innerHTML = errores.map(e => `❌ ${e}`).join('<br>');
+                detallesEvento.appendChild(erroresDiv);
+              }
             }
           }
-
-          return Object.values(resultados).every(Boolean);
+          
+          const esValido = diaValido && horaValida && bandaValida && dificultadValida;
+          
+          return {
+            valido: esValido,
+            mensaje: esValido ? 'Evento válido' : 'Evento inválido',
+            faltantes: esValido ? [] : faltantes,
+            dia: dia,
+            hora: hora,
+            lider: lider,
+            banda: banda,
+            dificultad: dificultad,
+            esHeroico: esHeroico,
+            nivelDificultad: nivelDificultad
+          };
         }
+
 
         // Manejador de eventos para el input
         if (notaInput) {
@@ -463,11 +612,9 @@ const classIcons = {
             // Validar bloques separados por espacios
             const bloques = nota.split(/\s+/);
             
-            // Buscar bloque de personaje (debe empezar con M o A seguido de letras de especialización)
+            // Buscar bloque de personaje (puede ser solo M o A, o incluir más detalles)
             const bloquePersonaje = bloques.find(bloque => 
-              /^[MA][THDB]+/i.test(bloque) && 
-              /\d+\.\d+/.test(bloque) &&
-              /[A-Z]{2,4}$/i.test(bloque)
+              /^[MA]([THDB]|$)/i.test(bloque) // Debe empezar con M o A, seguido opcionalmente de una letra de especialización
             );
             
             // Buscar bloque de evento (formato: letraDía + númeroHora + letraLíder + códigoBanda + númeroDificultad)
@@ -488,25 +635,155 @@ const classIcons = {
             const previewPersonaje = document.getElementById('previewPersonaje');
             const previewEvento = document.getElementById('previewEvento');
             if (previewPersonaje) previewPersonaje.innerHTML = '';
-            if (previewEvento) previewEvento.innerHTML = '';
+            if (detallesPersonaje) detallesPersonaje.innerHTML = '';
+            if (detallesEvento) detallesEvento.innerHTML = '';
 
             // Validar bloques si existen
             if (bloquePersonaje) {
-              tienePersonaje = validarPersonaje(bloquePersonaje);
-              if (!tienePersonaje && detallesPersonaje) {
-                detallesPersonaje.innerHTML = '<div class="text-amber-400">Formato de personaje inválido</div>';
+              // Limpiar contenedores de vista previa
+              if (previewPersonaje) previewPersonaje.innerHTML = '';
+              if (detallesPersonaje) detallesPersonaje.innerHTML = '';
+              
+              const resultadoValidacion = validarPersonaje(bloquePersonaje);
+              tienePersonaje = resultadoValidacion.valido;
+              
+              // Crear contenedor para las etiquetas de vista previa
+              const previewTags = document.createElement('div');
+              previewTags.className = 'flex flex-wrap gap-1.5 mb-2';
+              
+              // Agregar etiqueta de Main/Alt si existe
+              if (resultadoValidacion.mainRole) {
+                const mainRoleTag = document.createElement('span');
+                const rolCompleto = STATUS[resultadoValidacion.mainRole as keyof typeof STATUS] || resultadoValidacion.mainRole;
+                mainRoleTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-900/50 text-blue-200';
+                mainRoleTag.textContent = rolCompleto;
+                mainRoleTag.title = `Rol: ${rolCompleto}`;
+                previewTags.appendChild(mainRoleTag);
+              }
+              
+              // Agregar etiqueta de especialización principal si existe
+              if (resultadoValidacion.spec) {
+                const specTag = document.createElement('span');
+                const specs = Array.from(resultadoValidacion.spec).map(s => 
+                  ROLES[s as keyof typeof ROLES] || s
+                ).join('');
+                specTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-900/50 text-purple-200';
+                specTag.textContent = specs;
+                specTag.title = `Especialización: ${specs}`;
+                previewTags.appendChild(specTag);
+              }
+              
+              // Agregar etiqueta de GS principal si existe
+              if (resultadoValidacion.gs) {
+                const gsTag = document.createElement('span');
+                gsTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-900/50 text-cyan-200';
+                gsTag.textContent = resultadoValidacion.gs;
+                gsTag.title = `Gear Score: ${resultadoValidacion.gs}`;
+                previewTags.appendChild(gsTag);
+              }
+              
+              // Agregar etiqueta de especialización secundaria si existe
+              if (resultadoValidacion.offSpec) {
+                const offSpecTag = document.createElement('span');
+                const offSpecs = Array.from(resultadoValidacion.offSpec).map(s => 
+                  ROLES[s as keyof typeof ROLES] || s
+                ).join('');
+                offSpecTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-fuchsia-900/50 text-fuchsia-200';
+                offSpecTag.textContent = `Dual: ${offSpecs}`;
+                offSpecTag.title = `Especialización Secundaria: ${offSpecs}`;
+                previewTags.appendChild(offSpecTag);
+              }
+              
+              // Agregar etiqueta de GS secundario si existe
+              if (resultadoValidacion.offGs) {
+                const offGsTag = document.createElement('span');
+                offGsTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-900/50 text-teal-200';
+                offGsTag.textContent = resultadoValidacion.offGs;
+                offGsTag.title = `Gear Score Secundario: ${resultadoValidacion.offGs}`;
+                previewTags.appendChild(offGsTag);
+              }
+              
+              // Agregar etiqueta de profesiones si existen
+              if (resultadoValidacion.profs) {
+                const profsTag = document.createElement('span');
+                profsTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-900/50 text-amber-200';
+                profsTag.textContent = resultadoValidacion.profs;
+                profsTag.title = `Profesiones: ${resultadoValidacion.profs}`;
+                previewTags.appendChild(profsTag);
+              }
+              
+              // Mostrar etiquetas en el contenedor de vista previa
+              if (previewPersonaje) {
+                previewPersonaje.appendChild(previewTags);
+              }
+              
+              // Mostrar campos faltantes si existen
+              if (detallesPersonaje) {
+                if (resultadoValidacion.faltantes && resultadoValidacion.faltantes.length > 0) {
+                  const faltantesDiv = document.createElement('div');
+                  faltantesDiv.className = 'mt-2 text-xs text-amber-300/80';
+                  faltantesDiv.innerHTML = `<span class="font-semibold">Faltan:</span> ${resultadoValidacion.faltantes.join(', ')}`;
+                  detallesPersonaje.appendChild(faltantesDiv);
+                }
+                
+                // Mostrar mensaje de error si existe
+                if (!resultadoValidacion.valido && resultadoValidacion.mensaje) {
+                  const errorDiv = document.createElement('div');
+                  errorDiv.className = 'text-amber-400 text-sm mt-2';
+                  errorDiv.textContent = resultadoValidacion.mensaje;
+                  detallesPersonaje.appendChild(errorDiv);
+                }
               }
             } else if (detallesPersonaje) {
-              detallesPersonaje.innerHTML = '<div class="text-amber-400">No se encontró el bloque de personaje</div>';
+              detallesPersonaje.innerHTML = `
+                <div class="text-amber-300/80 mb-2">Formato: M o A seguido opcionalmente de especialización (ej: MT, AH5.8)</div>
+                <div class="text-amber-300/80 text-sm">
+                  <div class="font-semibold">Opcional:</div>
+                  <ul class="list-disc list-inside">
+                    <li>Gear Score (ej: 5.8)</li>
+                    <li>Especialización secundaria (ej: H para Heal)</li>
+                    <li>Profesiones (ej: JC, BS)</li>
+                  </ul>
+                </div>
+              `;
             }
 
             if (bloqueEvento) {
-              tieneEvento = validarEvento(bloqueEvento, { dias, bandas });
-              if (!tieneEvento && detallesEvento) {
-                detallesEvento.innerHTML = '<div class="text-amber-400">Formato de evento inválido</div>';
+              const resultadoValidacion = validarEvento(bloqueEvento, { dias, bandas });
+              tieneEvento = resultadoValidacion.valido;
+              
+              // Mostrar campos faltantes o errores si los hay
+              if (detallesEvento) {
+                detallesEvento.innerHTML = '';
+                
+                if (resultadoValidacion.faltantes && resultadoValidacion.faltantes.length > 0) {
+                  const faltantesDiv = document.createElement('div');
+                  faltantesDiv.className = 'mt-2 text-xs text-amber-300/80';
+                  faltantesDiv.innerHTML = `<span class="font-semibold">Faltan:</span> ${resultadoValidacion.faltantes.join(', ')}`;
+                  detallesEvento.appendChild(faltantesDiv);
+                }
+                
+                if (!resultadoValidacion.valido && resultadoValidacion.mensaje) {
+                  const errorDiv = document.createElement('div');
+                  errorDiv.className = 'text-amber-400 text-sm mt-2';
+                  errorDiv.textContent = resultadoValidacion.mensaje;
+                  detallesEvento.appendChild(errorDiv);
+                }
               }
             } else if (detallesEvento) {
-              detallesEvento.innerHTML = '<div class="text-amber-400">No se encontró el bloque de evento</div>';
+              detallesEvento.innerHTML = `
+                <div class="text-amber-300/80 mb-2">Formato: DíaHora[Líder]BandaDificultad (ej: l20rlicc10h)</div>
+                <div class="text-amber-300/80 text-sm">
+                  <div class="font-semibold">Detalles:</div>
+                  <ul class="list-disc list-inside">
+                    <li>Día: L (Lunes) a D (Domingo)</li>
+                    <li>Hora: 0-23 (ej: 20 para las 8 PM)</li>
+                    <li>Líder: Opcional, 'rl' para indicar que arma el grupo</li>
+                    <li>Banda: 1-3 letras (ej: icc, toc, rs)</li>
+                    <li>Dificultad: Número + 'h' opcional para heroico (ej: 10, 25h)</li>
+                  </ul>
+                </div>
+              `;
             }
 
             // Actualizar iconos principales
