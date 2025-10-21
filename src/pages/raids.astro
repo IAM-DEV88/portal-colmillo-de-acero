@@ -764,45 +764,6 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
                           EVENTO PROGRAMADO
-                          {nextOccurrence && (() => {
-                            try {
-                              const now = new Date();
-                              // Usamos eventDate que ya es un objeto Date
-                              const occurrenceDate = eventDate || new Date();
-                              
-                              // Crear fecha de mañana
-                              const tomorrow = new Date(now);
-                              tomorrow.setDate(now.getDate() + 1);
-                              
-                              // Comparar fechas
-                              const isToday = 
-                                now.getFullYear() === occurrenceDate.getFullYear() &&
-                                now.getMonth() === occurrenceDate.getMonth() &&
-                                now.getDate() === occurrenceDate.getDate();
-                                
-                              const isTomorrow =
-                                tomorrow.getFullYear() === occurrenceDate.getFullYear() &&
-                                tomorrow.getMonth() === occurrenceDate.getMonth() &&
-                                tomorrow.getDate() === occurrenceDate.getDate();
-                              
-                              let prefix = 'Próximo';
-                              if (isToday) prefix = 'Hoy';
-                              else if (isTomorrow) prefix = 'Mañana';
-                              
-                              return (
-                                <span class="ml-2 text-amber-300 text-xs font-normal">
-                                  {prefix}: {nextOccurrence}
-                                </span>
-                              );
-                            } catch (e) {
-                              console.error('Error al procesar la fecha:', e);
-                              return (
-                                <span class="ml-2 text-amber-300 text-xs font-normal">
-                                  Próximo: {nextOccurrence}
-                                </span>
-                              );
-                            }
-                          })()}
                         </div>
                         <div class="flex flex-wrap gap-2">
                           {eventGroup.map((event: RaidEvent, index: number) => {
