@@ -420,6 +420,10 @@ try {
 
         try {
           // Mostrar estado de carga
+          if (!button) {
+            console.error('No se encontró el botón de envío');
+            return;
+          }
           button.disabled = true;
           if (buttonText) buttonText.textContent = 'Procesando...';
           loadingSpinner?.classList.remove('hidden');
