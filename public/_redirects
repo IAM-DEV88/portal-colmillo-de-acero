@@ -1,0 +1,5 @@
+# Manejar rutas de la aplicación
+/*    /index.html    200
+
+# Manejar rutas de la API
+/api/*  /.netlify/functions/:splat  200
