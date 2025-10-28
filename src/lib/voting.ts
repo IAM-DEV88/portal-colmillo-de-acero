@@ -26,14 +26,53 @@ interface VoteData {
   voted_at: string;
 }
 
-// Get client IP address (works with Vercel and other platforms)
+// Get client IP address (works in both development and production)
 function getClientIp(request: Request): string | null {
-  const headers = request.headers;
-  return (
-    headers.get('x-forwarded-for')?.split(',').shift() ||
-    headers.get('x-real-ip') ||
-    null
-  );
+  try {
+    const headers = request.headers;
+    
+    // Headers comunes que contienen la IP real del cliente
+    const possibleIpHeaders = [
+      'x-forwarded-for',
+      'x-real-ip',
+      'x-client-ip',
+      'cf-connecting-ip', // Cloudflare
+      'fastly-client-ip', // Fastly
+      'true-client-ip', // Akamai
+      'x-cluster-client-ip', // Rackspace
+      'x-forwarded',
+      'forwarded-for',
+      'x-http-forwarded-for',
+    ];
+
+    // Buscar la IP en los encabezados
+    for (const header of possibleIpHeaders) {
+      const ip = headers.get(header);
+      if (ip) {
+        // Tomar la primera IP si hay múltiples (puede haber proxies)
+        const firstIp = ip.split(',')[0].trim();
+        if (firstIp) {
+          // Validar que sea una dirección IP válida
+          if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(firstIp) || // IPv4
+              /^[0-9a-fA-F:]+$/.test(firstIp)) { // IPv6
+            return firstIp;
+          }
+        }
+      }
+    }
+
+    // En desarrollo local, usar una IP de marcador de posición
+    if (import.meta.env.DEV) {
+      console.warn('No se pudo determinar la IP real, usando IP de desarrollo local');
+      return '127.0.0.1';
+    }
+
+    console.warn('No se pudo determinar la IP del cliente');
+    return null;
+  } catch (error) {
+    console.error('Error al obtener la IP del cliente:', error);
+    return null;
+  }
 }
 
 // Check if a character exists in the roster
@@ -69,58 +108,80 @@ export async function canIpVote(characterName: string, ipAddress: string): Promi
 
 // Record a vote for a character
 export async function recordVote(characterName: string, request: Request): Promise<{ success: boolean; error?: string; data?: any }> {
+  console.log('Iniciando registro de voto para:', characterName);
+  
+  // Verificar configuración de Supabase
+  if (!supabaseUrl || !supabaseKey) {
+    const errorMsg = 'Error: Falta la configuración de Supabase';
+    console.error(errorMsg);
+    return { success: false, error: errorMsg };
+  }
+
   const ipAddress = getClientIp(request);
+  console.log('Dirección IP detectada:', ipAddress);
+  
   if (!ipAddress) {
-    return { success: false, error: 'No se pudo obtener la dirección IP' };
+    const errorMsg = 'No se pudo obtener la dirección IP';
+    console.error(errorMsg);
+    return { success: false, error: errorMsg };
   }
 
-  // Check if character exists in roster
-  if (!isCharacterInRoster(characterName)) {
-    return { success: false, error: 'El personaje no existe en la hermandad' };
+  // Verificar si el personaje existe en el roster
+  const characterExists = isCharacterInRoster(characterName);
+  console.log('¿Personaje existe en el roster?', characterExists);
+  
+  if (!characterExists) {
+    const errorMsg = 'El personaje no existe en la hermandad';
+    console.error(errorMsg);
+    return { success: false, error: errorMsg };
   }
 
-  // Check if IP has voted for this character recently
+  // Verificar si la IP ya votó por este personaje recientemente
+  console.log('Verificando si la IP puede votar...');
   const { canVote, lastVotedAt } = await canIpVote(characterName, ipAddress);
+  console.log('¿Puede votar?', canVote, 'Último voto:', lastVotedAt);
+  
   if (!canVote && lastVotedAt) {
     const nextVoteTime = new Date(lastVotedAt);
     nextVoteTime.setHours(nextVoteTime.getHours() + 24);
     const hoursLeft = Math.ceil((nextVoteTime.getTime() - new Date().getTime()) / (1000 * 60 * 60));
+    const errorMsg = `Ya has votado por este personaje. Podrás votar de nuevo en ${hoursLeft} horas.`;
+    console.error(errorMsg);
     return { 
       success: false, 
-      error: `Ya has votado por este personaje. Podrás votar de nuevo en ${hoursLeft} horas.` 
+      error: errorMsg 
     };
   }
 
   try {
     console.log('Intentando registrar voto para:', characterName, 'desde IP:', ipAddress);
     
-    const response = await fetch(`${supabaseUrl}/rest/v1/votes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': supabaseKey,
-        'Authorization': `Bearer ${supabaseKey}`,
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify([
+    // Usar el cliente de Supabase directamente
+    const { data, error } = await supabase
+      .from('votes')
+      .insert([
         { 
           character_name: characterName,
           ip_address: ipAddress,
           voted_at: new Date().toISOString()
         }
       ])
-    });
+      .select();
 
-    const data = await response.json();
-    console.log('Respuesta de Supabase:', data);
+    console.log('Respuesta de Supabase:', { data, error });
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Error al registrar el voto');
+    if (error) {
+      console.error('Error al insertar voto en Supabase:', error);
+      throw new Error(error.message || 'Error al registrar el voto');
+    }
+    
+    if (!data || data.length === 0) {
+      throw new Error('No se recibieron datos de confirmación del servidor');
     }
     
     return { 
       success: true,
-      data
+      data: data[0]
     };
   } catch (error: any) {
     console.error('Error al registrar voto:', error);

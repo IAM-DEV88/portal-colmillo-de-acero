@@ -4,7 +4,7 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'static', // Switch to static output for Netlify
+  output: 'server', // Habilita el modo servidor para endpoints de API
   integrations: [tailwind()],
   server: {
     port: 3000,

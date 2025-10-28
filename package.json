@@ -3,17 +3,13 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --write .",
-    "postinstall": "npm install --legacy-peer-deps"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -21,7 +17,7 @@
     "@fontsource-variable/jost": "^5.1.1",
     "@midudev/tailwind-animations": "^0.0.7",
     "@supabase/supabase-js": "^2.76.1",
-    "astro": "^5.15.1",
+    "astro": "^4.13.1",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
