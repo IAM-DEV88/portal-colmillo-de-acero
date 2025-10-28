@@ -23,15 +23,25 @@ interface VoteStat {
 }
 
 let voteStats: VoteStat[] = [];
-try {
-  const stats = await getVoteStats();
-  if (stats.success) {
-    voteStats = stats.data || [];
-  } else {
-    console.error('Error al cargar estadísticas:', stats.error);
+let statsError: string | null = null;
+
+// Solo ejecutar en el servidor
+if (import.meta.env.SSR) {
+  try {
+    console.log('Obteniendo estadísticas de votación...');
+    const stats = await getVoteStats();
+    console.log('Resultado de getVoteStats:', stats);
+    
+    if (stats.success) {
+      voteStats = stats.data || [];
+    } else {
+      statsError = stats.error || 'Error desconocido al cargar estadísticas';
+      console.error('Error al cargar estadísticas:', statsError);
+    }
+  } catch (err) {
+    statsError = err instanceof Error ? err.message : 'Error desconocido';
+    console.error('Excepción al cargar estadísticas:', err);
   }
-} catch (err) {
-  console.error('Error al cargar estadísticas:', err);
 }
 ---
 

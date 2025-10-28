@@ -194,35 +194,63 @@ export async function recordVote(characterName: string, request: Request): Promi
 
 // Get vote statistics
 export async function getVoteStats(): Promise<{ success: boolean; data?: Array<{ character: string; count: number }>; error?: string }> {
-  const { data, error } = await supabase
-    .from('votes')
-    .select('character_name, voted_at')
-    .order('voted_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching vote stats:', error);
-    return { success: false, error: error.message };
-  }
-
   try {
+    console.log('Conectando a Supabase...');
+    console.log('URL de Supabase:', supabaseUrl ? 'Configurada' : 'No configurada');
+    
+    if (!supabaseUrl || !supabaseKey) {
+      const errorMsg = 'Error: Faltan las variables de entorno de Supabase';
+      console.error(errorMsg);
+      return { success: false, error: errorMsg };
+    }
+
+    console.log('Obteniendo estadísticas de votos...');
+    const { data, error } = await supabase
+      .from('votes')
+      .select('character_name, voted_at')
+      .order('voted_at', { ascending: false });
+
+    if (error) {
+      console.error('Error de Supabase al obtener estadísticas:', error);
+      return { 
+        success: false, 
+        error: `Error de base de datos: ${error.message || 'Error desconocido'}` 
+      };
+    }
+
+    console.log(`Se obtuvieron ${data?.length || 0} votos`);
+
+    // Si no hay datos, devolver un array vacío
+    if (!data || data.length === 0) {
+      return { success: true, data: [] };
+    }
+
     // Group votes by character
     const votesByCharacter = data.reduce((acc, vote) => {
-      if (!acc[vote.character_name]) {
-        acc[vote.character_name] = 0;
+      if (vote.character_name) {  // Asegurarse de que character_name no sea nulo
+        if (!acc[vote.character_name]) {
+          acc[vote.character_name] = 0;
+        }
+        acc[vote.character_name]++;
       }
-      acc[vote.character_name]++;
       return acc;
     }, {} as Record<string, number>);
 
     // Convert to array of objects
     const result = Object.entries(votesByCharacter).map(([character, count]) => ({
       character,
-      count
+      count: Number(count) || 0
     }));
 
+    console.log('Estadísticas procesadas correctamente:', result);
     return { success: true, data: result };
+    
   } catch (err) {
-    console.error('Error processing vote stats:', err);
-    return { success: false, error: 'Error al procesar las estadísticas de votos' };
+    const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
+    console.error('Error inesperado en getVoteStats:', err);
+    return { 
+      success: false, 
+      error: `Error inesperado: ${errorMessage}` 
+    };
   }
 }
