@@ -11,5 +11,14 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  site: 'https://tuguild.netlify.app',
+  site: 'https://colmillo.netlify.app',
+  base: '/',
+  build: {
+    format: 'file',
+  },
+  vite: {
+    ssr: {
+      noExternal: ['@supabase/supabase-js']
+    }
+  }
 });

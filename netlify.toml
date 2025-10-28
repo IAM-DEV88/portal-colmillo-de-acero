@@ -11,6 +11,13 @@
   from = "/*"
   to = "/index.html"
   status = 200
+  force = true
+
+# Redirección específica para /voto
+[[redirects]]
+  from = "/voto"
+  to = "/voto/"
+  status = 301
 
 # Configuración de funciones serverless
 [functions]
@@ -47,3 +54,9 @@
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Configuración para rutas de la API
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
