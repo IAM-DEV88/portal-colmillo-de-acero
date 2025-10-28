@@ -2284,7 +2284,7 @@ function calculateRankDistribution(
   }, {});
 
   // Definir el orden de los rangos
-  const rankOrder = ['Aspirante', 'Iniciado', 'Explorador', 'Alter', 'Guild Master'];
+  const rankOrder = ['Aspirante', 'Iniciado', 'Explorador', 'Oficial', 'Alter', 'Guild Master'];
 
   // Calcular porcentajes y redondear a 1 decimal
   return Object.entries(rankCounts)
@@ -2293,14 +2293,9 @@ function calculateRankDistribution(
       count: count as number,
       percentage:
         totalMembers > 0 ? Math.round(((count as number) / totalMembers) * 100 * 10) / 10 : 0,
-      order: rankOrder.indexOf(name), // Añadir orden para el sort
+      order: rankOrder.indexOf(name) === -1 ? 999 : rankOrder.indexOf(name), // Asignar un orden alto si el rango no está en la lista
     }))
-    .sort((a, b) => {
-      // Si un rango no está en la lista, lo colocamos al final
-      if (a.order === -1) return 1;
-      if (b.order === -1) return -1;
-      return a.order - b.order;
-    })
+    .sort((a, b) => a.order - b.order) // Ordenar por el orden definido
     .map(({ name, count, percentage }) => ({
       name,
       count,

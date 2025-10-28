@@ -108,12 +108,19 @@ const formatClassName = (className: string): string => {
 
 // Función para obtener el próximo día de la semana (0 = Domingo, 1 = Lunes, etc.)
 const getNextDayOfWeek = (targetDay: number, timeString: string): Date => {
+  // Obtener la fecha actual en la zona horaria local
   const now = new Date();
-  const [hours, minutes] = timeString.split(':').map(Number);
   
-  // Crear fecha objetivo
+  // Ajustar a GMT+1 (1 hora adelante de GMT)
+  const serverOffset = 1; // GMT+1
+  
+  // Crear fecha objetivo en GMT+1
+  const [hours, minutes] = timeString.split(':').map(Number);
   const targetDate = new Date(now);
-  targetDate.setHours(hours, minutes, 0, 0);
+  
+  // Ajustar la hora para GMT+1 (restar 1 hora a la hora local para convertir a GMT+1)
+  const localHours = (hours - serverOffset + 24) % 24; // Manejar cambio de día
+  targetDate.setHours(localHours, minutes, 0, 0);
   
   // Calcular días hasta el próximo día objetivo
   const currentDay = now.getDay(); // 0 = Domingo, 1 = Lunes, etc.
@@ -121,24 +128,13 @@ const getNextDayOfWeek = (targetDay: number, timeString: string): Date => {
   
   // Ajustar si el día ya pasó esta semana o si es hoy pero la hora ya pasó
   if (daysToAdd < 0 || (daysToAdd === 0 && now > targetDate)) {
-    daysToAdd += 7; // Ir al de la próxima semana
+    daysToAdd += 7;
   }
   
-  targetDate.setDate(now.getDate() + daysToAdd);
+  // Ajustar la fecha al próximo día objetivo
+  targetDate.setDate(targetDate.getDate() + daysToAdd);
+  
   return targetDate;
-};
-
-// Función para calcular el peso de un evento para ordenación
-const getEventWeight = (dayCode: string, timeString: string): number => {
-  const now = new Date();
-  const dayIndex = DAY_TO_INDEX[dayCode];
-  const nextOccurrence = getNextDayOfWeek(dayIndex, timeString);
-  
-  // Calcular la diferencia en milisegundos desde ahora
-  const diffMs = nextOccurrence.getTime() - now.getTime();
-  
-  // Si la diferencia es negativa (no debería pasar), sumar una semana
-  return diffMs < 0 ? diffMs + (7 * 24 * 60 * 60 * 1000) : diffMs;
 };
 
 // Mapa de días a índices (0 = Domingo, 1 = Lunes, etc.)
@@ -697,9 +693,7 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                     nextOccurrence = nextDate.toLocaleString('es-ES', {
                       weekday: 'long',
                       day: 'numeric',
-                      month: 'long',
-                      hour: '2-digit',
-                      minute: '2-digit'
+                      month: 'long'
                     });
                   }
                 }
@@ -763,7 +757,8 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
                           <svg class="w-3.5 h-3.5 mr-1.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
-                          EVENTO PROGRAMADO
+                          EVENTO PROGRAMADO:
+                          {nextOccurrence}
                         </div>
                         <div class="flex flex-wrap gap-2">
                           {eventGroup.map((event: RaidEvent, index: number) => {
