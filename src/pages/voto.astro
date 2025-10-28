@@ -1,5 +1,6 @@
 ---
 import Layout from '../components/layout/Layout.astro';
+import { getVoteStats } from '../lib/voting';
 import rosterData from '../data/roster.json';
 
 interface RosterCharacter {
@@ -22,20 +23,15 @@ interface VoteStat {
 }
 
 let voteStats: VoteStat[] = [];
-
-// Solo obtener estadísticas en el cliente
-if (Astro.request.method === "GET") {
-  try {
-    const response = await fetch('/api/vote-stats');
-    const result = await response.json();
-    if (result.success) {
-      voteStats = result.data || [];
-    } else {
-      console.error('Error al cargar estadísticas:', result.error);
-    }
-  } catch (err) {
-    console.error('Error al cargar estadísticas:', err);
+try {
+  const stats = await getVoteStats();
+  if (stats.success) {
+    voteStats = stats.data || [];
+  } else {
+    console.error('Error al cargar estadísticas:', stats.error);
   }
+} catch (err) {
+  console.error('Error al cargar estadísticas:', err);
 }
 ---
 

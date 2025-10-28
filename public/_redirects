@@ -1,5 +1,8 @@
-# Manejar rutas de la aplicación
-/*    /index.html    200
+# Redirecciones para SPA
+/*    /index.html   200
 
-# Manejar rutas de la API
-/api/*  /.netlify/functions/:splat  200
+# Redirección específica para /voto
+/voto    /voto/    301
+
+# Redirección para rutas anidadas de /voto
+/voto/*  /voto/    200
