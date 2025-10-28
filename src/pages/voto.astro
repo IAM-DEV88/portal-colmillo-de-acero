@@ -28,12 +28,19 @@ let statsError: string | null = null;
 // Solo ejecutar en el servidor
 if (import.meta.env.SSR) {
   try {
+    console.log('Iniciando carga de estadísticas...');
+    // Asegurarse de que las variables de entorno estén disponibles
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      throw new Error('Faltan las variables de entorno de Supabase');
+    }
+    
     console.log('Obteniendo estadísticas de votación...');
     const stats = await getVoteStats();
-    console.log('Resultado de getVoteStats:', stats);
+    console.log('Resultado de getVoteStats:', JSON.stringify(stats, null, 2));
     
     if (stats.success) {
       voteStats = stats.data || [];
+      console.log(`Se cargaron ${voteStats.length} estadísticas de votación`);
     } else {
       statsError = stats.error || 'Error desconocido al cargar estadísticas';
       console.error('Error al cargar estadísticas:', statsError);
@@ -41,6 +48,10 @@ if (import.meta.env.SSR) {
   } catch (err) {
     statsError = err instanceof Error ? err.message : 'Error desconocido';
     console.error('Excepción al cargar estadísticas:', err);
+    // Forzar un error 500 para ver el error en producción
+    if (import.meta.env.PROD) {
+      throw new Error(`Error al cargar estadísticas: ${statsError}`);
+    }
   }
 }
 ---
