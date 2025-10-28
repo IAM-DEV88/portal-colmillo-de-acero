@@ -6,22 +6,28 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--version"
 
+# Redirecciones para SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = true
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
+# Configuración de funciones serverless
 [functions]
-  directory = ".netlify/functions/"
   node_bundler = "esbuild"
+  external_node_modules = ["@supabase/supabase-js"]
 
+# Configuración de desarrollo
 [dev]
-  framework = "#custom"
+  framework = "astro"
   targetPort = 3000
-  port = 8888
+  port = 3001
+
+# Configuración de encabezados de seguridad
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
