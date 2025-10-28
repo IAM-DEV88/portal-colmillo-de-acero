@@ -1,5 +1,2 @@
-# Redirección principal para SPA
+# Redirección para SPA (manejo de rutas del lado del cliente)
 /*    /index.html   200
-
-# Redirección para /voto
-/voto/*  /voto/    200
