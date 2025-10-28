@@ -12,24 +12,11 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  force = false
-
-# Manejar rutas de API
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
 
 # Configuración de funciones serverless
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["@supabase/supabase-js"]
-
-# Configuración de desarrollo
-[dev]
-  framework = "astro"
-  targetPort = 3000
-  port = 3001
 
 # Configuración de encabezados de seguridad
 [[headers]]
@@ -39,8 +26,14 @@
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # Configuración de encabezados para archivos estáticos
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 [[headers]]
   for = "/*.js"
   [headers.values]
@@ -51,7 +44,8 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-[[headers]]
-  for = "/_astro/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+# Configuración de desarrollo
+[dev]
+  framework = "astro"
+  targetPort = 3000
+  port = 3001
