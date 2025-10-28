@@ -272,16 +272,20 @@ if (import.meta.env.SSR) {
         <!-- Sección de Premios -->
         <div class="lg:col-span-4 mt-8">
           <div
-            class="bg-gray-900/90 backdrop-blur-sm border border-amber-900/30 rounded-xl p-6 shadow-2xl shadow-amber-500/5"
+          class="border border-amber-900/30 rounded-xl shadow-2xl shadow-amber-500/5 relative overflow-hidden"
+          style="background: url('/images/halloween.jpg') no-repeat center top; background-size: cover;"
+        >
+          <div
+            class=" border border-amber-900/10 rounded-xl p-6 shadow-2xl shadow-amber-500/5"
           >
             <h2 class="text-2xl font-bold text-amber-100 mb-6 text-center">
               🏆 Premios del Mes 🏆
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
               <!-- Premio 1 -->
               <div
-                class="bg-gradient-to-br from-amber-900/30 to-amber-900/10 border border-amber-800/30 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
+                class="bg-gradient-to-br from-amber-900/60 to-amber-900/10 border border-amber-800/30 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
               >
                 <div
                   class="bg-amber-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -289,12 +293,12 @@ if (import.meta.env.SSR) {
                   <i class="fas fa-trophy text-3xl text-amber-400"></i>
                 </div>
                 <h3 class="text-xl font-bold text-amber-300 mb-2">1er Lugar</h3>
-                <p class="text-amber-100 text-lg font-semibold mb-2">2,000 de Oro</p>
+                <p class="text-amber-100 text-sm font-semibold mb-2">2,000 de Oro</p>
               </div>
 
               <!-- Premio 2 -->
               <div
-                class="bg-gradient-to-br from-amber-900/30 to-amber-900/10 border border-amber-800/30 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
+                class="bg-gradient-to-br from-amber-900/60 to-amber-900/10 border border-amber-800/30 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
               >
                 <div
                   class="bg-amber-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -302,12 +306,12 @@ if (import.meta.env.SSR) {
                   <i class="fas fa-medal text-3xl text-amber-400"></i>
                 </div>
                 <h3 class="text-xl font-bold text-amber-300 mb-2">2do Lugar</h3>
-                <p class="text-amber-100 text-lg font-semibold mb-2">1,000 de Oro</p>
+                <p class="text-amber-100 text-sm font-semibold mb-2">1,000 de Oro</p>
               </div>
 
               <!-- Premio 3 -->
               <div
-                class="bg-gradient-to-br from-amber-900/30 to-amber-900/10 border border-amber-800/30 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
+                class="bg-gradient-to-br from-amber-900/60 to-amber-900/10 border border-amber-800/30 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
               >
                 <div
                   class="bg-amber-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -315,22 +319,23 @@ if (import.meta.env.SSR) {
                   <i class="fas fa-award text-3xl text-amber-400"></i>
                 </div>
                 <h3 class="text-xl font-bold text-amber-300 mb-2">3er Lugar</h3>
-                <p class="text-amber-100 text-lg font-semibold mb-2">500 de Oro</p>
+                <p class="text-amber-100 text-sm font-semibold mb-2">500 de Oro</p>
               </div>
             </div>
 
             <div class="mt-6 text-center">
-              <p class="text-amber-400 text-sm">
+              <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-lg">
                 * Los premios se entregan al final del mes al cierre de votaciones
               </p>
-              <p class="text-amber-400 text-sm">
+              <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-lg">
                 * Solo puede haber un ganador por cada puesto
               </p>
-              <p class="text-amber-400 text-sm">
+              <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-lg">
                 * En caso de empate se peleara a dados por cada puesto
               </p>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
