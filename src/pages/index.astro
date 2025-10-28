@@ -35,6 +35,25 @@ import ImageComponent from '@/components/index/ImageComponent.astro';
             class="drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]"
             data-astro-cid-wuxc42xx=""
           />
+          <style>
+            @keyframes float {
+              0%, 100% {
+                transform: translateY(0) translateX(-50%);
+              }
+              50% {
+                transform: translateY(-5px) translateX(-50%);
+              }
+            }
+          </style>
+          
+          <a href="/voto" class="absolute top-[-30px] left-1/2 w-auto -translate-x-1/2 block">
+            <div class="bg-gradient-to-r from-gray-900/90 to-gray-800/30 rounded-lg shadow-xl py-1 px-6 border border-amber-900/30 hover:border-amber-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/5 cursor-pointer"
+                 style="animation: float 3s ease-in-out infinite;">
+              <p class="text-center text-white text-sm font-bold tracking-wider whitespace-nowrap">
+                🎃 ¡Evento de Halloween! 👻
+              </p>
+            </div>
+          </a>
         </div>
       </header>
 
