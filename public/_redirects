@@ -1,8 +1,5 @@
-# Redirecciones para SPA
+# Redirección principal para SPA
 /*    /index.html   200
 
-# Redirección específica para /voto
-/voto    /voto/    301
-
-# Redirección para rutas anidadas de /voto
+# Redirección para /voto
 /voto/*  /voto/    200

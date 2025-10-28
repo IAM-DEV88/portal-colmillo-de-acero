@@ -6,35 +6,16 @@
   NODE_VERSION = "18"
   NPM_FLAGS = "--legacy-peer-deps"
 
-# Redirecciones para SPA
+# Redirección principal para SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
-  force = true
-
-# Redirección específica para /voto
-[[redirects]]
-  from = "/voto"
-  to = "/voto/"
-  status = 301
-
-# Redirección para rutas anidadas
-[[redirects]]
-  from = "/voto/*"
-  to = "/voto/"
   status = 200
 
 # Configuración de funciones serverless
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["@supabase/supabase-js"]
-
-# Configuración de desarrollo
-[dev]
-  framework = "astro"
-  targetPort = 3000
-  port = 3001
 
 # Configuración de encabezados de seguridad
 [[headers]]
@@ -45,7 +26,7 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-# Configuración de encabezados para archivos estáticos
+# Configuración de caché para archivos estáticos
 [[headers]]
   for = "/*.js"
   [headers.values]
