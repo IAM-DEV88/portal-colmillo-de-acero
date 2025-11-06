@@ -56,7 +56,37 @@
               "icon": "gift"
             }
           ]
-        }
+        },
+        {
+          "playerName": "Evilink",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
+        {
+          "playerName": "Muertodasco",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
+        {
+          "playerName": "Azsunax",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
       ]
     },
     "11": {
@@ -82,6 +112,36 @@
           ]
         },
         {
+          "playerName": "Evilink",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
+        {
+          "playerName": "Muertodasco",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
+        {
+          "playerName": "Azsunax",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
+        {
           "playerName": "Fogoza",
           "recognitions": [
             {
@@ -92,12 +152,27 @@
           ]
         },
         {
-          "playerName": "Saem",
+          "playerName": "Luciusvelkan",
           "recognitions": [
             {
               "title": "Participación Destacada",
               "description": "Reconocimiento por mantener una participación ejemplar en las actividades y eventos de Colmillo de Acero.",
               "icon": "users"
+            },
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
+        {
+          "playerName": "Beellzebu",
+          "recognitions": [
+            {
+              "title": "Colaborador Destacado",
+              "description": "Reconocimiento por su destacada colaboración en la hermandad para apoyar a los nuevos.",
+              "icon": "star"
             }
           ]
         }
