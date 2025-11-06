@@ -590,6 +590,16 @@ const sortedDifficultyStats = (Object.entries(raidStats.difficulties) as [string
   (a, b) => b[1] - a[1]
 );
 
+const raidSchedule = [
+  { day: 'Miércoles', description: 'Primera ICC 10N semanal (Min. GS 5.5, Máx. 2 cupos bajo GS)', mainTime: '18:00 ICC 10N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Jueves', description: 'Segunda ICC 10N semanal (Min. GS 5.5, Máx. 2 cupos bajo GS)', mainTime: '18:00 ICC 10N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Viernes', description: 'Primera ICC 25N semanal (Min. GS 5.7, Máx. 6 cupos bajo GS)', mainTime: '18:00 ICC 25N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Sábado', description: 'Primera ICC 10H semanal (Min. GS 5.9, Máx. 2 cupos bajo GS)', mainTime: '18:00 ICC 10H', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Domingo', description: 'Segunda ICC 10H semanal (Min. GS 5.9, Máx. 2 cupos bajo GS)', mainTime: '18:00 ICC 10H', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Lunes', description: 'Tercera ICC 10H semanal (Min. GS 5.9, Máx. 2 cupos bajo GS)', mainTime: '18:00 ICC 10H', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Martes', description: 'Primera ICC 25H semanal (Min. GS 6.0, Máx. 4 cupos bajo GS)', mainTime: '18:00 ICC 25H', secondaryTime: '00:00 Raid Opcional' }
+];
+
 const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, number][]).sort(
   (a, b) => b[1] - a[1]
 );
@@ -597,6 +607,110 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
 
 <Layout title="Raids">
   <div class="mx-auto animate-fade-in">
+    <!-- Weekly Raid Schedule -->
+    <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
+      <h2 class="text-2xl font-bold text-amber-300 mb-6 text-center">Horario Semanal de Raids</h2>
+      
+      <div class="overflow-x-auto rounded-xl border border-amber-900/30">
+        <table class="min-w-full divide-y divide-amber-900/30 raid-schedule-table">
+          <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Día
+                </div>
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Descripción
+                </div>
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Horario Principal
+                </div>
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Horario Secundario
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-amber-900/30 bg-gray-900/50">
+            {raidSchedule.map((raid, index) => {
+              const rowClass = `hover:bg-amber-900/10 transition-colors duration-200 ${index % 2 === 0 ? 'bg-gray-900/30' : 'bg-gray-900/10'}`;
+              return (
+                <tr class={rowClass}>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-amber-200">
+                    <div class="flex items-center">
+                      <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-amber-900/30 mr-2 text-xs font-semibold text-amber-300">
+                        {index + 1}
+                      </span>
+                      {raid.day}
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-amber-100/90">
+                    {raid.description}
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-amber-300">
+                    <div class="flex items-center">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900/30 text-amber-300">
+                        {raid.mainTime}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm text-amber-300/80">
+                    {raid.secondaryTime}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="mt-4 text-xs text-amber-400/70 space-y-2 bg-gray-900/90 p-4 rounded-lg">
+        <div class="mt-4 text-amber-400/70">
+          <p class="font-medium text-center text-amber-300/90 mb-4">Notas importantes:</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">⏰</span>
+              <div>Los horarios están en horario del servidor (GMT+1). Se recomienda estar 15 minutos antes del inicio.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">⏳</span>
+              <div>Si la banda no se completa en 40 min, se pospone al siguiente horario o día disponible.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg md:col-span-2">
+              <span class="text-amber-400">⚠️</span>
+              <div>Si una raid presenta dificultades para avanzar y supera las 2 horas de duración después de derrotar al primer jefe, será pospuesta para rearmarse en el siguiente horario o día disponible.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">⚔️</span>
+              <div>Prohibido PvP antes o durante el evento.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">🧱</span>
+              <div>Los bajo GS o jugadores fuera de rendimiento pueden ser sustituidos en cualquier momento.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Estadísticas Principales -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-2">
       <!-- Total de Líderes -->
@@ -1192,163 +1306,178 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Obtener referencias a los elementos del DOM
-    const searchName = document.getElementById('searchName') as HTMLInputElement;
-    const filterRaid = document.getElementById('filterRaid') as HTMLSelectElement;
-    const filterDifficulty = document.getElementById('filterDifficulty') as HTMLSelectElement;
-    const resultsCount = document.getElementById('resultsCount') as HTMLSpanElement;
-    const currentPageSpan = document.getElementById('currentPage') as HTMLSpanElement;
-    const totalPagesSpan = document.getElementById('totalPages') as HTMLSpanElement;
-    const prevPageBtn = document.getElementById('prevPage') as HTMLButtonElement;
-    const nextPageBtn = document.getElementById('nextPage') as HTMLButtonElement;
-    const pageNumbersContainer = document.getElementById('pageNumbers') as HTMLDivElement;
+    // ===========================================
+    // Configuración de la tabla de líderes
+    // ===========================================
+    const leaderTable = document.querySelector('table:not(.raid-schedule-table)');
+    if (leaderTable) {
+      // Elementos de la tabla de líderes
+      const searchName = document.getElementById('searchName');
+      const filterRaid = document.getElementById('filterRaid');
+      const filterDifficulty = document.getElementById('filterDifficulty');
+      const resultsCount = document.getElementById('resultsCount');
+      const currentPageSpan = document.getElementById('currentPage');
+      const totalPagesSpan = document.getElementById('totalPages');
+      const prevPageBtn = document.getElementById('prevPage');
+      const nextPageBtn = document.getElementById('nextPage');
+      const pageNumbersContainer = document.getElementById('pageNumbers');
+      
+      // Obtener filas de la tabla de líderes
+      const leaderRows = Array.from(leaderTable.querySelectorAll('tbody tr'));
+      
+      // Estado de la paginación para la tabla de líderes
+      let currentPage = 1;
+      const rowsPerPage = 2;
+      let filteredRows = [...leaderRows];
+      let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
-    // Obtener todas las filas de la tabla
-    const allRows = Array.from(document.querySelectorAll('tbody tr'));
+      // Función para actualizar los números de página
+      const updatePageNumbers = () => {
+        if (!pageNumbersContainer) return;
+        
+        pageNumbersContainer.innerHTML = '';
 
-    // Estado de la paginación
-    let currentPage = 1;
-    const rowsPerPage = 2; // 5 filas por página
-    let filteredRows = [...allRows];
-    let totalPages = 1;
+        // Mostrar máximo 5 números de página a la vez
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
 
-    // Función para actualizar los números de página
-    const updatePageNumbers = () => {
-      pageNumbersContainer.innerHTML = '';
-
-      // Mostrar máximo 5 números de página a la vez
-      let startPage = Math.max(1, currentPage - 2);
-      let endPage = Math.min(totalPages, startPage + 4);
-
-      // Ajustar si estamos cerca del final
-      if (endPage - startPage < 4 && startPage > 1) {
-        startPage = Math.max(1, endPage - 4);
-      }
-
-      // Botón para la primera página si es necesario
-      if (startPage > 1) {
-        const firstPageBtn = document.createElement('button');
-        firstPageBtn.textContent = '1';
-        firstPageBtn.className = `px-3 py-1 rounded-md ${1 === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
-        firstPageBtn.addEventListener('click', () => goToPage(1));
-        pageNumbersContainer.appendChild(firstPageBtn);
-
-        if (startPage > 2) {
-          const ellipsis = document.createElement('span');
-          ellipsis.textContent = '...';
-          ellipsis.className = 'px-1 text-text-muted/50 flex items-center';
-          pageNumbersContainer.appendChild(ellipsis);
-        }
-      }
-
-      // Números de página
-      for (let i = startPage; i <= endPage; i++) {
-        const pageBtn = document.createElement('button');
-        pageBtn.textContent = i.toString();
-        pageBtn.className = `px-3 py-1 rounded-md transition-colors ${i === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
-        pageBtn.addEventListener('click', () => goToPage(i));
-        pageNumbersContainer.appendChild(pageBtn);
-      }
-
-      // Botón para la última página si es necesario
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-          const ellipsis = document.createElement('span');
-          ellipsis.textContent = '...';
-          ellipsis.className = 'px-1 text-text-muted/50 flex items-center';
-          pageNumbersContainer.appendChild(ellipsis);
+        // Ajustar si estamos cerca del final
+        if (endPage - startPage < 4 && startPage > 1) {
+          startPage = Math.max(1, endPage - 4);
         }
 
-        const lastPageBtn = document.createElement('button');
-        lastPageBtn.textContent = totalPages.toString();
-        lastPageBtn.className = `px-3 py-1 rounded-md ${totalPages === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
-        lastPageBtn.addEventListener('click', () => goToPage(totalPages));
-        pageNumbersContainer.appendChild(lastPageBtn);
-      }
-    };
+        // Botón para la primera página si es necesario
+        if (startPage > 1) {
+          const firstPageBtn = document.createElement('button');
+          firstPageBtn.textContent = '1';
+          firstPageBtn.className = `px-3 py-1 rounded-md ${1 === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
+          firstPageBtn.addEventListener('click', () => goToPage(1));
+          pageNumbersContainer.appendChild(firstPageBtn);
 
-    // Función para ir a una página específica
-    const goToPage = (page: number) => {
-      if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        updateTable();
-      }
-    };
+          if (startPage > 2) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-1 text-text-muted/50 flex items-center';
+            pageNumbersContainer.appendChild(ellipsis);
+          }
+        }
 
-    // Función para actualizar la visualización de la tabla
-    const updateTable = () => {
-      // Calcular índices para la paginación
-      const startIndex = (currentPage - 1) * rowsPerPage;
-      const endIndex = startIndex + rowsPerPage;
-      const rowsToShow = filteredRows.slice(startIndex, endIndex);
+        // Números de página
+        for (let i = startPage; i <= endPage; i++) {
+          const pageBtn = document.createElement('button');
+          pageBtn.textContent = i.toString();
+          pageBtn.className = `px-3 py-1 rounded-md transition-colors ${i === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
+          pageBtn.addEventListener('click', () => goToPage(i));
+          pageNumbersContainer.appendChild(pageBtn);
+        }
 
-      // Ocultar todas las filas primero
-      allRows.forEach((row) => {
-        row.style.display = 'none';
-      });
+        // Botón para la última página si es necesario
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-1 text-text-muted/50 flex items-center';
+            pageNumbersContainer.appendChild(ellipsis);
+          }
 
-      // Mostrar solo las filas de la página actual
-      rowsToShow.forEach((row) => {
-        if (row) row.style.display = '';
-      });
+          const lastPageBtn = document.createElement('button');
+          lastPageBtn.textContent = totalPages.toString();
+          lastPageBtn.className = `px-3 py-1 rounded-md ${totalPages === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
+          lastPageBtn.addEventListener('click', () => goToPage(totalPages));
+          pageNumbersContainer.appendChild(lastPageBtn);
+        }
+      };
 
-      // Actualizar contadores y controles de paginación
-      totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
-      resultsCount.textContent = filteredRows.length.toString();
-      totalPagesSpan.textContent = totalPages.toString();
+      // Función para ir a una página específica
+      const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+          currentPage = page;
+          updateLeaderTable();
+        }
+      };
 
-      // Asegurarse de que la página actual no sea mayor que el número total de páginas
-      if (currentPage > totalPages && totalPages > 0) {
-        currentPage = totalPages;
-        updateTable();
-        return;
-      }
+      // Función para actualizar la visualización de la tabla de líderes
+      const updateLeaderTable = () => {
+        // Calcular índices para la paginación
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const rowsToShow = filteredRows.slice(startIndex, endIndex);
 
-      // Actualizar estado de los botones de paginación
-      prevPageBtn.disabled = currentPage === 1;
-      nextPageBtn.disabled = currentPage >= totalPages || totalPages === 0;
+        // Ocultar todas las filas primero
+        leaderRows.forEach(row => row.style.display = 'none');
+        
+        // Mostrar solo las filas de la página actual
+        rowsToShow.forEach(row => {
+          if (row) row.style.display = '';
+        });
 
-      currentPageSpan.textContent = currentPage.toString();
+        // Actualizar contadores y controles de paginación
+        totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
+        
+        if (resultsCount) resultsCount.textContent = filteredRows.length.toString();
+        if (totalPagesSpan) totalPagesSpan.textContent = totalPages.toString();
 
-      // Actualizar los números de página
-      updatePageNumbers();
-    };
+        // Asegurarse de que la página actual no sea mayor que el número total de páginas
+        if (currentPage > totalPages && totalPages > 0) {
+          currentPage = totalPages;
+          updateLeaderTable();
+          return;
+        }
 
-    // Función para aplicar los filtros
-    const applyFilters = () => {
-      const nameQuery = searchName.value.trim().toLowerCase();
-      const raidQuery = filterRaid.value.toLowerCase();
-      const difficultyQuery = filterDifficulty.value.toLowerCase();
+        // Actualizar estado de los botones de paginación
+        if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
+        if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages || totalPages === 0;
 
-      filteredRows = allRows.filter((row) => {
-        // Get data from row attributes
-        const name = row.getAttribute('data-name') || '';
-        const raids = (row.getAttribute('data-raids') || '').toLowerCase().split(',').filter(Boolean);
-        const difficulties = (row.getAttribute('data-difficulties') || '').toLowerCase().split(',').filter(Boolean);
+        if (currentPageSpan) currentPageSpan.textContent = currentPage.toString();
 
-        // Apply filters
-        const nameMatch = name.includes(nameQuery);
-        const raidMatch = !raidQuery || raids.some(raid => raid.includes(raidQuery));
-        const difficultyMatch = !difficultyQuery || difficulties.some(difficulty => difficulty.includes(difficultyQuery));
+        // Actualizar los números de página
+        updatePageNumbers();
+      };
 
-        return nameMatch && raidMatch && difficultyMatch;
-      });
+      // Función para aplicar los filtros
+      const applyFilters = () => {
+        if (!searchName || !filterRaid || !filterDifficulty) return;
+        
+        const nameQuery = searchName.value.trim().toLowerCase();
+        const raidQuery = filterRaid.value.toLowerCase();
+        const difficultyQuery = filterDifficulty.value.toLowerCase();
 
-      // Resetear a la primera página al aplicar nuevos filtros
-      currentPage = 1;
-      updateTable();
-    };
+        filteredRows = leaderRows.filter((row) => {
+          // Obtener datos de los atributos de la fila
+          const name = row.getAttribute('data-name') || '';
+          const raids = (row.getAttribute('data-raids') || '').toLowerCase().split(',').filter(Boolean);
+          const difficulties = (row.getAttribute('data-difficulties') || '').toLowerCase().split(',').filter(Boolean);
 
-    // Manejadores de eventos
-    searchName.addEventListener('input', applyFilters);
-    filterRaid.addEventListener('change', applyFilters);
-    filterDifficulty.addEventListener('change', applyFilters);
+          // Aplicar filtros
+          const nameMatch = name.toLowerCase().includes(nameQuery);
+          const raidMatch = !raidQuery || raids.some(raid => raid.includes(raidQuery));
+          const difficultyMatch = !difficultyQuery || difficulties.some(difficulty => difficulty.includes(difficultyQuery));
 
-    prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
-    nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
+          return nameMatch && raidMatch && difficultyMatch;
+        });
 
-    // Inicializar la tabla
-    updateTable();
+        // Resetear a la primera página al aplicar nuevos filtros
+        currentPage = 1;
+        updateLeaderTable();
+      };
+
+      // Manejadores de eventos para la tabla de líderes
+      if (searchName) searchName.addEventListener('input', applyFilters);
+      if (filterRaid) filterRaid.addEventListener('change', applyFilters);
+      if (filterDifficulty) filterDifficulty.addEventListener('change', applyFilters);
+
+      if (prevPageBtn) prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
+      if (nextPageBtn) nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+      // Inicializar la tabla de líderes
+      updateLeaderTable();
+    }
+    
+    // ===========================================
+    // Configuración de la tabla de horario
+    // ===========================================
+    // No se aplica límite de filas a la tabla de horario
+    // Se muestra completa sin restricciones
   });
 </script>
 
