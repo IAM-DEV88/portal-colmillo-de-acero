@@ -1,0 +1,107 @@
+{
+  "2025": {
+    "10": {
+      "featuredPlayers": [
+        {
+          "playerName": "Metagamer",
+          "recognitions": [
+            {
+              "title": "Explorador del Mes",
+              "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
+              "icon": "star"
+            },
+            {
+              "title": "Asenso a Oficial",
+              "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
+              "icon": "trophy"
+            }
+          ]
+        },
+        {
+          "playerName": "Fogoza",
+          "recognitions": [
+            {
+              "title": "Explorador del Mes",
+              "description": "Por su constante dedicación y apoyo al crecimiento de la hermandad.",
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "playerName": "Xelino",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            },
+            {
+              "title": "Explorador del Mes",
+              "description": "Por su constante dedicación y apoyo al crecimiento de la hermandad.",
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "playerName": "Jainabunny",
+          "recognitions": [
+            {
+              "title": "Participación Destacada",
+              "description": "Reconocimiento por mantener una participación ejemplar en las actividades y eventos de Colmillo de Acero.",
+              "icon": "users"
+            },
+            {
+              "title": "Ganador del Sorteo de Halloween",
+              "description": "Ganador de la Gargantilla de  Colmillo de Acero.",
+              "icon": "gift"
+            }
+          ]
+        }
+      ]
+    },
+    "11": {
+      "featuredPlayers": [
+        {
+          "playerName": "Metagamer",
+          "recognitions": [
+            {
+              "title": "Reconocimiento Especial",
+              "description": "Reconocimiento por su destacada colaboración en raids y disposición para apoyar al equipo en todo momento.",
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "playerName": "Xelino",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
+        },
+        {
+          "playerName": "Fogoza",
+          "recognitions": [
+            {
+              "title": "Jugador Ejemplar",
+              "description": "Por su participación activa en los eventos semanales y su actitud positiva dentro de la comunidad.",
+              "icon": "default"
+            }
+          ]
+        },
+        {
+          "playerName": "Saem",
+          "recognitions": [
+            {
+              "title": "Participación Destacada",
+              "description": "Reconocimiento por mantener una participación ejemplar en las actividades y eventos de Colmillo de Acero.",
+              "icon": "users"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

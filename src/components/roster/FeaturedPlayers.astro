@@ -1,0 +1,124 @@
+---
+// Definir los tipos de datos
+interface ClassInfo {
+  color: string;
+  name: string;
+}
+
+interface FeaturedPlayer {
+  name: string;
+  recognition: string;
+  imageUrl?: string;
+}
+
+interface RosterMember {
+  name: string;
+  class: string;
+  rank?: string;
+  gearScore?: number;
+  [key: string]: any;
+}
+
+interface Props {
+  featuredPlayers: FeaturedPlayer[];
+  rosterData: RosterMember[];
+}
+
+const { featuredPlayers = [], rosterData = [] } = Astro.props as Props;
+
+// Definir la información de clases por defecto
+const defaultClassInfo: Record<string, ClassInfo> = {
+  Guerrero: { color: 'C79C6E', name: 'Guerrero' },
+  Paladín: { color: 'F58CBA', name: 'Paladín' },
+  Cazador: { color: 'ABD473', name: 'Cazador' },
+  Pícaro: { color: 'FFF569', name: 'Pícaro' },
+  Sacerdote: { color: 'FFFFFF', name: 'Sacerdote' },
+  'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
+  Chamán: { color: '0070DE', name: 'Chamán' },
+  Mago: { color: '69CCF0', name: 'Mago' },
+  Brujo: { color: '9482C9', name: 'Brujo' },
+  Druida: { color: 'FF7D0A', name: 'Druida' },
+};
+
+// Función para obtener los datos del jugador del roster
+const getPlayerData = (playerName: string): RosterMember | undefined => {
+  return rosterData.find(
+    (member) => member.name.toLowerCase() === playerName.toLowerCase()
+  );
+};
+
+// Si no hay jugadores destacados, no mostrar la sección
+if (!featuredPlayers.length) return null;
+---
+
+<div class="mb-8 bg-gradient-to-r from-amber-900/30 to-amber-800/20 backdrop-blur-sm border border-amber-800/40 rounded-xl p-6 shadow-lg">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-amber-200/90 uppercase tracking-wider">
+      Jugadores Destacados del Mes
+    </h2>
+    <a 
+      href="/hall-of-fame" 
+      class="text-amber-200/90 hover:text-amber-200/80 text-sm font-medium flex items-center gap-1 transition-colors"
+      title="Ver todos los jugadores destacados"
+    >
+      Ver todos
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+      </svg>
+    </a>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {
+      featuredPlayers.map((player) => {
+        const playerData = getPlayerData(player.name);
+        if (!playerData) return null;
+        
+        const classData = {
+          color: playerData.class ? (defaultClassInfo[playerData.class]?.color || 'FFFFFF') : 'FFFFFF',
+          name: playerData.class || 'Desconocido'
+        };
+        
+        return (
+          <div class="bg-gray-900/60 backdrop-blur-sm border border-amber-900/40 rounded-lg p-4 hover:border-amber-700/60 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg">
+            <div class="flex items-center space-x-4">
+              
+              <div class="flex-1 min-w-0">
+                <div class="flex gap-2">
+                <div class="w-8 h-8 self-center">
+                  <!-- Imagen de la clase -->
+                  <img 
+                    src={`/images/avatars/class_${playerData.class || 'default'}.jpg`}
+                    alt={playerData.class || 'Clase'}
+                    class="w-full h-full rounded-full border-2 border-amber-600/50 object-cover"
+                    onError="this.src='/images/avatars/default.png'"
+                  />
+                </div>
+                  <h3 class="text-lg text-center font-semibold text-amber-100 truncate" style={`color: #${classData.color}`}>
+                    {player.name}
+                  </h3>
+                </div>
+                  {playerData.rank && (
+                    <div class="bg-amber-700 text-amber-100 text-xs text-center font-bold px-2 py-0.5 rounded-full border border-amber-600/50">
+                    {playerData.rank}
+                  </div>
+                )}
+                <p class="text-sm text-amber-100/80 mt-1">
+                  {player.recognition}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</div>
+
+<style>
+  .featured-player {
+    transition: all 0.3s ease;
+  }
+  .featured-player:hover {
+    transform: translateY(-2px);
+  }
+</style>

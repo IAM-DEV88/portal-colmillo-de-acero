@@ -1,0 +1,672 @@
+---
+// src/pages/hall-of-fame.astro
+import Layout from '../components/layout/Layout.astro';
+import featuredData from '../data/featuredPlayers.json';
+
+// Definir tipos TypeScript
+type Recognition = {
+  title: string;
+  description: string;
+  icon: string;
+};
+
+type FeaturedPlayer = {
+  playerName: string;
+  recognitions: Recognition[];
+};
+
+type MonthlyData = {
+  featuredPlayers: FeaturedPlayer[];
+};
+
+type YearlyData = {
+  [month: string]: MonthlyData;
+};
+
+type FeaturedData = {
+  [year: string]: YearlyData;
+};
+
+// Convertir datos a tipo seguro
+const typedData = featuredData as unknown as FeaturedData;
+
+// Obtener todos los años disponibles
+const availableYears = Object.keys(typedData).sort((a, b) => parseInt(b) - parseInt(a));
+
+// Obtener el año y mes actual por defecto
+const currentYear = new Date().getFullYear().toString();
+const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
+
+// Obtener meses disponibles para el año actual
+const availableMonths = Object.keys(typedData[currentYear] || {}).sort((a, b) => parseInt(b) - parseInt(a));
+
+// Filtrar jugadores destacados
+const getFeaturedPlayers = (year: string, month: string) => {
+  return typedData[year]?.[month]?.featuredPlayers || [];
+};
+
+// Funciones de ayuda para íconos
+const getRecognitionIcon = (iconType: string): string => {
+  const icons: Record<string, string> = {
+    'trophy': '🏆',
+    'star': '⭐',
+    'gift': '🎁',
+    'award': '🏅',
+    'users': '👥',
+    'compass': '🧭',
+    'default': '✨'
+  };
+  return icons[iconType] || icons['default'];
+};
+
+const getPlayerIcon = (recognition: { icon?: string } | string | undefined): string => {
+  if (!recognition) return '👤';
+  if (typeof recognition === 'string') {
+    const iconMap: Record<string, string> = {
+      'trophy': '🏆',
+      'star': '⭐',
+      'gift': '🎁',
+      'award': '🏅',
+      'users': '👥',
+      'compass': '🧭',
+      'default': '👤'
+    };
+    return iconMap[recognition] || recognition || iconMap['default'];
+  }
+  const iconMap: Record<string, string> = {
+    'trophy': '🏆',
+    'star': '⭐',
+    'gift': '🎁',
+    'award': '🏅',
+    'users': '👥',
+    'compass': '🧭',
+    'default': '👤'
+  };
+  return iconMap[recognition.icon || ''] || recognition.icon || iconMap['default'];
+};
+
+// Función para obtener el top de jugadores por reconocimientos
+const getTopPlayers = (): Array<{
+  playerName: string;
+  recognitions: Array<{
+    title: string;
+    description: string;
+    icon: string;
+    date: string;
+  }>;
+}> => {
+  // Aplanar todos los jugadores de todos los meses
+  const allPlayers: Record<string, any> = {};
+  
+  // Recorrer todos los años y meses
+  Object.entries(typedData).forEach(([year, months]) => {
+    Object.entries(months).forEach(([month, data]) => {
+      const monthPadded = month.padStart(2, '0');
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear().toString();
+      const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      
+      // Solo incluir el mes actual o meses pasados
+      if (parseInt(year) > parseInt(currentYear) || 
+          (year === currentYear && parseInt(monthPadded) > parseInt(currentMonth))) {
+        return;
+      }
+      
+      data.featuredPlayers.forEach((player: any) => {
+        if (!allPlayers[player.playerName]) {
+          allPlayers[player.playerName] = {
+            playerName: player.playerName,
+            recognitions: []
+          };
+        }
+        // Añadir cada reconocimiento con su fecha
+        player.recognitions.forEach((rec: any) => {
+          allPlayers[player.playerName].recognitions.push({
+            ...rec,
+            date: `${year}-${monthPadded}-01`
+          });
+        });
+      });
+    });
+  });
+  
+  // Ordenar reconocimientos por fecha (más recientes primero)
+  Object.values(allPlayers).forEach((player: any) => {
+    player.recognitions.sort((a: any, b: any) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  });
+  
+  // Ordenar jugadores por cantidad de reconocimientos
+  return Object.values(allPlayers).sort((a: any, b: any) => 
+    b.recognitions.length - a.recognitions.length ||
+    new Date(b.recognitions[0]?.date || 0).getTime() - new Date(a.recognitions[0]?.date || 0).getTime()
+  );
+};
+
+// Obtener un jugador específico del top (0 = primero, 1 = segundo, etc.)
+const getTopPlayer = (position: number) => {
+  const topPlayers = getTopPlayers();
+  return topPlayers[position] || null;
+};
+
+// Obtener el total de reconocimientos de un jugador en el top
+const getTotalRecognitions = (position: number) => {
+  const player = getTopPlayer(position);
+  return player ? player.recognitions.length : 0;
+};
+
+// Obtener parámetros de la URL
+const url = new URL(Astro.request.url);
+const yearParam = url.searchParams.get('year');
+const monthParam = url.searchParams.get('month');
+
+// Obtener todos los meses disponibles para todos los años
+const allAvailableMonths = new Set<string>();
+Object.values(typedData).forEach(yearData => {
+  Object.keys(yearData).forEach(month => {
+    allAvailableMonths.add(month);
+  });
+});
+
+// Establecer año y mes seleccionados
+let selectedYear = yearParam && availableYears.includes(yearParam) ? yearParam : currentYear;
+
+// Si el año seleccionado no tiene datos, usar el primer año disponible
+if (!typedData[selectedYear]) {
+  selectedYear = availableYears[0] || currentYear;
+}
+
+// Función para normalizar el formato del mes (asegurar 2 dígitos)
+const normalizeMonth = (month: string): string => {
+  return month.padStart(2, '0');
+};
+
+// Obtener meses disponibles para el año seleccionado
+const availableMonthsForYear = Object.keys(typedData[selectedYear] || {})
+  .map(m => normalizeMonth(m))
+  .sort((a, b) => parseInt(b) - parseInt(a));
+
+// Función para verificar si un mes tiene datos
+const monthHasData = (year: string, month: string): boolean => {
+  const months = typedData[year] || {};
+  return Object.keys(months).some(m => 
+    parseInt(m) === parseInt(month) || 
+    normalizeMonth(m) === normalizeMonth(month)
+  );
+};
+
+// Establecer mes seleccionado
+let selectedMonth = monthParam && monthHasData(selectedYear, monthParam)
+  ? normalizeMonth(monthParam)
+  : availableMonthsForYear[0] || currentMonth;
+
+// Si el mes seleccionado no está disponible para el año actual, usar el primer mes disponible
+if (!availableMonthsForYear.some(m => parseInt(m) === parseInt(selectedMonth))) {
+  selectedMonth = availableMonthsForYear[0] || currentMonth;
+}
+
+const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
+--->
+
+<Layout title="Salón de la Fama | Colmillo de Acero">
+  <div class="container mx-auto px-4 py-8">
+   
+    
+    {/* Leaderboard Top 3 */}
+    <div class="max-w-5xl mx-auto mb-12">
+      <h2 class="text-2xl font-bold text-center text-amber-300 mb-6 flex items-center justify-center gap-2">
+        <i class="fas fa-trophy text-yellow-400"></i>
+        Salón de la Fama
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+        {/* Segundo lugar */}
+        <div class="bg-gradient-to-b from-gray-800 to-gray-900 border-t-4 border-amber-500 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/20">
+          <div class="relative">
+            <div class="w-24 h-24 mx-auto -mt-14 mb-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-4xl text-white shadow-lg border-4 border-amber-200">
+              2º
+            </div>
+            
+          </div>
+          <h3 class="text-xl font-bold text-amber-200">
+            {getTopPlayer(1)?.playerName || 'Por determinar'}
+          </h3>
+          <div class="text-amber-400 text-sm mb-3">
+            {getTopPlayer(1)?.recognitions?.length || 0} reconocimientos
+          </div>
+          <div class="h-1 bg-amber-900/50 rounded-full mb-4 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-amber-500 to-amber-400" style={`width: ${(getTopPlayer(1)?.recognitions?.length || 0) * 15 + 50}%`}></div>
+          </div>
+          <div class="text-amber-300/80 text-sm">
+            {getTopPlayer(1)?.recognitions?.[0]?.title || 'Destacado'}
+          </div>
+        </div>
+        
+        {/* Primer lugar */}
+        <div class="bg-gradient-to-b from-amber-900/30 to-gray-900 border-t-4 border-yellow-400 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/30 relative overflow-hidden">
+          <div class="absolute top-2 right-2 text-yellow-400">
+            <i class="fas fa-crown text-xl"></i>
+          </div>
+          <div class="relative">
+            <div class="w-32 h-32 mx-auto -mt-16 mb-4 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 flex items-center justify-center text-5xl text-amber-900 font-bold shadow-lg border-4 border-yellow-200">
+              1º
+            </div>
+            <div class="absolute -top-2 -right-2 bg-yellow-500 text-amber-900 text-sm font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-md">
+              {getTotalRecognitions(0)}º
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold text-yellow-300">
+            {getTopPlayer(0)?.playerName || 'Por determinar'}
+          </h3>
+          <div class="text-yellow-400 text-sm mb-3 font-medium">
+            {getTopPlayer(0)?.recognitions?.length || 0} reconocimientos
+          </div>
+          <div class="h-1 bg-amber-900/50 rounded-full mb-4 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-300" style={`width: ${(getTopPlayer(0)?.recognitions?.length || 0) * 15 + 50}%`}></div>
+          </div>
+          <div class="text-yellow-300/90 text-sm font-medium">
+            {getTopPlayer(0)?.recognitions?.[0]?.title || 'Destacado'}
+          </div>
+        </div>
+        
+        {/* Tercer lugar */}
+        <div class="bg-gradient-to-b from-gray-800 to-gray-900 border-t-4 border-amber-600 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/20">
+          <div class="relative">
+            <div class="w-20 h-20 mx-auto -mt-12 mb-4 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-3xl text-white shadow-lg border-4 border-amber-300">
+              3º
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-amber-200">
+            {getTopPlayer(2)?.playerName || 'Por determinar'}
+          </h3>
+          <div class="text-amber-400/80 text-sm mb-3">
+            {getTopPlayer(2)?.recognitions?.length || 0} reconocimientos
+          </div>
+          <div class="h-1 bg-amber-900/50 rounded-full mb-4 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-amber-600 to-amber-500" style={`width: ${(getTopPlayer(2)?.recognitions?.length || 0) * 15 + 50}%`}></div>
+          </div>
+          <div class="text-amber-300/70 text-sm">
+            {getTopPlayer(2)?.recognitions?.[0]?.title || 'Destacado'}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filtros Mejorados -->
+    <div class="bg-gradient-to-r from-amber-900/30 to-amber-800/20 backdrop-blur-sm border border-amber-800/40 rounded-xl p-6 mb-8 shadow-lg">
+      <h2 class="text-2xl font-bold text-amber-200/90 mb-6 text-center uppercase tracking-wider">
+        <i class="fas fa-filter mr-2"></i>Filtrar por Fecha
+      </h2>
+      
+      <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+        <!-- Selector de Año -->
+        <div class="w-full md:w-48 relative group">
+          <label for="year" class="block text-sm font-medium text-amber-200/80 mb-2 ml-1">
+            <i class="fas fa-calendar-alt mr-2"></i>Año
+          </label>
+          <div class="relative">
+            <select 
+              id="year" 
+              class="appearance-none bg-gray-800/80 border border-amber-600/30 text-amber-100 rounded-lg px-4 py-3 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all duration-200 cursor-pointer shadow-sm"
+              onchange="this.closest('astro-island').setAttribute('year', this.value)"
+            >
+              {availableYears.map(year => (
+                <option 
+                  value={year} 
+                  selected={year === selectedYear}
+                  class="bg-gray-800 text-amber-100"
+                >
+                  {year}
+                </option>
+              ))}
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-amber-400">
+              <i class="fas fa-chevron-down text-sm"></i>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Selector de Mes -->
+        <div class="w-full md:w-56 relative group">
+          <label for="month" class="block text-sm font-medium text-amber-200/80 mb-2 ml-1">
+            <i class="far fa-calendar mr-2"></i>Mes
+          </label>
+          <div class="relative">
+            <select 
+              id="month" 
+              class="appearance-none bg-gray-800/80 border border-amber-600/30 text-amber-100 rounded-lg px-4 py-3 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all duration-200 cursor-pointer shadow-sm"
+              onchange="this.closest('astro-island').setAttribute('month', this.value)"
+            >
+              {Object.entries({
+                '01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril',
+                '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto',
+                '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre'
+              }).map(([value, label]) => {
+                const isDisabled = !monthHasData(selectedYear, value);
+                return (
+                  <option 
+                    value={value}
+                    selected={value === selectedMonth}
+                    disabled={isDisabled}
+                    class={`${isDisabled ? 'text-gray-500 bg-gray-800' : 'text-amber-100 bg-gray-800'}`}
+                  >
+                    {isDisabled ? `${label} (Sin datos)` : label}
+                  </option>
+                );
+              })}
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-amber-400">
+              <i class="fas fa-chevron-down text-sm"></i>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Botón de reinicio -->
+        <div class="w-full md:w-auto flex items-end">
+          <button 
+            id="reset-filters"
+            class="mt-6 px-6 py-2.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 font-medium rounded-lg border border-amber-600/40 transition-all duration-200 flex items-center gap-2 group"
+            onclick="window.location.href = '/hall-of-fame'"
+          >
+            <i class="fas fa-sync-alt text-xs group-hover:animate-spin"></i>
+            <span>Reiniciar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de jugadores destacados -->
+    {featuredPlayers.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {featuredPlayers.map((player) => (
+          <div class="group relative bg-gradient-to-br from-gray-800/80 to-gray-900/90 rounded-xl overflow-hidden shadow-xl hover:shadow-amber-500/20 transition-all duration-300 border border-amber-800/30 hover:border-amber-600/50">
+            {/* Fondo decorativo */}
+            <div class="absolute inset-0 bg-[url('/images/card-pattern.png')] opacity-5 group-hover:opacity-10 transition-opacity"></div>
+            
+            {/* Contenido de la tarjeta */}
+            <div class="relative p-6">
+              {/* Encabezado con avatar y nombre */}
+              <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center">
+                  <div class="relative">
+                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-600/30 to-amber-800/30 backdrop-blur-sm border border-amber-600/30 flex items-center justify-center text-3xl shadow-lg">
+                      {getPlayerIcon(player.recognitions[0]?.icon)}
+                    </div>
+                    {/* Contador de reconocimientos */}
+                    {player.recognitions.length > 1 && (
+                      <div class="absolute -top-2 -right-2 bg-amber-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-md border-2 border-gray-900">
+                        +{player.recognitions.length - 1}
+                      </div>
+                    )}
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="text-xl font-bold text-amber-100 group-hover:text-amber-300 transition-colors">
+                      {player.playerName}
+                    </h3>
+                    <div class="text-xs text-amber-400/80 font-medium flex items-center mt-1">
+                      <i class="fas fa-award mr-1"></i>
+                      {player.recognitions.length} reconocimiento{player.recognitions.length !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Icono de destacado */}
+                <div class="text-amber-400/30 group-hover:text-amber-400/50 transition-colors">
+                  <i class="fas fa-star text-xl"></i>
+                </div>
+              </div>
+              
+              {/* Lista de reconocimientos */}
+              <div class="space-y-3">
+                {player.recognitions.slice(0, 2).map((recognition, index) => (
+                  <div class="bg-gradient-to-r from-amber-900/30 to-amber-800/10 backdrop-blur-sm p-4 rounded-lg border border-amber-800/30 hover:border-amber-600/50 transition-colors">
+                    <div class="flex items-start">
+                      <div class="text-amber-400 text-lg mr-3 mt-0.5">
+                        {getRecognitionIcon(recognition.icon)}
+                      </div>
+                      <div>
+                        <h4 class="font-semibold text-amber-300 flex items-center">
+                          {recognition.title}
+                        </h4>
+                        <p class="text-amber-100/80 text-sm mt-1 leading-relaxed">
+                          {recognition.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Mensaje para reconocimientos adicionales */}
+                {player.recognitions.length > 2 && (
+                  <div class="text-center py-2 text-xs text-amber-400/60">
+                    +{player.recognitions.length - 2} reconocimiento{player.recognitions.length > 3 ? 's' : ''} más
+                  </div>
+                )}
+              </div>
+              
+              {/* Efecto de resplandor al pasar el ratón */}
+              <div class="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
+                   style="background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.05), transparent 70%)">
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16 bg-gradient-to-br from-gray-800/30 to-gray-900/50 rounded-xl border-2 border-dashed border-amber-800/30">
+        <div class="text-amber-400/50 text-4xl mb-4">
+          <i class="far fa-trophy"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-amber-100 mb-2">No hay jugadores destacados</h3>
+        <p class="text-gray-400 max-w-md mx-auto">
+          No se encontraron jugadores destacados para el período seleccionado.
+          Intenta con otro mes o año.
+        </p>
+      </div>
+    )}
+    
+    {/* Tabla de Ranking General */}
+    <div class="mt-16 max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold text-center text-amber-300 mb-6 flex items-center justify-center gap-2">
+        <i class="fas fa-trophy-star text-yellow-400"></i>
+        Ranking General de Reconocimientos
+      </h2>
+      
+      <div class="bg-gradient-to-br from-gray-800/50 to-gray-900/80 rounded-xl border border-amber-800/50 overflow-hidden shadow-lg">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-amber-900/50">
+            <thead class="bg-amber-900/30">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-300 uppercase tracking-wider">
+                  Posición
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-300 uppercase tracking-wider">
+                  Jugador
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-300 uppercase tracking-wider">
+                  Reconocimientos
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-amber-300 uppercase tracking-wider">
+                  Último Reconocimiento
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-gray-900/50 divide-y divide-amber-900/30">
+              {getTopPlayers().map((player, index) => (
+                <tr class="hover:bg-amber-900/10 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <span class={`inline-flex items-center justify-center w-8 h-8 rounded-full ${
+                        index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-amber-900 font-bold' : 
+                        index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-800' :
+                        index === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800 text-amber-100' :
+                        'bg-gray-800 text-amber-100'
+                      }`}>
+                        {index + 1}º
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center
+                      ${index === 0 ? 'text-yellow-300' : ''}
+                      ${index === 1 ? 'text-gray-200' : ''}
+                      ${index === 2 ? 'text-amber-300' : 'text-amber-100'}
+                      font-medium">
+                      <span class="ml-2">{player.playerName}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <span class="px-2 py-1 bg-amber-900/50 text-amber-300 text-sm font-medium rounded-full">
+                        {player.recognitions.length} reconocimiento{player.recognitions.length !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-100/80">
+                    {player.recognitions[0]?.date 
+                      ? new Date(player.recognitions[0].date).toLocaleDateString('es-ES', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })
+                      : 'N/A'}
+                  </td>
+                </tr>
+              ))}
+              {getTopPlayers().length === 0 && (
+                <tr>
+                  <td colspan="4" class="px-6 py-8 text-center text-amber-100/60">
+                    <i class="fas fa-trophy-slash text-3xl mb-2 opacity-30"></i>
+                    <p>No hay datos de reconocimientos disponibles</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    {/* Funciones de ayuda */}
+    <script define:vars={{}}>
+      // Función para obtener el ícono según el tipo de reconocimiento
+      function getRecognitionIcon(iconType) {
+        const icons = {
+          'trophy': '🏆',
+          'star': '⭐',
+          'gift': '🎁',
+          'award': '🏅',
+          'users': '👥',
+          'compass': '🧭',
+          'default': '✨'
+        };
+        return icons[iconType] || icons['default'];
+      }
+      
+      // Función para obtener el ícono del jugador
+      function getPlayerIcon(recognition) {
+        if (!recognition) return '👤';
+        const iconMap = {
+          'trophy': '🏆',
+          'star': '⭐',
+          'gift': '🎁',
+          'award': '🏅',
+          'users': '👥',
+          'compass': '🧭',
+          'default': '👤'
+        };
+        return iconMap[recognition.icon] || recognition.icon || iconMap['default'];
+      }
+    </script>
+  </div>
+</Layout>
+
+<script is:inline>
+  // Manejar cambios en los filtros
+  document.addEventListener('DOMContentLoaded', () => {
+    const yearSelect = document.getElementById('year');
+    const monthSelect = document.getElementById('month');
+    
+    const updateUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      params.set('year', yearSelect.value);
+      params.set('month', monthSelect.value);
+      window.location.search = params.toString();
+    };
+    
+    // Actualizar meses disponibles cuando cambia el año
+    yearSelect?.addEventListener('change', () => {
+      const selectedYear = yearSelect.value;
+      // Hacer una solicitud al servidor con el nuevo año
+      window.location.search = `?year=${selectedYear}&month=${monthSelect.value}`;
+    });
+    
+    monthSelect?.addEventListener('change', updateUrl);
+    
+    // Deshabilitar meses sin datos
+    const updateMonthOptions = () => {
+      const selectedYear = yearSelect.value;
+      const monthOptions = monthSelect.querySelectorAll('option');
+      
+      monthOptions.forEach(option => {
+        const monthValue = option.value;
+        // Verificar si el mes tiene datos para el año seleccionado
+        const yearData = window.typedData?.[selectedYear] || {};
+        const hasData = Object.keys(yearData).some(month => 
+          parseInt(month) === parseInt(monthValue) || 
+          month.padStart(2, '0') === monthValue.padStart(2, '0')
+        );
+        
+        option.disabled = !hasData;
+        
+        // Si la opción está seleccionada pero no tiene datos, seleccionar el primer mes disponible
+        if (option.selected && !hasData) {
+          const availableMonths = Array.from(monthOptions)
+            .filter(opt => {
+              const optMonth = opt.value.padStart(2, '0');
+              return Object.keys(yearData).some(m => 
+                parseInt(m) === parseInt(optMonth) || 
+                m.padStart(2, '0') === optMonth
+              );
+            });
+            
+          if (availableMonths.length > 0) {
+            availableMonths[0].selected = true;
+            updateUrl();
+          }
+        }
+      });
+    };
+    
+    // Hacer los datos disponibles globalmente para el cliente
+    window.typedData = JSON.parse(JSON.stringify(typedData)); // Usar los mismos datos del servidor
+    
+    // Inicializar los selectores
+    if (yearSelect && monthSelect) {
+      updateMonthOptions();
+      
+      // Actualizar cuando cambia el año
+      yearSelect.addEventListener('change', updateMonthOptions);
+      
+      // Forzar la actualización inicial de los meses
+      updateMonthOptions();
+    }
+  });
+</script>
+
+<style>
+  /* Estilos personalizados */
+  select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  select option:disabled {
+    color: #6b7280;
+  }
+  
+  select option:not(:disabled) {
+    color: white;
+  }
+</style>
