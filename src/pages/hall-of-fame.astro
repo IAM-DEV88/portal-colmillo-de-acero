@@ -2,6 +2,7 @@
 // src/pages/hall-of-fame.astro
 import Layout from '../components/layout/Layout.astro';
 import featuredData from '../data/featuredPlayers.json';
+import rosterData from '../data/roster.json';
 
 // Definir tipos TypeScript
 type Recognition = {
@@ -59,8 +60,51 @@ const getRecognitionIcon = (iconType: string): string => {
   return icons[iconType] || icons['default'];
 };
 
-const getPlayerIcon = (recognition: { icon?: string } | string | undefined): string => {
+// Mapeo de colores por clase
+const classColors: Record<string, string> = {
+  'Guerrero': '#C79C6E',
+  'Paladín': '#F58CBA',
+  'Cazador': '#ABD473',
+  'Pícaro': '#FFF569',
+  'Sacerdote': '#FFFFFF',
+  'Caballero de la Muerte': '#C41F3B',
+  'Chamán': '#0070DE',
+  'Mago': '#69CCF0',
+  'Brujo': '#9482C9',
+  'Druida': '#FF7D0A',
+  'default': '#A0AEC0'
+};
+
+// Función para obtener la clase de un jugador del roster
+const getPlayerClass = (playerName: string): string => {
+  const player = rosterData.find(p => p.name === playerName);
+  return player?.class || 'default';
+};
+
+// Función para obtener el color de la clase de un jugador
+const getPlayerClassColor = (playerName: string): string => {
+  const className = getPlayerClass(playerName);
+  return classColors[className] || classColors['default'];
+};
+
+const getPlayerIcon = (recognition: { icon?: string } | string | undefined, playerName?: string): string => {
+  // Si se proporciona un nombre de jugador, intentar obtener su clase
+  if (playerName) {
+    const playerClass = getPlayerClass(playerName);
+    if (playerClass) {
+      // Retornar la imagen de la clase si existe
+      return `<img 
+        src="/images/avatars/class_${playerClass}.jpg" 
+        alt="${playerClass}" 
+        class="rounded-full w-full  h-full"
+        onerror="this.src='/images/avatars/default.png'"
+      />`;
+    }
+  }
+
+  // Si no hay nombre de jugador o no se encontró la clase, usar los íconos por defecto
   if (!recognition) return '👤';
+  
   if (typeof recognition === 'string') {
     const iconMap: Record<string, string> = {
       'trophy': '🏆',
@@ -73,6 +117,7 @@ const getPlayerIcon = (recognition: { icon?: string } | string | undefined): str
     };
     return iconMap[recognition] || recognition || iconMap['default'];
   }
+  
   const iconMap: Record<string, string> = {
     'trophy': '🏆',
     'star': '⭐',
@@ -210,12 +255,12 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
 --->
 
 <Layout title="Salón de la Fama | Colmillo de Acero">
-  <div class="container mx-auto px-4 py-8">
+  <div class="container mx-auto py-4">
    
     
     {/* Leaderboard Top 3 */}
     <div class="max-w-5xl mx-auto mb-12">
-      <h2 class="text-2xl font-bold text-center text-amber-300 mb-6 flex items-center justify-center gap-2">
+      <h2 class="text-2xl font-bold text-center text-amber-300 mb-16 flex items-center justify-center gap-2">
         <i class="fas fa-trophy text-yellow-400"></i>
         Salón de la Fama
       </h2>
@@ -224,12 +269,17 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
         {/* Segundo lugar */}
         <div class="bg-gradient-to-b from-gray-800 to-gray-900 border-t-4 border-amber-500 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/20">
           <div class="relative">
-            <div class="w-24 h-24 mx-auto -mt-14 mb-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-4xl text-white shadow-lg border-4 border-amber-200">
+            <div class="w-24 h-24 mx-auto -mt-14 mb-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-4xl text-white shadow-lg border-4 border-amber-200 relative">
               2º
+              {getTopPlayer(1)?.playerName && (
+                <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gray-900 border-2 border-amber-200 overflow-hidden">
+                  <Fragment set:html={getPlayerIcon(undefined, getTopPlayer(1)?.playerName)} />
+                </div>
+              )}
             </div>
             
           </div>
-          <h3 class="text-xl font-bold text-amber-200">
+          <h3 class="text-xl font-bold" style={`color: ${getPlayerClassColor(getTopPlayer(1)?.playerName || '')}`}>
             {getTopPlayer(1)?.playerName || 'Por determinar'}
           </h3>
           <div class="text-amber-400 text-sm mb-3">
@@ -244,19 +294,21 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
         </div>
         
         {/* Primer lugar */}
-        <div class="bg-gradient-to-b from-amber-900/30 to-gray-900 border-t-4 border-yellow-400 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/30 relative overflow-hidden">
+        <div class="bg-gradient-to-b from-amber-900/30 to-gray-900 border-t-4 border-yellow-400 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/30 relative">
           <div class="absolute top-2 right-2 text-yellow-400">
             <i class="fas fa-crown text-xl"></i>
           </div>
           <div class="relative">
-            <div class="w-32 h-32 mx-auto -mt-16 mb-4 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 flex items-center justify-center text-5xl text-amber-900 font-bold shadow-lg border-4 border-yellow-200">
+            <div class="w-32 h-32 mx-auto -mt-16 mb-4 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 flex items-center justify-center text-5xl text-amber-900 font-bold shadow-lg border-4 border-yellow-200 relative">
               1º
-            </div>
-            <div class="absolute -top-2 -right-2 bg-yellow-500 text-amber-900 text-sm font-bold rounded-full w-10 h-10 flex items-center justify-center shadow-md">
-              {getTotalRecognitions(0)}º
+              {getTopPlayer(0)?.playerName && (
+                <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gray-900 border-2 border-yellow-200 overflow-hidden">
+                  <Fragment set:html={getPlayerIcon(undefined, getTopPlayer(0)?.playerName)} />
+                </div>
+              )}
             </div>
           </div>
-          <h3 class="text-2xl font-bold text-yellow-300">
+          <h3 class="text-2xl font-bold" style={`color: ${getPlayerClassColor(getTopPlayer(0)?.playerName || '')}`}>
             {getTopPlayer(0)?.playerName || 'Por determinar'}
           </h3>
           <div class="text-yellow-400 text-sm mb-3 font-medium">
@@ -273,11 +325,16 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
         {/* Tercer lugar */}
         <div class="bg-gradient-to-b from-gray-800 to-gray-900 border-t-4 border-amber-600 rounded-xl p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/20">
           <div class="relative">
-            <div class="w-20 h-20 mx-auto -mt-12 mb-4 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-3xl text-white shadow-lg border-4 border-amber-300">
+            <div class="w-20 h-20 mx-auto -mt-12 mb-4 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-3xl text-white shadow-lg border-4 border-amber-300 relative">
               3º
+              {getTopPlayer(2)?.playerName && (
+                <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gray-900 border-2 border-amber-300 overflow-hidden">
+                  <Fragment set:html={getPlayerIcon(undefined, getTopPlayer(2)?.playerName)} />
+                </div>
+              )}
             </div>
           </div>
-          <h3 class="text-lg font-bold text-amber-200">
+          <h3 class="text-lg font-bold" style={`color: ${getPlayerClassColor(getTopPlayer(2)?.playerName || '')}`}>
             {getTopPlayer(2)?.playerName || 'Por determinar'}
           </h3>
           <div class="text-amber-400/80 text-sm mb-3">
@@ -401,9 +458,14 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
                     )}
                   </div>
                   <div class="ml-4">
-                    <h3 class="text-xl font-bold text-amber-100 group-hover:text-amber-300 transition-colors">
-                      {player.playerName}
-                    </h3>
+                    <div class="flex items-center gap-2">
+                      <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-900/80 border border-amber-600/50 flex items-center justify-center">
+                          <Fragment set:html={getPlayerIcon(undefined, player.playerName)} />
+                      </div>
+                      <h3 class="text-xl font-bold transition-colors" style={`color: ${getPlayerClassColor(player.playerName)}`}>
+                        {player.playerName}
+                      </h3>
+                    </div>
                     <div class="text-xs text-amber-400/80 font-medium flex items-center mt-1">
                       <i class="fas fa-award mr-1"></i>
                       {player.recognitions.length} reconocimiento{player.recognitions.length !== 1 ? 's' : ''}
@@ -508,12 +570,15 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center
-                      ${index === 0 ? 'text-yellow-300' : ''}
-                      ${index === 1 ? 'text-gray-200' : ''}
-                      ${index === 2 ? 'text-amber-300' : 'text-amber-100'}
-                      font-medium">
-                      <span class="ml-2">{player.playerName}</span>
+                    <div class="flex items-center gap-2">
+                      <div class="w-6 h-6 rounded-full overflow-hidden bg-gray-800/80 border border-amber-600/50 flex items-center justify-center">
+                        <div class="w-5 h-5">
+                          <Fragment set:html={getPlayerIcon(undefined, player.playerName)} />
+                        </div>
+                      </div>
+                      <span class="font-medium" style={`color: ${getPlayerClassColor(player.playerName)}`}>
+                        {player.playerName}
+                      </span>
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
