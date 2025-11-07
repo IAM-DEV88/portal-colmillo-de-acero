@@ -175,6 +175,71 @@
               "icon": "star"
             }
           ]
+        },
+        {
+          "playerName": "Rafna",
+          "recognitions": [
+            {
+              "title": "Asistencia Destacada",
+              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "playerName": "Cazagods",
+          "recognitions": [
+            {
+              "title": "Asistencia Destacada",
+              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "playerName": "Magim",
+          "recognitions": [
+            {
+              "title": "Asistencia Destacada",
+              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
+              "icon": "star"
+            },
+            {
+              "title": "Asenso a Explorador",
+              "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
+              "icon": "trophy"
+            }
+          ]
+        },
+        {
+          "playerName": "Nesor",
+          "recognitions": [
+            {
+              "title": "Asistencia Destacada",
+              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "playerName": "Yungo",
+          "recognitions": [
+            {
+              "title": "Asistencia Destacada",
+              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
+              "icon": "star"
+            }
+          ]
+        },
+        {
+          "playerName": "Khrii",
+          "recognitions": [
+            {
+              "title": "Asistencia Destacada",
+              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
+              "icon": "star"
+            }
+          ]
         }
       ]
     }

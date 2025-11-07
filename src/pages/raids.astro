@@ -609,7 +609,13 @@ const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, num
   <div class="mx-auto animate-fade-in">
     <!-- Weekly Raid Schedule -->
     <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
-      <h2 class="text-2xl font-bold text-amber-300 mb-6 text-center">Horario Semanal de Raids</h2>
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h2 class="text-2xl font-bold text-amber-300">Horario Semanal de Raids</h2>
+        <a href="/core-schedule" class="inline-flex items-center px-4 py-2 border border-amber-600 text-sm font-medium rounded-md text-amber-100 bg-amber-900/30 hover:bg-amber-800/50 transition-colors">
+          <i class="fas fa-calendar-alt mr-2"></i>
+          Registrar Asistencia
+        </a>
+      </div>
       
       <div class="overflow-x-auto rounded-xl border border-amber-900/30">
         <table class="min-w-full divide-y divide-amber-900/30 raid-schedule-table">
