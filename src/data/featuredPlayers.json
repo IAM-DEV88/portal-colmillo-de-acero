@@ -240,6 +240,16 @@
               "icon": "star"
             }
           ]
+        },
+        {
+          "playerName": "Hellzinn",
+          "recognitions": [
+            {
+              "title": "Contribuidor Destacado",
+              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+              "icon": "gift"
+            }
+          ]
         }
       ]
     }
