@@ -1,0 +1,85 @@
+---
+import { createClient } from '@supabase/supabase-js';
+
+// Hardcoded for testing - replace with your actual values
+const supabaseUrl = 'https://ralivarwsyunylsswbuk.supabase.co';
+const supabaseAnonKey = 'your_supabase_anon_key_here';
+
+// Debug log
+console.log('VITE_SUPABASE_URL:', !!supabaseUrl ? 'Exists' : 'Missing');
+console.log('VITE_SUPABASE_ANON_KEY:', !!supabaseAnonKey ? 'Exists' : 'Missing');
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(`Missing Supabase environment variables. VITE_SUPABASE_URL: ${!!supabaseUrl}, VITE_SUPABASE_ANON_KEY: ${!!supabaseAnonKey}`);
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const currentPath = Astro.url.pathname;
+
+// This runs on the server
+const { data: initialCount, error: initialError } = await supabase
+  .rpc('increment_view_count', { page_path: currentPath });
+
+if (initialError) {
+  console.error('Error incrementing view count:', initialError);
+}
+
+// Get the current page view count
+const { data: pageData, error: pageError } = await supabase
+  .from('page_views')
+  .select('view_count')
+  .eq('page_path', currentPath)
+  .single();
+
+const viewCount = pageData?.view_count || 0;
+
+// Get the total views across all pages
+const { data: totalData, error: totalError } = await supabase
+  .from('page_views')
+  .select('view_count');
+
+const totalViewCount = totalData?.reduce((sum, page) => sum + (page.view_count || 0), 0) || 0;
+---
+
+<div class="fixed invisible  bottom-4 right-4 bg-gray-800/80 backdrop-blur-sm text-white text-xs px-3 py-2 rounded-lg shadow-lg border border-gray-700 z-50">
+  <div class="flex items-center space-x-2">
+    <span class="text-amber-400">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      </svg>
+    </span>
+    <span>Visitas: {viewCount.toLocaleString()}</span>
+    <span class="text-gray-400">|</span>
+    <span>Total: {totalViewCount.toLocaleString()}</span>
+  </div>
+</div>
+
+<script>
+// Client-side code to update the counter without page reload
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/api/track-view', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ path: window.location.pathname })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const counter = document.querySelector('#visitor-counter');
+      if (counter) {
+        counter.textContent = data.view_count.toLocaleString();
+      }
+      const totalCounter = document.querySelector('#total-visitor-counter');
+      if (totalCounter) {
+        totalCounter.textContent = data.total_views.toLocaleString();
+      }
+    }
+  } catch (error) {
+    console.error('Error updating view count:', error);
+  }
+});
+</script>
