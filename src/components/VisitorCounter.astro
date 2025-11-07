@@ -1,60 +1,57 @@
 ---
-// Only run on client-side to avoid build issues
-if (typeof window !== 'undefined') {
-  import('@supabase/supabase-js').then(async ({ createClient }) => {
-    // Use environment variables with fallback
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://ralivarwsyunylsswbuk.supabase.co';
-    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your_supabase_anon_key_here';
-    
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Missing Supabase environment variables');
-      return;
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    const currentPath = window.location.pathname;
-
-    try {
-      // Update view count
-      const { error: incrementError } = await supabase
-        .rpc('increment_view_count', { page_path: currentPath });
-
-      if (incrementError) {
-        console.error('Error incrementing view count:', incrementError);
-      }
-
-      // Get view counts
-      const [{ data: pageData }, { data: allPages }] = await Promise.all([
-        supabase
-          .from('page_views')
-          .select('view_count')
-          .eq('page_path', currentPath)
-          .single(),
-        supabase
-          .from('page_views')
-          .select('view_count')
-      ]);
-
-      // Update the UI
-      const counter = document.querySelector('#visitor-counter');
-      const totalCounter = document.querySelector('#total-visitor-counter');
-      
-      if (counter) {
-        counter.textContent = (pageData?.view_count || 0).toLocaleString();
-      }
-      if (totalCounter) {
-        const totalViews = allPages?.reduce((sum, page) => sum + (page.view_count || 0), 0) || 0;
-        totalCounter.textContent = totalViews.toLocaleString();
-      }
-    } catch (error) {
-      console.error('Error in visitor counter:', error);
-    }
-  });
-}
-
-// Default values for server-side rendering
+// Client-side only component
 const viewCount = 0;
 const totalViewCount = 0;
+---
+
+<div id="visitor-counter-container" class="fixed bottom-4 right-4 bg-gray-800/80 backdrop-blur-sm text-white text-xs px-3 py-2 rounded-lg shadow-lg border border-gray-700 z-50">
+  <div class="flex items-center space-x-2">
+    <span class="text-amber-400">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      </svg>
+    </span>
+    <span>Visitas: <span id="visitor-counter">{viewCount.toLocaleString()}</span></span>
+    <span class="text-gray-400">|</span>
+    <span>Total: <span id="total-visitor-counter">{totalViewCount.toLocaleString()}</span></span>
+  </div>
+</div>
+
+<script>
+// Wait for the component to be mounted
+document.addEventListener('astro:page-load', () => {
+  // Only run on client-side
+  if (typeof window === 'undefined') return;
+
+  const updateCounter = async () => {
+    try {
+      const response = await fetch('/.netlify/functions/track-view', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: window.location.pathname })
+      });
+
+      if (!response.ok) throw new Error('Failed to update counter');
+      
+      const data = await response.json();
+      
+      // Update the UI
+      const counter = document.getElementById('visitor-counter');
+      const totalCounter = document.getElementById('total-visitor-counter');
+      
+      if (counter) counter.textContent = data.views.toLocaleString();
+      if (totalCounter) totalCounter.textContent = data.totalViews.toLocaleString();
+      
+    } catch (error) {
+      console.error('Error updating visitor counter:', error);
+    }
+  };
+
+  // Initial update
+  updateCounter();
+});
+</script>
 ---
 
 <div class="fixed invisible  bottom-4 right-4 bg-gray-800/80 backdrop-blur-sm text-white text-xs px-3 py-2 rounded-lg shadow-lg border border-gray-700 z-50">
