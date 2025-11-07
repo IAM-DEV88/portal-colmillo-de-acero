@@ -96,7 +96,7 @@ const getPlayerIcon = (recognition: { icon?: string } | string | undefined, play
       return `<img 
         src="/images/avatars/class_${playerClass}.jpg" 
         alt="${playerClass}" 
-        class="rounded-full w-full  h-full"
+        class="w-8 h-8 rounded-full border-2 border-amber-600/50 object-cover"
         onerror="this.src='/images/avatars/default.png'"
       />`;
     }
@@ -351,7 +351,7 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
     </div>
     
     <!-- Filtros Mejorados -->
-    <div class="bg-gradient-to-r from-amber-900/30 to-amber-800/20 backdrop-blur-sm border border-amber-800/40 rounded-xl p-6 mb-8 shadow-lg">
+    <div id="filters-section" class="bg-gradient-to-r from-amber-900/30 to-amber-800/20 backdrop-blur-sm border border-amber-800/40 rounded-xl p-6 mb-8 shadow-lg">
       <h2 class="text-2xl font-bold text-amber-200/90 mb-6 text-center uppercase tracking-wider">
         <i class="fas fa-filter mr-2"></i>Filtrar por Fecha
       </h2>
@@ -648,17 +648,37 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
 </Layout>
 
 <script is:inline>
-  // Manejar cambios en los filtros
-  document.addEventListener('DOMContentLoaded', () => {
-    const yearSelect = document.getElementById('year');
-    const monthSelect = document.getElementById('month');
-    
-    const updateUrl = () => {
-      const params = new URLSearchParams(window.location.search);
-      params.set('year', yearSelect.value);
-      params.set('month', monthSelect.value);
-      window.location.search = params.toString();
-    };
+    // Manejar cambios en los filtros
+    document.addEventListener('DOMContentLoaded', () => {
+      const yearSelect = document.getElementById('year');
+      const monthSelect = document.getElementById('month');
+      
+      const scrollToFilters = () => {
+        const filtersSection = document.getElementById('filters-section');
+        if (filtersSection) {
+          filtersSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      
+      const updateUrl = () => {
+        const params = new URLSearchParams(window.location.search);
+        params.set('year', yearSelect.value);
+        params.set('month', monthSelect.value);
+        
+        // Hacer scroll al cambiar los filtros
+        scrollToFilters();
+        
+        // Pequeño retraso para permitir el scroll antes de recargar
+        setTimeout(() => {
+          window.location.search = params.toString();
+        }, 300);
+      };
+      
+      // Hacer scroll a los filtros al cargar la página si hay parámetros en la URL
+      if (window.location.search) {
+        // Pequeño retraso para asegurar que el DOM esté completamente cargado
+        setTimeout(scrollToFilters, 100);
+      }
     
     // Actualizar meses disponibles cuando cambia el año
     yearSelect?.addEventListener('change', () => {
