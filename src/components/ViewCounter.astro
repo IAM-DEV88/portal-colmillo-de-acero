@@ -1,5 +1,5 @@
 ---
-// Simple client-side view counter
+// Client-side only component
 const viewCount = 0;
 const totalViewCount = 0;
 ---
@@ -19,29 +19,34 @@ const totalViewCount = 0;
 </div>
 
 <script>
-// Simple client-side view counter
-async function updateViewCounter() {
-  try {
-    const path = window.location.pathname;
-    const response = await fetch('/.netlify/functions/track-view', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path })
-    });
+// Client-side code to update the counter
+document.addEventListener('astro:page-load', function() {
+  // Only run on client-side
+  if (typeof window === 'undefined') return;
 
-    if (response.ok) {
-      const data = await response.json();
-      const viewCount = document.getElementById('view-count');
-      const totalViews = document.getElementById('total-views');
+  async function updateCounter() {
+    try {
+      const response = await fetch('/.netlify/functions/track-view', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: window.location.pathname })
+      });
+
+      if (!response.ok) throw new Error('Failed to update counter');
       
-      if (viewCount) viewCount.textContent = (data.views || 0).toLocaleString();
-      if (totalViews) totalViews.textContent = (data.totalViews || 0).toLocaleString();
+      const data = await response.json();
+      const counter = document.getElementById('view-count');
+      const totalCounter = document.getElementById('total-views');
+      
+      if (counter) counter.textContent = (data.views || 0).toLocaleString();
+      if (totalCounter) totalCounter.textContent = (data.totalViews || 0).toLocaleString();
+      
+    } catch (error) {
+      console.error('Error updating view counter:', error);
     }
-  } catch (error) {
-    console.error('Error updating view counter:', error);
   }
-}
 
-// Run on page load
-document.addEventListener('astro:page-load', updateViewCounter);
+  // Initial update
+  updateCounter();
+});
 </script>
