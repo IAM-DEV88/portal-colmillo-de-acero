@@ -2,7 +2,7 @@
 import '../../styles/global.css';
 import Navigation from './Navigation.astro';
 import Footer from './Footer.astro';
-import VisitorCounter from '../VisitorCounter.astro';
+import ViewCounter from '../ViewCounter.astro';
 
 interface Props {
   title?: string;
@@ -62,6 +62,6 @@ const { title = 'Colmillo de Acero' } = Astro.props;
       </main>
       
       <Footer />
-      <VisitorCounter client:load />
+      <ViewCounter client:load />
   </body>
 </html>
