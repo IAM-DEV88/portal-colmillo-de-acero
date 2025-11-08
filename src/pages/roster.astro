@@ -93,7 +93,7 @@ const featuredPlayers = currentMonthData
 
 // Manejar la paginación
 const itemsPerPage = 6;
-const totalPages = Math.ceil(featuredPlayers.length / itemsPerPage);
+let totalPages = Math.ceil(featuredPlayers.length / itemsPerPage);
 
 // Obtener la página actual de la URL
 let currentPage = 1;
