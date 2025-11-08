@@ -71,20 +71,28 @@ const formattedRosterData = (Array.isArray(rosterData) ? rosterData : []).map((m
   }
 });
 
-// Importar datos de jugadores destacados desde el archivo JSON
-import featuredData from '../data/featuredPlayers.json';
+// Importar tipos y datos
+import type { FeaturedPlayersData, FeaturedPlayer } from '../types/featuredPlayers';
+import featuredDataRaw from '../data/featuredPlayers.json';
+
+// Hacer un type assertion para los datos
+const featuredData = featuredDataRaw as unknown as FeaturedPlayersData;
 
 // Obtener el año y mes actual
 const currentYear = new Date().getFullYear().toString();
 const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
 
 // Obtener jugadores destacados del mes actual
-const currentMonthData = featuredData[currentYear]?.[currentMonth]?.featuredPlayers || [];
+const currentYearData = featuredData[currentYear];
+const currentMonthData = (currentYearData && currentMonth in currentYearData) 
+  ? (currentYearData as Record<string, { featuredPlayers: FeaturedPlayer[] }>)[currentMonth].featuredPlayers 
+  : [];
+
 const allRecognitions = featuredData.recognitions || [];
 
 // Filtrar jugadores que existen en el roster y revertir el orden
 const featuredPlayers = currentMonthData
-  .filter(player => 
+  .filter((player: FeaturedPlayer) => 
     !player.playerName || formattedRosterData.some(
       member => member.name.toLowerCase() === player.playerName.toLowerCase()
     )
@@ -92,7 +100,7 @@ const featuredPlayers = currentMonthData
   .reverse(); // Invertir el orden para mostrar los más recientes primero
 
 // Manejar la paginación
-const itemsPerPage = 6;
+let itemsPerPage = 6;
 let totalPages = Math.ceil(featuredPlayers.length / itemsPerPage);
 
 // Obtener la página actual de la URL

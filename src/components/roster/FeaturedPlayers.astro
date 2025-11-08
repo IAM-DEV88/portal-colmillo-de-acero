@@ -25,9 +25,13 @@ interface RosterMember {
 }
 
 interface Props {
-  featuredPlayers: any[]; // Temporary any type to handle both old and new formats
+  featuredPlayers: Array<{
+    playerName: string;
+    recognitionIndices: number[];
+    name?: string; // For backward compatibility
+  }>;
   rosterData: RosterMember[];
-  recognitions?: Recognition[]; // Add recognitions prop
+  recognitions?: Recognition[];
   currentPage?: number;
   totalPages?: number;
 }
@@ -59,8 +63,12 @@ const getPlayerData = (playerName: string): RosterMember | undefined => {
 if (!featuredPlayers.length) return null;
 
 // Obtener las props de paginación
-const { currentPage = 1, totalPages = 1 } = Astro.props;
+const { currentPage: currentPageProp = 1, totalPages: totalPagesProp = 1 } = Astro.props;
 const itemsPerPage = 6;
+
+// Usar valores de las props o calcularlos localmente
+const currentPage = Math.max(1, Number(currentPageProp) || 1);
+const totalPages = Math.max(1, Number(totalPagesProp) || 1);
 
 // Función para obtener los jugadores de la página actual
 const getPaginatedPlayers = () => {
