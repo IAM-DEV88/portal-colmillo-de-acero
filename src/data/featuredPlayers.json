@@ -1,91 +1,86 @@
 {
+  "recognitions": [
+    {
+      "title": "Explorador del Mes",
+      "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
+      "icon": "star"
+    },
+    {
+      "title": "Asenso a Oficial",
+      "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
+      "icon": "trophy"
+    },
+    {
+      "title": "Explorador del Mes",
+      "description": "Por su constante dedicación y apoyo al crecimiento de la hermandad.",
+      "icon": "star"
+    },
+    {
+      "title": "Contribuidor Destacado",
+      "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
+      "icon": "gift"
+    },
+    {
+      "title": "Participación Destacada",
+      "description": "Reconocimiento por mantener una participación ejemplar en las actividades y eventos de Colmillo de Acero.",
+      "icon": "users"
+    },
+    {
+      "title": "Ganador del Sorteo de Halloween",
+      "description": "Ganador de la Gargantilla de Colmillo de Acero.",
+      "icon": "gift"
+    },
+    {
+      "title": "Reconocimiento Especial",
+      "description": "Reconocimiento por su destacada colaboración en raids y disposición para apoyar al equipo en todo momento.",
+      "icon": "star"
+    },
+    {
+      "title": "Jugador Ejemplar",
+      "description": "Por su participación activa en los eventos semanales y su actitud positiva dentro de la comunidad.",
+      "icon": "default"
+    },
+    {
+      "title": "Colaborador Destacado",
+      "description": "Reconocimiento por su destacada colaboración en la hermandad para apoyar a los nuevos.",
+      "icon": "star"
+    },
+    {
+      "title": "Asistencia Destacada",
+      "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
+      "icon": "star"
+    }
+  ],
   "2025": {
     "10": {
       "featuredPlayers": [
         {
           "playerName": "Metagamer",
-          "recognitions": [
-            {
-              "title": "Explorador del Mes",
-              "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
-              "icon": "star"
-            },
-            {
-              "title": "Asenso a Oficial",
-              "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
-              "icon": "trophy"
-            }
-          ]
+          "recognitionIndices": [0, 1]
         },
         {
           "playerName": "Fogozza",
-          "recognitions": [
-            {
-              "title": "Explorador del Mes",
-              "description": "Por su constante dedicación y apoyo al crecimiento de la hermandad.",
-              "icon": "star"
-            }
-          ]
+          "recognitionIndices": [2]
         },
         {
           "playerName": "Xelino",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            },
-            {
-              "title": "Explorador del Mes",
-              "description": "Por su constante dedicación y apoyo al crecimiento de la hermandad.",
-              "icon": "star"
-            }
-          ]
+          "recognitionIndices": [3, 2]
         },
         {
           "playerName": "Jainabunny",
-          "recognitions": [
-            {
-              "title": "Participación Destacada",
-              "description": "Reconocimiento por mantener una participación ejemplar en las actividades y eventos de Colmillo de Acero.",
-              "icon": "users"
-            },
-            {
-              "title": "Ganador del Sorteo de Halloween",
-              "description": "Ganador de la Gargantilla de  Colmillo de Acero.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [4, 5]
         },
         {
           "playerName": "Evilink",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Muertodasco",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Azsunax",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [3]
         }
       ]
     },
@@ -93,163 +88,83 @@
       "featuredPlayers": [
         {
           "playerName": "Metagamer",
-          "recognitions": [
-            {
-              "title": "Reconocimiento Especial",
-              "description": "Reconocimiento por su destacada colaboración en raids y disposición para apoyar al equipo en todo momento.",
-              "icon": "star"
-            }
-          ]
+          "recognitionIndices": [6]
         },
         {
           "playerName": "Xelino",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Evilink",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Muertodasco",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Azsunax",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Fogozza",
-          "recognitions": [
-            {
-              "title": "Jugador Ejemplar",
-              "description": "Por su participación activa en los eventos semanales y su actitud positiva dentro de la comunidad.",
-              "icon": "default"
-            }
-          ]
+          "recognitionIndices": [7]
         },
         {
           "playerName": "Luciusvelkan",
-          "recognitions": [
-            {
-              "title": "Participación Destacada",
-              "description": "Reconocimiento por mantener una participación ejemplar en las actividades y eventos de Colmillo de Acero.",
-              "icon": "users"
-            },
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "recognitionIndices": [4, 3]
         },
         {
           "playerName": "Beellzebu",
-          "recognitions": [
-            {
-              "title": "Colaborador Destacado",
-              "description": "Reconocimiento por su destacada colaboración en la hermandad para apoyar a los nuevos.",
-              "icon": "star"
-            }
-          ]
+          "recognitionIndices": [8]
         },
         {
-          "playerName": "Rafna",
-          "recognitions": [
-            {
-              "title": "Asistencia Destacada",
-              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
-              "icon": "star"
-            }
-          ]
+          "playerName": "Vance",
+          "recognitionIndices": [3]
         },
         {
-          "playerName": "Cazagods",
-          "recognitions": [
-            {
-              "title": "Asistencia Destacada",
-              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
-              "icon": "star"
-            }
-          ]
+          "playerName": "Yonor",
+          "recognitionIndices": [3]
         },
         {
-          "playerName": "Magim",
-          "recognitions": [
-            {
-              "title": "Asistencia Destacada",
-              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
-              "icon": "star"
-            },
-            {
-              "title": "Asenso a Explorador",
-              "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
-              "icon": "trophy"
-            }
-          ]
+          "playerName": "Bosakiller",
+          "recognitionIndices": [3]
         },
         {
-          "playerName": "Nesor",
-          "recognitions": [
-            {
-              "title": "Asistencia Destacada",
-              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
-              "icon": "star"
-            }
-          ]
+          "playerName": "Carloswiki",
+          "recognitionIndices": [3]
         },
         {
-          "playerName": "Yungo",
-          "recognitions": [
-            {
-              "title": "Asistencia Destacada",
-              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
-              "icon": "star"
-            }
-          ]
+          "playerName": "Jeraim",
+          "recognitionIndices": [3]
         },
         {
-          "playerName": "Khrii",
-          "recognitions": [
-            {
-              "title": "Asistencia Destacada",
-              "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
-              "icon": "star"
-            }
-          ]
+          "playerName": "Misuho",
+          "recognitionIndices": [3]
         },
         {
-          "playerName": "Hellzinn",
-          "recognitions": [
-            {
-              "title": "Contribuidor Destacado",
-              "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-              "icon": "gift"
-            }
-          ]
+          "playerName": "Matidom",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Daviel",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Scriphackmvp",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Anduingg",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Legrom",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Angelesm",
+          "recognitionIndices": [3]
         }
       ]
     }

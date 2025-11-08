@@ -80,27 +80,41 @@ const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
 
 // Obtener jugadores destacados del mes actual
 const currentMonthData = featuredData[currentYear]?.[currentMonth]?.featuredPlayers || [];
+const allRecognitions = featuredData.recognitions || [];
 
-// Mapear los datos al formato esperado por el componente
+// Filtrar jugadores que existen en el roster y revertir el orden
 const featuredPlayers = currentMonthData
-  .map(player => ({
-    name: player.playerName,
-    recognition: player.recognitions[0]?.description || '',
-    title: player.recognitions[0]?.title || 'Reconocimiento',
-    icon: player.recognitions[0]?.icon || 'award'
-  }))
   .filter(player => 
-    // Filtrar solo jugadores que existan en el roster o que no tengan nombre (para mantener los espacios vacíos)
-    !player.name || formattedRosterData.some(
-      member => member.name.toLowerCase() === player.name.toLowerCase()
+    !player.playerName || formattedRosterData.some(
+      member => member.name.toLowerCase() === player.playerName.toLowerCase()
     )
-  );
+  )
+  .reverse(); // Invertir el orden para mostrar los más recientes primero
+
+// Manejar la paginación
+const itemsPerPage = 6;
+const totalPages = Math.ceil(featuredPlayers.length / itemsPerPage);
+
+// Obtener la página actual de la URL
+let currentPage = 1;
+if (Astro.url.searchParams.has('page')) {
+  const page = parseInt(Astro.url.searchParams.get('page') || '1');
+  if (!isNaN(page) && page >= 1 && page <= totalPages) {
+    currentPage = page;
+  }
+}
 ---
 
 <Layout title="Roster">
   <div class="mx-auto animate-fade-in max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- Sección de Jugadores Destacados -->
-    <FeaturedPlayers featuredPlayers={featuredPlayers} rosterData={formattedRosterData} />
+    <FeaturedPlayers 
+      featuredPlayers={featuredPlayers} 
+      rosterData={formattedRosterData} 
+      recognitions={allRecognitions}
+      currentPage={currentPage}
+      totalPages={totalPages}
+    />
 
     <!-- Tabla de Roster -->
     <div class="mt-8">
