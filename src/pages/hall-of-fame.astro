@@ -13,23 +13,24 @@ type Recognition = {
 
 type FeaturedPlayer = {
   playerName: string;
-  recognitions: Recognition[];
+  recognitionIndices: number[];
 };
 
-type MonthlyData = {
+type MonthData = {
   featuredPlayers: FeaturedPlayer[];
 };
 
-type YearlyData = {
-  [month: string]: MonthlyData;
+type YearData = {
+  [month: string]: MonthData;
 };
 
-type FeaturedData = {
-  [year: string]: YearlyData;
+type FeaturedPlayersData = {
+  recognitions: Recognition[];
+  [year: string]: YearData | Recognition[];
 };
 
 // Convertir datos a tipo seguro
-const typedData = featuredData as unknown as FeaturedData;
+const typedData = featuredData as unknown as FeaturedPlayersData;
 
 // Obtener todos los años disponibles
 const availableYears = Object.keys(typedData).sort((a, b) => parseInt(b) - parseInt(a));
@@ -41,9 +42,21 @@ const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
 // Obtener meses disponibles para el año actual
 const availableMonths = Object.keys(typedData[currentYear] || {}).sort((a, b) => parseInt(b) - parseInt(a));
 
-// Filtrar jugadores destacados
+// Obtener jugadores destacados
 const getFeaturedPlayers = (year: string, month: string) => {
-  return typedData[year]?.[month]?.featuredPlayers || [];
+  const yearData = typedData[year] as YearData | undefined;
+  if (!yearData) return [];
+  
+  const monthData = yearData[month] as MonthData | undefined;
+  if (!monthData) return [];
+  
+  // Mapear los índices de reconocimiento a los objetos de reconocimiento reales
+  return monthData.featuredPlayers.map(player => ({
+    ...player,
+    recognitions: (player.recognitionIndices || []).map(index => 
+      typedData.recognitions[index]
+    ).filter(Boolean)
+  }));
 };
 
 // Funciones de ayuda para íconos
@@ -144,8 +157,13 @@ const getTopPlayers = (): Array<{
   const allPlayers: Record<string, any> = {};
   
   // Recorrer todos los años y meses
-  Object.entries(typedData).forEach(([year, months]) => {
-    Object.entries(months).forEach(([month, data]) => {
+  Object.entries(typedData).forEach(([year, yearData]) => {
+    // Saltar la propiedad 'recognitions'
+    if (year === 'recognitions') return;
+    
+    const months = yearData as YearData;
+    
+    Object.entries(months).forEach(([month, monthData]) => {
       const monthPadded = month.padStart(2, '0');
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear().toString();
@@ -157,19 +175,27 @@ const getTopPlayers = (): Array<{
         return;
       }
       
-      data.featuredPlayers.forEach((player: any) => {
+      monthData.featuredPlayers.forEach((player: any) => {
         if (!allPlayers[player.playerName]) {
           allPlayers[player.playerName] = {
             playerName: player.playerName,
             recognitions: []
           };
         }
+        
+        // Mapear los índices de reconocimiento a los objetos de reconocimiento
+        const recognitions = (player.recognitionIndices || []).map((index: number) => 
+          typedData.recognitions[index]
+        ).filter(Boolean);
+        
         // Añadir cada reconocimiento con su fecha
-        player.recognitions.forEach((rec: any) => {
-          allPlayers[player.playerName].recognitions.push({
-            ...rec,
-            date: `${year}-${monthPadded}-01`
-          });
+        recognitions.forEach((rec: any) => {
+          if (rec) {
+            allPlayers[player.playerName].recognitions.push({
+              ...rec,
+              date: `${year}-${monthPadded}-01`
+            });
+          }
         });
       });
     });
