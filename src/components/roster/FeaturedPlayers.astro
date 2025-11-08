@@ -66,15 +66,17 @@ if (!featuredPlayers.length) return null;
 const { currentPage: currentPageProp = 1, totalPages: totalPagesProp = 1 } = Astro.props;
 const itemsPerPage = 6;
 
-// Usar valores de las props o calcularlos localmente
-const currentPage = Math.max(1, Number(currentPageProp) || 1);
-const totalPages = Math.max(1, Number(totalPagesProp) || 1);
+// Calcular valores de paginación sin usar const
+const currentPageValue = Math.max(1, Number(currentPageProp) || 1);
+const totalPagesValue = Math.max(1, Number(totalPagesProp) || 1);
 
 // Función para obtener los jugadores de la página actual
 const getPaginatedPlayers = () => {
-  const startIndex = (currentPage - 1) * itemsPerPage;
+  const startIndex = (currentPageValue - 1) * itemsPerPage;
   return featuredPlayers.slice(startIndex, startIndex + itemsPerPage);
 };
+
+
 
 // Función para actualizar la visualización de jugadores
 const updateFeaturedPlayers = () => {
@@ -339,37 +341,37 @@ if (typeof window !== 'undefined') {
     })}
   </div>
   
-  {totalPages > 1 && (
+  {totalPagesValue > 1 && (
     <div id="featured-players-pagination" class="mt-6">
       <!-- Los controles de paginación se generarán con JavaScript -->
     </div>
   )}
   
   <!-- Controles de paginación -->
-  {totalPages > 1 && (
+  {totalPagesValue > 1 && (
     <div class="flex items-center justify-center gap-2 mt-6">
       <a 
-        href={currentPage > 1 ? `?page=${currentPage - 1}` : '#'}
+        href={currentPageValue > 1 ? `?page=${currentPageValue - 1}` : '#'}
         class={`px-3 py-1 rounded-md ${
-          currentPage === 1 
+          currentPageValue === 1 
             ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
             : 'bg-amber-700/50 hover:bg-amber-600/60 text-amber-100'
         }`}
-        aria-disabled={currentPage === 1}
+        aria-disabled={currentPageValue === 1}
       >
         Anterior
       </a>
       
       <div class="flex items-center gap-1">
-        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-          const pageNum = Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
-          if (pageNum < 1 || pageNum > totalPages) return null;
+        {Array.from({ length: Math.min(5, totalPagesValue) }, (_, i) => {
+          const pageNum = Math.max(1, Math.min(totalPagesValue - 4, currentPageValue - 2)) + i;
+          if (pageNum < 1 || pageNum > totalPagesValue) return null;
           
           return (
             <a 
               href={`?page=${pageNum}`}
               class={`w-8 h-8 flex items-center justify-center rounded-md ${
-                pageNum === currentPage 
+                pageNum === currentPageValue 
                   ? 'bg-amber-600 text-white' 
                   : 'bg-gray-700 hover:bg-gray-600 text-gray-200'
               }`}
@@ -381,13 +383,13 @@ if (typeof window !== 'undefined') {
       </div>
       
       <a 
-        href={currentPage < totalPages ? `?page=${currentPage + 1}` : '#'}
+        href={currentPageValue < totalPagesValue ? `?page=${currentPageValue + 1}` : '#'}
         class={`px-3 py-1 rounded-md ${
-          currentPage === totalPages 
+          currentPageValue === totalPagesValue 
             ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
             : 'bg-amber-700/50 hover:bg-amber-600/60 text-amber-100'
         }`}
-        aria-disabled={currentPage === totalPages}
+        aria-disabled={currentPageValue === totalPagesValue}
       >
         Siguiente
       </a>
