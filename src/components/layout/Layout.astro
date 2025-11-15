@@ -60,6 +60,16 @@ const { title = 'Colmillo de Acero' } = Astro.props;
         <slot />
       </main>
       
+      <!-- Floating Action Button -->
+      <a 
+        href="/servicios" 
+        class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg hover:shadow-xl hover:text-white hover:shadow-amber-500/30 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+        aria-label="Ver servicios para hermandades"
+        title="Servicios para Hermandades"
+      >
+        <i class="fas fa-gem text-xl"></i>
+      </a>
+      
       <Footer />
   </body>
 </html>
