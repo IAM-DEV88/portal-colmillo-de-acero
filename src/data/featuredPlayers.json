@@ -205,6 +205,10 @@
         {
           "playerName": "Garnush",
           "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Dytor",
+          "recognitionIndices": [3]
         }
       ]
     }
