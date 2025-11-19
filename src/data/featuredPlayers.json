@@ -49,6 +49,11 @@
       "title": "Asistencia Destacada",
       "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
       "icon": "star"
+    },
+    {
+      "title": "Elemento importante de la hermandad",
+      "description": "Por su constante apoyo y compromiso con la hermandad.",
+      "icon": "trophy"
     }
   ],
   "2025": {
