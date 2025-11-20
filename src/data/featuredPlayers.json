@@ -169,7 +169,7 @@
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,10]
         },
         {
           "playerName": "Tifusignite",
@@ -214,7 +214,20 @@
         {
           "playerName": "Dytor",
           "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Dkvexana",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Dantallian",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Necantu",
+          "recognitionIndices": [3]
         }
+
       ]
     }
   }
