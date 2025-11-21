@@ -109,7 +109,7 @@
         },
         {
           "playerName": "Azsunax",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,7]
         },
         {
           "playerName": "Fogozza",
@@ -133,7 +133,7 @@
         },
         {
           "playerName": "Bosakiller",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,7]
         },
         {
           "playerName": "Carloswiki",
@@ -157,7 +157,7 @@
         },
         {
           "playerName": "Scriphackmvp",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,7]
         },
         {
           "playerName": "Anduingg",
@@ -169,7 +169,7 @@
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [3,10]
+          "recognitionIndices": [3,7,10]
         },
         {
           "playerName": "Tifusignite",
@@ -185,7 +185,7 @@
         },
         {
           "playerName": "Gabozinn",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,7]
         },
         {
           "playerName": "Finisht",
