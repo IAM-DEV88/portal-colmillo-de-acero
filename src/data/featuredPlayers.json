@@ -169,7 +169,7 @@
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [3,7,10]
+          "recognitionIndices": [2,3,7,10]
         },
         {
           "playerName": "Tifusignite",
@@ -225,6 +225,18 @@
         },
         {
           "playerName": "Necantu",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Spartac",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Aliem",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Robindruid",
           "recognitionIndices": [3]
         }
 
