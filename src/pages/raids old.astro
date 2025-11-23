@@ -1,0 +1,1566 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import rosterJson from '../data/roster.json';
+import { validatePublicNote } from '../utils/rosterUtils';
+// Eliminamos la importación de RaidInfo ya que la definiremos localmente
+// import type { RaidInfo } from '../types/roster';
+
+// Define the roster item type
+interface RosterItem {
+  name: string;
+  class: string;
+  publicNote?: string;
+  rank: string;
+  officerNote?: string;
+  [key: string]: any;
+}
+
+// Type the roster data
+const rosterData: RosterItem[] = Array.isArray(rosterJson) ? rosterJson : [];
+
+// Define difficulty colors
+const difficultyColors = {
+  'normal': 'text-green-400',
+  'heroic': 'text-purple-400',
+  'mythic': 'text-yellow-400',  
+  'lfr': 'text-blue-400',
+  'flex': 'text-blue-400',
+  'raid-finder': 'text-blue-400',
+} as const;
+
+type DifficultyKey = keyof typeof difficultyColors;
+
+// Define types for our data
+interface RaidEvent {
+  name: string;
+  class: string;
+  icon: string;
+  raid: {
+    code: string;
+    difficultyCode: string;
+    difficulty: string;
+    name: string;
+  };
+  schedule: {
+    days: string[];
+    time: string;
+    isRaidLeader: boolean;
+  };
+  combinedNote?: string;
+  nextOccurrence: Date;
+}
+
+interface Schedule {
+  days: string[];
+  time: string;
+  isRaidLeader: boolean;
+  dayRange?: string;
+}
+
+interface RaidInfo {
+  code: string;
+  difficultyCode?: string;
+  difficulty?: string;
+  name: string;
+}
+
+interface RaidLeader {
+  name: string;
+  class: string;
+  publicNote: string;
+  officerNote?: string;
+  isRaidLeader: boolean;
+  raids: RaidInfo[];
+  schedules: Schedule[];
+  hasSchedule: boolean;
+  hasRaids: boolean;
+  icon: string;
+  combinedNote?: string;
+  events: RaidEvent[];
+}
+
+// Type for roster data that could be either an array or an object with members
+interface RosterData {
+  members?: Array<{
+    name: string;
+    class: string;
+    publicNote?: string;
+    rank: string;
+    [key: string]: any;
+  }>;
+  [key: string]: any;
+}
+
+interface RaidStats {
+  raids: Record<string, number>;
+  difficulties: Record<string, number>;
+  schedules: Record<string, number>;
+}
+
+// Format class name for file paths
+const formatClassName = (className: string): string => {
+  return className
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/\s+/g, '_'); // Replace spaces with underscores
+};
+
+// Función para obtener el próximo día de la semana (0 = Domingo, 1 = Lunes, etc.)
+const getNextDayOfWeek = (targetDay: number, timeString: string): Date => {
+  // Obtener la fecha actual en la zona horaria local
+  const now = new Date();
+  
+  // Ajustar a GMT+1 (1 hora adelante de GMT)
+  const serverOffset = 1; // GMT+1
+  
+  // Crear fecha objetivo en GMT+1
+  const [hours, minutes] = timeString.split(':').map(Number);
+  const targetDate = new Date(now);
+  
+  // Ajustar la hora para GMT+1 (restar 1 hora a la hora local para convertir a GMT+1)
+  const localHours = (hours - serverOffset + 24) % 24; // Manejar cambio de día
+  targetDate.setHours(localHours, minutes, 0, 0);
+  
+  // Calcular días hasta el próximo día objetivo
+  const currentDay = now.getDay(); // 0 = Domingo, 1 = Lunes, etc.
+  let daysToAdd = targetDay - currentDay;
+  
+  // Ajustar si el día ya pasó esta semana o si es hoy pero la hora ya pasó
+  if (daysToAdd < 0 || (daysToAdd === 0 && now > targetDate)) {
+    daysToAdd += 7;
+  }
+  
+  // Ajustar la fecha al próximo día objetivo
+  targetDate.setDate(targetDate.getDate() + daysToAdd);
+  
+  return targetDate;
+};
+
+// Mapa de días a índices (0 = Domingo, 1 = Lunes, etc.)
+const DAY_TO_INDEX: Record<string, number> = {
+  'L': 1, // Lunes
+  'M': 2, // Martes
+  'X': 3, // Miércoles
+  'J': 4, // Jueves
+  'V': 5, // Viernes
+  'S': 6, // Sábado
+  'D': 0  // Domingo
+};
+
+// Orden de los días para la visualización (Lunes a Domingo)
+const DAY_ORDER = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+
+// Mapa de códigos de día a nombres completos
+const DAY_NAMES: Record<string, string> = {
+  'L': 'Lunes',
+  'M': 'Martes',
+  'X': 'Miércoles',
+  'J': 'Jueves',
+  'V': 'Viernes',
+  'S': 'Sábado',
+  'D': 'Domingo'
+};
+
+// Process roster data to find raid leaders with raids and schedules
+const raidLeaders: RaidLeader[] = [];
+const potentialLeaders: Array<{ name: string; reason: string }> = [];
+const raidEvents: RaidEvent[] = [];
+
+// Función para calcular el peso de un evento para ordenación global
+const getGlobalEventWeight = (event: RaidEvent): number => {
+  if (!event?.schedule?.days?.[0] || !event.schedule.time) return Number.MAX_SAFE_INTEGER;
+  
+  const dayCode = event.schedule.days[0];
+  const time = event.schedule.time;
+  const dayIndex = DAY_TO_INDEX[dayCode];
+  
+  if (dayIndex === undefined) return Number.MAX_SAFE_INTEGER;
+  
+  const now = new Date();
+  const nextOccurrence = getNextDayOfWeek(dayIndex, time);
+  
+  // Calcular la diferencia en minutos desde ahora
+  const diffMs = nextOccurrence.getTime() - now.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  
+  // Si la diferencia es negativa, sumar una semana
+  return diffMinutes < 0 ? diffMinutes + (7 * 24 * 60) : diffMinutes;
+};
+
+// Use the typed roster data
+const members = rosterData;
+
+const debugLeaders = ['Stormgrim', 'Voidhammer', 'Vorthrak'];
+
+// Función para extraer raids de los bloques de evento
+const extractRaidsFromBlocks = (blocks: any[] = []): RaidInfo[] => {
+  const raids: RaidInfo[] = [];
+  const seen = new Set<string>(); // Para evitar duplicados
+  
+  blocks.forEach(block => {
+    // Solo considerar bloques de evento válidos que tengan RL, raid, días y hora
+    if (block.type === 'event' && 
+        block.isValid && 
+        block.parsedData?.isRaidLeader && 
+        block.parsedData?.raid && 
+        block.parsedData.days?.length > 0 && 
+        block.parsedData.time) {
+      
+      const raidKey = `${block.parsedData.raid}-${block.parsedData.difficulty || '25N'}`;
+      
+      // Evitar duplicados
+      if (!seen.has(raidKey)) {
+        seen.add(raidKey);
+        raids.push({
+          code: block.parsedData.raid,
+          difficultyCode: block.parsedData.difficulty || '25N',
+          difficulty: block.parsedData.difficulty === '10N' ? '10 Normal' : 
+                     block.parsedData.difficulty === '25N' ? '25 Normal' :
+                     block.parsedData.difficulty === '10H' ? '10 Heroico' : '25 Heroico',
+          name: block.parsedData.raid.toUpperCase()
+        });
+      }
+    }
+  });
+  return raids;
+};
+
+// Función para extraer horarios de los bloques de evento
+const extractSchedulesFromBlocks = (blocks: any[] = []): Schedule[] => {
+  const schedules: Schedule[] = [];
+  const seen = new Set<string>(); // Para evitar duplicados
+  
+  if (!blocks || !Array.isArray(blocks)) return [];
+  
+  blocks.forEach(block => {
+    try {
+      // Solo considerar bloques de evento válidos que tengan RL, días y hora
+      if (block.type === 'event' && 
+          block.isValid && 
+          block.parsedData?.isRaidLeader && 
+          block.parsedData.days?.length > 0 && 
+          block.parsedData.time &&
+          block.parsedData.raid) {  // Asegurarse de que haya una raid definida
+        
+        const days = Array.isArray(block.parsedData.days) ? block.parsedData.days : [];
+        const time = String(block.parsedData.time || '').trim();
+        const raid = block.parsedData.raid;
+        const difficulty = block.parsedData.difficulty || '25N';
+        
+        // Crear un horario para cada día
+        days.forEach((day: string) => {
+          const scheduleKey = `${day}-${time}-${raid}-${difficulty}`;
+          
+          // Evitar duplicados exactos
+          if (!seen.has(scheduleKey)) {
+            seen.add(scheduleKey);
+            schedules.push({
+              days: [day],
+              time,
+              isRaidLeader: true,
+              raid,
+              difficulty
+            });
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error procesando bloque de horario:', error, block);
+    }
+  });
+  
+  return schedules;
+};
+
+for (const member of members) {
+  try {
+    // Validar tanto la nota pública como la oficial
+    const publicValidation = validatePublicNote(member.publicNote || '', member.name);
+    const officerValidation = validatePublicNote(member.officerNote || '', member.name);
+    
+    // Combinar bloques de ambas validaciones
+    const allBlocks = [
+      ...(publicValidation.blocks || []),
+      ...(officerValidation.blocks || [])
+    ];
+    
+    // Extraer raids y horarios de todos los bloques combinados
+    const raids = extractRaidsFromBlocks(allBlocks);
+    const schedules = extractSchedulesFromBlocks(allBlocks);
+    
+    // Verificar si tiene bloques de evento válidos con RL en cualquiera de las notas
+    const hasValidRLBlocks = allBlocks.some(block => 
+      block.type === 'event' && block.isValid && block.parsedData?.isRaidLeader
+    ) || false;
+
+    const hasSchedule = schedules.length > 0;
+    const hasRaids = raids.length > 0;
+    
+    // Solo considerar líderes de raid con bloques válidos que tengan RL
+    const isRaidLeader = hasValidRLBlocks;
+
+    // Solo agregar a raidLeaders si tienen bloques de evento válidos con RL
+    if (isRaidLeader && hasRaids && hasSchedule) {
+      // Combinar notas públicas y oficiales
+      const combinedNote = [
+        member.publicNote?.trim(),
+        member.officerNote?.trim()
+      ].filter(Boolean).join(' ');
+
+            // Crear eventos individuales para cada horario
+      const leaderEvents: RaidEvent[] = [];
+      
+      // Para cada horario, crear un evento
+      for (const schedule of schedules) {
+        const days = Array.isArray(schedule.days) ? schedule.days : [];
+        const time = String(schedule.time || '').trim();
+        const raidCode = schedule.raid || '';
+        const difficulty = schedule.difficulty || '25N';
+        
+        // Solo procesar si tenemos toda la información necesaria
+        if (days.length > 0 && time && raidCode) {
+          // Para cada día del horario
+          for (const day of days) {
+            try {
+              const dayIndex = DAY_TO_INDEX[day];
+              const nextOccurrence = getNextDayOfWeek(dayIndex, time);
+              
+              // Buscar la información completa del raid
+              const raidInfo = raids.find(r => 
+                r.code.toLowerCase() === raidCode.toLowerCase() && 
+                r.difficultyCode === difficulty
+              );
+              
+              if (raidInfo) {
+                leaderEvents.push({
+                  name: member.name,
+                  class: member.class,
+                  icon: formatClassName(member.class),
+                  raid: {
+                    code: raidInfo.code,
+                    difficultyCode: raidInfo.difficultyCode,
+                    difficulty: raidInfo.difficulty,
+                    name: raidInfo.name
+                  },
+                  schedule: {
+                    days: [day],
+                    time,
+                    isRaidLeader: true
+                  },
+                  combinedNote,
+                  nextOccurrence
+                });
+              }
+            } catch (error) {
+              console.error(`Error procesando evento para ${member.name}:`, error);
+            }
+          }
+        }
+      }
+      
+      // Ordenar los eventos del líder por proximidad
+      const sortedLeaderEvents = [...leaderEvents].sort((a, b) => {
+        return getGlobalEventWeight(a) - getGlobalEventWeight(b);
+      });
+      
+      // Agregar todos los eventos a la lista general
+      raidEvents.push(...sortedLeaderEvents);
+      
+      // Crear objeto de líder de raid con los tipos correctos
+      const raidLeader: RaidLeader = {
+        name: member.name,
+        class: member.class,
+        publicNote: member.publicNote || '',
+        officerNote: member.officerNote,
+        isRaidLeader,
+        raids: raids.map(r => ({
+          code: r.code,
+          difficultyCode: r.difficultyCode || '25N',
+          difficulty: r.difficulty || '25 Normal',
+          name: r.name
+        })),
+        schedules: schedules.map(s => ({
+          days: Array.isArray(s.days) ? s.days : [],
+          time: s.time || '',
+          isRaidLeader: s.isRaidLeader || false
+        })),
+        hasSchedule,
+        hasRaids,
+        icon: formatClassName(member.class),
+        combinedNote,
+        events: leaderEvents
+      };
+      
+      // Agregar al líder de raid con sus eventos
+      raidLeaders.push(raidLeader);
+    } else if (hasRaids || hasSchedule) {
+      // Agregar a potenciales líderes si tienen raids u horarios pero no son RLs válidos
+      potentialLeaders.push({
+        name: member.name,
+        reason: hasRaids && hasSchedule 
+          ? 'Tiene raids y horario pero no está marcado como RL'
+          : hasRaids 
+            ? `Tiene raids pero le falta horario: ${raids.map((r) => r.code).join(', ')}`
+            : `Tiene horario pero no tiene raids definidos`,
+      });
+    }
+  } catch (error) {
+    console.error(`Error procesando miembro ${member.name}:`, error);
+  }
+}
+
+// Función para obtener el peso de un evento para ordenación
+const getEventSortWeight = (event: RaidEvent): number => {
+  if (!event?.schedule?.days?.[0] || !event.schedule.time) return Number.MAX_SAFE_INTEGER;
+  
+  const dayCode = event.schedule.days[0];
+  const time = event.schedule.time;
+  const dayIndex = DAY_TO_INDEX[dayCode];
+  
+  if (dayIndex === undefined) return Number.MAX_SAFE_INTEGER;
+  
+  const now = new Date();
+  const currentDay = now.getDay();
+  const [eventHour, eventMinute] = time.split(':').map(Number);
+  
+  // Calcular días hasta el próximo día del evento (0-6)
+  let daysUntil = (dayIndex - currentDay + 7) % 7;
+  
+  // Si es hoy, verificar si la hora ya pasó
+  if (daysUntil === 0) {
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    
+    // Si el evento ya pasó hoy, programar para la próxima semana
+    if (eventHour < currentHour || (eventHour === currentHour && eventMinute <= currentMinute)) {
+      daysUntil = 7; // Mover a la próxima semana
+    }
+  }
+  
+  // Si es un día anterior en la semana, sumar 7 días
+  if (daysUntil < 0) daysUntil += 7;
+  
+  // Calcular la fecha del próximo evento
+  const nextOccurrence = new Date(now);
+  nextOccurrence.setDate(now.getDate() + daysUntil);
+  nextOccurrence.setHours(eventHour, eventMinute, 0, 0);
+  
+  // Devolver el timestamp para ordenación
+  return nextOccurrence.getTime();
+};
+
+// 1. Filtrar eventos que no tengan toda la información necesaria
+const validEvents = raidEvents.filter(event => {
+  return (
+    event.schedule.isRaidLeader &&
+    event.raid?.code &&
+    event.raid?.difficultyCode &&
+    event.schedule.days?.length > 0 &&
+    event.schedule.time
+  );
+});
+
+// 2. Calcular la próxima ocurrencia para cada evento
+const eventsWithNextOccurrence = validEvents.map(event => {
+  const dayIndex = DAY_TO_INDEX[event.schedule.days[0]];
+  const nextDate = getNextDayOfWeek(dayIndex, event.schedule.time);
+  return {
+    ...event,
+    nextOccurrence: nextDate,
+    sortKey: nextDate.getTime() // Añadimos una clave de ordenación numérica
+  };
+});
+
+// 3. Ordenar TODOS los eventos por la clave de ordenación
+const sortedRaidEvents = [...eventsWithNextOccurrence].sort((a, b) => {
+  try {
+    return a.sortKey - b.sortKey;
+  } catch (e) {
+    console.error('Error al ordenar eventos:', e, { a, b });
+    return 0;
+  }
+});
+
+// 4. Agrupar eventos por líder después de ordenarlos
+const eventsByLeader: { [key: string]: RaidEvent[] } = {};
+sortedRaidEvents.forEach(event => {
+  if (!eventsByLeader[event.name]) {
+    eventsByLeader[event.name] = [];
+  }
+  eventsByLeader[event.name].push(event);
+});
+
+// 5. Actualizar raidLeaders con los eventos ordenados
+raidLeaders.forEach(leader => {
+  if (eventsByLeader[leader.name]) {
+    leader.events = eventsByLeader[leader.name];
+  } else {
+    leader.events = []; // Asegurarse de que siempre haya un array
+  }
+});
+
+// 6. Ordenar la lista de líderes basada en el primer evento de cada uno
+const sortedLeaders = [...raidLeaders].sort((a, b) => {
+  const aTime = a.events?.[0]?.sortKey || Infinity;
+  const bTime = b.events?.[0]?.sortKey || Infinity;
+  return aTime - bTime;
+});
+
+// Reemplazar el array original con la versión ordenada
+raidLeaders.length = 0;
+raidLeaders.push(...sortedLeaders);
+
+// Calcular total de raids por semana basado en horarios
+const totalRaidsPerWeek = raidLeaders.reduce((total, leader) => {
+  // Contar cada instancia de horario como una raid
+  return total + ((leader.schedules && leader.schedules.length) || 0);
+}, 0);
+
+// Obtener raids y dificultades únicas para los filtros
+const allRaids = Array.from(
+  new Set(
+    raidLeaders.flatMap((member) => (member.raids || []).map((raid) => raid.code).filter(Boolean))
+  )
+).sort() as string[];
+
+const allDifficulties = Array.from(
+  new Set(
+    raidLeaders.flatMap((member) =>
+      (member.raids || []).map((raid) => raid.difficultyCode).filter(Boolean)
+    )
+  )
+).sort() as string[];
+
+// Statistics
+const raidStats = raidLeaders.reduce<RaidStats>(
+  (acc, member) => {
+    // Track unique raids and difficulties per member
+    const memberRaids = new Set<string>();
+    const memberDifficulties = new Set<string>();
+
+    member.raids?.forEach((raid: { code: string; difficultyCode?: string }) => {
+      // Raid statistics (count each raid code only once per member)
+      if (raid.code) {
+        memberRaids.add(raid.code);
+      }
+
+      // Track unique difficulties per member
+      const difficulty = raid.difficultyCode || 'Unknown';
+      if (difficulty) {
+        memberDifficulties.add(difficulty);
+      }
+    });
+
+    // Add each unique raid code once for this member
+    memberRaids.forEach((raidCode) => {
+      acc.raids[raidCode] = (acc.raids[raidCode] || 0) + 1;
+    });
+
+    // Add each unique difficulty once for this member
+    memberDifficulties.forEach((difficulty) => {
+      acc.difficulties[difficulty] = (acc.difficulties[difficulty] || 0) + 1;
+    });
+
+    // Schedule statistics (count each schedule time only once per member)
+    if (member.schedules) {
+      const uniqueTimes = new Set<string>();
+      member.schedules.forEach((schedule: string | { [key: string]: any }) => {
+        const time = typeof schedule === 'string' ? schedule : schedule.time;
+        if (time) {
+          uniqueTimes.add(time);
+        }
+      });
+      uniqueTimes.forEach((time) => {
+        acc.schedules[time] = (acc.schedules[time] || 0) + 1;
+      });
+    }
+
+    return acc;
+  },
+  { raids: {}, difficulties: {}, schedules: {} }
+);
+
+// Sort statistics with proper type assertions
+const sortedRaidStats = (Object.entries(raidStats.raids) as [string, number][]).sort(
+  (a, b) => b[1] - a[1]
+);
+
+const sortedDifficultyStats = (Object.entries(raidStats.difficulties) as [string, number][]).sort(
+  (a, b) => b[1] - a[1]
+);
+
+const raidSchedule = [
+  { day: 'Miércoles', description: 'ICC 25N (Min. GS 5.3)', mainTime: '18:00 ICC 25N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Jueves', description: 'ICC 25N (Min. GS 5.3)', mainTime: '18:00 ICC 25N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Viernes', description: 'ICC 25N (Min. GS 5.7)', mainTime: '18:00 ICC 25N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Sábado', description: 'ICC 25N (Min. GS 5.7)', mainTime: '18:00 ICC 25N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Domingo', description: 'ICC 25N (Min. GS 5.7)', mainTime: '18:00 ICC 25N', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Lunes', description: 'ICC 10H (Min. GS 6.0)', mainTime: '18:00 ICC 10H', secondaryTime: '00:00 Raid Opcional' },
+  { day: 'Martes', description: 'ICC 10H (Min. GS 6.0)', mainTime: '18:00 ICC 10H', secondaryTime: '00:00 Raid Opcional' }
+];
+
+const sortedScheduleStats = (Object.entries(raidStats.schedules) as [string, number][]).sort(
+  (a, b) => b[1] - a[1]
+);
+---
+
+<Layout title="Raids">
+  <div class="mx-auto animate-fade-in">
+    <!-- Weekly Raid Schedule -->
+    <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h2 class="text-2xl font-bold text-amber-300">Horario Semanal de Raids</h2>
+        <a href="/core-schedule" class="inline-flex items-center px-4 py-2 border border-amber-600 text-sm font-medium rounded-md text-amber-100 bg-amber-900/30 hover:bg-amber-800/50 transition-colors">
+          <i class="fas fa-calendar-alt mr-2"></i>
+          Registrar Asistencia
+        </a>
+      </div>
+      
+      <div class="overflow-x-auto rounded-xl border border-amber-900/30">
+        <table class="min-w-full divide-y divide-amber-900/30 raid-schedule-table">
+          <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Día
+                </div>
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Descripción
+                </div>
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Horario Principal
+                </div>
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-amber-300/90 uppercase tracking-wider">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Horario Secundario
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-amber-900/30 bg-gray-900/50">
+            {raidSchedule.map((raid, index) => {
+              const rowClass = `hover:bg-amber-900/10 transition-colors duration-200 ${index % 2 === 0 ? 'bg-gray-900/30' : 'bg-gray-900/10'}`;
+              return (
+                <tr class={rowClass}>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-amber-200">
+                    <div class="flex items-center">
+                      <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-amber-900/30 mr-2 text-xs font-semibold text-amber-300">
+                        {index + 1}
+                      </span>
+                      {raid.day}
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-amber-100/90">
+                    {raid.description}
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-amber-300">
+                    <div class="flex items-center">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900/30 text-amber-300">
+                        {raid.mainTime}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap text-sm text-amber-300/80">
+                    {raid.secondaryTime}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="mt-4 text-xs text-amber-400/70 space-y-2 bg-gray-900/90 p-4 rounded-lg">
+        <div class="mt-4 text-amber-400/70">
+          <p class="font-medium text-center text-amber-300/90 mb-4">Notas importantes:</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">⏰</span>
+              <div>Los horarios están en horario del servidor (GMT+1). Se recomienda estar 15 minutos antes del inicio.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">⏳</span>
+              <div>Si la banda no se completa en 40 min, se pospone al siguiente horario o día disponible.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg md:col-span-2">
+              <span class="text-amber-400">⚠️</span>
+              <div>Si una raid presenta dificultades para avanzar y supera las 2 horas de duración después de derrotar al primer jefe, será pospuesta para rearmarse en el siguiente horario o día disponible.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">⚔️</span>
+              <div>Prohibido PvP antes o durante el evento.</div>
+            </div>
+            <div class="flex items-start space-x-2 p-2 bg-gray-800/50 rounded-lg">
+              <span class="text-amber-400">🧱</span>
+              <div>Los bajo GS o jugadores fuera de rendimiento pueden ser sustituidos en cualquier momento.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas Principales -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-2">
+      <!-- Total de Líderes -->
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Líderes de Raid</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{raidLeaders.length}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">ACTIVOS</p>
+        </div>
+      </div>
+
+      <!-- Total de Raids -->
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Raid Semanales</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{totalRaidsPerWeek}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">TOTAL</p>
+        </div>
+      </div>
+
+      <!-- Dificultades Únicas -->
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Dificultades</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{Object.keys(raidStats.difficulties).length}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">ÚNICAS</p>
+        </div>
+      </div>
+
+      <!-- Bandas Únicas -->
+      <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-text-muted/90 text-[10px] sm:text-base font-bold text-amber-300">Bandas</h3>
+          <p class="text-[22px] sm:text-2xl font-bold text-amber-200/80">{allRaids.length}</p>
+        </div>
+        <div class="text-center mt-1">
+          <p class="text-[7px] sm:text-[10px] text-amber-100/90 font-bold">ÚNICAS</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Líderes de Raid -->
+  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3 mt-6 animate-fade-in" style="animation-delay: 0.2s;">
+    <div class="overflow-x-auto rounded-t-xl">
+      <table class="min-w-full divide-y divide-accent bg-gray-900/50 backdrop-blur-sm">
+        <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
+          <tr>
+            <th data-column="name" class="text-center text-xs font-semibold text-amber-300/90 uppercase tracking-wider" data-sort="name">
+              <div class="flex items-center justify-center">
+                <span class="py-2">RAIDS DE LA HERMANDAD</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-accent">
+          {raidLeaders.flatMap((leader) => {
+            // Usar los eventos ya ordenados del líder
+            const events = Array.isArray(leader.events) ? leader.events : [];
+            
+            // Agrupar eventos por día y hora (sin reordenar)
+            const groupedEvents: { [key: string]: RaidEvent[] } = {};
+            
+            events.forEach((event) => {
+              if (!event?.schedule?.days || !event.schedule.time) return;
+              const key = `${event.schedule.days.join('')}-${event.schedule.time}`;
+              if (!groupedEvents[key]) {
+                groupedEvents[key] = [];
+              }
+              groupedEvents[key].push(event);
+            });
+            
+            // Convertir a array y mantener el orden ya establecido
+            return Object.entries(groupedEvents)
+              .map(([key, events]) => {
+                const event = events[0];
+                const dayCode = event?.schedule?.days?.[0] || '';
+                const eventTime = event?.schedule?.time || '23:59';
+                
+                // Calcular la próxima ocurrencia para mostrar en el tooltip
+                let nextOccurrence = '';
+                let nextDate: Date | null = null;
+                
+                if (dayCode && eventTime) {
+                  const dayIndex = DAY_TO_INDEX[dayCode];
+                  if (dayIndex !== undefined) {
+                    nextDate = getNextDayOfWeek(dayIndex, eventTime);
+                    nextOccurrence = nextDate.toLocaleString('es-ES', {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long'
+                    });
+                  }
+                }
+                
+                return {
+                  key,
+                  events,
+                  dayCode,
+                  time: eventTime,
+                  nextOccurrence,
+                  nextDate: nextDate || new Date(8640000000000000), // Fecha muy lejana si no hay fecha
+                  weight: nextDate ? nextDate.getTime() : Number.MAX_SAFE_INTEGER
+                };
+              })
+              .sort((a, b) => a.weight - b.weight) // Ordenar por peso ascendente (más cercano primero)
+              .map(({ events: eventGroup, nextOccurrence, nextDate: eventDate }) => {
+              if (!eventGroup || !eventGroup.length) return null;
+              
+              const firstEvent = eventGroup[0];
+              if (!firstEvent?.schedule?.days?.length) return null;
+              
+              const dayName = firstEvent.schedule.days[0];
+              const dayMap: {[key: string]: string} = {
+                'L': 'Lun',
+                'M': 'Mar',
+                'X': 'Mié',
+                'J': 'Jue',
+                'V': 'Vie',
+                'S': 'Sáb',
+                'D': 'Dom'
+              };
+              
+              const difficultyColors = {
+                '10N': 'text-blue-400',
+                '25N': 'text-purple-400',
+                '25H': 'text-red-400',
+                '10H': 'text-yellow-400',
+              } as const;
+              
+              type DifficultyKey = keyof typeof difficultyColors;
+              
+              const formattedTime = firstEvent.schedule.time.includes(':') 
+                ? firstEvent.schedule.time 
+                : `${firstEvent.schedule.time.slice(0, 2)}:${firstEvent.schedule.time.slice(2)}`;
+
+              return (
+                <tr
+                  class="hover:bg-steel-dark transition-colors duration-200 hover:border-accent"
+                  data-name={leader.name.toLowerCase()}
+                  data-raids={eventGroup.map((e: RaidEvent) => e.raid?.code?.toLowerCase() || '').filter(Boolean).join(',')}
+                  data-difficulties={Array.from(new Set(eventGroup.map((e: RaidEvent) => e.raid?.difficultyCode).filter(Boolean))).join(',')}
+                  data-day={dayName}
+                  data-time={firstEvent.schedule.time}
+                >
+                  <td class="p-4">
+                    
+                    <div>
+                      {/* Sección de Raids */}
+                      <div class="mb-3">
+                        <div class="flex items-center text-xs font-medium text-gray-400 mb-1.5" title={nextOccurrence}>
+                          <svg class="w-3.5 h-3.5 mr-1.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                          EVENTO PROGRAMADO:
+                          {nextOccurrence}
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                          {eventGroup.map((event: RaidEvent, index: number) => {
+                            const raidName = event.raid?.name || 'Unknown Raid';
+                            const raidClass = raidName.toLowerCase().includes('icc') ? 'raid-icc' :
+                                            raidName.toLowerCase().includes('voa') ? 'raid-voa' :
+                                            raidName.toLowerCase().includes('naxx') ? 'raid-naxx' :
+                                            raidName.toLowerCase().includes('ulduar') ? 'raid-ulduar' :
+                                            raidName.toLowerCase().includes('toc') ? 'raid-toc' :
+                                            raidName.toLowerCase().includes('rs') ? 'raid-rs' : '';
+                            
+                            const difficulty = event.raid?.difficulty || '10N';
+                            const diffClass = difficulty === '10N' ? 'difficulty-10N' :
+                                            difficulty === '10H' ? 'difficulty-10H' :
+                                            difficulty === '25N' ? 'difficulty-25N' :
+                                            difficulty === '25H' ? 'difficulty-25H' :
+                                            'difficulty-unknown';
+                            
+                            return (
+                              <div key={`${raidName}-${index}`} class="inline-flex items-center group rounded-md overflow-hidden border border-gray-700/50 hover:border-gray-600/50 transition-all duration-200 hover:shadow-lg hover:shadow-blue-900/20 hover:-translate-y-0.5">
+                              <span class={`inline-flex items-center px-3 py-1.5 text-sm font-semibold ${raidClass} h-full`}>
+                                {raidName}
+                              </span>
+                              <span class={`inline-flex items-center px-2.5 py-1.5 text-xs font-bold ${diffClass} h-full`}>
+                                {difficulty}
+                              </span>
+                            </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      
+                      {/* Sección de Horario */}
+                      <div class="flex items-center justify-between bg-gray-900/40 px-3 py-2 rounded border border-gray-700/50">
+                        <div class="flex items-start">
+                      <div class="flex-shrink-0 h-10 w-10 rounded-full bg-steel-darker/80 border border-accent/20 flex items-center justify-center shadow-inner overflow-hidden mr-3">
+                        <img
+                          src={`/images/avatars/class_${leader.class}.jpg`}
+                          alt={leader.class}
+                          class="h-8 w-8 rounded-full object-cover"
+                        />
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <div class="flex flex-col">
+                          <div
+                            class="text-xs"
+                            style={`color: #${
+                              leader.class === 'Guerrero' ? 'C79C6E' :
+                              leader.class === 'Paladín' ? 'F58CBA' :
+                              leader.class === 'Cazador' ? 'ABD473' :
+                              leader.class === 'Pícaro' ? 'FFF569' :
+                              leader.class === 'Sacerdote' ? 'FFFFFF' :
+                              leader.class === 'Caballero de la Muerte' ? 'C41F3B' :
+                              leader.class === 'Chamán' ? '0070DE' :
+                              leader.class === 'Mago' ? '69CCF0' :
+                              leader.class === 'Brujo' ? '9482C9' :
+                              leader.class === 'Monje' ? '00FF96' :
+                              leader.class === 'Druida' ? 'FF7D0A' :
+                              leader.class === 'Cazador de demonios' ? 'A330C9' : '9D9D9D'
+                            }`}
+                          >
+                            {leader.class}
+                          </div>
+                          <div class="text-sm font-medium text-white mr-2">{leader.name}</div>
+                        </div>
+                      </div>
+                    </div>
+                        <div class="flex items-center">
+                          <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span class="text-sm font-medium text-gray-200">
+                            {firstEvent.schedule.days.map((day: string) => 
+                              <span class="text-amber-300 font-semibold">{dayMap[day as keyof typeof dayMap] || day}</span>
+                            ).reduce((prev: any, curr: any, i: number, arr: any[]) => 
+                              prev.concat(curr, i < arr.length - 1 ? ', ' : ' '), [] as any[])}
+                            <span class="text-green-300 ml-1">{formattedTime}</span>
+                            <span class="text-gray-300 ml-1">Hora server</span>
+                          </span>
+                        </div>
+                        {firstEvent.schedule.isRaidLeader && (
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900/40 text-amber-300 border border-amber-700/50">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                            RAID LEADER
+                          </span>
+                        )}
+                      </div>
+                      {leader.combinedNote && (
+                        <div class="mt-1 w-full hidden">
+                          <div class="text-xs text-text-muted/70 mb-0.5">Nota:</div>
+                          <div class="text-xs bg-gray-800/50 p-2 rounded border border-gray-700/50 break-words">
+                            {leader.combinedNote}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            });
+          })}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="px-2 md:px-6 py-4 bg-gray-900/50 backdrop-blur-sm border-t border-amber-900/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-sm text-text-muted/70">
+        Página <span id="currentPage" class="font-medium text-white">1</span> de
+        <span id="totalPages" class="font-medium text-white">1</span>
+        <span class="hidden sm:inline">
+          (<span id="resultsCount" class="font-medium text-white">0</span> líderes)
+        </span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button
+          id="prevPage"
+          class="px-3 py-1 rounded-md text-text-muted hover:bg-amber-500/20 hover:text-amber-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          title="Página anterior"
+          disabled
+        >
+          &lt;
+        </button>
+        <div id="pageNumbers" class="flex items-center gap-1">
+          <!-- Page numbers will be inserted here by JavaScript -->
+        </div>
+        <button
+          id="nextPage"
+          class="px-3 py-1 rounded-md text-text-muted hover:bg-amber-500/20 hover:text-amber-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          title="Página siguiente"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Búsqueda por Nombre -->
+        <div>
+          <label for="searchName" class="block text-sm font-medium text-text-muted/80 mb-2"
+            >Buscar por Nombre</label
+          >
+          <input
+            type="text"
+            id="searchName"
+            placeholder="Escribe un nombre..."
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
+          />
+        </div>
+
+        <!-- Filtro por Raid -->
+        <div>
+          <label for="filterRaid" class="block text-sm font-medium text-text-muted/80 mb-2"
+            >Filtrar por Raid</label
+          >
+          <select
+            id="filterRaid"
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200 appearance-none"
+          >
+            <option value="" selected>Todas las Raids</option>
+            {
+              allRaids.map((raid) => (
+                <option value={raid.toLowerCase()} class="bg-steel-darker text-white">
+                  {raid}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+
+        <!-- Filtro por Dificultad -->
+        <div>
+          <label for="filterDifficulty" class="block text-sm font-medium text-text-muted/80 mb-2"
+            >Filtrar por Dificultad</label
+          >
+          <select
+            id="filterDifficulty"
+            class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200 appearance-none"
+          >
+            <option value="" selected>Todas las Dificultades</option>
+            {
+              allDifficulties.map((difficulty) => (
+                <option value={difficulty.toLowerCase()} class="bg-steel-darker text-white">
+                  {difficulty}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de estadísticas -->
+  <div class="mt-8 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6">
+    <h2 class="text-xl font-semibold mb-6 text-center text-amber-200/90 uppercase tracking-wider">
+      Líderes de Raid
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Bandas Populares -->
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Por Bandas
+        </h3>
+        <div class="space-y-3">
+          {
+            sortedRaidStats.map(([raid, count]) => {
+              const percentage = Math.round((count / raidLeaders.length) * 100);
+              return (
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-amber-100/80">{raid}</span>
+                    <div class="flex items-center">
+                      <span class="text-white font-semibold mr-1">{count}</span>
+                      <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-500 ease-out"
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- Dificultades -->
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Por Dificultades
+        </h3>
+        <div class="space-y-3">
+          {
+            sortedDifficultyStats.map(([difficulty, count]) => {
+              const difficultyColors = {
+                '10N': { from: 'from-blue-400', to: 'to-blue-600' },
+                '25N': { from: 'from-purple-400', to: 'to-purple-600' },
+                '10H': { from: 'from-yellow-400', to: 'to-yellow-600' },
+                '25H': { from: 'from-red-400', to: 'to-red-600' },
+                'Unknown': { from: 'from-gray-400', to: 'to-gray-600' }
+              };
+              
+              const colors = difficultyColors[difficulty as keyof typeof difficultyColors] || 
+                            { from: 'from-amber-400', to: 'to-amber-600' };
+              
+              const percentage = Math.round((count / raidLeaders.length) * 100);
+              
+              return (
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-amber-100/80">{difficulty}</span>
+                    <div class="flex items-center">
+                      <span class="text-white font-semibold mr-1">{count}</span>
+                      <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class={`h-full rounded-full bg-gradient-to-r ${colors.from} ${colors.to} transition-all duration-500 ease-out`}
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- Horarios Populares -->
+      <div class="bg-gray-900/70 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 sm:p-6 hover:border-amber-800/50 transition-colors">
+        <h3 class="text-amber-300/90 text-lg font-medium mb-4 text-center uppercase tracking-wider">
+          Por Horarios
+        </h3>
+        <div class="space-y-3">
+          {
+            sortedScheduleStats.map(([time, count]) => {
+              const percentage = Math.round((count / raidLeaders.length) * 100);
+              return (
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="text-amber-100/80">{time}</span>
+                    <div class="flex items-center">
+                      <span class="text-white font-semibold mr-1">{count}</span>
+                      <span class="text-amber-100/60 text-[11px]">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="w-full bg-amber-900/30 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500 ease-out"
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Raid Rules -->
+  <div class="mt-8 ">
+    <!-- Guild Rules -->
+    <div class="p-6 rounded-xl border border-amber-600/30 bg-gray-900/50 backdrop-blur-sm transform transition-all duration-300 hover:shadow-amber-500/20">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-amber-300 mb-2">Reglas de Raid</h2>
+        <div class="h-1 w-20 bg-gradient-to-r from-amber-500 to-yellow-600 mx-auto my-3 rounded-full"></div>
+      </div>
+      
+
+    <!-- Guild Rules Section - Compacta -->
+    <div class="w-full mb-8">
+      <div>        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Norma 1 -->
+          <div class="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <span class="text-amber-400 text-sm font-bold">1</span>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-amber-300 text-base">Código de Nota</h4>
+              <p class="text-gray-300">Envía tu código de nota al GM/Alter para programar tu horario.</p>
+            </div>
+          </div>
+          
+          <!-- Norma 2 -->
+          <div class="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <span class="text-amber-400 text-sm font-bold">2</span>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-amber-300 text-base">Discord en Raids</h4>
+              <p class="text-gray-300">Obligatorio para raids. Micrófono funcional y silencio cuando no debas hablar.</p>
+            </div>
+          </div>
+          
+          <!-- Norma 3 -->
+          <div class="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <span class="text-amber-400 text-sm font-bold">3</span>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-amber-300 text-base">Puntualidad</h4>
+              <p class="text-gray-300">Asistencia puntual a eventos. Avisar con anticipación si no puedes asistir.</p>
+            </div>
+          </div>
+          
+          <!-- Norma 4 -->
+          <div class="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <span class="text-amber-400 text-sm font-bold">4</span>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-amber-300 text-base">Preparación</h4>
+              <p class="text-gray-300">Consumibles, reparaciones y conocimiento de mecánicas listos.</p>
+            </div>
+          </div>
+          
+          <!-- Norma 5 -->
+          <div class="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <span class="text-amber-400 text-sm font-bold">5</span>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-amber-300 text-base">Trabajo en Equipo</h4>
+              <p class="text-gray-300">Respeto y colaboración con todos los miembros de la hermandad.</p>
+            </div>
+          </div>
+          
+          <!-- Norma 6 -->
+          <div class="flex items-start space-x-4 p-4 bg-gray-800/50 rounded-lg">
+            <div class="flex-shrink-0 mt-0.5">
+              <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <span class="text-amber-400 text-sm font-bold">6</span>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-amber-300 text-base">Conducta</h4>
+              <p class="text-gray-300">No se tolera acoso, lenguaje ofensivo o comportamiento tóxico.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sección de Reconocimiento Oficial -->
+        <div class="mt-6 p-4 bg-amber-900/30 border border-amber-700/50 rounded-lg">
+          <div class="flex items-center space-x-3 mb-2">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="font-semibold text-amber-300">Reconocimiento a jugadores destacados</h3>
+          </div>
+          <p class="text-gray-200 text-xs ml-11">
+            Los oficiales pueden otorgar reconocimientos especiales a jugadores destacados de la hermandad.
+          </p>
+        </div>
+        
+        <p class="text-xs text-amber-400/70 text-center mt-4">
+          Los nombres de los miembros se actualizan diariamente para mantener la información al día.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // ===========================================
+    // Configuración de la tabla de líderes
+    // ===========================================
+    const leaderTable = document.querySelector('table:not(.raid-schedule-table)');
+    if (leaderTable) {
+      // Elementos de la tabla de líderes
+      const searchName = document.getElementById('searchName');
+      const filterRaid = document.getElementById('filterRaid');
+      const filterDifficulty = document.getElementById('filterDifficulty');
+      const resultsCount = document.getElementById('resultsCount');
+      const currentPageSpan = document.getElementById('currentPage');
+      const totalPagesSpan = document.getElementById('totalPages');
+      const prevPageBtn = document.getElementById('prevPage');
+      const nextPageBtn = document.getElementById('nextPage');
+      const pageNumbersContainer = document.getElementById('pageNumbers');
+      
+      // Obtener filas de la tabla de líderes
+      const leaderRows = Array.from(leaderTable.querySelectorAll('tbody tr'));
+      
+      // Estado de la paginación para la tabla de líderes
+      let currentPage = 1;
+      const rowsPerPage = 2;
+      let filteredRows = [...leaderRows];
+      let totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+
+      // Función para actualizar los números de página
+      const updatePageNumbers = () => {
+        if (!pageNumbersContainer) return;
+        
+        pageNumbersContainer.innerHTML = '';
+
+        // Mostrar máximo 5 números de página a la vez
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+
+        // Ajustar si estamos cerca del final
+        if (endPage - startPage < 4 && startPage > 1) {
+          startPage = Math.max(1, endPage - 4);
+        }
+
+        // Botón para la primera página si es necesario
+        if (startPage > 1) {
+          const firstPageBtn = document.createElement('button');
+          firstPageBtn.textContent = '1';
+          firstPageBtn.className = `px-3 py-1 rounded-md ${1 === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
+          firstPageBtn.addEventListener('click', () => goToPage(1));
+          pageNumbersContainer.appendChild(firstPageBtn);
+
+          if (startPage > 2) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-1 text-text-muted/50 flex items-center';
+            pageNumbersContainer.appendChild(ellipsis);
+          }
+        }
+
+        // Números de página
+        for (let i = startPage; i <= endPage; i++) {
+          const pageBtn = document.createElement('button');
+          pageBtn.textContent = i.toString();
+          pageBtn.className = `px-3 py-1 rounded-md transition-colors ${i === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
+          pageBtn.addEventListener('click', () => goToPage(i));
+          pageNumbersContainer.appendChild(pageBtn);
+        }
+
+        // Botón para la última página si es necesario
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.className = 'px-1 text-text-muted/50 flex items-center';
+            pageNumbersContainer.appendChild(ellipsis);
+          }
+
+          const lastPageBtn = document.createElement('button');
+          lastPageBtn.textContent = totalPages.toString();
+          lastPageBtn.className = `px-3 py-1 rounded-md ${totalPages === currentPage ? 'bg-amber-600 text-white' : 'text-text-muted hover:bg-amber-500/20 hover:text-amber-300'}`;
+          lastPageBtn.addEventListener('click', () => goToPage(totalPages));
+          pageNumbersContainer.appendChild(lastPageBtn);
+        }
+      };
+
+      // Función para ir a una página específica
+      const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+          currentPage = page;
+          updateLeaderTable();
+        }
+      };
+
+      // Función para actualizar la visualización de la tabla de líderes
+      const updateLeaderTable = () => {
+        // Calcular índices para la paginación
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const rowsToShow = filteredRows.slice(startIndex, endIndex);
+
+        // Ocultar todas las filas primero
+        leaderRows.forEach(row => row.style.display = 'none');
+        
+        // Mostrar solo las filas de la página actual
+        rowsToShow.forEach(row => {
+          if (row) row.style.display = '';
+        });
+
+        // Actualizar contadores y controles de paginación
+        totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
+        
+        if (resultsCount) resultsCount.textContent = filteredRows.length.toString();
+        if (totalPagesSpan) totalPagesSpan.textContent = totalPages.toString();
+
+        // Asegurarse de que la página actual no sea mayor que el número total de páginas
+        if (currentPage > totalPages && totalPages > 0) {
+          currentPage = totalPages;
+          updateLeaderTable();
+          return;
+        }
+
+        // Actualizar estado de los botones de paginación
+        if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
+        if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages || totalPages === 0;
+
+        if (currentPageSpan) currentPageSpan.textContent = currentPage.toString();
+
+        // Actualizar los números de página
+        updatePageNumbers();
+      };
+
+      // Función para aplicar los filtros
+      const applyFilters = () => {
+        if (!searchName || !filterRaid || !filterDifficulty) return;
+        
+        const nameQuery = searchName.value.trim().toLowerCase();
+        const raidQuery = filterRaid.value.toLowerCase();
+        const difficultyQuery = filterDifficulty.value.toLowerCase();
+
+        filteredRows = leaderRows.filter((row) => {
+          // Obtener datos de los atributos de la fila
+          const name = row.getAttribute('data-name') || '';
+          const raids = (row.getAttribute('data-raids') || '').toLowerCase().split(',').filter(Boolean);
+          const difficulties = (row.getAttribute('data-difficulties') || '').toLowerCase().split(',').filter(Boolean);
+
+          // Aplicar filtros
+          const nameMatch = name.toLowerCase().includes(nameQuery);
+          const raidMatch = !raidQuery || raids.some(raid => raid.includes(raidQuery));
+          const difficultyMatch = !difficultyQuery || difficulties.some(difficulty => difficulty.includes(difficultyQuery));
+
+          return nameMatch && raidMatch && difficultyMatch;
+        });
+
+        // Resetear a la primera página al aplicar nuevos filtros
+        currentPage = 1;
+        updateLeaderTable();
+      };
+
+      // Manejadores de eventos para la tabla de líderes
+      if (searchName) searchName.addEventListener('input', applyFilters);
+      if (filterRaid) filterRaid.addEventListener('change', applyFilters);
+      if (filterDifficulty) filterDifficulty.addEventListener('change', applyFilters);
+
+      if (prevPageBtn) prevPageBtn.addEventListener('click', () => goToPage(currentPage - 1));
+      if (nextPageBtn) nextPageBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+      // Inicializar la tabla de líderes
+      updateLeaderTable();
+    }
+    
+    // ===========================================
+    // Configuración de la tabla de horario
+    // ===========================================
+    // No se aplica límite de filas a la tabla de horario
+    // Se muestra completa sin restricciones
+  });
+</script>
+
+<style>
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #2d3748;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #718096;
+  }
+
+  /* Estilos para etiquetas de colores */
+  .tag {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap;
+  }
+  
+  /* Colores de dificultad mejorados */
+  .difficulty-10N { 
+    @apply bg-blue-600/30 text-blue-100 border-l-2 border-blue-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-10H { 
+    @apply bg-yellow-600/30 text-yellow-100 border-l-2 border-yellow-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-25N { 
+    @apply bg-purple-600/30 text-purple-100 border-l-2 border-purple-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-25H { 
+    @apply bg-red-600/30 text-red-100 border-l-2 border-red-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .difficulty-unknown { 
+    @apply bg-gray-600/30 text-gray-200 border-l-2 border-gray-400/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Colores de raids mejorados */
+  .raid-icc { 
+    @apply bg-gradient-to-r from-blue-900/50 to-blue-900/30 text-blue-100 border-r border-blue-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-voa { 
+    @apply bg-gradient-to-r from-purple-900/50 to-purple-900/30 text-purple-100 border-r border-purple-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-naxx { 
+    @apply bg-gradient-to-r from-red-900/50 to-red-900/30 text-red-100 border-r border-red-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-ulduar { 
+    @apply bg-gradient-to-r from-yellow-900/50 to-yellow-900/30 text-yellow-100 border-r border-yellow-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-toc { 
+    @apply bg-gradient-to-r from-green-900/50 to-green-900/30 text-green-100 border-r border-green-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .raid-rs { 
+    @apply bg-gradient-to-r from-pink-900/50 to-pink-900/30 text-pink-100 border-r border-pink-500/30 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Efecto hover para etiquetas */
+  .tag-hover {
+    @apply transition-all duration-200 hover:brightness-110 hover:scale-105;
+  }
+  
+  /* Sombra para mejor contraste */
+  .tag-shadow {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+</style>
