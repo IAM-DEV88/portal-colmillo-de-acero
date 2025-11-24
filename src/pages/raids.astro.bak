@@ -79,7 +79,6 @@ interface StatusCounts {
 }
 
 interface RaidSchedule {
-  id: number;
   raid_id: number;
   raid_name: string;
   difficulty: string;
@@ -152,76 +151,6 @@ const wotlkRaids: Raid[] = [
 // Fetch raid schedules from Supabase
 let raidSchedules: RaidSchedule[] = [];
 let error: string | null = null;
-
-// Function to get the next upcoming schedule
-function getNextSchedule(schedules) {
-  if (!schedules || schedules.length === 0) return null;
-  
-  const now = new Date();
-  const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
-  
-  // Map day names to numbers (0 = Sunday, 1 = Monday, etc.)
-  const dayMap = {
-    'domingo': 0,
-    'lunes': 1,
-    'martes': 2,
-    'miercoles': 3,
-    'jueves': 4,
-    'viernes': 5,
-    'sabado': 6
-  };
-  
-  // Convert schedule times to Date objects for comparison
-  const upcomingSchedules = schedules.map(schedule => {
-    const dayName = schedule.day_of_week.toLowerCase();
-    const dayNumber = dayMap[dayName];
-    const [hours, minutes] = schedule.start_time.split(':').map(Number);
-    
-    // Create a date object for this schedule's next occurrence
-    const nextOccurrence = new Date(now);
-    const daysUntilNext = (dayNumber - currentDay + 7) % 7;
-    
-    // If the time has already passed today, schedule for next week
-    const isToday = daysUntilNext === 0;
-    const hasPassedToday = isToday && 
-      (hours < now.getHours() || 
-       (hours === now.getHours() && minutes <= now.getMinutes()));
-    
-    const daysToAdd = hasPassedToday ? 7 + daysUntilNext : daysUntilNext;
-    
-    nextOccurrence.setDate(now.getDate() + daysToAdd);
-    nextOccurrence.setHours(hours, minutes, 0, 0);
-    
-    return {
-      ...schedule,
-      nextOccurrence,
-      minutesUntil: (nextOccurrence - now) / (1000 * 60) // minutes until next occurrence
-    };
-  });
-  
-  // Filter out schedules with no accepted players
-  const schedulesWithAcceptedPlayers = upcomingSchedules.filter(schedule => {
-    if (!schedule.players || schedule.players.length === 0) return false;
-    
-    return schedule.players.some(player => 
-      player.status === 'aceptado' || 
-      player.raid_status === 'aceptado' ||
-      player.registration_status === 'aceptado' ||
-      player.status === 'accepted' ||
-      player.raid_status === 'accepted' ||
-      player.registration_status === 'accepted' ||
-      player.status === 'confirmed' ||
-      player.raid_status === 'confirmed' ||
-      player.registration_status === 'confirmed'
-    );
-  });
-  
-  // Sort by next occurrence
-  schedulesWithAcceptedPlayers.sort((a, b) => a.minutesUntil - b.minutesUntil);
-  
-  // Return the next schedule with accepted players (if any)
-  return schedulesWithAcceptedPlayers[0] || null;
-}
 
 // Group schedules by day and raid
 try {
@@ -565,7 +494,6 @@ try {
     const key = `${reg.raid_id}-${reg.day_of_week}-${reg.start_time}`;
     if (!acc[key]) {
       acc[key] = {
-        id: reg.id, // Add the id from the database
         raid_id: reg.raid_id,
         raid_name: raid.name,
         difficulty: reg.difficulty || '10',
@@ -606,12 +534,12 @@ try {
 
 ---
 
-<Layout title="Horarios de Raid">
+<Layout title="Horarios de Raids">
   <div class="text-white">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-extrabold tracking-tight text-white">
-          <span class="block">Horarios de Raid</span>
+        <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+          <span class="block">Horarios de Raids</span>
         </h1>
       </div>
 
@@ -751,7 +679,7 @@ try {
                             
                             {/* Next schedule */}
                             {(() => {
-                              const nextSchedule = getNextSchedule(raidSchedulesForRaid);
+                              const nextSchedule = raidSchedulesForRaid[0];
                               if (!nextSchedule) return null;
                               
                               const acceptedPlayers = nextSchedule.players?.filter(player => 
@@ -766,7 +694,6 @@ try {
                                 player.registration_status === 'confirmed'
                               ) || [];
                               
-                              // Don't show the schedule if there are no accepted players
                               if (acceptedPlayers.length === 0) return null;
                               
                               return (
@@ -833,9 +760,7 @@ try {
                             })()}
                             
                             {/* Additional schedules */}
-                            {(() => {
-                              const nextSchedule = getNextSchedule(raidSchedulesForRaid);
-                              
+                            {raidSchedulesForRaid.length > 1 && (() => {
                               // Ordenar horarios por día de la semana y hora
                               const dayOrder = {
                                 'lunes': 1,
@@ -863,30 +788,10 @@ try {
                                 return timeA.localeCompare(timeB);
                               });
                               
-                              // Filter out the next schedule from the additional schedules
-                              const additionalSchedules = nextSchedule 
-                                ? sortedSchedules.filter(schedule => schedule.raid_id !== nextSchedule.raid_id || 
-                                                                   schedule.day_of_week !== nextSchedule.day_of_week ||
-                                                                   schedule.start_time !== nextSchedule.start_time)
-                                : [...sortedSchedules];
+                              // Filtrar el primer horario (ya que es el que se muestra arriba)
+                              const additionalSchedules = sortedSchedules.slice(1);
                               
-                              // Filter out schedules with no accepted players
-                              const schedulesWithAcceptedPlayers = additionalSchedules.filter(schedule => {
-                                return schedule.players?.some(player => 
-                                  player.status === 'aceptado' || 
-                                  player.raid_status === 'aceptado' ||
-                                  player.registration_status === 'aceptado' ||
-                                  player.status === 'accepted' ||
-                                  player.raid_status === 'accepted' ||
-                                  player.registration_status === 'accepted' ||
-                                  player.status === 'confirmed' ||
-                                  player.raid_status === 'confirmed' ||
-                                  player.registration_status === 'confirmed'
-                                );
-                              });
-                              
-                              // Only show the button if there are schedules with accepted players
-                              if (schedulesWithAcceptedPlayers.length === 0) return null;
+                              if (additionalSchedules.length === 0) return null;
                               
                               return (
                               <div class="mt-4">
