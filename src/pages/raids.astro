@@ -566,16 +566,44 @@ try {
           <div class="slider-container max-w-7xl mx-auto overflow-hidden">
             <!-- Pagination -->
             <div class="slider-pagination bg-gray-900/50 backdrop-blur-sm rounded-lg overflow-hidden border border-amber-600/30 transition-all duration-200 hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/10" id="slider-pagination">
-              {wotlkRaids.map((raid, index) => (
-                <button 
-                  class="pagination-item" 
-                  data-index={index}
-                  aria-label={`Ir a ${raid.name}`}
-                >
-                  <span class="pagination-dot"></span>
-                  <span class="pagination-label">{raid.name}</span>
-                </button>
-              ))}
+              {wotlkRaids.map((raid, index) => {
+                const raidSchedulesForRaid = raidSchedules.filter(schedule => 
+                  schedule.raid_id === raid.id
+                );
+                const approvedSchedulesCount = raidSchedulesForRaid.filter(schedule => {
+                  if (!schedule.players) return false;
+                  return schedule.players.some(player => 
+                    player.status === 'aceptado' || 
+                    player.raid_status === 'aceptado' ||
+                    (player as any).registration_status === 'aceptado' ||
+                    player.status === 'accepted' ||
+                    player.raid_status === 'accepted' ||
+                    (player as any).registration_status === 'accepted' ||
+                    player.status === 'confirmed' ||
+                    player.raid_status === 'confirmed' ||
+                    (player as any).registration_status === 'confirmed'
+                  );
+                }).length;
+                
+                return (
+                  <button 
+                    key={raid.id}
+                    class="pagination-item group relative" 
+                    data-index={index}
+                    aria-label={`Ir a ${raid.name}`}
+                  >
+                    <span class="pagination-dot"></span>
+                    <span class="pagination-label">
+                      {raid.name}
+                      {approvedSchedulesCount > 0 && (
+                        <span class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center group-hover:bg-amber-400 transition-colors">
+                          {approvedSchedulesCount}
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
             <div class="slider-track" id="slider-track">
               {wotlkRaids.map((raid, index) => {
