@@ -22,16 +22,20 @@ const { title = 'Colmillo de Acero' } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <script src="/js/animations.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
+    <script is:inline src="/js/animations.js"></script>
+    <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script is:inline>
       // @ts-ignore - AOS is loaded from CDN
-      AOS && AOS.init({ duration: 800, once: true });
+      document.addEventListener('DOMContentLoaded', () => {
+        if (typeof AOS !== 'undefined') {
+          AOS.init({ duration: 800, once: true });
+        }
+      });
     </script>
     
     <!-- Admin Scripts -->
     {Astro.url.pathname.startsWith('/admin') && (
-      <script src="/js/admin.js" type="module"></script>
+      <script is:inline src="/js/admin.js" type="module"></script>
     )}
     
     <!-- Font Awesome -->
