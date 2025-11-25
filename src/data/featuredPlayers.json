@@ -238,6 +238,10 @@
         {
           "playerName": "Robindruid",
           "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Drudael",
+          "recognitionIndices": [3]
         }
 
       ]
