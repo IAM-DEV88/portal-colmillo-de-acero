@@ -5,13 +5,17 @@ import { supabase } from '../lib/supabase';
 import { getRaidName } from '../lib/raids';
 
 // Check for admin password
-const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
+const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD || import.meta.env.VITE_ADMIN_PASSWORD;
 
-// Validate that the admin password is set
-if (!ADMIN_PASSWORD) {
+// Validate that the admin password is set in production
+if (import.meta.env.PROD && !ADMIN_PASSWORD) {
   console.error('Error: ADMIN_PASSWORD is not set in environment variables');
   throw new Error('Server configuration error: Admin password not set');
 }
+
+// For development, use a default password if not set
+const devPassword = 'admin123'; // Change this to your preferred default dev password
+const isDev = import.meta.env.DEV;
 
 const session = Astro.cookies.get('admin_session')?.value;
 
@@ -29,8 +33,9 @@ if (!session) {
   if (Astro.request.method === 'POST') {
     const formData = await Astro.request.formData();
     const password = formData.get('password');
+    const currentPassword = isDev && !ADMIN_PASSWORD ? devPassword : ADMIN_PASSWORD;
     
-    if (password === ADMIN_PASSWORD) {
+    if (password === currentPassword) {
       Astro.cookies.set('admin_session', 'authenticated', {
         path: '/',
         maxAge: 60 * 60 * 8, // 8 hours
@@ -243,7 +248,7 @@ if (!session) {
                                   reg.status === 'en_espera' ? 'bg-gradient-to-r from-amber-600/90 to-amber-700/90 text-amber-100' : 
                                   'bg-gradient-to-r from-blue-600/90 to-blue-700/90 text-blue-100'
                                 }`}>
-                                  {reg.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                  {reg.status.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                                 </span>
                               </div>
                               
