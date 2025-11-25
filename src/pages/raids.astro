@@ -557,43 +557,89 @@ try {
     }
   });
 
-  // Second pass to group by schedule and filter players
-  const schedulesMap = (raidSchedulesData || []).reduce<Record<string, RaidSchedule>>((acc, reg: any) => {
-    const raid = wotlkRaids.find(r => r.id === reg.raid_id);
-    if (!raid) return acc;
+  // Create a map to group schedules by their unique key (raid_id-day_of_week-start_time)
+  const schedulesMap = new Map();
+  
+  // First, normalize and process all schedules
+  raidSchedulesData?.forEach(reg => {
+    // Normalize day of week (remove accents, convert to lowercase)
+    const normalizedDay = reg.day_of_week
+      ?.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace('miércoles', 'miercoles')
+      .replace('sábado', 'sabado') || '';
     
-    const key = `${reg.raid_id}-${reg.day_of_week}-${reg.start_time}`;
-    if (!acc[key]) {
-      acc[key] = {
-        id: reg.id, // Add the id from the database
+    // Normalize time (ensure consistent format)
+    const normalizedTime = reg.start_time?.toString().padStart(5, '0') || '00:00';
+    
+    const raid = wotlkRaids.find(r => r.id === reg.raid_id);
+    if (!raid) return;
+    
+    // Create a consistent key with normalized values
+    const key = `${reg.raid_id}-${normalizedDay}-${normalizedTime}`;
+    
+    if (!schedulesMap.has(key)) {
+      schedulesMap.set(key, {
+        id: reg.id,
         raid_id: reg.raid_id,
         raid_name: raid.name,
         difficulty: reg.difficulty || '10',
-        day_of_week: reg.day_of_week,
-        start_time: reg.start_time,
+        day_of_week: reg.day_of_week || '',
+        start_time: normalizedTime,
         players: [],
-        statusCounts: scheduleStatusCounts.get(key) || { aceptado: 0, en_revision: 0, en_espera: 0 }
-      };
+        statusCounts: {
+          aceptado: 0,
+          en_revision: 0,
+          en_espera: 0,
+          ...scheduleStatusCounts.get(key)
+        }
+      });
     }
     
     // Only add to players list if status is 'aceptado'
     if (reg.status === 'aceptado') {
-      acc[key].players.push({
+      const schedule = schedulesMap.get(key);
+      schedule.players.push({
         name: reg.player_name,
         class: reg.player_class || 'Desconocida',
         role: reg.player_role || 'DPS',
-        raid_role: reg.raid_role || 'asistente', // Asegurar que siempre tenga un valor por defecto
-        gear_score: reg.gear_score || 0,
+        raid_role: reg.raid_role || 'asistente',
+        gear_score: parseInt(reg.gear_score) || 0,
         status: reg.status,
-        raid_status: reg.status, // Para compatibilidad
-        registration_status: reg.status // Para compatibilidad
+        raid_status: reg.status,
+        registration_status: reg.status
       });
     }
-    
-    return acc;
-  }, {});
+  });
   
-  raidSchedules = Object.values(schedulesMap);
+  // Convert the map values to an array and sort
+  raidSchedules = Array.from(schedulesMap.values())
+    .sort((a, b) => {
+      // Sort by raid_id first
+      if (a.raid_id !== b.raid_id) {
+        return a.raid_id - b.raid_id;
+      }
+      
+      // Then by day of week
+      const dayOrder = {
+        'lunes': 1, 'martes': 2, 'miercoles': 3,
+        'jueves': 4, 'viernes': 5, 'sabado': 6, 'domingo': 7
+      };
+      
+      const dayA = a.day_of_week?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
+      const dayB = b.day_of_week?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
+      
+      const dayAOrder = dayOrder[dayA] || 99;
+      const dayBOrder = dayOrder[dayB] || 99;
+      
+      if (dayAOrder !== dayBOrder) {
+        return dayAOrder - dayBOrder;
+      }
+      
+      // Finally by start time
+      return (a.start_time || '').localeCompare(b.start_time || '');
+    });
   
   // Log the data for debugging
   console.log('Fetched raid schedules:', raidSchedules);
