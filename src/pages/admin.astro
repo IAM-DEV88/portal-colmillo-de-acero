@@ -268,10 +268,22 @@ if (!session) {
                                   />
                                 </svg>
                               </div>
-                              <div>
-                                <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">
-                                  {raidName}
-                                </h3>
+                              <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                  <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">
+                                    {raidName}
+                                  </h3>
+                                  <button
+                                    type="button"
+                                    onclick={`openNewScheduleModal('${raidId}', '${raidName}')`}
+                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors"
+                                  >
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Nuevo Horario
+                                  </button>
+                                </div>
                                 <div class="flex items-center space-x-3 text-sm text-gray-400 mt-1">
                                   <span>{raidRegistrations.length} solicitudes</span>
                                   {pendingCount > 0 && (
@@ -334,9 +346,15 @@ if (!session) {
                                   {raidRegistrations.map((reg) => (
                                     <tr class="hover:bg-gray-700/20 transition-colors">
                                       <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-white">
-                                          {reg.player_name}
-                                        </div>
+                                        <button
+                                          type="button"
+                                          onclick={`openEditModal(${JSON.stringify(reg)})`}
+                                          class="text-left hover:text-amber-400 transition-colors cursor-pointer"
+                                        >
+                                          <div class="text-sm font-medium text-white hover:underline">
+                                            {reg.player_name}
+                                          </div>
+                                        </button>
                                         {reg.raid_role && reg.raid_role !== 'asistente' && (
                                           <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-900/30 text-amber-400 mt-1">
                                             {reg.raid_role}
@@ -527,7 +545,414 @@ if (!session) {
             </>
           )}
         </div>
+
+        {/* Edit Player Modal */}
+        <div
+          id="edit-modal"
+          class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+          <div class="bg-gray-800 rounded-xl shadow-2xl max-w-lg w-full border border-gray-700">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+              <h2 class="text-xl font-bold text-white">Editar Registro</h2>
+              <button
+                onclick="closeEditModal()"
+                class="text-gray-400 hover:text-white transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <form
+              id="edit-form"
+              method="POST"
+              action="/api/admin/update-registration"
+              class="p-4 space-y-3"
+            >
+              <input type="hidden" name="id" id="edit-id" />
+              <input type="hidden" name="status" id="edit-status" value="aceptado" />
+
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">
+                  Nombre del Jugador
+                </label>
+                <input
+                  type="text"
+                  name="player_name"
+                  id="edit-player-name"
+                  required
+                  class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-400 mb-1">Clase</label>
+                  <select
+                    name="player_class"
+                    id="edit-player-class"
+                    required
+                    class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  >
+                    <option value="death-knight">Caballero de la Muerte</option>
+                    <option value="druid">Druida</option>
+                    <option value="hunter">Cazador</option>
+                    <option value="mage">Mago</option>
+                    <option value="paladin">Paladín</option>
+                    <option value="priest">Sacerdote</option>
+                    <option value="rogue">Pícaro</option>
+                    <option value="shaman">Chamán</option>
+                    <option value="warlock">Brujo</option>
+                    <option value="warrior">Guerrero</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-400 mb-1">Rol</label>
+                  <select
+                    name="player_role"
+                    id="edit-player-role"
+                    required
+                    class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  >
+                    <option value="tank">Tank</option>
+                    <option value="healer">Healer</option>
+                    <option value="melee">Melee</option>
+                    <option value="ranged">Ranged</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-400 mb-1">Día</label>
+                  <select
+                    name="day_of_week"
+                    id="edit-day"
+                    required
+                    class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent capitalize"
+                  >
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miercoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                    <option value="Sabado">Sábado</option>
+                    <option value="Domingo">Domingo</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-400 mb-1">Hora (ST)</label>
+                  <input
+                    type="time"
+                    name="start_time"
+                    id="edit-time"
+                    required
+                    class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">Rol en Raid</label>
+                <select
+                  name="raid_role"
+                  id="edit-raid-role"
+                  required
+                  class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                >
+                  <option value="asistente">Asistente</option>
+                  <option value="raid_leader">Raid Leader</option>
+                </select>
+              </div>
+
+              <div class="flex justify-end space-x-2 pt-2">
+                <button
+                  type="button"
+                  onclick="closeEditModal()"
+                  class="px-4 py-2 text-sm text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  class="px-4 py-2 text-sm bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
+                >
+                  Guardar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* New Schedule Modal */}
+        <div
+          id="new-schedule-modal"
+          class="fixed inset-0 z-50 hidden overflow-y-auto"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                  <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 class="text-lg leading-6 font-medium text-white" id="new-schedule-title">
+                      Nuevo Horario
+                    </h3>
+                    <div class="mt-2">
+                      <form id="new-schedule-form" class="space-y-3">
+                        <input type="hidden" id="new-schedule-raid-id">
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                          <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Personaje</label>
+                            <input
+                              type="text"
+                              name="player_name"
+                              required
+                              class="w-full px-2 py-1.5 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-1 focus:ring-amber-500 focus:border-transparent"
+                              placeholder="Nombre del personaje"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Clase</label>
+                            <select
+                              name="player_class"
+                              required
+                              class="w-full px-2 py-1.5 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-1 focus:ring-amber-500 focus:border-transparent"
+                            >
+                              <option value="death-knight">Caballero de la Muerte</option>
+                              <option value="druid">Druida</option>
+                              <option value="hunter">Cazador</option>
+                              <option value="mage">Mago</option>
+                              <option value="paladin">Paladín</option>
+                              <option value="priest">Sacerdote</option>
+                              <option value="rogue">Pícaro</option>
+                              <option value="shaman">Chamán</option>
+                              <option value="warlock">Brujo</option>
+                              <option value="warrior">Guerrero</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                          <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Rol Principal</label>
+                            <select
+                              name="player_role"
+                              required
+                              class="w-full px-2 py-1.5 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-1 focus:ring-amber-500 focus:border-transparent"
+                            >
+                              <option value="tank">Tanque</option>
+                              <option value="healer">Sanador</option>
+                              <option value="melee">Melee</option>
+                              <option value="ranged">Rango</option>
+                            </select>
+                          </div>
+                          
+                          <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Rol en Raid</label>
+                            <select
+                              name="raid_role"
+                              required
+                              class="w-full px-2 py-1.5 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-1 focus:ring-amber-500 focus:border-transparent"
+                            >
+                              <option value="asistente" selected>Asistente</option>
+                              <option value="raid_leader">Raid Leader</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                          <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Día</label>
+                            <select
+                              name="day_of_week"
+                              required
+                              class="w-full px-2 py-1.5 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-1 focus:ring-amber-500 focus:border-transparent"
+                            >
+                              <option value="Lunes">Lunes</option>
+                              <option value="Martes">Martes</option>
+                              <option value="Miercoles">Miércoles</option>
+                              <option value="Jueves">Jueves</option>
+                              <option value="Viernes">Viernes</option>
+                              <option value="Sabado">Sábado</option>
+                              <option value="Domingo">Domingo</option>
+                            </select>
+                          </div>
+                          
+                          <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Hora (ST)</label>
+                            <input
+                              type="time"
+                              name="start_time"
+                              required
+                              class="w-full px-2 py-1.5 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-1 focus:ring-amber-500 focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="pt-2">
+                          <button
+                            type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                          >
+                            Crear Horario
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-gray-800/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  onclick="closeNewScheduleModal()"
+                  class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-600 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
+
+    <script is:inline>
+      // Function to open the new schedule modal
+      function openNewScheduleModal(raidId, raidName) {
+        const modal = document.getElementById('new-schedule-modal');
+        const title = document.getElementById('new-schedule-title');
+        const raidIdInput = document.getElementById('new-schedule-raid-id');
+        
+        if (modal && title && raidIdInput) {
+          title.textContent = `Nuevo Horario - ${raidName}`;
+          raidIdInput.value = raidId;
+          modal.classList.remove('hidden');
+          document.body.classList.add('overflow-hidden');
+          
+          // Set default time to next hour
+          const now = new Date();
+          const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+          const timeInput = document.getElementById('new-schedule-time');
+          if (timeInput) {
+            timeInput.value = `${String(nextHour.getHours()).padStart(2, '0')}:00`;
+          }
+        }
+      }
+
+      // Function to close the new schedule modal
+      function closeNewScheduleModal() {
+        const modal = document.getElementById('new-schedule-modal');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+        }
+      }
+
+      // Show error message
+      function showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'fixed top-4 right-4 bg-red-900 text-white px-4 py-2 rounded-md shadow-lg z-50';
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+        setTimeout(() => errorDiv.remove(), 5000);
+      }
+
+      // Show success message
+      function showSuccess(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'fixed top-4 right-4 bg-green-900 text-white px-4 py-2 rounded-md shadow-lg z-50';
+        successDiv.textContent = message;
+        document.body.appendChild(successDiv);
+        setTimeout(() => successDiv.remove(), 5000);
+      }
+
+      // Handle new schedule form submission
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('new-schedule-form');
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Guardando...';
+            
+            try {
+              const formData = new FormData(form);
+              const data = {
+                raid_id: document.getElementById('new-schedule-raid-id').value,
+                player_name: formData.get('player_name').trim(),
+                player_class: formData.get('player_class'),
+                player_role: formData.get('player_role'),
+                day_of_week: formData.get('day_of_week'),
+                start_time: formData.get('start_time'),
+                raid_role: formData.get('raid_role'),
+                status: 'aceptado'
+              };
+              
+              // Basic validation
+              if (!data.player_name) {
+                throw new Error('Por favor ingresa el nombre del personaje');
+              }
+              
+              // Prepare the data for the API
+              const requestData = {
+                action: 'create',
+                raid_id: document.getElementById('new-schedule-raid-id').value,
+                player_name: formData.get('player_name').trim(),
+                player_class: formData.get('player_class'),
+                player_role: formData.get('player_role'),
+                day_of_week: formData.get('day_of_week'),
+                start_time: formData.get('start_time'),
+                raid_role: formData.get('raid_role'),
+                status: 'aceptado' // Auto-accept admin-created schedules
+              };
+
+              const response = await fetch('/api/admin/update-registration', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // This ensures cookies are sent with the request
+                body: JSON.stringify(requestData)
+              });
+              
+              const responseData = await response.json();
+              
+              if (!response.ok) {
+                throw new Error(responseData.error || 'Error al crear el horario');
+              }
+              
+              showSuccess('Horario creado exitosamente');
+              // Give a moment for the success message to be seen
+              setTimeout(() => window.location.reload(), 1000);
+            } catch (error) {
+              console.error('Error:', error);
+              showError(error.message || 'Error al crear el horario');
+            } finally {
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+              }
+            }
+          });
+        }
+      });
+    </script>
   )
 }

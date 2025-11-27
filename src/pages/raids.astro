@@ -156,7 +156,7 @@ const wotlkRaids: Raid[] = [
     image: '/images/raids/iccfarm.jpg',
     description:
       'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-    minGearScore: 5700,
+    minGearScore: 5900,
   },
   {
     id: 8,
@@ -164,7 +164,7 @@ const wotlkRaids: Raid[] = [
     image: '/images/raids/iccfarm.jpg',
     description:
       'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-    minGearScore: 5700,
+    minGearScore: 6000,
   },
 ];
 
@@ -611,8 +611,19 @@ try {
       return dayAOrder - dayBOrder;
     }
 
-    // Finally by start time
-    return (a.start_time || '').localeCompare(b.start_time || '');
+    // Finally by start time, with '00:00 ST' always last
+    const timeA = (a.start_time || '').replace(' ST', '');
+    const timeB = (b.start_time || '').replace(' ST', '');
+    
+    // If one of the times is '00:00', it should come last
+    if (timeA === '00:00' && timeB !== '00:00') return 1;
+    if (timeA !== '00:00' && timeB === '00:00') return -1;
+    
+    // If both are '00:00', maintain their order
+    if (timeA === '00:00' && timeB === '00:00') return 0;
+    
+    // Otherwise, do a normal time comparison
+    return timeA.localeCompare(timeB);
   });
 
   // Log the data for debugging
@@ -1166,302 +1177,94 @@ try {
     </div>
   </div>
 
-  {/* Cómo funciona Section */}
-  <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-    <div class="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-amber-600/30 p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-amber-400 mb-6">¿Cómo funciona?</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="space-y-3">
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <svg
-                class="h-5 w-5 text-amber-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                ></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="font-medium text-white">Próximo evento</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                El primer horario que ves es el próximo evento oficial programado por parte de la
-                hermandad.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <svg
-                class="h-5 w-5 text-amber-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="font-medium text-white">Horarios adicionales</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Usa el botón "Mostrar más horarios" para ver todos eventos programados.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <svg
-                class="h-5 w-5 text-amber-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                ></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="font-medium text-white">Participación</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Cada horario programado aceptado muestra la cantidad de jugadores que estan buscando
-                raid en ese mismo horario.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <svg
-                class="h-5 w-5 text-amber-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="font-medium text-white">¿Quieres unirte?</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Haz clic en "Unirse al Raid" para inscribirte en un horario disponible o proponer tu
-                horario y atraer jugadores y lideres de raid para formar un grupo.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Guía de Registro Section */}
-  <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-    <div class="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-amber-600/30 p-6 md:p-8">
-      <h2 class="text-2xl font-bold text-amber-400 mb-6">Guía de Registro</h2>
-
-      <div class="grid md:grid-cols-2 gap-8">
-        <div class="space-y-6">
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <div class="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                <svg
-                  class="h-5 w-5 text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <h3 class="font-medium text-white">Nombre del Personaje</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Ingresa el nombre exacto de tu personaje en el juego para poder invitarlo al raid.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <div class="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                <svg
-                  class="h-5 w-5 text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <h3 class="font-medium text-white">Clase y rol de personaje</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Selecciona tu clase principal y el tipo de rol que usarás durante el raid.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <div class="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                <svg
-                  class="h-5 w-5 text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <h3 class="font-medium text-white">Puntuación de Equipo (GS) y rol de raid</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Ingresa tu Gear Score actual. Asegúrate de que cumple con los requisitos mínimos del
-                raid. Si eres quien va a armar la banda, regístrate como raid leader.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-6">
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <div class="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                <svg
-                  class="h-5 w-5 text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <h3 class="font-medium text-white">Disponibilidad</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Selecciona el día y hora en el que estás disponible para raidear. Esto nos ayudará a
-                organizar los grupos y dar prioridad a los que tengan más disponibilidad.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <div class="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                <svg
-                  class="h-5 w-5 text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <h3 class="font-medium text-white">Objetivo</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Consolidar horarios para que podamos organizar los grupos y dar prioridad a los que
-                tengan más disponibilidad.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start">
-            <div class="flex-shrink-0 mt-1">
-              <div class="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                <svg
-                  class="h-5 w-5 text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <h3 class="font-medium text-white">Confirmación</h3>
-              <p class="mt-1 text-sm text-gray-300">
-                Revisa que toda la información sea correcta antes de enviar tu solicitud.
-              </p>
-            </div>
-          </div>
-        </div>
+  {/* Weekly Schedule Section */}
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div class="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-amber-600/30 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-amber-400">Malla Semanal</h2>
+        
       </div>
 
-      <div class="mt-8 pt-6 border-t border-gray-800">
-        <h3 class="text-lg font-medium text-amber-400 mb-3">¿Necesitas ayuda?</h3>
-        <p class="text-sm text-gray-300">
-          Si tienes alguna duda o necesitas asistencia con tu registro, no dudes en contactar a un
-          oficial de la hermandad a través del canal de Discord.
-        </p>
-        <div class="mt-4">
-          <a
-            href="https://discord.gg/j5CaXYMhws"
-            class="inline-flex items-center text-amber-400 hover:text-amber-300 text-sm font-medium"
-          >
-            Unirse a Discord
-            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-          </a>
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        {
+          ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map((day) => {
+            // Normalize day for comparison
+            const normalizeDay = (d) =>
+              d
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+
+            const targetDay = normalizeDay(day);
+
+            const daySchedules = raidSchedules
+              .filter((s) => normalizeDay(s.day_of_week) === targetDay)
+              .sort((a, b) => {
+                // Extract time part (remove 'ST' if present)
+                const timeA = (a.start_time || '').replace(' ST', '');
+                const timeB = (b.start_time || '').replace(' ST', '');
+                
+                // Handle '00:00' to appear last
+                if (timeA === '00:00' && timeB !== '00:00') return 1;
+                if (timeA !== '00:00' && timeB === '00:00') return -1;
+                
+                // For other times, do normal time comparison
+                return timeA.localeCompare(timeB);
+              });
+
+            return (
+              <div class="bg-gray-800/40 rounded-lg overflow-hidden border border-gray-700/50 flex flex-col h-full">
+                <div class="bg-gray-800/80 p-2 text-center border-b border-gray-700/50">
+                  <h3 class="font-bold text-gray-200 text-sm">{day}</h3>
+                </div>
+                <div class="p-2 space-y-2 flex-grow min-h-[100px]">
+                  {daySchedules.length > 0 ? (
+                    daySchedules.map((schedule) => (
+                      <div class="group relative bg-gray-900/60 hover:bg-gray-800 p-2 rounded border-l-2 border-amber-500 transition-all duration-200 cursor-default">
+                        <div class="flex justify-between items-center mb-1">
+                          <span class="text-xs font-bold text-amber-400">
+                            {schedule.start_time} ST
+                          </span>
+                        </div>
+                        <div class="flex justify-between items-start">
+                          <span class="text-xs text-gray-300 font-medium leading-tight whitespace-normal break-words">
+                            {schedule.raid_name}
+                          </span>
+                          
+                        </div>
+                        {schedule.raid_leader && (
+                          <div class="mt-1 flex items-center text-[10px] text-amber-400">
+                            <svg
+                              class="w-3 h-3 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                              />
+                            </svg>
+                            {schedule.raid_leader}
+                          </div>
+                        )}
+                        <span class="text-[10px] text-red-400 font-bold whitespace-nowrap">
+                            Min. GS {wotlkRaids.find(r => r.id === schedule.raid_id)?.minGearScore}
+                          </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div class="h-full flex items-center justify-center">
+                      <span class="text-xs text-gray-600 italic">-</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        }
       </div>
     </div>
   </div>

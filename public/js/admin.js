@@ -386,4 +386,145 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 300);
     }, 3000);
   }
+
+  // Edit Modal Functions
+  window.openEditModal = function (registration) {
+    const modal = document.getElementById('edit-modal');
+    const form = document.getElementById('edit-form');
+
+    if (!modal || !form) return;
+
+    // Normalize class to match select options (lowercase)
+    const normalizeClass = (className) => {
+      if (!className) return 'warrior';
+      return className.toLowerCase();
+    };
+
+    // Normalize day_of_week to match select options (capitalize first letter)
+    const normalizeDay = (day) => {
+      if (!day) return '';
+      const normalized = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
+      // Handle special cases for Spanish days
+      const daysMap = {
+        'Lunes': 'Lunes',
+        'Martes': 'Martes',
+        'Miercoles': 'Miercoles',
+        'Jueves': 'Jueves',
+        'Viernes': 'Viernes',
+        'Sabado': 'Sabado',
+        'Domingo': 'Domingo'
+      };
+      return daysMap[normalized] || '';
+    };
+
+    try {
+      // Populate form fields
+      document.getElementById('edit-id').value = registration.id;
+      document.getElementById('edit-player-name').value = registration.player_name || '';
+      
+      // Set the status field if it exists
+      const statusField = document.getElementById('edit-status');
+      if (statusField) {
+        statusField.value = registration.status || 'aceptado';
+      }
+
+      // Set player class with normalization
+      const playerClass = normalizeClass(registration.player_class);
+      const classSelect = document.getElementById('edit-player-class');
+      if (classSelect) {
+        classSelect.value = playerClass;
+      }
+
+      document.getElementById('edit-player-role').value = registration.player_role || 'tank';
+
+      // Set day with normalization
+      const daySelect = document.getElementById('edit-day');
+      if (daySelect) {
+        const normalizedDay = normalizeDay(registration.day_of_week);
+        daySelect.value = normalizedDay;
+      }
+
+      document.getElementById('edit-time').value = registration.start_time || '';
+      document.getElementById('edit-raid-role').value = registration.raid_role || 'asistente';
+
+      // Show modal
+      modal.classList.remove('hidden');
+    } catch (error) {
+      console.error('Error in openEditModal:', error);
+    }
+  }
+
+  window.closeEditModal = function () {
+    const modal = document.getElementById('edit-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }
+
+  // Handle edit form submission
+  const editForm = document.getElementById('edit-form');
+  if (editForm) {
+    editForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(editForm);
+      const submitButton = editForm.querySelector('button[type="submit"]');
+      const originalHTML = submitButton.innerHTML;
+
+      try {
+        submitButton.disabled = true;
+        submitButton.innerHTML = `
+          <svg class="animate-spin h-4 w-4 text-white inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Guardando...
+        `;
+
+        // Convert FormData to JSON object
+        const formData = new FormData(editForm);
+        const jsonData = Object.fromEntries(formData.entries());
+
+        const response = await fetch(editForm.action, {
+          method: 'POST',
+          body: JSON.stringify(jsonData),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Error al actualizar el registro');
+        }
+
+        showToast('Registro actualizado correctamente', 'success');
+        closeEditModal();
+
+        // Reload page to show updated data
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+
+      } catch (error) {
+        console.error('Error:', error);
+        showToast(error.message || 'Error al actualizar el registro', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalHTML;
+      }
+    });
+  }
+
+  // Close modal when clicking outside
+  const editModal = document.getElementById('edit-modal');
+  if (editModal) {
+    editModal.addEventListener('click', (e) => {
+      if (e.target === editModal) {
+        closeEditModal();
+      }
+    });
+  }
 });
