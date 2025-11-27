@@ -201,6 +201,63 @@ const wotlkRaids: Raid[] = [
 let raidSchedules: RaidSchedule[] = [];
 let error: string | null = null;
 
+// Import roster data and utils
+import rosterData from '../data/roster.json';
+import { validatePublicNote } from '../utils/rosterUtils';
+import { wotlkRaids } from '../config/raids';
+
+// Process roster data to get parsed members
+const parsedMembers = rosterData.map((member) => {
+  const publicNote = member.publicNote || '';
+  const validation = validatePublicNote(publicNote, member.name);
+
+  // Find character block
+  const charBlock = validation.blocks?.find((b) => b.type === 'character')?.parsedData;
+
+  let gs = 0;
+  let role = 'D'; // Default to DPS
+
+  if (charBlock) {
+    // Normalize GS: if < 100, assume it's k (e.g. 5.8 -> 5800)
+    let rawGs = charBlock.mainGearScore || 0;
+    if (rawGs > 0 && rawGs < 100) {
+      gs = rawGs * 1000;
+    } else {
+      gs = rawGs;
+    }
+
+    role = charBlock.mainRole || 'D';
+  }
+
+  return {
+    name: member.name,
+    class: member.class,
+    role: role,
+    gearScore: gs,
+    publicNote: publicNote,
+  };
+});
+
+// Calculate eligible members for each raid
+// 1. All eligible members (Min GS only) - For schedule specific view
+const raidEligibleMembers = {};
+// 2. Range filtered members (Min GS <= GS < Next Raid Min GS) - For general raid view
+const raidEligibleMembersRange = {};
+
+wotlkRaids.forEach((raid, index) => {
+  // All eligible (Min GS)
+  raidEligibleMembers[raid.id] = parsedMembers.filter((m) => m.gearScore >= raid.minGearScore);
+
+  // Range filtered
+  const minGs = raid.minGearScore;
+  const nextRaid = wotlkRaids[index + 1];
+  const maxGs = nextRaid ? nextRaid.minGearScore : Infinity;
+
+  raidEligibleMembersRange[raid.id] = parsedMembers.filter(
+    (m) => m.gearScore >= minGs && m.gearScore < maxGs
+  );
+});
+
 // Function to get the next upcoming schedule
 // Function to get sorted schedules including the 1 hour buffer
 function getSortedSchedules(schedules) {
@@ -839,6 +896,34 @@ try {
 
                             {/* Next schedule and role info */}
                             <div class="p-4 bg-gray-900/60">
+                              {/* Eligible Roster Members Button */}
+                              <div class="mb-4">
+                                <button
+                                  onclick={`openRosterModal(${raid.id})`}
+                                  class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-lg px-3 py-2 text-sm font-medium transition-colors flex items-center justify-between group"
+                                >
+                                  <div class="flex items-center">
+                                    <svg
+                                      class="w-4 h-4 mr-2"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                      />
+                                    </svg>
+                                    <span>Miembros elegibles del roster</span>
+                                  </div>
+                                  <span class="bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded text-xs group-hover:bg-indigo-500/30 border border-indigo-500/20">
+                                    {raidEligibleMembersRange[raid.id]?.length || 0}
+                                  </span>
+                                </button>
+                              </div>
+
                               {/* Next schedule */}
                               {/* Schedules List */}
                               <div class="space-y-2 pr-1 max-h-[315px] sm:max-h-[270px] overflow-y-scroll">
@@ -996,6 +1081,28 @@ try {
                                                 ).length
                                               }
                                             </button>
+
+                                            {/* Eligible Roster Button for Schedule */}
+                                            <button
+                                              onclick={`openRosterModal(${raid.id}, '${schedule.day_of_week}', '${schedule.start_time}')`}
+                                              class="text-xs bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 px-1.5 py-0.5 rounded flex items-center transition-colors ml-2"
+                                              title="Invitar miembros del roster"
+                                            >
+                                              <svg
+                                                class="w-3 h-3 mr-1"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  stroke-width="2"
+                                                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                                                />
+                                              </svg>
+                                              {raidEligibleMembers[raid.id]?.length || 0}
+                                            </button>
                                           </div>
                                         </div>
 
@@ -1122,6 +1229,67 @@ try {
                   <path d="M9 18l6-6-6-6"></path>
                 </svg>
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roster Eligible Modal -->
+  <div
+    id="roster-modal"
+    class="fixed inset-0 z-50 hidden overflow-y-auto"
+    aria-labelledby="modal-title"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+    >
+      <div
+        class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity backdrop-blur-sm"
+        aria-hidden="true"
+        onclick="closeRosterModal()"
+      >
+      </div>
+
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"
+        >&#8203;</span
+      >
+
+      <div
+        class="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-700"
+      >
+        <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+              <h3
+                class="text-lg leading-6 font-medium text-white flex items-center justify-between border-b border-gray-700 pb-3 mb-4"
+                id="modal-title"
+              >
+                <span id="roster-modal-raid-name">Miembros Elegibles</span>
+                <button
+                  type="button"
+                  class="text-gray-400 hover:text-white focus:outline-none"
+                  onclick="closeRosterModal()"
+                >
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </h3>
+
+              <div
+                id="roster-modal-content"
+                class="mt-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar"
+              >
+                <!-- Content injected by JS -->
+              </div>
             </div>
           </div>
         </div>
@@ -1307,7 +1475,8 @@ try {
                       <div class="group relative bg-gray-900/60 hover:bg-gray-800 p-2 rounded border-l-2 border-amber-500 transition-all duration-200 cursor-default">
                         <div class="flex justify-between items-center mb-1">
                           <span class="text-xs font-bold text-amber-400">
-                            {schedule.start_time} hora server</span>
+                            {schedule.start_time} hora server
+                          </span>
                         </div>
                         <div class="flex justify-between items-start">
                           <span class="text-xs text-gray-300 font-medium leading-tight whitespace-normal break-words">
@@ -1360,25 +1529,29 @@ try {
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h2 class="text-2xl font-bold text-amber-400">Reglas de Raid</h2>
         <div class="flex items-center space-x-4">
-          <a 
-            href="https://discord.gg/BwdpNV9sky" 
-            target="_blank" 
+          <a
+            href="https://discord.gg/BwdpNV9sky"
+            target="_blank"
             rel="noopener noreferrer"
             class="flex items-center text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
           >
             <svg class="w-5 h-5 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.1 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.8 8.18 1.8 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.891.077.077 0 00-.041.1c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.84 19.84 0 005.99-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.946-2.419 2.157-2.419 1.21 0 2.175 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.953-2.419 2.157-2.419 1.21 0 2.175 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+              <path
+                d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.1 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.8 8.18 1.8 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.891.077.077 0 00-.041.1c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.84 19.84 0 005.99-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.946-2.419 2.157-2.419 1.21 0 2.175 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.953-2.419 2.157-2.419 1.21 0 2.175 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"
+              ></path>
             </svg>
             Discord
           </a>
-          <a 
-            href="https://chat.whatsapp.com/BahYOaTMZfHIwYQGey3G91" 
-            target="_blank" 
+          <a
+            href="https://chat.whatsapp.com/BahYOaTMZfHIwYQGey3G91"
+            target="_blank"
             rel="noopener noreferrer"
             class="flex items-center text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
           >
             <svg class="w-5 h-5 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.471-.148-.67.15-.197.297-.767.963-.94 1.16-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.795-1.484-1.781-1.66-2.075-.173-.297-.018-.458.13-.606.136-.135.298-.354.446-.531.149-.174.198-.298.298-.497.099-.198.05-.367-.025-.531-.075-.174-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.508-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.79.359-.272.3-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.074c.149.198 2.096 3.2 5.076 4.49.703.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.005-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.214-3.741.982.998-3.648-.235-.372a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.29A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.549 4.142 1.595 5.945L0 24l6.335-1.652a11.882 11.882 0 005.723 1.464h.006c6.553 0 11.89-5.336 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.471-.148-.67.15-.197.297-.767.963-.94 1.16-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.795-1.484-1.781-1.66-2.075-.173-.297-.018-.458.13-.606.136-.135.298-.354.446-.531.149-.174.198-.298.298-.497.099-.198.05-.367-.025-.531-.075-.174-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.508-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.79.359-.272.3-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.074c.149.198 2.096 3.2 5.076 4.49.703.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.005-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.214-3.741.982.998-3.648-.235-.372a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.29A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.549 4.142 1.595 5.945L0 24l6.335-1.652a11.882 11.882 0 005.723 1.464h.006c6.553 0 11.89-5.336 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
+              ></path>
             </svg>
             WhatsApp
           </a>
@@ -1389,8 +1562,18 @@ try {
         {/* Normas de Conducta */}
         <div class="bg-gray-800/50 rounded-lg p-5 border border-gray-700/50">
           <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
-            <svg class="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              class="w-5 h-5 text-red-400 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              ></path>
             </svg>
             Normas de Conducta
           </h3>
@@ -1417,8 +1600,18 @@ try {
         {/* Sistema de Botín */}
         <div class="bg-gray-800/50 rounded-lg p-5 border border-gray-700/50">
           <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
-            <svg class="w-5 h-5 text-amber-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              class="w-5 h-5 text-amber-400 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
             </svg>
             Sistema de Botín
           </h3>
@@ -1445,8 +1638,18 @@ try {
         {/* Requisitos Generales */}
         <div class="md:col-span-2 bg-gray-800/50 rounded-lg p-5 border border-blue-700/50">
           <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
-            <svg class="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            <svg
+              class="w-5 h-5 text-blue-400 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
             </svg>
             Requisitos Generales
           </h3>
@@ -1975,21 +2178,39 @@ try {
   });
 
   // Modal functions
-  window.openRegistrationModal = function (button) {
+  // Modal functions
+  window.openRegistrationModal = function (source) {
     const modal = document.getElementById('register-modal');
     const form = document.getElementById('registration-form');
 
     if (!modal || !form) return;
 
-    // Get data from button
-    const raidName = button.dataset.raidName;
-    const raidId = button.dataset.raidId;
-    const day = button.dataset.day;
-    const time = button.dataset.time;
-    const role = button.dataset.role;
+    let raidName, raidId, day, time, role, playerClass, playerName;
+
+    // Check if source is a button (DOM element) or a data object
+    if (source instanceof Element) {
+      // Get data from button dataset
+      raidName = source.dataset.raidName;
+      raidId = source.dataset.raidId;
+      day = source.dataset.day;
+      time = source.dataset.time;
+      role = source.dataset.role;
+      // Clear player specific fields if coming from generic button
+      playerClass = '';
+      playerName = '';
+    } else {
+      // Get data from object
+      raidName = source.raidName;
+      raidId = source.raidId;
+      day = source.day;
+      time = source.time;
+      role = source.role;
+      playerClass = source.playerClass || '';
+      playerName = source.playerName || '';
+    }
 
     // Update modal UI
-    document.getElementById('modal-raid-name').textContent = raidName;
+    document.getElementById('modal-raid-name').textContent = raidName || 'Raid';
     document.getElementById('modal-schedule-info').textContent = `${day} - ${time} hora server`;
     document.getElementById('modal-role-display').textContent = role;
 
@@ -1999,18 +2220,108 @@ try {
     document.getElementById('modal-time').value = time;
     document.getElementById('modal-player-role').value = role;
 
+    // Pre-fill player name and class if provided (and if fields exist)
+    const nameInput = document.getElementById('player-name');
+    const classSelect = document.getElementById('player-class');
+
+    if (nameInput && playerName) {
+      nameInput.value = playerName;
+      // Trigger input event to ensure any validation runs
+      nameInput.dispatchEvent(new Event('input'));
+    }
+
+    // Filter classes based on role
+    filterClassesByRole(role);
+
+    if (classSelect && playerClass) {
+      // Try to match class name
+      const classMap = {
+        Guerrero: 'warrior',
+        Paladín: 'paladin',
+        Paladin: 'paladin',
+        Cazador: 'hunter',
+        Pícaro: 'rogue',
+        Picaro: 'rogue',
+        Sacerdote: 'priest',
+        'Caballero de la Muerte': 'death-knight',
+        Chamán: 'shaman',
+        Chaman: 'shaman',
+        Mago: 'mage',
+        Brujo: 'warlock',
+        Druida: 'druid',
+      };
+
+      const mappedClass = classMap[playerClass] || playerClass.toLowerCase();
+      classSelect.value = mappedClass;
+    }
+
     // Show modal
     modal.classList.remove('hidden');
 
-    // Reset form and errors
-    form.reset();
+    // Reset form errors (but not the form itself if we just filled it)
     document.getElementById('form-errors').classList.add('hidden');
+  };
+
+  window.filterClassesByRole = function (role) {
+    const classSelect = document.getElementById('player-class');
+    if (!classSelect) return;
+
+    const options = classSelect.options;
+    const validClasses = {
+      tank: ['death-knight', 'druid', 'paladin', 'warrior'],
+      healer: ['druid', 'paladin', 'priest', 'shaman'],
+      heal: ['druid', 'paladin', 'priest', 'shaman'],
+      melee: ['death-knight', 'druid', 'paladin', 'rogue', 'shaman', 'warrior'],
+      ranged: ['druid', 'hunter', 'mage', 'priest', 'shaman', 'warlock'],
+    };
+
+    const allowed = validClasses[role] || [];
+
+    // If no specific restriction (e.g. generic 'dps' or unknown), enable all
+    // But if we have a list, filter.
+
+    for (let i = 0; i < options.length; i++) {
+      const opt = options[i];
+      if (opt.value === '') continue; // Skip placeholder
+
+      if (allowed.length > 0 && !allowed.includes(opt.value)) {
+        opt.disabled = true;
+        opt.hidden = true; // Hide it visually if supported
+      } else {
+        opt.disabled = false;
+        opt.hidden = false;
+      }
+    }
+
+    // If currently selected option is disabled, reset
+    if (classSelect.selectedOptions.length > 0 && classSelect.selectedOptions[0].disabled) {
+      classSelect.value = '';
+    }
   };
 
   window.closeRegistrationModal = function () {
     const modal = document.getElementById('register-modal');
+    const form = document.getElementById('registration-form');
+
     if (modal) {
       modal.classList.add('hidden');
+    }
+
+    if (form) {
+      form.reset();
+      // Reset any disabled/hidden options in class select
+      const classSelect = document.getElementById('player-class');
+      if (classSelect) {
+        Array.from(classSelect.options).forEach((opt) => {
+          opt.disabled = false;
+          opt.hidden = false;
+        });
+      }
+    }
+
+    const errorDiv = document.getElementById('form-errors');
+    if (errorDiv) {
+      errorDiv.classList.add('hidden');
     }
   };
 
@@ -2019,6 +2330,216 @@ try {
     const modal = document.getElementById('register-modal');
     if (event.target == modal) {
       window.closeRegistrationModal();
+    }
+
+    const rosterModal = document.getElementById('roster-modal');
+    if (event.target == rosterModal) {
+      window.closeRosterModal();
+    }
+  };
+</script>
+
+<script define:vars={{ raidEligibleMembers, raidEligibleMembersRange }}>
+  // Pass server-side data to client
+  window.raidEligibleMembers = raidEligibleMembers;
+  window.raidEligibleMembersRange = raidEligibleMembersRange;
+
+  window.openRosterModal = function (raidId, day = null, time = null) {
+    const modal = document.getElementById('roster-modal');
+    const content = document.getElementById('roster-modal-content');
+    const raidNameEl = document.getElementById('roster-modal-raid-name');
+
+    // Determine which list to use based on context
+    // If day/time provided (Schedule context) -> Use ALL eligible members (Min GS only)
+    // If NO day/time (General context) -> Use RANGE filtered members (Min GS <= GS < Next Raid Min GS)
+    const membersList =
+      day && time ? window.raidEligibleMembers[raidId] : window.raidEligibleMembersRange[raidId];
+
+    if (!modal || !content || !membersList) return;
+
+    const members = membersList;
+    // Sort members: Tank > Healer > DPS, then by GS desc
+    const roleOrder = { T: 1, H: 2, D: 3 };
+
+    members.sort((a, b) => {
+      const roleDiff = (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
+      if (roleDiff !== 0) return roleDiff;
+      return b.gearScore - a.gearScore;
+    });
+
+    // Group by role
+    const tanks = members.filter((m) => m.role === 'T');
+    const healers = members.filter((m) => m.role === 'H');
+    const dps = members.filter((m) => m.role === 'D');
+
+    // Helper to render member list
+    const renderList = (list, title, colorClass, iconPath, id) => {
+      if (list.length === 0) return '';
+
+      return `
+        <div class="mb-4 last:mb-0 border border-gray-700/50 rounded-lg overflow-hidden bg-gray-800/20">
+          <button 
+            type="button"
+            class="w-full flex items-center justify-between p-3 bg-gray-800/50 hover:bg-gray-800 transition-colors"
+            onclick="document.getElementById('${id}-content').classList.toggle('hidden'); document.getElementById('${id}-chevron').classList.toggle('rotate-180');"
+          >
+            <div class="flex items-center">
+              <div class="p-1.5 rounded-lg ${colorClass} bg-opacity-20 mr-3">
+                <svg class="w-4 h-4 ${colorClass.replace('bg-', 'text-')}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  ${iconPath}
+                </svg>
+              </div>
+              <h4 class="text-sm font-bold text-gray-200 uppercase tracking-wide">${title} <span class="text-xs text-gray-500 ml-1">(${list.length})</span></h4>
+            </div>
+            <svg id="${id}-chevron" class="w-5 h-5 text-gray-500 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <div id="${id}-content" class="hidden p-3 border-t border-gray-700/50 bg-gray-900/20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${list
+                .map((m) => {
+                  // Determine interaction
+                  const isClickable = !!day && !!time;
+                  const cursorClass = isClickable ? 'cursor-pointer hover:bg-gray-700/60' : '';
+                  const clickHandler = isClickable
+                    ? `onclick="selectMemberForRegistration('${m.name}', '${m.class}', '${m.role}', '${raidId}', '${day}', '${time}')"`
+                    : '';
+
+                  return `
+                  <div 
+                    class="flex items-center justify-between bg-gray-800/40 p-2 rounded border border-gray-700/30 transition-colors ${cursorClass}"
+                    ${clickHandler}
+                  >
+                    <div class="flex items-center overflow-hidden">
+                      <img src="/images/avatars/class_${m.class}.jpg" class="w-6 h-6 rounded-full mr-2 object-cover" onerror="this.src='/images/avatars/default.png'" />
+                      <span class="text-sm font-medium text-gray-200 truncate">${m.name}</span>
+                    </div>
+                    <div class="flex items-center ml-2">
+                      <span class="text-xs font-mono text-amber-400 bg-amber-900/20 px-1.5 py-0.5 rounded border border-amber-700/30">
+                        ${(m.gearScore / 1000).toFixed(1)}k
+                      </span>
+                      ${
+                        isClickable
+                          ? `
+                      <svg class="w-4 h-4 text-gray-500 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                      `
+                          : ''
+                      }
+                    </div>
+                  </div>
+                `;
+                })
+                .join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    const tankIcon =
+      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />';
+    const healIcon =
+      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />';
+    const dpsIcon =
+      '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />';
+
+    let html = '';
+
+    if (day && time) {
+      html += `<div class="mb-4 p-2 bg-indigo-900/20 border border-indigo-500/30 rounded text-sm text-indigo-200 text-center">
+          Selecciona un jugador para invitarlo a la raid del <strong>${day} ${time}</strong>
+        </div>`;
+    }
+
+    html += renderList(tanks, 'Tanques', 'bg-blue-500', tankIcon, 'tanks');
+    html += renderList(healers, 'Sanadores', 'bg-green-500', healIcon, 'healers');
+    html += renderList(dps, 'DPS', 'bg-red-500', dpsIcon, 'dps');
+
+    if (html === '') {
+      html =
+        '<div class="text-center text-gray-400 py-8">No hay miembros elegibles para esta raid.</div>';
+    }
+
+    content.innerHTML = html;
+
+    // Set title
+    let title = 'Miembros Elegibles';
+    if (day && time) {
+      title += ` - ${day} ${time}`;
+    }
+    raidNameEl.textContent = title;
+
+    modal.classList.remove('hidden');
+  };
+
+  window.selectMemberForRegistration = function (name, className, roleCode, raidId, day, time) {
+    // Close roster modal
+    window.closeRosterModal();
+
+    // Determine refined role based on class if generic DPS
+    let finalRole = 'dps';
+
+    if (roleCode === 'T') finalRole = 'tank';
+    else if (roleCode === 'H') finalRole = 'healer';
+    else if (roleCode === 'D') {
+      // Refine DPS to melee or ranged
+      const meleeClasses = [
+        'Guerrero',
+        'Paladín',
+        'Paladin',
+        'Caballero de la Muerte',
+        'Pícaro',
+        'Picaro',
+        'Rogue',
+        'Warrior',
+        'Death Knight',
+        'Retribution',
+      ];
+      const rangedClasses = [
+        'Mago',
+        'Mage',
+        'Brujo',
+        'Warlock',
+        'Sacerdote',
+        'Priest',
+        'Cazador',
+        'Hunter',
+      ];
+
+      // Hybrids (Druid, Shaman) default to ranged unless specified otherwise, but here we just guess
+      // Or we can check if it's in melee list.
+
+      if (meleeClasses.includes(className)) {
+        finalRole = 'melee';
+      } else if (rangedClasses.includes(className)) {
+        finalRole = 'ranged';
+      } else {
+        // Druid/Shaman - ambiguous. Default to ranged for safety, or maybe 'dps' generic if allowed.
+        // The buttons use 'melee' and 'ranged'.
+        finalRole = 'ranged';
+      }
+    }
+
+    // Open registration modal with data
+    window.openRegistrationModal({
+      raidId: raidId,
+      day: day,
+      time: time,
+      role: finalRole,
+      playerName: name,
+      playerClass: className,
+      raidName: document.querySelector(`[data-raid-id="${raidId}"] h3`)?.textContent || 'Raid',
+    });
+  };
+
+  window.closeRosterModal = function () {
+    const modal = document.getElementById('roster-modal');
+    if (modal) {
+      modal.classList.add('hidden');
     }
   };
 </script>
