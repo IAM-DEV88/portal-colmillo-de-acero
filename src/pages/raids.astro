@@ -15,7 +15,12 @@ function countPlayersByRole(players) {
         const className = player.player_class?.toLowerCase() || '';
 
         // Verificar si es tanque
-        if (role.includes('tank') || playerRole.includes('tank')) {
+        if (
+          role.includes('tank') ||
+          playerRole.includes('tank') ||
+          role.includes('tanque') ||
+          playerRole.includes('tanque')
+        ) {
           acc.tank = (acc.tank || 0) + 1;
         }
         // Verificar si es sanador
@@ -31,21 +36,40 @@ function countPlayersByRole(players) {
         }
         // Verificar DPS (cuerpo a cuerpo o a distancia)
         else {
-          // Verificar si el rol específico es 'cuerpo a cuerpo' o 'a distancia'
-          if (role.includes('cuerpo a cuerpo') || playerRole.includes('cuerpo a cuerpo')) {
+          // Verificar si el rol específico es 'cuerpo a cuerpo' o 'melee'
+          if (
+            role.includes('cuerpo a cuerpo') ||
+            playerRole.includes('cuerpo a cuerpo') ||
+            role.includes('melee') ||
+            playerRole.includes('melee')
+          ) {
             acc.melee = (acc.melee || 0) + 1;
-          } else if (
+          }
+          // Verificar si es 'a distancia' o 'ranged'
+          else if (
             role.includes('a distancia') ||
             playerRole.includes('a distancia') ||
             role.includes('ranged') ||
-            playerRole.includes('ranged')
+            playerRole.includes('ranged') ||
+            role.includes('rango') ||
+            playerRole.includes('rango')
           ) {
             acc.ranged = (acc.ranged || 0) + 1;
           }
           // Si no está especificado, intentar determinarlo por clase
           else {
-            // Clases que siempre son cuerpo a cuerpo
-            const meleeClasses = ['warrior', 'paladin', 'deathknight', 'rogue'];
+            // Clases que siempre son cuerpo a cuerpo (o mayoritariamente)
+            const meleeClasses = [
+              'warrior',
+              'paladin',
+              'deathknight',
+              'death-knight',
+              'rogue',
+              'guerrero',
+              'paladín',
+              'pícaro',
+              'caballero de la muerte',
+            ];
             // Especializaciones que son cuerpo a cuerpo
             const meleeSpecs = [
               'feral',
@@ -55,6 +79,11 @@ function countPlayersByRole(players) {
               'assassination',
               'fury',
               'arms',
+              'subtlety',
+              'protection', // Should be tank but just in case
+              'unholy',
+              'frost',
+              'blood',
             ];
 
             const isMelee =
@@ -614,14 +643,14 @@ try {
     // Finally by start time, with '00:00 ST' always last
     const timeA = (a.start_time || '').replace(' ST', '');
     const timeB = (b.start_time || '').replace(' ST', '');
-    
+
     // If one of the times is '00:00', it should come last
     if (timeA === '00:00' && timeB !== '00:00') return 1;
     if (timeA !== '00:00' && timeB === '00:00') return -1;
-    
+
     // If both are '00:00', maintain their order
     if (timeA === '00:00' && timeB === '00:00') return 0;
-    
+
     // Otherwise, do a normal time comparison
     return timeA.localeCompare(timeB);
   });
@@ -793,7 +822,7 @@ try {
                                           );
                                         }).length
                                       }{' '}
-                                      {raidSchedulesForRaid.length === 1 ? 'horario' : 'horarios'}
+                                      {raidSchedulesForRaid.length === 1 ? 'CORE' : 'CORES'}
                                     </p>
                                   </div>
                                   <div class="flex flex-col items-end">
@@ -812,7 +841,7 @@ try {
                             <div class="p-4 bg-gray-900/60">
                               {/* Next schedule */}
                               {/* Schedules List */}
-                              <div class="space-y-2 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                              <div class="space-y-2 pr-1">
                                 {(() => {
                                   const sortedSchedules = getSortedSchedules(raidSchedulesForRaid);
 
@@ -860,9 +889,36 @@ try {
                                           </div>
                                           <div class="flex items-center space-x-2">
                                             {/* Indicators for regulars/leaders */}
-                                            <span
-                                              class="text-xs bg-blue-600/30 text-blue-300 px-1.5 py-0.5 rounded flex items-center"
-                                              title="Jugadores regulares"
+                                            <button
+                                              data-regulars={JSON.stringify({
+                                                regulars: (schedulePlayers || [])
+                                                  .filter(
+                                                    (p) =>
+                                                      !['raid_leader', 'lider_raid'].includes(
+                                                        p.raid_role
+                                                      )
+                                                  )
+                                                  .map((p) => ({
+                                                    name: String(p.name || ''),
+                                                    class: String(p.class || ''),
+                                                    role: String(p.raid_role || 'asistente'),
+                                                    player_role: String(
+                                                      p.player_role || p.role || 'default'
+                                                    ),
+                                                  })),
+                                              })}
+                                              onclick="(function(btn) {
+                                                try {
+                                                  const data = JSON.parse(btn.getAttribute('data-regulars') || '{}');
+                                                  const regulars = data.regulars || [];
+                                                  openRegularPlayersModal(regulars);
+                                                } catch (e) {
+                                                  console.error('Error loading regular players:', e);
+                                                  openRegularPlayersModal([]);
+                                                }
+                                              })(this)"
+                                              class="text-xs bg-blue-600/30 hover:bg-blue-600/40 text-blue-300 px-1.5 py-0.5 rounded flex items-center transition-colors"
+                                              title="Ver jugadores regulares"
                                             >
                                               <svg
                                                 class="w-3 h-3 mr-1"
@@ -885,10 +941,39 @@ try {
                                                     )
                                                 ).length
                                               }
-                                            </span>
-                                            <span
-                                              class="text-xs bg-amber-600/30 text-amber-300 px-1.5 py-0.5 rounded flex items-center"
-                                              title="Líderes de raid"
+                                            </button>
+                                            <button
+                                              data-leaders={JSON.stringify({
+                                                leaders: (schedulePlayers || [])
+                                                  .filter(
+                                                    (p: any) =>
+                                                      p &&
+                                                      ['raid_leader', 'lider_raid'].includes(
+                                                        p.raid_role
+                                                      )
+                                                  )
+                                                  .map((p: any) => ({
+                                                    name: String(p.name || ''),
+                                                    class: String(p.class || ''),
+                                                    role: String(p.raid_role || ''),
+                                                    player_role: String(
+                                                      p.player_role || p.role || 'default'
+                                                    ),
+                                                  })),
+                                              })}
+                                              onclick="(function(btn) {
+                                                try {
+                                                  const data = JSON.parse(btn.getAttribute('data-leaders') || '{}');
+                                                  const leaders = data.leaders || [];
+                                                  console.log('Leaders data:', leaders);
+                                                  openRaidLeadersModal(leaders);
+                                                } catch (e) {
+                                                  console.error('Error loading raid leaders:', e);
+                                                  openRaidLeadersModal([]);
+                                                }
+                                              })(this)"
+                                              class="text-xs bg-amber-600/30 hover:bg-amber-600/40 text-amber-300 px-1.5 py-0.5 rounded flex items-center transition-colors"
+                                              title="Ver líderes de raid"
                                             >
                                               <svg
                                                 class="w-3 h-3 mr-1"
@@ -910,7 +995,7 @@ try {
                                                   )
                                                 ).length
                                               }
-                                            </span>
+                                            </button>
                                           </div>
                                         </div>
 
@@ -1182,7 +1267,6 @@ try {
     <div class="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-amber-600/30 p-6">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-amber-400">Malla Semanal</h2>
-        
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
@@ -1203,11 +1287,11 @@ try {
                 // Extract time part (remove 'ST' if present)
                 const timeA = (a.start_time || '').replace(' ST', '');
                 const timeB = (b.start_time || '').replace(' ST', '');
-                
+
                 // Handle '00:00' to appear last
                 if (timeA === '00:00' && timeB !== '00:00') return 1;
                 if (timeA !== '00:00' && timeB === '00:00') return -1;
-                
+
                 // For other times, do normal time comparison
                 return timeA.localeCompare(timeB);
               });
@@ -1230,10 +1314,12 @@ try {
                           <span class="text-xs text-gray-300 font-medium leading-tight whitespace-normal break-words">
                             {schedule.raid_name}
                           </span>
-                          
                         </div>
                         {schedule.raid_leader && (
-                          <div class="mt-1 flex items-center text-[10px] text-amber-400">
+                          <button
+                            onclick="openRaidLeadersModal(['{schedule.raid_leader}'])"
+                            class="mt-1 flex items-center text-[10px] text-amber-400 hover:text-amber-300 transition-colors"
+                          >
                             <svg
                               class="w-3 h-3 mr-1"
                               fill="none"
@@ -1248,11 +1334,11 @@ try {
                               />
                             </svg>
                             {schedule.raid_leader}
-                          </div>
+                          </button>
                         )}
                         <span class="text-[10px] text-red-400 font-bold whitespace-nowrap">
-                            Min. GS {wotlkRaids.find(r => r.id === schedule.raid_id)?.minGearScore}
-                          </span>
+                          Min. GS {wotlkRaids.find((r) => r.id === schedule.raid_id)?.minGearScore}
+                        </span>
                       </div>
                     ))
                   ) : (
@@ -1270,7 +1356,337 @@ try {
   </div>
 </Layout>
 
+<!-- Raid Leaders Modal -->
+<div
+  id="raid-leaders-modal"
+  class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 hidden"
+>
+  <div
+    class="bg-gray-800 rounded-lg w-full max-w-md border border-amber-600/50 overflow-hidden shadow-xl"
+  >
+    <div class="p-4 border-b border-amber-600/30 bg-gray-900/50">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold text-amber-400">
+          <svg
+            class="w-5 h-5 inline-block mr-2 -mt-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+            ></path>
+          </svg>
+          Líderes de Raid
+        </h3>
+        <button id="close-leaders-modal" class="text-gray-400 hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="raid-leaders-list" class="max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
+      <!-- Raid leaders will be listed here by JavaScript -->
+    </div>
+
+    <div class="p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
+      <button
+        id="close-leaders-modal-btn"
+        class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-md transition-colors font-medium text-sm"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Regular Players Modal -->
+<div
+  id="regular-players-modal"
+  class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 hidden"
+>
+  <div
+    class="bg-gray-800 rounded-lg w-full max-w-md border border-blue-600/50 overflow-hidden shadow-xl"
+  >
+    <div class="p-4 border-b border-blue-600/30 bg-gray-900/50">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold text-blue-400">
+          <svg
+            class="w-5 h-5 inline-block mr-2 -mt-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+          </svg>
+          Jugadores Regulares
+        </h3>
+        <button id="close-regulars-modal" class="text-gray-400 hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="regular-players-list" class="max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
+      <!-- Regular players will be listed here by JavaScript -->
+    </div>
+
+    <div class="p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
+      <button
+        id="close-regulars-modal-btn"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors font-medium text-sm"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
 <script is:inline>
+  // Raid Leaders and Regular Players Modal Functions
+  document.addEventListener('DOMContentLoaded', function () {
+    // Setup Raid Leaders Modal
+    const leadersList = document.getElementById('raid-leaders-list');
+    if (leadersList) leadersList.innerHTML = '';
+
+    const leadersModal = document.getElementById('raid-leaders-modal');
+    const leadersCloseButtons = [
+      document.getElementById('close-leaders-modal'),
+      document.getElementById('close-leaders-modal-btn'),
+    ];
+
+    leadersModal?.addEventListener('click', function (e) {
+      if (e.target === this) leadersModal.classList.add('hidden');
+    });
+
+    leadersCloseButtons.forEach((btn) => {
+      btn?.addEventListener('click', () => leadersModal?.classList.add('hidden'));
+    });
+
+    // Setup Regular Players Modal
+    const regularsList = document.getElementById('regular-players-list');
+    if (regularsList) regularsList.innerHTML = '';
+
+    const regularsModal = document.getElementById('regular-players-modal');
+    const regularsCloseButtons = [
+      document.getElementById('close-regulars-modal'),
+      document.getElementById('close-regulars-modal-btn'),
+    ];
+
+    regularsModal?.addEventListener('click', function (e) {
+      if (e.target === this) regularsModal.classList.add('hidden');
+    });
+
+    regularsCloseButtons.forEach((btn) => {
+      btn?.addEventListener('click', () => regularsModal?.classList.add('hidden'));
+    });
+  });
+
+  // Shared class colors mapping
+  const classColors = {
+    warrior: 'bg-orange-900/30 text-orange-300 border-orange-800',
+    paladin: 'bg-pink-900/30 text-pink-300 border-pink-800',
+    hunter: 'bg-green-900/30 text-green-300 border-green-800',
+    rogue: 'bg-yellow-900/30 text-yellow-300 border-yellow-800',
+    priest: 'bg-white/30 text-gray-200 border-gray-400',
+    deathknight: 'bg-red-900/30 text-red-300 border-red-800',
+    'death-knight': 'bg-red-900/30 text-red-300 border-red-800',
+    shaman: 'bg-blue-900/30 text-blue-300 border-blue-800',
+    mage: 'bg-cyan-900/30 text-cyan-300 border-cyan-800',
+    warlock: 'bg-purple-900/30 text-purple-300 border-purple-800',
+    druid: 'bg-orange-900/30 text-orange-300 border-orange-800',
+    default: 'bg-gray-700/50 text-gray-300 border-gray-600',
+  };
+
+  // Role configuration with colors and display names
+  const roleConfig = {
+    tank: {
+      bg: 'bg-blue-900/30',
+      text: 'text-blue-300',
+      border: 'border-blue-700/50',
+      display: 'Tanque',
+    },
+    healer: {
+      bg: 'bg-green-900/30',
+      text: 'text-green-300',
+      border: 'border-green-700/50',
+      display: 'Sanador',
+    },
+    melee: {
+      bg: 'bg-red-900/30',
+      text: 'text-red-300',
+      border: 'border-red-700/50',
+      display: 'Cuerpo a Cuerpo',
+    },
+    melee_dps: {
+      bg: 'bg-red-900/30',
+      text: 'text-red-300',
+      border: 'border-red-700/50',
+      display: 'Cuerpo a Cuerpo',
+    },
+    ranged: {
+      bg: 'bg-purple-900/30',
+      text: 'text-purple-300',
+      border: 'border-purple-700/50',
+      display: 'Distancia',
+    },
+    ranged_dps: {
+      bg: 'bg-purple-900/30',
+      text: 'text-purple-300',
+      border: 'border-purple-700/50',
+      display: 'Distancia',
+    },
+    default: {
+      bg: 'bg-gray-700/30',
+      text: 'text-gray-300',
+      border: 'border-gray-600/50',
+      display: 'Sin rol',
+    },
+  };
+
+  function createPlayerElement(player, isLeader = false) {
+    const name = player?.name ? String(player.name) : 'Desconocido';
+    const className = player?.class ? String(player.class).toLowerCase() : 'default';
+    const role = player?.role
+      ? String(player.role).toLowerCase()
+      : isLeader
+        ? 'lider_raid'
+        : 'asistente';
+    // Get player_role and ensure it's a valid key, default to 'default' if not found
+    const playerRole =
+      player?.player_role && roleConfig[player.player_role] ? player.player_role : 'default';
+    const roleInfo = roleConfig[playerRole];
+
+    if (!name || name === 'Desconocido') return null;
+
+    const colorClass = classColors[className] || classColors['default'];
+    const borderColor = isLeader ? 'border-amber-500/50' : 'border-blue-500/50';
+
+    const el = document.createElement('div');
+    el.className =
+      'bg-gray-700/40 rounded-lg p-3 border border-gray-600/30 hover:border-gray-500/50 transition-colors mb-2';
+
+    el.innerHTML = `
+      <div class="flex items-start">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full ${colorClass} flex items-center justify-center border-2 ${borderColor}">
+          <span class="text-sm font-bold">${name.charAt(0).toUpperCase()}</span>
+        </div>
+        <div class="ml-3 flex-1 min-w-0">
+          <p class="text-sm font-semibold text-white truncate">${name}</p>
+          <div class="flex flex-wrap items-center gap-1.5 mt-1">
+            <span class="text-xs px-2 py-0.5 rounded-full ${colorClass} border border-current/20">
+              ${className.charAt(0).toUpperCase() + className.slice(1)}
+            </span>
+            <span class="text-xs px-2 py-0.5 rounded-full ${isLeader ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'}">
+              ${isLeader ? 'Líder' : 'Asistente'}
+            </span>
+            <span class="text-xs px-2 py-0.5 rounded-full ${roleInfo.bg} ${roleInfo.text} border ${roleInfo.border}">
+              ${roleInfo.display}
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+    return el;
+  }
+
+  function showNoDataMessage(container, type) {
+    if (!container) return;
+    const isLeader = type === 'leader';
+    const color = isLeader ? 'text-amber-400' : 'text-blue-400';
+
+    container.innerHTML = `
+      <div class="text-center py-8">
+        <svg class="mx-auto h-14 w-14 text-gray-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <h3 class="text-lg font-medium text-gray-200">Sin ${isLeader ? 'líderes' : 'jugadores'}</h3>
+        <p class="mt-1 text-sm text-gray-400">No hay ${isLeader ? 'líderes asignados' : 'jugadores regulares'} en este horario.</p>
+      </div>
+    `;
+  }
+
+  function openRaidLeadersModal(leaders) {
+    const modal = document.getElementById('raid-leaders-modal');
+    const list = document.getElementById('raid-leaders-list');
+    if (!modal || !list) return;
+
+    list.innerHTML = '';
+    const leaderList = Array.isArray(leaders) ? leaders : [];
+
+    if (leaderList.length > 0) {
+      leaderList.forEach((leader) => {
+        // Ensure player_role is properly set from the leader data
+        const playerWithRole = {
+          ...leader,
+          player_role: leader.player_role || leader.role || 'default',
+        };
+        const el = createPlayerElement(playerWithRole, true);
+        if (el) list.appendChild(el);
+      });
+    }
+
+    if (list.children.length === 0) {
+      showNoDataMessage(list, 'leader');
+    }
+
+    modal.classList.remove('hidden');
+  }
+
+  function openRegularPlayersModal(players) {
+    const modal = document.getElementById('regular-players-modal');
+    const list = document.getElementById('regular-players-list');
+    if (!modal || !list) return;
+
+    list.innerHTML = '';
+    const playerList = Array.isArray(players) ? players : [];
+
+    if (playerList.length > 0) {
+      playerList.forEach((player) => {
+        // Ensure player_role is properly set from the player data
+        const playerWithRole = {
+          ...player,
+          player_role: player.player_role || player.role || 'default',
+        };
+        const el = createPlayerElement(playerWithRole, false);
+        if (el) list.appendChild(el);
+      });
+    }
+
+    if (list.children.length === 0) {
+      showNoDataMessage(list, 'regular');
+    }
+
+    modal.classList.remove('hidden');
+  }
+
+  function closeRaidLeadersModal() {
+    document.getElementById('raid-leaders-modal')?.classList.add('hidden');
+  }
+
+  function closeRegularPlayersModal() {
+    document.getElementById('regular-players-modal')?.classList.add('hidden');
+  }
   // Función para manejar el clic en el botón "Unirse al Raid"
   function handleJoinRaid(button) {
     const raidName = button.getAttribute('data-raid-name');
