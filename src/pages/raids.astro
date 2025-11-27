@@ -916,7 +916,7 @@ try {
                                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                                       />
                                     </svg>
-                                    <span>Miembros elegibles del roster</span>
+                                    <span>Personajes de la hermandad en etapa {raid.name}</span>
                                   </div>
                                   <span class="bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded text-xs group-hover:bg-indigo-500/30 border border-indigo-500/20">
                                     {raidEligibleMembersRange[raid.id]?.length || 0}
@@ -2339,15 +2339,22 @@ try {
   };
 </script>
 
-<script define:vars={{ raidEligibleMembers, raidEligibleMembersRange }}>
+<script define:vars={{ raidEligibleMembers, raidEligibleMembersRange, raids: JSON.stringify(wotlkRaids) }}>
   // Pass server-side data to client
   window.raidEligibleMembers = raidEligibleMembers;
   window.raidEligibleMembersRange = raidEligibleMembersRange;
+  window.wotlkRaids = JSON.parse(raids);
 
-  window.openRosterModal = function (raidId, day = null, time = null) {
+  window.openRosterModal = function (raidId, day = null, time = null, raidName = null) {
     const modal = document.getElementById('roster-modal');
     const content = document.getElementById('roster-modal-content');
     const raidNameEl = document.getElementById('roster-modal-raid-name');
+    
+    // If raidName is not provided, try to get it from the raid data
+    if (!raidName) {
+      const raid = wotlkRaids.find(r => r.id === parseInt(raidId));
+      raidName = raid ? raid.name : `Raid ${raidId}`;
+    }
 
     // Determine which list to use based on context
     // If day/time provided (Schedule context) -> Use ALL eligible members (Min GS only)
@@ -2451,7 +2458,7 @@ try {
 
     if (day && time) {
       html += `<div class="mb-4 p-2 bg-indigo-900/20 border border-indigo-500/30 rounded text-sm text-indigo-200 text-center">
-          Selecciona un jugador para invitarlo a la raid del <strong>${day} ${time}</strong>
+          Selecciona un personaje para invitarlo a la raid del <strong>${day} ${time}</strong>
         </div>`;
     }
 
@@ -2466,10 +2473,10 @@ try {
 
     content.innerHTML = html;
 
-    // Set title
-    let title = 'Miembros Elegibles';
+    // Set title with raid name
+    let title = raidName ? `Personajes en etapa ${raidName}` : '';
     if (day && time) {
-      title += ` - ${day} ${time}`;
+      title = 'Invitar personaje de la hermandad';
     }
     raidNameEl.textContent = title;
 

@@ -1033,6 +1033,73 @@ if (!session) {
           </div>
         </div>
       </div>
+      {/* Multi-part Invite Modal */}
+      <div
+        id="invite-parts-modal"
+        class="hidden fixed inset-0 z-[60] overflow-y-auto"
+        aria-labelledby="modal-title"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <div
+            class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity backdrop-blur-sm"
+            aria-hidden="true"
+            onclick="closeInvitePartsModal()"
+          >
+          </div>
+
+          <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+          <div
+            class="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-700"
+          >
+            <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div class="sm:flex sm:items-start">
+                <div
+                  class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-900/50 sm:mx-0 sm:h-10 sm:w-10"
+                >
+                  <svg
+                    class="h-6 w-6 text-indigo-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                  <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">
+                    Comandos de Invitación (Multi-parte)
+                  </h3>
+                  <div class="mt-2">
+                    <p class="text-sm text-gray-400 mb-4">
+                      Debido al límite de caracteres de WoW (255), las invitaciones se han dividido en varias partes. Copia y ejecuta cada parte por separado.
+                    </p>
+                    <div id="invite-parts-content" class="space-y-3">
+                      {/* Buttons will be injected here */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-700">
+              <button
+                type="button"
+                onclick="closeInvitePartsModal()"
+                class="w-full inline-flex justify-center rounded-md border border-gray-600 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </Layout>
 
     <script is:inline define:vars={{ raidEligibleMembers }}>
@@ -1270,63 +1337,185 @@ if (!session) {
         }
       };
 
-      // Copy WoW invite command to clipboard
-      window.copyInviteCommand = function(playerNames, raidName, dayOfWeek, startTime) {
-        // Filter out empty names and format the command
-        const names = playerNames.filter(name => name && name.trim());
-        const formattedNames = names.map(name => `"${name}"`).join(',');
+      // Modal functions for multi-part invites
+      window.currentInviteChunks = [];
+
+      window.openInvitePartsModal = function(chunks) {
+        console.log('openInvitePartsModal called with chunks:', chunks.length);
+        const modal = document.getElementById('invite-parts-modal');
+        const content = document.getElementById('invite-parts-content');
         
-        // Format the schedule info
-        const schedule = `${dayOfWeek} ${startTime}`;
+        if (!modal || !content) {
+          console.error('Modal or content element not found!');
+          return;
+        }
         
-        // Create the message and command
-        const message = `¡Hola! Te estoy invitando a la ${raidName} para el core ${schedule} de Colmillo de Acero.`;
-        const command = `/run local msg="${message}" local t={${formattedNames}} for i,v in ipairs(t) do InviteUnit(v); SendChatMessage(msg,"WHISPER",nil,v) end`;
+        // Store chunks globally to avoid escaping issues in HTML attributes
+        window.currentInviteChunks = chunks;
         
-        // Copy to clipboard
-        navigator.clipboard.writeText(command).then(() => {
-          // Show success message
+        content.innerHTML = chunks.map((chunk, index) => `
+          <div class="flex items-center justify-between bg-gray-700/50 p-3 rounded border border-gray-600">
+            <div class="mr-4">
+              <span class="text-sm font-bold text-white">Parte ${index + 1}</span>
+              <span class="text-xs text-gray-400 ml-2">(${chunk.count} jugadores)</span>
+            </div>
+            <button
+              type="button"
+              onclick="copyInviteChunk(${index})"
+              class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded transition-colors flex items-center"
+            >
+              <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copiar
+            </button>
+          </div>
+        `).join('');
+        
+        modal.classList.remove('hidden');
+      };
+
+      window.copyInviteChunk = function(index) {
+        const chunk = window.currentInviteChunks[index];
+        if (chunk) {
+          window.copyToClipboard(chunk.command);
+        }
+      };
+
+      window.closeInvitePartsModal = function() {
+        const modal = document.getElementById('invite-parts-modal');
+        if (modal) {
+          modal.classList.add('hidden');
+        }
+      };
+
+      // Helper to copy text to clipboard
+      window.copyToClipboard = function(text) {
+        navigator.clipboard.writeText(text).then(() => {
           const toast = document.createElement('div');
           toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in';
-          toast.textContent = `Comando copiado (${names.length} jugadores)`;
+          toast.textContent = 'Comando copiado al portapapeles';
           document.body.appendChild(toast);
-          
-          setTimeout(() => {
-            toast.remove();
-          }, 2000);
+          setTimeout(() => toast.remove(), 2000);
         }).catch(err => {
-          console.error('Error copying to clipboard:', err);
-          // Fallback: show the command in an alert
-          alert('Comando WoW:\n\n' + command);
+          console.error('Error copying:', err);
+          alert('Error al copiar. Por favor selecciona y copia manualmente.');
         });
+      };
+
+      // Helper to generate command chunks
+      function generateInviteChunks(names, message) {
+        const MAX_LENGTH = 255;
+        // Base command structure: /run local msg="..." local t={...} for i,v in ipairs(t) do InviteUnit(v); SendChatMessage(msg,"WHISPER",nil,v) end
+        
+        // Escape double quotes in message just in case
+        const safeMessage = message.replace(/"/g, '\\"');
+        
+        const baseCommandStart = `/run local msg="${safeMessage}" local t={`;
+        const baseCommandEnd = `} for i,v in ipairs(t) do InviteUnit(v); SendChatMessage(msg,"WHISPER",nil,v) end`;
+        
+        const fixedLength = baseCommandStart.length + baseCommandEnd.length;
+        const availableSpace = MAX_LENGTH - fixedLength;
+        
+        console.log('Generating chunks:', { 
+          namesCount: names.length, 
+          messageLength: safeMessage.length, 
+          fixedLength, 
+          availableSpace 
+        });
+
+        if (availableSpace <= 0) {
+          console.error('Message is too long for WoW macro limit');
+          alert('El mensaje es demasiado largo para caber en una macro de WoW. Por favor acórtalo.');
+          return [];
+        }
+
+        const chunks = [];
+        let currentChunkNames = [];
+        let currentLength = 0;
+
+        names.forEach((name, index) => {
+          // Format name: "Name"
+          // If not first name in chunk, add comma: ,"Name"
+          const nameStr = `"${name}"`;
+          // Separator is needed if it's not the very first item in the chunk
+          const separator = currentChunkNames.length > 0 ? ',' : '';
+          const itemLength = nameStr.length + separator.length;
+
+          // Check if adding this item would exceed the limit
+          if (currentLength + itemLength > availableSpace) {
+            // Finish current chunk if it has items
+            if (currentChunkNames.length > 0) {
+              const command = `${baseCommandStart}${currentChunkNames.join(',')}${baseCommandEnd}`;
+              chunks.push({ command, count: currentChunkNames.length });
+              console.log(`Chunk created with ${currentChunkNames.length} names. Length: ${command.length}`);
+            }
+            
+            // Start new chunk with current item
+            // Check if even a single item fits
+            if (itemLength > availableSpace) {
+               console.error(`Name "${name}" is too long to fit in any chunk!`);
+               // We have to skip it or it breaks the macro. 
+               // For now, let's add it and let it break or just warn.
+            }
+            
+            currentChunkNames = [nameStr];
+            // For the first item in a new chunk, there is no leading comma separator in the string construction logic above
+            // But wait, my logic above `const separator = ...` depends on `currentChunkNames.length`.
+            // If I just reset `currentChunkNames = [nameStr]`, the next iteration will see length 1.
+            // The length of this new chunk so far is just `nameStr.length` (no comma).
+            currentLength = nameStr.length;
+          } else {
+            currentChunkNames.push(nameStr); // We store just the name, join with comma later
+            currentLength += itemLength;
+          }
+        });
+
+        // Add last chunk
+        if (currentChunkNames.length > 0) {
+          const command = `${baseCommandStart}${currentChunkNames.join(',')}${baseCommandEnd}`;
+          chunks.push({ command, count: currentChunkNames.length });
+          console.log(`Last chunk created with ${currentChunkNames.length} names. Length: ${command.length}`);
+        }
+
+        return chunks;
+      }
+
+      // Copy WoW invite command to clipboard
+      window.copyInviteCommand = function(playerNames, raidName, dayOfWeek, startTime) {
+        console.log('copyInviteCommand called', { playerNames: playerNames.length, raidName });
+        const names = playerNames.filter(name => name && name.trim());
+        if (names.length === 0) return;
+
+        const schedule = `${dayOfWeek} ${startTime}`;
+        const message = `¡Hola! Te estoy invitando a la ${raidName} para el core ${schedule} de Colmillo de Acero.`;
+        
+        const chunks = generateInviteChunks(names, message);
+        console.log('Chunks generated:', chunks.length);
+        
+        if (chunks.length === 1) {
+          window.copyToClipboard(chunks[0].command);
+        } else if (chunks.length > 1) {
+          window.openInvitePartsModal(chunks);
+        }
       };
 
       // Copy roster invite command with role-specific message
       window.copyRosterInvite = function(playerNames, raidName, roleSpanish) {
-        // Filter out empty names and format the command
+        console.log('copyRosterInvite called', { playerNames: playerNames.length, raidName, roleSpanish });
         const names = playerNames.filter(name => name && name.trim());
-        const formattedNames = names.map(name => `"${name}"`).join(',');
-        
-        // Create role-specific recruitment message
+        if (names.length === 0) return;
+
         const message = `¡Hola! Estamos buscando ${roleSpanish} para completar la banda ${raidName} de Colmillo de Acero. ¿Te interesa unirte?`;
-        const command = `/run local msg="${message}" local t={${formattedNames}} for i,v in ipairs(t) do InviteUnit(v); SendChatMessage(msg,"WHISPER",nil,v) end`;
         
-        // Copy to clipboard
-        navigator.clipboard.writeText(command).then(() => {
-          // Show success message
-          const toast = document.createElement('div');
-          toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in';
-          toast.textContent = `Invitación copiada para ${roleSpanish} (${names.length} jugadores)`;
-          document.body.appendChild(toast);
-          
-          setTimeout(() => {
-            toast.remove();
-          }, 2000);
-        }).catch(err => {
-          console.error('Error copying to clipboard:', err);
-          // Fallback: show the command in an alert
-          alert('Comando WoW:\n\n' + command);
-        });
+        const chunks = generateInviteChunks(names, message);
+        console.log('Chunks generated:', chunks.length);
+        
+        if (chunks.length === 1) {
+          window.copyToClipboard(chunks[0].command);
+        } else if (chunks.length > 1) {
+          window.openInvitePartsModal(chunks);
+        }
       };
     </script>
   )
