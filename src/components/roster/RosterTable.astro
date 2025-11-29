@@ -25,7 +25,6 @@ const defaultClassInfo: Record<string, { name: string; color: string }> = {
 import type {
   RosterMember as RosterMemberType,
   RosterData as RosterDataType,
-  EventBlock,
   ClassName as ClassNameType,
   Role,
   MainAlt,
@@ -491,11 +490,7 @@ interface RoleInfo {
   bgColor: string;
 }
 
-const roleNames: Record<string, RoleInfo> = {
-  T: { name: 'Tanque', color: 'text-blue-300', bgColor: 'bg-blue-500/20' },
-  H: { name: 'Sanador', color: 'text-green-300', bgColor: 'bg-green-500/20' },
-  D: { name: 'DPS', color: 'text-red-300', bgColor: 'bg-red-500/20' },
-};
+// Use the imported ROLES constant instead of redefining it
 
 // Mapeo de colores para las profesiones
 const professionColors: Record<string, string> = {
@@ -654,64 +649,6 @@ const calculateMainAltDistribution = (members: Member[]): { M: number; A: number
 // ==========================================
 // TIPOS Y UTILIDADES
 // ==========================================
-
-// Format event block for display
-const formatEventBlock = (event: {
-  days?: string[];
-  time?: string;
-  raid?: string;
-  difficulty?: string;
-  isRaidLeader?: boolean;
-}): string[] => {
-  if (!event) return [];
-
-  const formatted: string[] = [];
-
-  // Format days
-  if (event.days?.length) {
-    const dayNames = event.days.map((day) => {
-      const dayCode = day.toUpperCase();
-      return DAY_NAMES[dayCode as keyof typeof DAY_NAMES] || day;
-    });
-
-    let daysText = '';
-    if (dayNames.length === 1) {
-      daysText = dayNames[0];
-    } else if (dayNames.length > 1) {
-      const lastDay = dayNames.pop();
-      daysText = `${dayNames.join(', ')} y ${lastDay}`;
-    }
-
-    if (daysText) {
-      formatted.push(`<span class="text-yellow-400">${daysText}</span>`);
-    }
-  }
-
-  // Format time
-  if (event.time) {
-    formatted.push(`<span class="text-blue-300">${event.time}</span>`);
-  }
-
-  // Format raid
-  if (event.raid) {
-    const raidName = RAID_NAMES[event.raid as keyof typeof RAID_NAMES] || event.raid;
-    formatted.push(`<span class="text-purple-300">${raidName}</span>`);
-  }
-
-  // Format difficulty
-  if (event.difficulty) {
-    const difficultyName =
-      DIFFICULTY_NAMES[event.difficulty as keyof typeof DIFFICULTY_NAMES] || event.difficulty;
-    formatted.push(`<span class="text-green-300">${difficultyName}</span>`);
-  }
-
-  // Add Raid Leader tag if needed
-  if (event.isRaidLeader) {
-    formatted.push('<span class="text-yellow-300 font-bold">RL</span>');
-  }
-
-  return formatted;
-};
 
 type ClassName =
   | 'Guerrero'
@@ -2124,6 +2061,13 @@ const getRoleColorClass = (role: string): string => {
   return roleColors[role] || 'bg-gray-500/20 border-gray-500/50';
 };
 
+// Mapeo de nombres de roles para el cliente
+const roleNames = {
+  T: { name: 'Tanque' },
+  H: { name: 'Sanador' },
+  D: { name: 'DPS' },
+};
+
 // Mapeo de nombres de profesiones para mostrar
 const professionNames: Record<ProfessionCode, { name: string; color: string; bgColor: string }> = {
   AL: { name: 'Alquimia', color: 'text-blue-300', bgColor: 'bg-blue-500/20' },
@@ -2452,17 +2396,19 @@ const totalRaiders = rosterData.members.filter(
     document.addEventListener('DOMContentLoaded', () => {
       // Inicializar tooltips después de cargar la tabla
       initTooltips();
+
       // Obtener elementos del DOM
       const searchInput = document.getElementById('search');
       const classFilter = document.getElementById('class-filter');
       const rankFilter = document.getElementById('rank-filter');
-      const tableBody = document.getElementById('roster-table-body');
+      const rosterGrid = document.getElementById('roster-grid');
       const prevButton = document.getElementById('prev-button');
       const nextButton = document.getElementById('next-button');
       const pageInfo = document.getElementById('page-info');
+      const sortButtons = document.querySelectorAll('.sort-button');
 
       let currentPage = 1;
-      const itemsPerPage = 10;
+      const itemsPerPage = 6;
       let allMembers = [];
       let filteredMembers = [];
       let sortConfig = { key: 'name', direction: 'asc' };
@@ -2470,91 +2416,153 @@ const totalRaiders = rosterData.members.filter(
       // Funciones de utilidad para formatear
       const formatTime = (timeStr) => {
         if (!timeStr) return '';
-        // Convertir "20" a "20:00" o mantener "20:00"
         return timeStr.includes(':') ? timeStr : `${timeStr}:00`;
-      };
-
-      const formatDays = (days) => {
-        if (!days || !days.length) return [];
-        if (typeof days === 'string') {
-          // Manejar rangos como "L-V"
-          if (days.includes('-')) {
-            const [start, end] = days.split('-');
-            const dayOrder = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-            const startIdx = dayOrder.indexOf(start);
-            const endIdx = dayOrder.indexOf(end);
-            if (startIdx !== -1 && endIdx !== -1 && startIdx <= endIdx) {
-              return dayOrder.slice(startIdx, endIdx + 1);
-            }
-          }
-          return days.split('');
-        }
-        return Array.isArray(days) ? days : [];
-      };
-
-      const isRaidLeader = (eventBlock) => {
-        if (!eventBlock) return false;
-        const content = typeof eventBlock === 'string' ? eventBlock : JSON.stringify(eventBlock);
-        return /RL/i.test(content);
-      };
-
-      const formatRaidInfo = (raid, difficulty) => {
-        if (!raid) return '';
-        const difficultyText = difficulty ? ` ${difficulty}` : '';
-        return `${raid}${difficultyText}`;
       };
 
       // Inicializar la tabla con los datos
       function initTable() {
-        if (!tableBody || !pageInfo) {
+        if (!rosterGrid || !pageInfo) {
           return;
         }
 
         // Use the pre-sorted members from the server
         allMembers = [...rosterInfo.members];
 
-        // Apply the same sorting logic on the client side
-        allMembers.sort((a, b) => {
-          const getRankPriority = (rank) => {
-            const rankLower = rank?.toLowerCase() || '';
-            if (rankLower.includes('guild master')) return 0;
-            if (rankLower.includes('alter')) return 1;
-            if (rankLower.includes('oficial')) return 2;
-            if (rankLower.includes('explorador')) return 3;
-            if (rankLower.includes('iniciado')) return 4;
-            if (rankLower.includes('aspirante')) return 5;
-            return 6;
-          };
+        // Función de ordenamiento
+        const sortMembers = () => {
+          allMembers.sort((a, b) => {
+            let valA, valB;
 
-          const priorityA = getRankPriority(a.rank);
-          const priorityB = getRankPriority(b.rank);
+            if (sortConfig.key === 'name') {
+              // Ordenar por nombre y prioridad de rango
+              const getRankPriority = (rank) => {
+                const rankLower = rank?.toLowerCase() || '';
+                if (rankLower.includes('guild master')) return 0;
+                if (rankLower.includes('alter')) return 1;
+                if (rankLower.includes('oficial')) return 2;
+                if (rankLower.includes('explorador')) return 3;
+                if (rankLower.includes('iniciado')) return 4;
+                if (rankLower.includes('aspirante')) return 5;
+                return 6;
+              };
 
-          if (priorityA !== priorityB) {
-            return priorityA - priorityB;
-          }
+              const priorityA = getRankPriority(a.rank);
+              const priorityB = getRankPriority(b.rank);
 
-          return (a.name || '').localeCompare(b.name || '');
+              if (priorityA !== priorityB) {
+                return sortConfig.direction === 'asc'
+                  ? priorityA - priorityB
+                  : priorityB - priorityA;
+              }
+              valA = (a.name || '').toLowerCase();
+              valB = (b.name || '').toLowerCase();
+            } else {
+              // Ordenar por detalles (longitud de la nota o presencia de nota)
+              valA = (a.publicNote || '').length;
+              valB = (b.publicNote || '').length;
+            }
+
+            if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+          });
+
+          // Aplicar filtros después de ordenar
+          filterMembers();
+        };
+
+        // Event listeners para botones de ordenamiento
+        sortButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            const sortKey = button.dataset.sort;
+
+            // Actualizar configuración de ordenamiento
+            if (sortConfig.key === sortKey) {
+              sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+              sortConfig.key = sortKey;
+              sortConfig.direction = 'asc';
+            }
+
+            // Actualizar estilos de botones
+            sortButtons.forEach((btn) => {
+              btn.classList.remove('bg-amber-900/50', 'border-amber-500/50');
+              btn.classList.add('bg-gray-800/50', 'border-amber-900/30');
+              const indicator = btn.querySelector('.sort-indicator');
+              if (indicator) {
+                indicator.textContent = '↕';
+                indicator.classList.add('opacity-50');
+              }
+            });
+
+            button.classList.remove('bg-gray-800/50', 'border-amber-900/30');
+            button.classList.add('bg-amber-900/50', 'border-amber-500/50');
+            const indicator = button.querySelector('.sort-indicator');
+            if (indicator) {
+              indicator.textContent = sortConfig.direction === 'asc' ? '↑' : '↓';
+              indicator.classList.remove('opacity-50');
+            }
+
+            // Re-ordenar y actualizar
+            sortMembers();
+            updateTable();
+            updatePaginationInfo();
+          });
         });
 
-        filteredMembers = [...allMembers];
+        // Función para filtrar miembros
+        const filterMembers = () => {
+          const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+          const selectedClass = classFilter ? classFilter.value : '';
+          const selectedRank = rankFilter ? rankFilter.value : '';
 
-        // Llenar filtros
-        if (classFilter && rankFilter) {
-          // No necesitamos llenar los dropdowns aquí ya que se generan en el template
+          filteredMembers = allMembers.filter((member) => {
+            const matchesSearch = member.name.toLowerCase().includes(searchTerm);
+            const matchesClass = selectedClass === '' || member.class === selectedClass;
+            const matchesRank = selectedRank === '' || member.rank === selectedRank;
+            return matchesSearch && matchesClass && matchesRank;
+          });
+
+          currentPage = 1; // Resetear a la primera página al filtrar
+        };
+
+        // Event listeners para filtros
+        if (searchInput) {
+          searchInput.addEventListener('input', () => {
+            filterMembers();
+            updateTable();
+            updatePaginationInfo();
+          });
+        }
+        if (classFilter) {
+          classFilter.addEventListener('change', () => {
+            filterMembers();
+            updateTable();
+            updatePaginationInfo();
+          });
+        }
+        if (rankFilter) {
+          rankFilter.addEventListener('change', () => {
+            filterMembers();
+            updateTable();
+            updatePaginationInfo();
+          });
         }
 
+        // Inicializar
+        sortMembers();
         updateTable();
         updatePaginationInfo();
       }
 
-      // Actualizar la tabla con los miembros filtrados y ordenados
+      // Actualizar la tabla (ahora grid) con los miembros filtrados y ordenados
       function updateTable() {
-        if (!tableBody) return;
+        if (!rosterGrid) return;
 
         const startIndex = (currentPage - 1) * itemsPerPage;
         const paginatedMembers = filteredMembers.slice(startIndex, startIndex + itemsPerPage);
 
-        tableBody.innerHTML = paginatedMembers
+        rosterGrid.innerHTML = paginatedMembers
           .map((member) => {
             const classData = rosterInfo.classInfo[member.class] || {
               color: 'FFFFFF',
@@ -2563,880 +2571,181 @@ const totalRaiders = rosterData.members.filter(
             const className = classData.name;
             const classColor = classData.color;
 
+            // Procesar información de la nota
+            let formattedInfo = [];
+
+            if (member.publicNote) {
+              const validation = member.noteValidation;
+              if (validation?.isValid) {
+                // 1. Procesar bloques de personaje
+                const characterBlocks =
+                  validation.blocks?.filter((b) => b.type === 'character') || [];
+                let charData = {};
+
+                // Usar datos del bloque de personaje si existe
+                if (characterBlocks.length > 0 && characterBlocks[0]?.parsedData) {
+                  charData = characterBlocks[0].parsedData;
+                } else {
+                  // Usar datos del nivel superior como respaldo
+                  charData = {
+                    mainAlt: validation.mainAlt,
+                    mainRole: validation.role,
+                    mainGearScore: parseFloat(validation.gearScore) || 0,
+                    professions: validation.professions || [],
+                    dualRole: validation.dualRole,
+                  };
+                }
+
+                // Extraer todos los GS de la nota pública
+                const gearScores = (member.publicNote?.match(/(\d+\.?\d*)/g) || [])
+                  .map(Number)
+                  .filter((gs) => gs > 0);
+
+                // Main/Alt
+                if (charData.mainAlt) {
+                  formattedInfo.push({
+                    label: charData.mainAlt === 'M' ? 'Main' : 'Alt',
+                    class:
+                      charData.mainAlt === 'M'
+                        ? 'text-blue-300 font-medium'
+                        : 'text-purple-300 font-medium',
+                  });
+                }
+
+                // Rol principal con su GS
+                if (charData.mainRole) {
+                  const roleName = roleNamesData[charData.mainRole]?.name || charData.mainRole;
+                  const mainGS = gearScores[0] || charData.mainGearScore;
+
+                  formattedInfo.push({
+                    label: roleName,
+                    class:
+                      charData.mainRole === 'T'
+                        ? 'text-blue-300 font-medium'
+                        : charData.mainRole === 'H'
+                          ? 'text-green-300 font-medium'
+                          : 'text-red-300 font-medium',
+                  });
+
+                  if (mainGS) {
+                    formattedInfo.push({
+                      label: `GS ${mainGS}`,
+                      class: 'bg-amber-500/20 border-amber-500/50 text-amber-200',
+                    });
+                  }
+                }
+
+                // Rol dual (si existe) con su GS
+                const dualRoleToShow =
+                  charData.dualRole ||
+                  member.publicNote?.match(/[dD](\d+\.?\d*)([tThHdD])/i)?.[2]?.toUpperCase();
+
+                if (dualRoleToShow) {
+                  const dualRoleName = roleNamesData[dualRoleToShow]?.name || dualRoleToShow;
+                  const dualGS = gearScores[1];
+
+                  formattedInfo.push({
+                    label: `Dual ${dualRoleName}`,
+                    class: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-200',
+                  });
+
+                  if (dualGS) {
+                    formattedInfo.push({
+                      label: `GS ${dualGS}`,
+                      class: 'bg-amber-500/20 border-amber-500/50 text-amber-200',
+                    });
+                  }
+                }
+
+                // Profesiones
+                const professionsToShow = (
+                  charData.professions?.length ? charData.professions : validation.professions || []
+                ).filter((prof) => prof && !/^\d+\.?\d*$/.test(prof));
+
+                if (professionsToShow.length) {
+                  const processedProfs = new Set();
+                  professionsToShow.forEach((prof) => {
+                    let profCode = prof.toUpperCase();
+                    // Intentar normalizar si es nombre completo
+                    const entry = Object.entries(professionNamesData).find(
+                      ([_, data]) => data?.name?.toLowerCase() === prof.toLowerCase()
+                    );
+                    if (entry) profCode = entry[0];
+
+                    if (processedProfs.has(profCode)) return;
+                    processedProfs.add(profCode);
+
+                    const profStyle = professionNamesData[profCode] || {
+                      name: prof,
+                      bgColor: 'bg-indigo-500/20',
+                      borderColor: 'border-indigo-500/50',
+                      color: 'text-indigo-300',
+                    };
+
+                    formattedInfo.push({
+                      label: profStyle.name,
+                      class: `${profStyle.bgColor} ${profStyle.borderColor} ${profStyle.color}`,
+                    });
+                  });
+                }
+              } else {
+                // Nota inválida pero existente
+                formattedInfo.push({
+                  label: 'Nota inválida',
+                  class: 'text-red-400 italic',
+                });
+              }
+            }
+
             return `
-            <tr class="group border-b border-gray-800/50 hover:bg-gray-800/40 transition-all duration-200">
-              <td class="px-4 py-4 whitespace-nowrap w-[300px]">
-                <div class="flex items-center gap-4">
-                  <div class="relative">
-                    <img 
-                      src="/images/avatars/class_${className}.jpg" 
-                      alt="${className}" 
-                      class="w-10 h-10 rounded-lg shadow-md border border-gray-700/50 group-hover:border-accent/50 transition-colors object-cover" 
-                      onerror="this.src='/images/avatars/default.png'"
-                    />
-                    <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-gray-900 bg-[#${classColor}]" title="${className}"></div>
-                  </div>
-                  <div class="flex flex-col">
-                    <div class="font-bold text-gray-100 text-base tracking-wide group-hover:text-accent transition-colors">${member.name}</div>
-                    <div class="flex items-center gap-2 mt-0.5">
-                      <span class="text-xs font-medium px-2 py-0.5 rounded-md ${
-                        member.rank === 'Guild Master'
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                          : member.rank === 'Alter'
-                            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                            : member.rank === 'Oficial'
-                              ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                              : member.rank === 'Explorador'
-                                ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                                : member.rank === 'Iniciado'
-                                  ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-                                  : 'bg-gray-700/30 text-gray-400 border border-gray-600/30'
-                      }">
-                        ${member.rank}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td class="px-4 py-4 relative overflow-visible">
-                <div class="relative">
-                  <div class="flex items-start gap-2">
-                    <div class="relative inline-flex items-center w-full">
-                      ${
-                        member.publicNote
-                          ? `
-                        <div class="space-y-1 w-full">
-                          ${(() => {
-                            const validation = member.noteValidation;
-                            if (validation?.isValid) {
-                              const formattedInfo = [];
-                              const missingFields = [];
-
-                              // 1. Procesar bloques de personaje
-                              const characterBlocks =
-                                validation.blocks?.filter((b) => b.type === 'character') || [];
-                              let charData = {};
-
-                              // Usar datos del bloque de personaje si existe, si no, usar los del nivel superior
-                              if (characterBlocks.length > 0 && characterBlocks[0]?.parsedData) {
-                                charData = characterBlocks[0].parsedData;
-                              } else {
-                                // Usar datos del nivel superior como respaldo
-                                charData = {
-                                  mainAlt: validation.mainAlt,
-                                  mainRole: validation.role,
-                                  mainGearScore: parseFloat(validation.gearScore) || 0,
-                                  professions: validation.professions || [],
-                                  dualRole: validation.dualRole,
-                                };
-                              }
-
-                              // Extraer todos los GS de la nota pública
-                              const gearScores = (member.publicNote?.match(/(\d+\.?\d*)/g) || [])
-                                .map(Number)
-                                .filter((gs) => gs > 0);
-
-                              // Main/Alt
-                              if (charData.mainAlt) {
-                                formattedInfo.push({
-                                  label: charData.mainAlt === 'M' ? 'Main' : 'Alt',
-                                  class:
-                                    charData.mainAlt === 'M'
-                                      ? 'text-blue-300 font-medium'
-                                      : 'text-purple-300 font-medium',
-                                });
-                              }
-
-                              // Rol principal con su GS
-                              if (charData.mainRole) {
-                                const roleName =
-                                  roleNamesData[charData.mainRole]?.name || charData.mainRole;
-                                const mainGS = gearScores[0] || charData.mainGearScore;
-
-                                // Agregar rol principal
-                                formattedInfo.push({
-                                  label: roleName,
-                                  class:
-                                    charData.mainRole === 'T'
-                                      ? 'text-blue-300 font-medium'
-                                      : charData.mainRole === 'H'
-                                        ? 'text-green-300 font-medium'
-                                        : 'text-red-300 font-medium',
-                                });
-
-                                // Agregar GS del rol principal si existe
-                                if (mainGS) {
-                                  formattedInfo.push({
-                                    label: `GS ${mainGS}`,
-                                    class: 'bg-amber-500/20 border-amber-500/50',
-                                    inline: true,
-                                  });
-                                }
-                              }
-
-                              // Rol dual (si existe) con su GS
-                              const dualRoleToShow =
-                                charData.dualRole ||
-                                member.publicNote
-                                  ?.match(/[dD](\d+\.?\d*)([tThHdD])/i)?.[2]
-                                  ?.toUpperCase();
-
-                              if (dualRoleToShow) {
-                                const dualRoleName =
-                                  roleNamesData[dualRoleToShow]?.name || dualRoleToShow;
-                                const dualGS = gearScores[1]; // Segundo GS para el rol dual
-
-                                // Agregar rol dual
-                                formattedInfo.push({
-                                  label: `Dual ${dualRoleName}`,
-                                  class: 'bg-yellow-500/20 border-yellow-500/50',
-                                  inline: true,
-                                });
-
-                                // Agregar GS del rol dual si existe
-                                if (dualGS) {
-                                  formattedInfo.push({
-                                    label: `GS ${dualGS}`,
-                                    class: 'bg-amber-500/20 border-amber-500/50',
-                                    inline: true,
-                                  });
-                                }
-                              }
-
-                              // Función para obtener el código de profesión a partir del nombre
-                              const getProfessionCode = (profName) => {
-                                if (!profName) return null;
-                                const normalizedProf = profName.toLowerCase().trim();
-                                // Buscar en el objeto professionNamesData el código que coincida con el nombre
-                                const entry = Object.entries(professionNamesData).find(
-                                  ([_, data]) => data?.name?.toLowerCase() === normalizedProf
-                                );
-                                return entry ? entry[0] : null;
-                              };
-
-                              const professionsToShow = (
-                                charData.professions?.length
-                                  ? charData.professions
-                                  : validation.professions || []
-                              ).filter((prof) => prof && !/^\d+\.?\d*$/.test(prof)); // Filtrar posibles GS mal interpretados
-
-                              if (professionsToShow.length) {
-                                // Procesar cada profesión
-                                const processedProfs = new Set(); // Para evitar duplicados
-
-                                professionsToShow.forEach((prof) => {
-                                  try {
-                                    // Primero intentamos obtener el código de profesión
-                                    let profCode = getProfessionCode(prof) || prof.toUpperCase();
-                                    const profName = professionNamesData[profCode]?.name || prof;
-
-                                    // Evitar duplicados
-                                    if (processedProfs.has(profCode)) return;
-                                    processedProfs.add(profCode);
-
-                                    if (profName) {
-                                      // Usar los estilos definidos o los predeterminados
-                                      const profStyle = professionNamesData[profCode] || {
-                                        name: profName,
-                                        color: 'text-indigo-300',
-                                        bgColor: 'bg-indigo-500/20',
-                                        borderColor: 'border-indigo-500/50',
-                                      };
-
-                                      formattedInfo.push({
-                                        label: profName,
-                                        class: `${profStyle.bgColor || 'bg-indigo-500/20'} ${profStyle.borderColor || 'border-indigo-500/50'}`,
-                                        inline: true,
-                                      });
-                                    }
-                                  } catch (error) {
-                                    console.error(
-                                      `[${member.name}] Error procesando profesión ${prof}:`,
-                                      error
-                                    );
-                                  }
-                                });
-                              }
-
-                              // 2. Procesar bloques de evento
-                              const eventBlocks =
-                                validation.blocks?.filter((b) => b.type === 'event') || [];
-
-                              // Si no hay bloques de evento pero hay datos en el nivel superior, crear uno
-                              if (
-                                eventBlocks.length === 0 &&
-                                (validation.days?.length ||
-                                  validation.raids?.length ||
-                                  validation.schedules?.length)
-                              ) {
-                                const eventData = {
-                                  days: validation.days,
-                                  time:
-                                    validation.schedules?.[0]?.match(/\d{1,2}:?\d{0,2}/)?.[0] || '',
-                                  raid: validation.raids?.[0]?.name || '',
-                                  difficulty: validation.raids?.[0]?.difficultyCode || '',
-                                  isRaidLeader: validation.isRaidLeader,
-                                  isLookingForGroup: false,
-                                };
-                                eventBlocks.push({
-                                  type: 'event',
-                                  isValid: true,
-                                  parsedData: eventData,
-                                });
-                              }
-
-                              // Si aún no hay bloques de evento, verificar si hay datos en el nivel superior
-                              if (eventBlocks.length === 0) {
-                                // Intentar extraer información de la nota pública
-                                const publicNote = member.publicNote || '';
-                                const raidMatch = publicNote.match(
-                                  /([A-Za-z]+)(?:\s+([0-9]+[NH]))?/
-                                );
-                                const timeMatch = publicNote.match(/(\d{1,2}:?\d{0,2})/);
-
-                                if (raidMatch || timeMatch) {
-                                  const eventData = {
-                                    days: validation.days || [],
-                                    time: timeMatch ? timeMatch[1] : '',
-                                    raid: raidMatch ? raidMatch[1] : '',
-                                    difficulty: raidMatch ? raidMatch[2] || '' : '',
-                                    isRaidLeader: /RL/i.test(publicNote),
-                                    isLookingForGroup: /LFG/i.test(publicNote),
-                                  };
-
-                                  eventBlocks.push({
-                                    type: 'event',
-                                    isValid: true,
-                                    parsedData: eventData,
-                                  });
-                                }
-                              }
-
-                              if (eventBlocks.length > 0) {
-                                eventBlocks.forEach((eventBlock) => {
-                                  if (eventBlock.parsedData) {
-                                    const eventData = eventBlock.parsedData;
-                                    const formattedEventInfo = [];
-
-                                    // Días - Convertir códigos de días a nombres completos
-                                    const daysToShow = eventData.days?.length
-                                      ? eventData.days
-                                      : validation.days;
-                                    const dayNames = {
-                                      L: 'Lunes',
-                                      M: 'Martes',
-                                      X: 'Miércoles',
-                                      J: 'Jueves',
-                                      V: 'Viernes',
-                                      S: 'Sábado',
-                                      D: 'Domingo',
-                                    };
-
-                                    if (daysToShow?.length) {
-                                      // Usar la función formatDays para manejar rangos
-                                      const days = formatDays(daysToShow)
-                                        .map((day) => dayNames[day] || day)
-                                        .filter(Boolean);
-
-                                      // Formatear días como "Lun, Mar, Mié..."
-                                      const shortDayNames = {
-                                        Lunes: 'Lun',
-                                        Martes: 'Mar',
-                                        Miércoles: 'Mié',
-                                        Jueves: 'Jue',
-                                        Viernes: 'Vie',
-                                        Sábado: 'Sáb',
-                                        Domingo: 'Dom',
-                                      };
-
-                                      const shortDays = days.map(
-                                        (day) => shortDayNames[day] || day
-                                      );
-
-                                      // Agregar cada día como una etiqueta separada
-                                      shortDays.forEach((day) => {
-                                        if (day) {
-                                          formattedInfo.push({
-                                            label: day,
-                                            class: 'bg-blue-500/20 border-blue-500/50',
-                                            inline: true,
-                                          });
-                                        }
-                                      });
-                                    }
-
-                                    // Hora
-                                    if (eventData.time) {
-                                      let timeToShow = eventData.time;
-                                      // Limpiar formato de hora (eliminar 'x' al final si existe)
-                                      timeToShow = timeToShow.replace(/x$/i, '');
-                                      // Asegurar formato HH:MM
-                                      if (!timeToShow.includes(':')) {
-                                        timeToShow =
-                                          timeToShow.length <= 2
-                                            ? `${timeToShow}:00`
-                                            : `${timeToShow.slice(0, 2)}:${timeToShow.slice(2)}`;
-                                      }
-
-                                      formattedInfo.push({
-                                        label: timeToShow,
-                                        class: 'bg-green-500/20 border-green-500/50',
-                                        inline: true,
-                                      });
-                                    }
-
-                                    // Raid y dificultad - Eliminado para evitar duplicados
-                                    // Este bloque se maneja más abajo
-
-                                    // Verificar si es raid leader (compatibilidad con string 'YES' o booleano true)
-                                    // o si la validación general indica que es raid leader
-                                    const isLeader =
-                                      eventData.isRaidLeader === true ||
-                                      eventData.isRaidLeader === 'YES' ||
-                                      (typeof eventData.isRaidLeader === 'string' &&
-                                        eventData.isRaidLeader.toUpperCase() === 'YES') ||
-                                      validation.isRaidLeader === true;
-
-                                    // Solo mostrar información de raid si no se ha mostrado ya
-                                    if (eventData.raid) {
-                                      const difficultyNames = {
-                                        '10N': '10 Normal',
-                                        '10H': '10 Heroico',
-                                        '25N': '25 Normal',
-                                        '25H': '25 Heroico',
-                                        N: 'Normal',
-                                        H: 'Heroico',
-                                      };
-
-                                      // Formatear dificultad
-                                      const difficultyText = eventData.difficulty
-                                        ? difficultyNames[eventData.difficulty] ||
-                                          eventData.difficulty
-                                        : '';
-
-                                      // Usar formatRaidInfo para mostrar raid y dificultad juntas
-                                      const raidInfo = formatRaidInfo(
-                                        eventData.raid,
-                                        difficultyText
-                                      );
-
-                                      // Agregar etiqueta de Raid Leader si corresponde
-                                      if (isLeader) {
-                                        formattedInfo.unshift({
-                                          label: 'Raid Leader',
-                                          class:
-                                            'text-yellow-300 font-bold border-b border-yellow-500/60 pb-0.5',
-                                        });
-
-                                        // Mostrar "Armo" en lugar de "Busco" para raid leaders
-                                        formattedInfo.push({
-                                          label: `Armo: ${raidInfo}`,
-                                          class: 'text-purple-300 font-medium',
-                                        });
-                                      } else {
-                                        // Si no es raid leader, mostrar "Busco"
-                                        formattedInfo.push({
-                                          label: `Busco: ${raidInfo}`,
-                                          class: 'text-purple-300 font-medium',
-                                        });
-                                      }
-                                    }
-
-                                    // Looking for Group
-                                    if (eventData.isLookingForGroup) {
-                                      formattedInfo.push({
-                                        label: 'LFG',
-                                        class: 'text-green-400 font-bold',
-                                      });
-                                    }
-                                  }
-                                });
-                              } else if (validation.raids?.length) {
-                                // Si no hay bloques de evento pero hay raids en la validación
-                                validation.raids.forEach((raid) => {
-                                  // Mostrar días si están disponibles
-                                  if (raid.days) {
-                                    const dayNames = raid.days
-                                      .split('')
-                                      .map((day) => DAY_NAMES[day] || day)
-                                      .join(', ');
-
-                                    formattedInfo.push({
-                                      label: dayNames,
-                                      class: 'text-blue-300 font-medium',
-                                    });
-                                  }
-
-                                  // Mostrar hora si está disponible
-                                  if (raid.time) {
-                                    formattedInfo.push({
-                                      label: raid.time,
-                                      class: 'text-blue-300 font-medium',
-                                    });
-                                  }
-
-                                  // Mostrar información de la raid
-                                  if (raid.name) {
-                                    const isLeader = raid.isRaidLeader || validation.isRaidLeader;
-                                    const raidAction = isLeader ? 'Armo' : 'Busco';
-
-                                    // Solo mostrar el estado de RL si es líder
-                                    if (isLeader) {
-                                      formattedInfo.unshift({
-                                        label: 'Raid Leader',
-                                        class:
-                                          'text-yellow-300 font-bold border-b border-yellow-500/60 pb-0.5',
-                                      });
-                                    }
-
-                                    // Mostrar acción (Armo/Busco) y nombre de la raid
-                                    formattedInfo.push({
-                                      label: `${raidAction}: ${raid.name}`,
-                                      class: isLeader
-                                        ? 'text-purple-300 font-medium border-b border-purple-500/60 pb-0.5'
-                                        : 'text-purple-300 font-medium',
-                                    });
-                                  }
-
-                                  // Mostrar dificultad
-                                  if (raid.difficulty) {
-                                    formattedInfo.push({
-                                      label: raid.difficulty,
-                                      class: 'text-orange-300 font-medium',
-                                    });
-                                  } else if (raid.difficultyCode) {
-                                    formattedInfo.push({
-                                      label: raid.difficultyCode,
-                                      class: 'text-orange-300 font-medium',
-                                    });
-                                  }
-                                });
-                              } else {
-                                missingFields.push('Datos de evento');
-                              }
-
-                              // 3. Verificar campos faltantes
-                              const hasCharacterData =
-                                characterBlocks.length > 0 ||
-                                validation.mainAlt ||
-                                validation.mainRole ||
-                                validation.role ||
-                                validation.gearScore;
-
-                              // Solo marcar como faltante si no hay ningún dato de personaje
-                              if (!hasCharacterData) {
-                                missingFields.push('Datos de personaje');
-                              } else {
-                                // Verificar campos específicos faltantes
-                                if (
-                                  !validation.mainAlt &&
-                                  !characterBlocks.some((b) => b.parsedData?.mainAlt)
-                                ) {
-                                  missingFields.push('Main/Alt');
-                                }
-                                if (
-                                  !validation.mainRole &&
-                                  !validation.role &&
-                                  !characterBlocks.some(
-                                    (b) => b.parsedData?.mainRole || b.parsedData?.role
-                                  )
-                                ) {
-                                  missingFields.push('Rol principal');
-                                }
-                              }
-                              if (
-                                eventBlocks.length === 0 &&
-                                !validation.raids?.length &&
-                                !validation.schedules?.length
-                              ) {
-                              }
-
-                              // Función para procesar los bloques de la nota
-                              const processNoteBlocks = (validation) => {
-                                const characterTags = [];
-                                const eventTags = [];
-                                const missingCharacterFields = [];
-                                const missingEventFields = [];
-
-                                // Obtener bloques de personaje y evento
-                                const characterBlocks =
-                                  validation.blocks?.filter((b) => b.type === 'character') || [];
-                                const eventBlocks =
-                                  validation.blocks?.filter((b) => b.type === 'event') || [];
-                                // Procesar bloques de personaje
-                                if (characterBlocks.length > 0) {
-                                  const charData = characterBlocks[0]?.parsedData || {};
-
-                                  // Agregar etiquetas en el orden deseado
-                                  if (charData.mainAlt) {
-                                    characterTags.push({
-                                      label: charData.mainAlt === 'M' ? 'Main' : 'Alt',
-                                      class: 'bg-blue-500/20 border-blue-500/50',
-                                    });
-                                  }
-
-                                  // Agregar rol principal (usar role como respaldo si mainRole no está definido)
-                                  const roleToUse = charData.mainRole || charData.role;
-                                  if (roleToUse) {
-                                    characterTags.push({
-                                      label: roleNamesData[roleToUse]?.name || roleToUse,
-                                      class: 'bg-green-500/20 border-green-500/50',
-                                      title: `Rol: ${roleNamesData[roleToUse]?.name || roleToUse}`,
-                                    });
-
-                                    // Agregar GS del rol principal
-                                    const gsToUse = charData.mainGearScore || charData.gearScore;
-                                    if (gsToUse) {
-                                      characterTags.push({
-                                        label: `GS ${gsToUse}`,
-                                        class: 'bg-amber-500/20 border-amber-500/50',
-                                        title: `Gear Score: ${gsToUse}`,
-                                      });
-                                    }
-
-                                    // Si hay un rol dual, mostrarlo también
-                                    if (charData.dualRole) {
-                                      characterTags.push({
-                                        label:
-                                          roleNamesData[charData.dualRole]?.name ||
-                                          charData.dualRole,
-                                        class: 'bg-purple-500/20 border-purple-500/50',
-                                        title: `Rol secundario: ${roleNamesData[charData.dualRole]?.name || charData.dualRole}`,
-                                      });
-                                    }
-                                  }
-
-                                  // Agregar rol dual si existe
-                                  if (charData.dualRole) {
-                                    characterTags.push({
-                                      label: `Dual ${roleNamesData[charData.dualRole]?.name || charData.dualRole}`,
-                                      class: 'bg-yellow-500/20 border-yellow-500/50',
-                                    });
-
-                                    // Agregar GS del rol dual si existe
-                                    if (charData.dualGearScore) {
-                                      characterTags.push({
-                                        label: `GS ${charData.dualGearScore}`,
-                                        class: 'bg-amber-500/20 border-amber-500/50',
-                                      });
-                                    }
-                                  }
-
-                                  // Agregar etiquetas de profesiones
-                                  if (charData.professions && charData.professions.length > 0) {
-                                    charData.professions.forEach((profCode) => {
-                                      const profInfo = professionNamesData[profCode];
-                                      if (profInfo) {
-                                        const tag = {
-                                          label: profInfo.name,
-                                          class: `${profInfo.bgColor || 'bg-indigo-500/20'} border-${profInfo.color.replace('text-', '')}`,
-                                        };
-                                        characterTags.push(tag);
-                                      }
-                                    });
-                                  }
-
-                                  // Verificar campos faltantes en personaje
-                                  if (!charData.mainAlt) missingCharacterFields.push('Main/Alt');
-                                  if (!charData.mainRole)
-                                    missingCharacterFields.push('Rol principal');
-                                  if (!charData.mainGearScore)
-                                    missingCharacterFields.push('Gear Score');
-                                }
-
-                                // Procesar bloques de evento
-                                if (eventBlocks.length > 0) {
-                                  // Crear un array para almacenar los eventos procesados
-                                  const processedEvents = [];
-
-                                  eventBlocks.forEach((eventBlock, index) => {
-                                    if (eventBlock.parsedData) {
-                                      const eventData = eventBlock.parsedData;
-                                      const eventTags = [];
-                                      const eventMissingFields = [];
-
-                                      // Procesar días
-                                      if (eventData.days) {
-                                        // Si days es un array, convertirlo a string primero
-                                        const daysStr = Array.isArray(eventData.days)
-                                          ? eventData.days.join('')
-                                          : String(eventData.days);
-
-                                        // Mapear códigos de días a nombres cortos
-                                        const dayMap = {
-                                          L: 'Lun',
-                                          M: 'Mar',
-                                          X: 'Mié',
-                                          J: 'Jue',
-                                          V: 'Vie',
-                                          S: 'Sáb',
-                                          D: 'Dom',
-                                        };
-
-                                        // Solo agregar días si hay algo que mostrar
-                                        if (daysStr.trim()) {
-                                          // Manejar rangos como "L-V"
-                                          if (daysStr.includes('-')) {
-                                            const [startDay, endDay] = daysStr.split('-');
-                                            const dayOrder = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-                                            const startIndex = dayOrder.indexOf(startDay);
-                                            const endIndex = dayOrder.indexOf(endDay);
-
-                                            if (
-                                              startIndex !== -1 &&
-                                              endIndex !== -1 &&
-                                              startIndex <= endIndex
-                                            ) {
-                                              // Crear rango de días
-                                              const rangeDays = [];
-                                              for (let i = startIndex; i <= endIndex; i++) {
-                                                rangeDays.push(dayOrder[i]);
-                                              }
-                                              const formattedDays = rangeDays
-                                                .map((day) => dayMap[day] || day)
-                                                .join(', ');
-                                              if (formattedDays) {
-                                                eventTags.push({
-                                                  label: formattedDays,
-                                                  class: 'bg-blue-500/20 border-blue-500/50',
-                                                });
-                                              }
-                                            } else if (daysStr.trim()) {
-                                              // Si no se puede formar un rango válido, mostrar el texto original solo si no está vacío
-                                              eventTags.push({
-                                                label: daysStr.trim(),
-                                                class: 'bg-blue-500/20 border-blue-500/50',
-                                              });
-                                            }
-                                          } else {
-                                            // Si no es un rango, mostrar los días individuales
-                                            const formattedDays = daysStr
-                                              .split('')
-                                              .map((day) => dayMap[day] || day)
-                                              .filter((day) => day) // Filtrar días vacíos
-                                              .join(', ');
-
-                                            if (formattedDays) {
-                                              eventTags.push({
-                                                label: formattedDays,
-                                                class: 'bg-blue-500/20 border-blue-500/50',
-                                              });
-                                            }
-                                          }
-                                        }
-                                      }
-
-                                      // Procesar hora
-                                      if (eventData.time) {
-                                        eventTags.push({
-                                          label: `Hora: ${eventData.time}`,
-                                          class: 'bg-green-500/20 border-green-500/50',
-                                        });
-                                      }
-
-                                      // Procesar raid leader (Armo) o mostrar 'Busco' - se muestra antes de la raid
-                                      if (eventData.isRaidLeader) {
-                                        eventTags.push({
-                                          label: 'Armo',
-                                          class: 'bg-yellow-500/20 border-yellow-500/50',
-                                        });
-                                      } else if (eventData.raid) {
-                                        // Si hay raid pero no hay RL, mostrar 'Busco'
-                                        eventTags.push({
-                                          label: 'Busco',
-                                          class: 'bg-red-500/20 border-red-500/50',
-                                        });
-                                      }
-
-                                      // Procesar raid y dificultad
-                                      if (eventData.raid) {
-                                        const difficulty = eventData.difficulty
-                                          ? ` ${eventData.difficulty}`
-                                          : '';
-                                        eventTags.push({
-                                          label: `${eventData.raid}${difficulty}`,
-                                          class: 'bg-purple-500/20 border-purple-500/50',
-                                        });
-                                      }
-
-                                      // Verificar campos faltantes en evento
-                                      const hasDays = eventData.days?.length > 0;
-                                      const hasTime = !!eventData.time;
-                                      const hasRaid = !!eventData.raid;
-
-                                      if (!hasDays) eventMissingFields.push('Día/s');
-                                      if (!hasTime) eventMissingFields.push('Hora');
-                                      if (!hasRaid) eventMissingFields.push('Raid');
-
-                                      // Agregar el evento procesado al array
-                                      processedEvents.push({
-                                        id: `event-${index}`,
-                                        tags: [...eventTags],
-                                        missingFields: [...eventMissingFields],
-                                      });
-                                    }
-                                  });
-
-                                  // Retornar los eventos procesados
-                                  return {
-                                    characterTags,
-                                    processedEvents,
-                                    missingCharacterFields,
-                                    missingEventFields,
-                                  };
-                                }
-
-                                return {
-                                  characterTags,
-                                  eventTags,
-                                  missingCharacterFields,
-                                  missingEventFields,
-                                };
-                              };
-
-                              // Procesar los bloques de la nota
-                              const processedBlocks = processNoteBlocks(validation);
-                              const characterTags = processedBlocks.characterTags || [];
-                              const processedEvents = processedBlocks.processedEvents || [];
-                              const missingCharacterFields =
-                                processedBlocks.missingCharacterFields || [];
-                              const missingEventFields = processedBlocks.missingEventFields || [];
-
-                              return `
-                                <div class="space-y-3">
-                                  <!-- Bloque de Personaje -->
-                                  <div class="space-y-1">
-                                    <div class="flex flex-wrap gap-1.5 mb-1">
-                                      ${characterTags
-                                        .map((item) => {
-                                          // Verificar si es una profesión para aplicar estilos
-                                          const professionEntry = Object.entries(
-                                            professionNamesData
-                                          ).find(([_, prof]) => prof?.name === item.label);
-
-                                          if (professionEntry) {
-                                            const [_, profData] = professionEntry;
-                                            return `<span class="text-xs px-2 py-0.5 rounded border ${profData.bgColor || 'bg-indigo-500/20'} border-${profData.color.replace('text-', '')}">${item.label}</span>`;
-                                          }
-
-                                          return `<span class="text-xs px-2 py-0.5 rounded border ${item.class || ''}">${item.label}</span>`;
-                                        })
-                                        .join('')}
-                                    </div>
-                                    ${
-                                      missingCharacterFields.length > 0
-                                        ? `
-                                      <div class="text-amber-400/90 text-xs">
-                                        <span class="font-medium">Faltan:</span> ${missingCharacterFields.join(', ')}
-                                      </div>
-                                    `
-                                        : ''
-                                    }
-                                  </div>
-                                  
-
-                                </div>`;
-                            } else {
-                              const missingFields = validation.missingFields || [];
-                              const errorMessage =
-                                missingFields.length > 0
-                                  ? `Faltan: ${missingFields.join(', ')}`
-                                  : 'Formato inválido';
-
-                              return `
-                                <div class="space-y-1.5">
-                                  <!-- Mensaje de error (alta prioridad) -->
-                                  <div class="flex flex-wrap gap-1">
-                                    <span class="text-sm font-medium text-red-300">
-                                      Formato inválido
-                                    </span>
-                                  </div>
-                                  
-                                  <!-- Advertencias (baja prioridad) -->
-                                  ${
-                                    missingFields.length > 0
-                                      ? `
-                                    <div class="flex items-start gap-1 text-yellow-500/70 text-[11px] mt-0.5">
-                                      <svg class="w-2.5 h-2.5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                      </svg>
-                                      <span>Faltan: ${missingFields.join(', ')}</span>
-                                    </div>
-                                  `
-                                      : ''
-                                  }
-                              `;
-                            }
-                          })()}
-                        </div> 
-                      `
-                          : `
-                        <div class="flex items-center gap-2">
-                          <span class="text-text-muted/70 italic">Sin nota</span>
-                          <div class="flex items-center justify-center w-5 h-5 rounded-full bg-gray-900/20 border border-gray-500/30">
-                            <div class="w-2 h-2 rounded-full bg-gray-500"></div>
-                          </div>
-                        </div>
-                      `
-                      }
+            <div class="group bg-gray-900/40 backdrop-blur-sm border border-amber-900/20 rounded-xl p-4 hover:bg-gray-800/60 hover:border-amber-500/30 transition-all duration-300 relative overflow-hidden">
+                <!-- Class color accent -->
+                <div class="absolute top-0 left-0 w-1 h-full bg-[#${classColor}] opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                
+                <div class="flex flex-col items-start gap-4 pl-2">
+                  <div class="flex items-center gap-2">
+                    <!-- Avatar -->
+                    <div class="relative flex-shrink-0">
+                        <img 
+                            src="/images/avatars/class_${className}.jpg" 
+                            alt="${className}" 
+                            class="w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classColor}]/50 transition-colors object-cover"
+                            onerror="this.src='/images/avatars/default.png'"
+                        />
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-gray-900 bg-[#${classColor}]" title="${className}"></div>
                     </div>
                     
-                  </div>
+                    <!-- Info -->
+                    <div class="flex-1 min-w-0">
+                        <div class="">
+                            <div class="font-bold text-gray-100 truncate group-hover:text-[#${classColor}] transition-colors text-lg">${member.name}</div>
+                            <span class="text-xs px-2 py-0.5 rounded bg-gray-800 border border-gray-700 text-gray-400">${member.rank}</span>
+                        </div>
+                        
+                        
+                    </div>
+                    </div>
+                    <!-- Details/Tags -->
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            ${
+                              formattedInfo.length > 0
+                                ? formattedInfo
+                                    .map(
+                                      (tag) => `
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${tag.class}">
+                                    ${tag.label}
+                                </span>
+                            `
+                                    )
+                                    .join('')
+                                : '<span class="text-xs text-gray-500 italic">Sin detalles</span>'
+                            }
+                        </div>
                 </div>
-              </td>
-            </tr>
-          `;
+            </div>
+            `;
           })
           .join('');
-
-        updatePaginationInfo();
-        updateSortIndicators();
-      }
-
-      // Función para ordenar los miembros
-      function sortMembers(key) {
-        if (sortConfig.key === key) {
-          sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
-        } else {
-          sortConfig.key = key;
-          sortConfig.direction = 'asc';
-        }
-
-        filteredMembers.sort((a, b) => {
-          let aValue = a[key] || '';
-          let bValue = b[key] || '';
-
-          // Manejar valores nulos o indefinidos
-          if (aValue === null || aValue === undefined) aValue = '';
-          if (bValue === null || bValue === undefined) bValue = '';
-
-          // Convertir a string para comparación segura
-          aValue = String(aValue).toLowerCase();
-          bValue = String(bValue).toLowerCase();
-
-          if (aValue < bValue) {
-            return sortConfig.direction === 'asc' ? -1 : 1;
-          }
-          if (aValue > bValue) {
-            return sortConfig.direction === 'asc' ? 1 : -1;
-          }
-          return 0;
-        });
-
-        currentPage = 1; // Volver a la primera página al cambiar el orden
-        updateTable();
-
-        filteredMembers.sort((a, b) => {
-          const aValue = a[sortConfig.key]?.toString().toLowerCase() || '';
-          const bValue = b[sortConfig.key]?.toString().toLowerCase() || '';
-
-          if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-          if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-          return 0;
-        });
-
-        currentPage = 1;
-        updateTable();
       }
 
       // Función para actualizar la información de paginación
@@ -3450,249 +2759,28 @@ const totalRaiders = rosterData.members.filter(
         // Actualizar estado de los botones de paginación
         if (prevButton) {
           prevButton.disabled = currentPage <= 1;
+          prevButton.onclick = () => {
+            if (currentPage > 1) {
+              currentPage--;
+              updateTable();
+              updatePaginationInfo();
+            }
+          };
         }
         if (nextButton) {
           nextButton.disabled = currentPage >= totalPages;
-        }
-
-        // Actualizar los botones de página
-        updatePageButtons(totalPages);
-      }
-
-      // Función para manejar el cambio de página
-      function handlePageChange(page) {
-        if (page >= 1 && page <= Math.ceil(filteredMembers.length / itemsPerPage)) {
-          currentPage = page;
-          updateTable();
-        }
-      }
-
-      // Función para actualizar los botones de página
-      function updatePageButtons(totalPages) {
-        const paginationContainer = document.getElementById('pagination-container');
-        if (!paginationContainer || totalPages <= 0) {
-          return;
-        }
-
-        // Usar event delegation en el contenedor de paginación
-        const handlePaginationClick = (e) => {
-          const target = e.target.closest('button');
-          if (!target) return;
-
-          e.preventDefault();
-          e.stopPropagation();
-
-          if (target.id === 'prev-button' && currentPage > 1) {
-            handlePageChange(currentPage - 1);
-          } else if (target.id === 'next-button' && currentPage < totalPages) {
-            handlePageChange(currentPage + 1);
-          } else if (target.classList.contains('page-button')) {
-            const page = parseInt(target.getAttribute('data-page'));
-            if (!isNaN(page)) {
-              handlePageChange(page);
+          nextButton.onclick = () => {
+            if (currentPage < totalPages) {
+              currentPage++;
+              updateTable();
+              updatePaginationInfo();
             }
-          }
-        };
-
-        // Remover el event listener anterior si existe
-        if (paginationContainer._clickHandler) {
-          paginationContainer.removeEventListener('click', paginationContainer._clickHandler);
+          };
         }
-        // Guardar la referencia a la función para poder eliminarla después
-        paginationContainer._clickHandler = handlePaginationClick;
-        paginationContainer.addEventListener('click', handlePaginationClick);
-
-        let buttons = [];
-
-        // Botón Anterior
-        buttons.push(`
-          <button 
-            id="prev-button"
-            class="px-3 py-1 rounded-md ${currentPage <= 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-500/20 hover:text-amber-300'} transition-colors"
-            title="Página anterior"
-            ${currentPage <= 1 ? 'disabled' : ''}
-          >
-            &lt;
-          </button>
-        `);
-
-        const maxVisiblePages = 5;
-        let startPage, endPage;
-
-        if (totalPages <= maxVisiblePages) {
-          startPage = 1;
-          endPage = totalPages;
-        } else {
-          // Calcular qué páginas mostrar
-          if (currentPage <= Math.ceil(maxVisiblePages / 2)) {
-            startPage = 1;
-            endPage = maxVisiblePages - 2;
-          } else if (currentPage + Math.floor(maxVisiblePages / 2) >= totalPages) {
-            startPage = totalPages - maxVisiblePages + 3;
-            endPage = totalPages;
-          } else {
-            startPage = currentPage - Math.floor((maxVisiblePages - 2) / 2);
-            endPage = currentPage + Math.floor((maxVisiblePages - 2) / 2);
-          }
-
-          // Asegurarnos de no salirnos de los límites
-          startPage = Math.max(1, startPage);
-          endPage = Math.min(totalPages, endPage);
-        }
-
-        // Primera página
-        if (startPage > 1) {
-          buttons.push(`
-            <button 
-              class="px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-accent/20 text-accent font-medium' : 'hover:bg-steel-dark'} transition-colors page-button"
-              data-page="1"
-            >
-              1
-            </button>
-          `);
-
-          if (startPage > 2) {
-            buttons.push('<span class="px-2">...</span>');
-          }
-        }
-
-        // Páginas intermedias
-        for (let i = startPage; i <= endPage; i++) {
-          buttons.push(`
-            <button 
-              class="px-3 py-1 rounded-md ${currentPage === i ? 'bg-amber-600 text-white' : 'hover:bg-amber-500/20 hover:text-amber-300 text-text-muted'} transition-colors page-button"
-              data-page="${i}"
-              title="Ir a la página ${i}"
-            >
-              ${i}
-            </button>
-          `);
-        }
-
-        // Última página
-        if (endPage < totalPages) {
-          if (endPage < totalPages - 1) {
-            buttons.push('<span class="px-2">...</span>');
-          }
-
-          buttons.push(`
-            <button 
-              class="px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-accent/20 text-accent font-medium' : 'hover:bg-steel-dark'} transition-colors page-button"
-              data-page="${totalPages}"
-            >
-              ${totalPages}
-            </button>
-          `);
-        }
-
-        // Botón Siguiente
-        buttons.push(`
-          <button 
-            id="next-button"
-            class="px-3 py-1 rounded-md ${currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-amber-500/20 hover:text-amber-300'} transition-colors"
-            title="Página siguiente"
-            ${currentPage >= totalPages ? 'disabled' : ''}
-          >
-            &gt;
-          </button>
-        `);
-
-        paginationContainer.innerHTML = buttons.join('');
       }
-
-      // Función para actualizar los indicadores de ordenación
-      function updateSortIndicators() {
-        document.querySelectorAll('th[data-sort]').forEach((th) => {
-          const sortKey = th.getAttribute('data-sort');
-          if (!sortKey) return;
-
-          const indicator = th.querySelector('.sort-indicator');
-          if (!indicator) return;
-
-          if (sortConfig.key === sortKey) {
-            indicator.textContent = sortConfig.direction === 'asc' ? '↑' : '↓';
-          } else {
-            indicator.textContent = '↕';
-          }
-        });
-      }
-
-      // Función para filtrar miembros según los filtros aplicados
-      function filterMembers() {
-        if (!searchInput || !classFilter || !rankFilter) return;
-
-        const searchTerm = searchInput.value.toLowerCase();
-        const selectedClass = classFilter.value;
-        const selectedRank = rankFilter.value;
-
-        filteredMembers = allMembers.filter((member) => {
-          const matchesSearch =
-            searchTerm === '' ||
-            member.name.toLowerCase().includes(searchTerm) ||
-            (member.publicNote && member.publicNote.toLowerCase().includes(searchTerm));
-          const matchesClass = selectedClass === '' || member.class === selectedClass;
-          const matchesRank = selectedRank === '' || member.rank === selectedRank;
-
-          return matchesSearch && matchesClass && matchesRank;
-        });
-
-        currentPage = 1;
-        updateTable();
-      }
-
-      // Event listeners
-      if (searchInput) {
-        searchInput.addEventListener('input', filterMembers);
-      }
-
-      if (classFilter) {
-        classFilter.addEventListener('change', filterMembers);
-      }
-
-      if (rankFilter) {
-        rankFilter.addEventListener('change', filterMembers);
-      }
-
-      if (prevButton) {
-        prevButton.addEventListener('click', () => {
-          if (currentPage > 1) {
-            currentPage--;
-            updateTable();
-          }
-        });
-      }
-
-      if (nextButton) {
-        nextButton.addEventListener('click', () => {
-          const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
-          if (currentPage < totalPages) {
-            currentPage++;
-            updateTable();
-          }
-        });
-      }
-
-      // Inicializar encabezados ordenables
-      document.querySelectorAll('th[data-sort]').forEach((th) => {
-        th.addEventListener('click', () => {
-          const sortKey = th.getAttribute('data-sort');
-          if (sortKey) {
-            sortMembers(sortKey);
-          }
-        });
-      });
 
       // Inicializar la tabla
       initTable();
-
-      // Inicializar tooltips después de actualizar la tabla
-      initTooltips();
-
-      // Función para actualizar la tabla después de cambios
-      const originalUpdateTable = updateTable;
-      updateTable = function () {
-        originalUpdateTable.apply(this, arguments);
-      };
     });
   </script>
 
@@ -3876,141 +2964,454 @@ const totalRaiders = rosterData.members.filter(
     </div>
   </div>
 
-  <!-- Filtros -->
-  <div class="p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="relative">
-        <label for="search" class="block text-sm font-medium text-text-muted/80 mb-2">
-          Buscar por nombre
-        </label>
-        <input
-          type="text"
-          id="search"
-          placeholder="Nombre..."
-          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
-        />
-      </div>
-
-      <div class="relative">
-        <label for="class-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
-          Filtrar por clase
-        </label>
-        <select
-          id="class-filter"
-          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
-        >
-          <option value="">Todas las clases</option>
-          {
-            Object.entries(rosterData.classInfo).map(([key, info]) => (
-              <option value={key} style={`color: #${info.color}`}>
-                {info.name}
-              </option>
-            ))
-          }
-        </select>
-      </div>
-
-      <div class="relative">
-        <label for="rank-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
-          Filtrar por rango
-        </label>
-        <select
-          id="rank-filter"
-          class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
-        >
-          <option value="">Todos los rangos</option>
-          {
-            ranks.map((rank) => (
-              <option value={rank} class="text-white">
-                {rank}
-              </option>
-            ))
-          }
-        </select>
-      </div>
+  
+          <!-- Filtros y Ordenamiento -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl mb-6">
+    <div class="relative">
+      <label for="search" class="block text-sm font-medium text-text-muted/80 mb-2">
+        Buscar por nombre
+      </label>
+      <input
+        type="text"
+        id="search"
+        placeholder="Nombre..."
+        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent placeholder-text-muted/50 transition-all duration-200"
+      />
     </div>
-  </div>
 
-  <!-- Tabla de miembros -->
-  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-2 sm:p-3">
-    <div class="overflow-x-auto rounded-t-xl">
-      <table
-        class="min-w-full divide-y divide-accent bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 p-2 sm:p-3"
+    <div class="relative">
+      <label for="class-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+        Filtrar por clase
+      </label>
+      <select
+        id="class-filter"
+        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
       >
-        <thead class="bg-gradient-to-r from-amber-900/50 to-amber-800/30">
-          <tr>
-            <th
-              data-column="name"
-              class="text-left px-4 py-3 text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors"
-              data-sort="name"
-            >
-              <div class="flex items-center">
-                <span class="py-2">Personaje</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="ml-1 h-3.5 w-3.5 opacity-70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                </svg>
-              </div>
-            </th>
-            <th
-              data-column="details"
-              class="text-left px-4 py-3 text-xs font-semibold text-amber-300/90 uppercase tracking-wider cursor-pointer hover:text-amber-200 transition-colors"
-              data-sort="publicNote"
-            >
-              <div class="flex items-center">
-                <span class="py-2">Detalles</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="ml-1 h-3.5 w-3.5 opacity-70"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                </svg>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="roster-table-body" class="divide-y divide-accent">
-          <!-- Los miembros se cargarán aquí dinámicamente -->
-        </tbody>
-      </table>
-    </div>
-    <!-- Controles de paginación -->
-    <div
-      class="px-2 md:px-6 py-4 bg-gray-900/50 backdrop-blur-sm border-t border-amber-900/30 flex flex-col sm:flex-row items-center justify-between gap-4"
-    >
-      <div id="page-info" class="text-sm text-text-muted/70">
-        Página <span class="font-medium text-white">1</span> de
-        <span class="font-medium text-white">1</span>
-        <span class="hidden sm:inline">
-          (<span class="font-medium text-white">0</span> miembros)
-        </span>
-      </div>
-      <div id="pagination-container" class="flex items-center gap-1">
-        <!-- Los botones de paginación se generarán aquí dinámicamente -->
-      </div>
+        <option value="">Todas las clases</option>
+        {
+          Object.entries(rosterData.classInfo).map(([key, info]) => (
+            <option value={key} style={`color: #${info.color}`}>
+              {info.name}
+            </option>
+          ))
+        }
+      </select>
     </div>
 
-    <p class="text-xs text-amber-400/70 text-center mt-4">
-      Los nombres de los miembros se actualizan diariamente para mantener la información al día.
-    </p>
+    <div class="relative">
+      <label for="rank-filter" class="block text-sm font-medium text-text-muted/80 mb-2">
+        Filtrar por rango
+      </label>
+      <select
+        id="rank-filter"
+        class="w-full bg-transparent border border-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent appearance-none transition-all duration-200 cursor-pointer hover:border-accent/40"
+      >
+        <option value="">Todos los rangos</option>
+        {
+          ranks.map((rank) => (
+            <option value={rank} class="text-white">
+              {rank}
+            </option>
+          ))
+        }
+    </div>
   </div>
-</div>
+
+  <!-- Controles de ordenamiento -->
+  <div class="mb-6 p-6 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl">
+    <div class="flex flex-wrap gap-2">
+      <button
+        id="sort-name"
+        class="sort-button px-4 py-2 rounded-lg bg-amber-900/30 border border-amber-700/50 text-amber-100 hover:bg-amber-800/40 hover:border-amber-500/60 transition-all duration-200 flex items-center gap-2 text-sm"
+        data-sort="name"
+        data-direction="asc"
+      >
+        <span>Personaje</span>
+        <span class="sort-indicator">↕</span>
+      </button>
+      <button
+        id="sort-details"
+        class="sort-button px-4 py-2 rounded-lg bg-amber-900/30 border border-amber-700/50 text-amber-100 hover:bg-amber-800/40 hover:border-amber-500/60 transition-all duration-200 flex items-center gap-2 text-sm"
+        data-sort="publicNote"
+        data-direction="none"
+      >
+        <span>Detalles</span>
+        <span class="sort-indicator">↕</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid de miembros -->
+  <div id="roster-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Los miembros se cargarán aquí dinámicamente -->
+  </div>
+
+  <div id="pagination-container" class="p-4 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-lg mb-4 flex justify-around">
+    
+
+   <!-- Controles de paginación -->
+      <div id="page-info" class="text-sm text-amber-200/70 self-center">
+        Página <span id="current-page">1</span> de <span id="total-pages">1</span> (<span id="total-members">0</span> miembros)
+      </div>
+      <button 
+        id="prev-button" 
+        class="px-3 py-1 rounded-md opacity-50 cursor-not-allowed transition-colors hover:bg-amber-500/20 hover:text-amber-300" 
+        title="Página anterior" 
+        disabled
+      >
+        &lt;
+      </button>
+      <div id="page-buttons" class="flex items-center gap-1">
+        <!-- Page buttons will be inserted here by JavaScript -->
+      </div>
+      <button 
+        id="next-button" 
+        class="px-3 py-1 rounded-md hover:bg-amber-500/20 hover:text-amber-300 transition-colors" 
+        title="Página siguiente"
+      >
+        &gt;
+      </button>
+  </div>
+
+
+  
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Pagination elements
+      const prevButton = document.getElementById('prev-button');
+      const nextButton = document.getElementById('next-button');
+      const pageButtonsContainer = document.getElementById('page-buttons');
+      const currentPageElement = document.getElementById('current-page');
+      const totalPagesElement = document.getElementById('total-pages');
+      const totalMembersElement = document.getElementById('total-members');
+      const rosterGrid = document.getElementById('roster-grid');
+      const searchInput = document.getElementById('search');
+      const classFilter = document.getElementById('class-filter');
+      const rankFilter = document.getElementById('rank-filter');
+      const sortButtons = document.querySelectorAll('.sort-button');
+      const itemsPerPage = 6;
+      
+      // Current sort state
+      let currentSort = {
+        field: 'name',
+        direction: 'asc' // 'asc' or 'desc'
+      };
+      
+      let currentPage = 1;
+      let totalPages = 1;
+      let filteredMembers = [];
+      let allMembers = [];
+
+      // Initialize the roster
+      function initRoster() {
+        try {
+          // Get roster data from the hidden element
+          const rosterDataElement = document.getElementById('roster-data');
+          if (!rosterDataElement) {
+            console.error('No se encontró el elemento de datos del roster');
+            return;
+          }
+          
+          const rosterData = JSON.parse(rosterDataElement.textContent);
+          allMembers = rosterData.members || [];
+          filteredMembers = [...allMembers];
+          
+          // Update total members count
+          totalMembersElement.textContent = allMembers.length;
+          
+          // Calculate total pages
+          updatePagination();
+          
+          // Render first page
+          renderMembers();
+          
+          // Add event listeners
+          setupEventListeners();
+        } catch (error) {
+          console.error('Error al inicializar el roster:', error);
+        }
+      }
+
+      // Update pagination controls
+      function updatePagination() {
+        // Calculate total pages
+        totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
+        totalPages = Math.max(1, totalPages); // At least 1 page
+        
+        // Update page info
+        currentPage = Math.min(currentPage, totalPages); // Ensure current page is within bounds
+        currentPageElement.textContent = currentPage;
+        totalPagesElement.textContent = totalPages;
+        totalMembersElement.textContent = filteredMembers.length;
+        
+        // Update button states
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === totalPages;
+        
+        // Generate page buttons
+        generatePageButtons();
+      }
+
+      // Generate page number buttons
+      function generatePageButtons() {
+        pageButtonsContainer.innerHTML = '';
+        
+        // Always show first page
+        addPageButton(1);
+        
+        // Calculate range of pages to show
+        let startPage = Math.max(2, currentPage - 1);
+        let endPage = Math.min(totalPages - 1, currentPage + 1);
+        
+        // Add ellipsis if needed
+        if (startPage > 2) {
+          addEllipsis();
+        }
+        
+        // Add middle pages
+        for (let i = startPage; i <= endPage; i++) {
+          addPageButton(i);
+        }
+        
+        // Add ellipsis if needed
+        if (endPage < totalPages - 1) {
+          addEllipsis();
+        }
+        
+        // Always show last page if there's more than one page
+        if (totalPages > 1) {
+          addPageButton(totalPages);
+        }
+      }
+      
+      function addPageButton(pageNumber) {
+        if (pageNumber < 1 || pageNumber > totalPages) return;
+        
+        const button = document.createElement('button');
+        button.className = `px-3 py-1 rounded-md transition-colors page-button ${
+          pageNumber === currentPage 
+            ? 'bg-amber-600 text-white' 
+            : 'hover:bg-amber-500/20 hover:text-amber-300 text-text-muted'
+        }`;
+        button.textContent = pageNumber;
+        button.title = `Ir a la página ${pageNumber}`;
+        button.dataset.page = pageNumber;
+        
+        button.addEventListener('click', () => {
+          currentPage = pageNumber;
+          updatePagination();
+          renderMembers();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        pageButtonsContainer.appendChild(button);
+      }
+      
+      function addEllipsis() {
+        const span = document.createElement('span');
+        span.className = 'px-2 text-text-muted';
+        span.textContent = '...';
+        pageButtonsContainer.appendChild(span);
+      }
+
+      // Render members for current page
+      function renderMembers() {
+        if (!rosterGrid) return;
+        
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const membersToShow = filteredMembers.slice(startIndex, endIndex);
+        
+        // Clear existing content
+        rosterGrid.innerHTML = '';
+        
+        if (membersToShow.length === 0) {
+          rosterGrid.innerHTML = `
+            <div class="col-span-full text-center py-12 text-amber-200/70">
+              <p class="text-lg font-medium">No se encontraron miembros</p>
+              <p class="text-sm mt-2">Intenta con otros filtros de búsqueda</p>
+            </div>
+          `;
+          return;
+        }
+        
+        // Render each member
+        membersToShow.forEach(member => {
+          const memberElement = createMemberCard(member);
+          if (memberElement) {
+            rosterGrid.appendChild(memberElement);
+          }
+        });
+      }
+      
+      // Create member card element
+      function createMemberCard(member) {
+        // This is a simplified version - you should adapt it to match your member card structure
+        const div = document.createElement('div');
+        div.className = 'bg-gray-900/50 rounded-lg p-4 border border-amber-900/30 hover:border-amber-500/50 transition-colors';
+        
+        div.innerHTML = `
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-full bg-amber-900/30 flex items-center justify-center">
+              <span class="text-amber-400 text-xl font-bold">${member.name.charAt(0)}</span>
+            </div>
+            <div>
+              <h3 class="font-medium text-amber-200">${member.name}</h3>
+              <p class="text-sm text-amber-100/70">${member.class || 'No especificada'}</p>
+              ${member.rank ? `<span class="text-xs px-2 py-0.5 bg-amber-900/30 text-amber-300 rounded">${member.rank}</span>` : ''}
+            </div>
+          </div>
+        `;
+        
+        return div;
+      }
+      
+      // Sort members based on current sort settings
+      function sortMembers() {
+        if (currentSort.field) {
+          filteredMembers.sort((a, b) => {
+            let valueA, valueB;
+            
+            // Get the values to compare
+            if (currentSort.field === 'name') {
+              valueA = a.name?.toLowerCase() || '';
+              valueB = b.name?.toLowerCase() || '';
+            } else if (currentSort.field === 'publicNote') {
+              valueA = a.publicNote?.toLowerCase() || '';
+              valueB = b.publicNote?.toLowerCase() || '';
+              
+              // If both are empty, consider them equal
+              if (!valueA && !valueB) return 0;
+              // Empty values go to the end
+              if (!valueA) return 1;
+              if (!valueB) return -1;
+            }
+            
+            // Compare the values
+            if (valueA < valueB) {
+              return currentSort.direction === 'asc' ? -1 : 1;
+            }
+            if (valueA > valueB) {
+              return currentSort.direction === 'asc' ? 1 : -1;
+            }
+            return 0;
+          });
+        }
+      }
+      
+      // Update sort indicators
+      function updateSortIndicators() {
+        sortButtons.forEach(button => {
+          const indicator = button.querySelector('.sort-indicator');
+          const sortField = button.dataset.sort;
+          
+          if (sortField === currentSort.field) {
+            indicator.textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+            button.classList.add('bg-amber-800/40', 'border-amber-500/60');
+            button.classList.remove('bg-amber-900/30', 'border-amber-700/50');
+          } else {
+            indicator.textContent = '↕';
+            button.classList.remove('bg-amber-800/40', 'border-amber-500/60');
+            button.classList.add('bg-amber-900/30', 'border-amber-700/50');
+          }
+        });
+      }
+      
+      // Handle sort button click
+      function handleSortClick(sortField) {
+        if (currentSort.field === sortField) {
+          // Toggle direction if clicking the same field
+          currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+          // Set new sort field and default to ascending
+          currentSort.field = sortField;
+          currentSort.direction = 'asc';
+        }
+        
+        // Update the UI
+        updateSortIndicators();
+        
+        // Apply the sort
+        sortMembers();
+        
+        // Reset to first page and render
+        currentPage = 1;
+        updatePagination();
+        renderMembers();
+      }
+      
+      // Filter members based on search and filters
+      function filterMembers() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedClass = classFilter.value;
+        const selectedRank = rankFilter.value;
+        
+        filteredMembers = allMembers.filter(member => {
+          // Filter by search term
+          const matchesSearch = member.name.toLowerCase().includes(searchTerm) || 
+                              (member.publicNote && member.publicNote.toLowerCase().includes(searchTerm));
+          
+          // Filter by class
+          const matchesClass = !selectedClass || member.class === selectedClass;
+          
+          // Filter by rank
+          const matchesRank = !selectedRank || member.rank === selectedRank;
+          
+          return matchesSearch && matchesClass && matchesRank;
+        });
+        
+        // Apply current sort after filtering
+        sortMembers();
+        
+        // Reset to first page when filters change
+        currentPage = 1;
+        updatePagination();
+        renderMembers();
+      }
+      
+      // Set up event listeners
+      function setupEventListeners() {
+        // Pagination buttons
+        prevButton.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage--;
+            updatePagination();
+            renderMembers();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+        
+        nextButton.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            updatePagination();
+            renderMembers();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+        
+        // Sort buttons
+        sortButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const sortField = button.dataset.sort;
+            handleSortClick(sortField);
+          });
+        });
+        
+        // Search and filter inputs
+        searchInput.addEventListener('input', filterMembers);
+        classFilter.addEventListener('change', filterMembers);
+        rankFilter.addEventListener('change', filterMembers);
+      }
+      
+      // Initialize the roster when the page loads
+      initRoster();
+      
+      // Set initial sort indicators
+      updateSortIndicators();
+    });
+  </script>
 
 <!-- Sección de estadísticas -->
 <div
