@@ -27,8 +27,7 @@ const classIcons = {
     >
       <h1 class="text-3xl font-bold text-amber-200 mb-3 tracking-wide">Guía de Código de Nota</h1>
       <p class="text-amber-100/80 max-w-2xl mx-auto">
-        Aprende a formatear correctamente tu código de nota para mejorar la organización del gremio y
-        asegurar tu participación en los eventos.
+        Aprende a formatear correctamente tu código de nota para mejorar la organización de la hermandad y asegurar tu participación en los eventos.
       </p>
     </header>
 
@@ -111,11 +110,6 @@ const classIcons = {
                 <div id="previewPersonaje" class="flex flex-wrap gap-1.5"></div>
                 <div id="detallesPersonaje" class="text-xs text-amber-100/60 mt-2"></div>
               </div>
-              <div class="pt-3 border-t border-amber-900/30">
-                <div class="text-sm font-medium text-amber-200 mb-2">Bloque de Evento</div>
-                <div id="previewEvento" class="flex flex-wrap gap-1.5"></div>
-                <div id="detallesEvento" class="text-xs text-amber-100/60 mt-2"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -124,72 +118,28 @@ const classIcons = {
       <script>
         // Constantes de configuración
         const ROLES = {
-          'T': 'Tank',
-          'H': 'Healer',
-          'D': 'DPS'
+          T: 'Tank',
+          H: 'Healer',
+          D: 'DPS',
         };
 
         const STATUS = {
-          'M': 'Main',
-          'A': 'Alt'
-        };
-
-        const RAID_NAMES = {
-          'ICC': 'Ciudadela de la Corona de Hielo',
-          'TOC': 'Prueba del Cruzado',
-          'ULD': 'Ulduar',
-          'NAX': 'Naxxramas',
-          'OS': 'El Oculus de los Creadores',
-          'VOA': 'Cámara de Archavon',
-          'EOE': 'El Ojo de la Eternidad',
-          'ONY': 'Guarida de Onyxia',
-          'RS': 'Cámara de los Aspectos'
-        };
-
-        const DAY_NAMES = {
-          'L': 'Lun',
-          'M': 'Mar',
-          'X': 'Mié',
-          'J': 'Jue',
-          'V': 'Vie',
-          'S': 'Sáb',
-          'D': 'Dom',
-          'W': 'Mié' // Alias para X
-        };
-
-        const DIFFICULTY_NAMES = {
-          '10N': '10 Normal',
-          '10H': '10 Heroico',
-          '25N': '25 Normal',
-          '25H': '25 Heroico'
+          M: 'Main',
+          A: 'Alt',
         };
 
         const PROFESSIONS = {
-          'AL': 'Alquimia',
-          'HB': 'Herboristería',
-          'TL': 'Sastrería',
-          'EN': 'Encantamiento',
-          'EG': 'Ingeniería',
-          'JC': 'Joyería',
-          'BS': 'Herrería',
-          'IN': 'Inscripción',
-          'MN': 'Minería',
-          'SK': 'Desuello',
-          'LW': 'Peletería'
-        };
-
-        // Mapeo de códigos de banda a una letra
-        const BANDA_CODES = {
-          'i': 'ICC',
-          't': 'TOC',
-          'u': 'ULD',
-          'n': 'NAX',
-          'o': 'OS',
-          'v': 'VOA',
-          'e': 'EOE',
-          'y': 'ONY',
-          'r': 'RS',
-          'a': 'VOA' // Alias para VOA
+          AL: 'Alquimia',
+          HB: 'Herboristería',
+          TL: 'Sastrería',
+          EN: 'Encantamiento',
+          EG: 'Ingeniería',
+          JC: 'Joyería',
+          BS: 'Herrería',
+          IN: 'Inscripción',
+          MN: 'Minería',
+          SK: 'Desuello',
+          LW: 'Peletería',
         };
 
         // Elementos del DOM con tipos TypeScript
@@ -199,7 +149,6 @@ const classIcons = {
         const detallesPersonaje = document.getElementById(
           'detallesPersonaje'
         ) as HTMLDivElement | null;
-        const detallesEvento = document.getElementById('detallesEvento') as HTMLDivElement | null;
 
         // Expresiones regulares mejoradas
         const regexPersonaje = {
@@ -211,24 +160,17 @@ const classIcons = {
           profs: /[A-Z]{2,4}$/i,
         };
 
-        const regexEvento = {
-          dia: /^[a-z]/i,
-          hora: /\d+/,
-          lider: /[a-z]+/i,
-          banda: /[a-z]/i,
-          dificultad: /\d+[a-z]*$/i,
-        };
-
         // Función para validar el bloque de personaje
-        function validarPersonaje(bloque: string): { 
-          valido: boolean, 
-          mensaje: string, 
-          faltantes?: string[],
-          mainRole?: string,
-          spec?: string,
-          gs?: string,
-          offSpec?: string,
-          offGs?: string
+        function validarPersonaje(bloque: string): {
+          valido: boolean;
+          mensaje: string;
+          faltantes?: string[];
+          mainRole?: string;
+          spec?: string;
+          gs?: string;
+          offSpec?: string;
+          offGs?: string;
+          profs?: string;
         } {
           // Inicializar variables para almacenar los resultados
           let mainRoleValid = false;
@@ -237,23 +179,23 @@ const classIcons = {
           let offSpecValid = false;
           let offGsValid = false;
           let profsValid = false;
-          
+
           const errores: string[] = [];
           const faltantes: string[] = [];
-          
+
           // Si el bloque está vacío, es válido pero con advertencia
           if (!bloque.trim()) {
-            return { 
-              valido: true, 
+            return {
+              valido: true,
               mensaje: 'El bloque de personaje está vacío (todos los campos son opcionales)',
-              faltantes: ['Main/Alt (M/A)', 'Especialización (T/H/D)']
+              faltantes: ['Main/Alt (M/A)', 'Especialización (T/H/D)'],
             };
           }
-          
+
           // Intentar extraer Main/Alt (opcional)
           const mainRoleMatch = bloque.match(/^([MA])/i);
           const mainRole = mainRoleMatch?.[1]?.toUpperCase() || '';
-          
+
           // Validar rol principal (M o A)
           if (mainRole) {
             mainRoleValid = /^[MA]$/i.test(mainRole);
@@ -263,15 +205,15 @@ const classIcons = {
           } else {
             faltantes.push('Main/Alt (M/A)');
           }
-          
+
           // Extraer especialización principal
           const specMatch = bloque.match(/[MA]?([THDB]+)/i);
           const spec = specMatch?.[1]?.toUpperCase() || '';
-          
+
           // Extraer especialización secundaria (después del primer número)
           const offSpecMatch = bloque.match(/\d+(?:\.\d+)?\s*([THDB]+)/i);
           const offSpec = offSpecMatch?.[1]?.toUpperCase() || '';
-          
+
           // Validar especialización principal
           if (spec) {
             specValid = /^[THD]+$/i.test(spec);
@@ -281,12 +223,12 @@ const classIcons = {
           } else {
             faltantes.push('Especialización (T/H/D)');
           }
-          
+
           // Extraer Gear Scores (puede haber 1 o 2)
-          const gsMatches = [...bloque.matchAll(/(\d+(?:\.\d+)?)/g)].map(m => m[0]);
+          const gsMatches = [...bloque.matchAll(/(\d+(?:\.\d+)?)/g)].map((m) => m[0]);
           const gs = gsMatches[0] || '';
           const offGs = gsMatches[1] || '';
-          
+
           // Validar Gear Score principal
           if (gs) {
             const gsValue = parseFloat(gs);
@@ -298,7 +240,7 @@ const classIcons = {
             // Solo sugerir GS si hay algún dato en el bloque
             faltantes.push('Gear Score (ej: 5.8)');
           }
-          
+
           // Validar Gear Score secundario si está presente
           if (offGs) {
             const offGsValue = parseFloat(offGs);
@@ -306,16 +248,18 @@ const classIcons = {
               errores.push('El Gear Score secundario debe ser un número entre 1.0 y 10.0');
             }
           }
-          
+
           // Validar Profesiones (opcional)
           const profsMatch = bloque.match(/([A-Z]{2,4})$/i);
           const profs = profsMatch?.[1]?.toUpperCase() || '';
-          
+
           // Validar formato de profesiones si están presentes
           if (profs) {
             profsValid = /^[A-Z]{2,4}$/i.test(profs);
             if (!profsValid) {
-              errores.push('Formato de profesiones inválido. Usa códigos de 2-4 letras (ej: JC, BS, ENCH)');
+              errores.push(
+                'Formato de profesiones inválido. Usa códigos de 2-4 letras (ej: JC, BS, ENCH)'
+              );
             }
           } else if (bloque.length > 0) {
             // Solo sugerir profesiones si hay algún dato en el bloque
@@ -324,15 +268,15 @@ const classIcons = {
 
           // Obtener referencia al elemento de mensaje de error
           const mensajeError = document.getElementById('notaError');
-          
+
           // Manejar mensajes de error
           if (errores.length > 0) {
             if (mensajeError) {
               mensajeError.innerHTML = errores.map((e: string) => `❌ ${e}`).join('<br>');
               mensajeError.classList.remove('hidden');
             }
-            return { 
-              valido: false, 
+            return {
+              valido: false,
               mensaje: errores.join('; '),
               faltantes: faltantes,
               mainRole: mainRole,
@@ -340,18 +284,18 @@ const classIcons = {
               gs: gs,
               offSpec: offSpec,
               offGs: offGs,
-              profs: profs
+              profs: profs,
             };
           } else if (mensajeError) {
             mensajeError.classList.add('hidden');
           }
-          
+
           // Mostrar advertencias si las hay
           if (faltantes.length > 0 && mensajeError) {
             mensajeError.innerHTML = `⚠️ Faltan campos: ${faltantes.join(', ')}`;
             mensajeError.classList.remove('hidden');
           }
-          
+
           // Retornar resultado exitoso
           return {
             valido: true,
@@ -362,234 +306,16 @@ const classIcons = {
             gs: gs,
             offSpec: offSpec,
             offGs: offGs,
-            profs: profs
+            profs: profs,
           };
         }
-
-        // Función para validar el bloque de evento
-        function validarEvento(bloque: string, { dias, bandas }: { dias: Record<string, string>, bandas: Record<string, string> }) {
-          // Extraer partes del bloque de evento
-          // Ahora permite códigos de banda de 1-3 letras
-          const eventMatch = bloque.match(/^([a-z])(\d+)([a-z]*?)([a-z]{1,3})(\d+[a-z]*)$/i);
-          
-          // Inicializar arrays para errores y campos faltantes
-          const errores: string[] = [];
-          const faltantes: string[] = [];
-          
-          // Validar formato básico
-          if (!eventMatch) {
-            return {
-              valido: false,
-              mensaje: 'Formato de evento inválido. Usa: DíaHora[Líder]BandaDificultad (ej: l20rlicc10h)',
-              faltantes: ['Día', 'Hora', 'Banda', 'Dificultad']
-            };
-          }
-          
-          const [_, dia, hora, lider, banda, dificultad] = eventMatch;
-          
-          // Validar día
-          let diaValido = false;
-          if (dia) {
-            diaValido = /^[a-z]$/i.test(dia);
-            if (!diaValido) {
-              errores.push('Día inválido. Usa una letra de L a D');
-            }
-          } else {
-            faltantes.push('Día (ej: L, M, X, J, V, S, D)');
-          }
-          
-          // Validar hora
-          let horaValida = false;
-          if (hora) {
-            const horaNum = parseInt(hora, 10);
-            horaValida = !isNaN(horaNum) && horaNum >= 0 && horaNum <= 23;
-            if (!horaValida) {
-              errores.push('Hora inválida. Usa un número entre 0 y 23');
-            }
-          } else {
-            faltantes.push('Hora (ej: 20 para las 8 PM)');
-          }
-          
-          // Validar banda
-          let bandaValida = false;
-          if (banda) {
-            bandaValida = /^[a-z]{1,3}$/i.test(banda);
-            if (!bandaValida) {
-              errores.push('Banda inválida. Usa 1-3 letras (ej: icc, toc, rs)');
-            }
-          } else {
-            faltantes.push('Banda (ej: icc, toc, rs)');
-          }
-          
-          // Validar dificultad
-          let dificultadValida = false;
-          let esHeroico = false;
-          let nivelDificultad = '10';
-          
-          if (dificultad) {
-            esHeroico = dificultad.toLowerCase().endsWith('h');
-            nivelDificultad = dificultad.replace(/[^0-9]/g, '') || '10';
-            const nivelNum = parseInt(nivelDificultad, 10);
-            dificultadValida = !isNaN(nivelNum) && nivelNum > 0 && nivelNum <= 30;
-            
-            if (!dificultadValida) {
-              errores.push('Dificultad inválida. Usa un número seguido opcionalmente de "h" para heroico (ej: 10, 25h)');
-            }
-          } else {
-            faltantes.push('Dificultad (ej: 10, 25h)');
-          }
-          
-          // Obtener nombres completos
-          const nombreDia = dia ? (dias[dia.toLowerCase()] || dia.toUpperCase()) : '';
-          const nombreBanda = banda ? (bandas[banda.toLowerCase()] || banda.toUpperCase()) : '';
-          const nombreDificultad = dificultadValida ? 
-            (DIFFICULTY_NAMES[`${nivelDificultad}${esHeroico ? 'H' : 'N'}` as keyof typeof DIFFICULTY_NAMES] || 
-             `${nivelDificultad} ${esHeroico ? 'Heroico' : 'Normal'}`) : '';
-          
-          // Generar etiquetas para la vista previa
-          const previewEvento = document.getElementById('previewEvento');
-          const detallesEvento = document.getElementById('detallesEvento');
-          
-          if (previewEvento) {
-            previewEvento.innerHTML = '';
-            const previewTags = document.createElement('div');
-            previewTags.className = 'flex flex-wrap gap-1.5 mb-2';
-            
-            // Día
-            if (dia && diaValido) {
-              const tag = document.createElement('span');
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-900/50 text-blue-200';
-              tag.textContent = DAY_NAMES[dia.toUpperCase() as keyof typeof DAY_NAMES] || dia.toUpperCase();
-              tag.title = `Día: ${DAY_NAMES[dia.toUpperCase() as keyof typeof DAY_NAMES] || dia.toUpperCase()}`;
-              previewTags.appendChild(tag);
-            } else if (dia) {
-              const tag = document.createElement('span');
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
-              tag.textContent = 'Día Inválido';
-              tag.title = 'Día inválido. Usa una letra de L a D';
-              previewTags.appendChild(tag);
-            }
-
-            // Hora
-            if (hora && horaValida) {
-              const tag = document.createElement('span');
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-900/50 text-purple-200';
-              const horaFormateada = `${hora.padStart(2, '0')}:00`;
-              tag.textContent = horaFormateada;
-              tag.title = `Hora: ${horaFormateada}`;
-              previewTags.appendChild(tag);
-            } else if (hora) {
-              const tag = document.createElement('span');
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
-              tag.textContent = 'Hora Inválida';
-              tag.title = 'Hora inválida. Usa un número entre 0 y 23';
-              previewTags.appendChild(tag);
-            }
-
-            // Líder - Mostrar 'Busco' cuando no hay líder
-            const tagLider = document.createElement('span');
-            tagLider.className = `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-              lider && lider.toLowerCase() === 'rl' ? 'bg-green-900/50 text-green-200' : 'bg-amber-900/50 text-amber-200'
-            }`;
-            tagLider.textContent = lider && lider.toLowerCase() === 'rl' ? 'Armo' : 'Busco';
-            tagLider.title = lider ? `Líder: ${lider.toUpperCase()}` : 'Buscando grupo';
-            previewTags.appendChild(tagLider);
-
-            // Banda
-            if (banda && bandaValida) {
-              const tag = document.createElement('span');
-              // Primero intenta con el código completo (para códigos de 2-3 letras como ICC, TOC, etc.)
-              const codigoBanda = banda.toUpperCase();
-              let nombreBandaCompleto = RAID_NAMES[codigoBanda as keyof typeof RAID_NAMES];
-              
-              // Si no se encuentra, intenta con el mapeo de una letra
-              if (!nombreBandaCompleto && banda.length === 1) {
-                const bandaMapeada = bandas[banda.toLowerCase()];
-                nombreBandaCompleto = RAID_NAMES[bandaMapeada as keyof typeof RAID_NAMES];
-              }
-              
-              // Si aún no se encuentra, usa el código original
-              if (!nombreBandaCompleto) {
-                nombreBandaCompleto = codigoBanda;
-              }
-              
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-900/50 text-yellow-200';
-              tag.textContent = nombreBandaCompleto;
-              tag.title = `Banda: ${nombreBandaCompleto} (${codigoBanda})`;
-              previewTags.appendChild(tag);
-            } else if (banda) {
-              const tag = document.createElement('span');
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
-              tag.textContent = 'Banda Inválida';
-              tag.title = 'Banda inválida. Usa 1-3 letras (ej: icc, toc, rs)';
-              previewTags.appendChild(tag);
-            }
-
-            // Dificultad
-            if (dificultad && dificultadValida) {
-              const tag = document.createElement('span');
-              const dificultadKey = `${nivelDificultad}${esHeroico ? 'H' : 'N'}` as keyof typeof DIFFICULTY_NAMES;
-              const nombreDificultad = DIFFICULTY_NAMES[dificultadKey] || `${nivelDificultad} ${esHeroico ? 'Heroico' : 'Normal'}`;
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-pink-900/50 text-pink-200';
-              tag.textContent = nombreDificultad;
-              tag.title = `Dificultad: ${nombreDificultad}`;
-              previewTags.appendChild(tag);
-            } else if (dificultad) {
-              const tag = document.createElement('span');
-              tag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900/50 text-red-200';
-              tag.textContent = 'Dificultad Inválida';
-              tag.title = 'Dificultad inválida. Usa un número seguido opcionalmente de "h" para heroico (ej: 10, 25h)';
-              previewTags.appendChild(tag);
-            }
-            
-            previewEvento.appendChild(previewTags);
-            
-            // Mostrar campos faltantes si existen
-            if (detallesEvento) {
-              detallesEvento.innerHTML = '';
-              
-              if (faltantes.length > 0) {
-                const faltantesDiv = document.createElement('div');
-                faltantesDiv.className = 'mt-2 text-xs text-amber-300/80';
-                faltantesDiv.innerHTML = `<span class="font-semibold">Faltan:</span> ${faltantes.join(', ')}`;
-                detallesEvento.appendChild(faltantesDiv);
-              }
-              
-              if (errores.length > 0) {
-                const erroresDiv = document.createElement('div');
-                erroresDiv.className = 'mt-2 text-xs text-red-300/80';
-                erroresDiv.innerHTML = errores.map(e => `❌ ${e}`).join('<br>');
-                detallesEvento.appendChild(erroresDiv);
-              }
-            }
-          }
-          
-          const esValido = diaValido && horaValida && bandaValida && dificultadValida;
-          
-          return {
-            valido: esValido,
-            mensaje: esValido ? 'Evento válido' : 'Evento inválido',
-            faltantes: esValido ? [] : faltantes,
-            dia: dia,
-            hora: hora,
-            lider: lider,
-            banda: banda,
-            dificultad: dificultad,
-            esHeroico: esHeroico,
-            nivelDificultad: nivelDificultad
-          };
-        }
-
 
         // Manejador de eventos para el input
         if (notaInput) {
           function limpiarResultados() {
             if (detallesPersonaje) detallesPersonaje.innerHTML = '';
-            if (detallesEvento) detallesEvento.innerHTML = '';
             const previewPersonaje = document.getElementById('previewPersonaje');
-            const previewEvento = document.getElementById('previewEvento');
             if (previewPersonaje) previewPersonaje.innerHTML = '';
-            if (previewEvento) previewEvento.innerHTML = '';
             if (notaError) notaError.classList.add('hidden');
             if (notaResult) notaResult.classList.add('hidden');
           }
@@ -605,118 +331,108 @@ const classIcons = {
               return;
             }
 
-            // Usar las constantes importadas
-            const dias = DAY_NAMES;
-            const bandas = BANDA_CODES;
-
             // Validar bloques separados por espacios
             const bloques = nota.split(/\s+/);
-            
+
             // Buscar bloque de personaje (puede ser solo M o A, o incluir más detalles)
-            const bloquePersonaje = bloques.find(bloque => 
-              /^[MA]([THDB]|$)/i.test(bloque) // Debe empezar con M o A, seguido opcionalmente de una letra de especialización
+            const bloquePersonaje = bloques.find(
+              (bloque) => /^[MA]([THDB]|$)/i.test(bloque) // Debe empezar con M o A, seguido opcionalmente de una letra de especialización
             );
-            
-            // Buscar bloque de evento (formato: letraDía + númeroHora + letraLíder + códigoBanda + númeroDificultad)
-            const bloqueEvento = bloques.find(bloque => {
-              // Ajustar la expresión regular para manejar códigos de banda de 1-3 letras
-              const eventMatch = bloque.match(/^([a-z])(\d+)([a-z]*?)([a-z]{1,3})(\d+[a-z]*)$/i);
-              if (!eventMatch) return false;
-              
-              const [_, dia, hora, lider, banda, dificultad] = eventMatch;
-              // El líder es opcional, pero debe haber un código de banda
-              return dia && hora && banda && dificultad;
-            });
 
             let tienePersonaje = false;
-            let tieneEvento = false;
 
             // Limpiar resultados previos
             const previewPersonaje = document.getElementById('previewPersonaje');
-            const previewEvento = document.getElementById('previewEvento');
             if (previewPersonaje) previewPersonaje.innerHTML = '';
             if (detallesPersonaje) detallesPersonaje.innerHTML = '';
-            if (detallesEvento) detallesEvento.innerHTML = '';
 
             // Validar bloques si existen
             if (bloquePersonaje) {
               // Limpiar contenedores de vista previa
               if (previewPersonaje) previewPersonaje.innerHTML = '';
               if (detallesPersonaje) detallesPersonaje.innerHTML = '';
-              
+
               const resultadoValidacion = validarPersonaje(bloquePersonaje);
               tienePersonaje = resultadoValidacion.valido;
-              
+
               // Crear contenedor para las etiquetas de vista previa
               const previewTags = document.createElement('div');
               previewTags.className = 'flex flex-wrap gap-1.5 mb-2';
-              
+
               // Agregar etiqueta de Main/Alt si existe
               if (resultadoValidacion.mainRole) {
                 const mainRoleTag = document.createElement('span');
-                const rolCompleto = STATUS[resultadoValidacion.mainRole as keyof typeof STATUS] || resultadoValidacion.mainRole;
-                mainRoleTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-900/50 text-blue-200';
+                const rolCompleto =
+                  STATUS[resultadoValidacion.mainRole as keyof typeof STATUS] ||
+                  resultadoValidacion.mainRole;
+                mainRoleTag.className =
+                  'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-900/50 text-blue-200';
                 mainRoleTag.textContent = rolCompleto;
                 mainRoleTag.title = `Rol: ${rolCompleto}`;
                 previewTags.appendChild(mainRoleTag);
               }
-              
+
               // Agregar etiqueta de especialización principal si existe
               if (resultadoValidacion.spec) {
                 const specTag = document.createElement('span');
-                const specs = Array.from(resultadoValidacion.spec).map(s => 
-                  ROLES[s as keyof typeof ROLES] || s
-                ).join('');
-                specTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-900/50 text-purple-200';
+                const specs = Array.from(resultadoValidacion.spec)
+                  .map((s) => ROLES[s as keyof typeof ROLES] || s)
+                  .join('');
+                specTag.className =
+                  'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-900/50 text-purple-200';
                 specTag.textContent = specs;
                 specTag.title = `Especialización: ${specs}`;
                 previewTags.appendChild(specTag);
               }
-              
+
               // Agregar etiqueta de GS principal si existe
               if (resultadoValidacion.gs) {
                 const gsTag = document.createElement('span');
-                gsTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-900/50 text-cyan-200';
+                gsTag.className =
+                  'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-900/50 text-cyan-200';
                 gsTag.textContent = resultadoValidacion.gs;
                 gsTag.title = `Gear Score: ${resultadoValidacion.gs}`;
                 previewTags.appendChild(gsTag);
               }
-              
+
               // Agregar etiqueta de especialización secundaria si existe
               if (resultadoValidacion.offSpec) {
                 const offSpecTag = document.createElement('span');
-                const offSpecs = Array.from(resultadoValidacion.offSpec).map(s => 
-                  ROLES[s as keyof typeof ROLES] || s
-                ).join('');
-                offSpecTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-fuchsia-900/50 text-fuchsia-200';
+                const offSpecs = Array.from(resultadoValidacion.offSpec)
+                  .map((s) => ROLES[s as keyof typeof ROLES] || s)
+                  .join('');
+                offSpecTag.className =
+                  'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-fuchsia-900/50 text-fuchsia-200';
                 offSpecTag.textContent = `Dual: ${offSpecs}`;
                 offSpecTag.title = `Especialización Secundaria: ${offSpecs}`;
                 previewTags.appendChild(offSpecTag);
               }
-              
+
               // Agregar etiqueta de GS secundario si existe
               if (resultadoValidacion.offGs) {
                 const offGsTag = document.createElement('span');
-                offGsTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-900/50 text-teal-200';
+                offGsTag.className =
+                  'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-900/50 text-teal-200';
                 offGsTag.textContent = resultadoValidacion.offGs;
                 offGsTag.title = `Gear Score Secundario: ${resultadoValidacion.offGs}`;
                 previewTags.appendChild(offGsTag);
               }
-              
+
               // Agregar etiqueta de profesiones si existen
               if (resultadoValidacion.profs) {
                 const profsTag = document.createElement('span');
-                profsTag.className = 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-900/50 text-amber-200';
+                profsTag.className =
+                  'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-900/50 text-amber-200';
                 profsTag.textContent = resultadoValidacion.profs;
                 profsTag.title = `Profesiones: ${resultadoValidacion.profs}`;
                 previewTags.appendChild(profsTag);
               }
-              
+
               // Mostrar etiquetas en el contenedor de vista previa
               if (previewPersonaje) {
                 previewPersonaje.appendChild(previewTags);
               }
-              
+
               // Mostrar campos faltantes si existen
               if (detallesPersonaje) {
                 if (resultadoValidacion.faltantes && resultadoValidacion.faltantes.length > 0) {
@@ -725,7 +441,7 @@ const classIcons = {
                   faltantesDiv.innerHTML = `<span class="font-semibold">Faltan:</span> ${resultadoValidacion.faltantes.join(', ')}`;
                   detallesPersonaje.appendChild(faltantesDiv);
                 }
-                
+
                 // Mostrar mensaje de error si existe
                 if (!resultadoValidacion.valido && resultadoValidacion.mensaje) {
                   const errorDiv = document.createElement('div');
@@ -748,66 +464,8 @@ const classIcons = {
               `;
             }
 
-            if (bloqueEvento) {
-              const resultadoValidacion = validarEvento(bloqueEvento, { dias, bandas });
-              tieneEvento = resultadoValidacion.valido;
-              
-              // Mostrar campos faltantes o errores si los hay
-              if (detallesEvento) {
-                detallesEvento.innerHTML = '';
-                
-                if (resultadoValidacion.faltantes && resultadoValidacion.faltantes.length > 0) {
-                  const faltantesDiv = document.createElement('div');
-                  faltantesDiv.className = 'mt-2 text-xs text-amber-300/80';
-                  faltantesDiv.innerHTML = `<span class="font-semibold">Faltan:</span> ${resultadoValidacion.faltantes.join(', ')}`;
-                  detallesEvento.appendChild(faltantesDiv);
-                }
-                
-                if (!resultadoValidacion.valido && resultadoValidacion.mensaje) {
-                  const errorDiv = document.createElement('div');
-                  errorDiv.className = 'text-amber-400 text-sm mt-2';
-                  errorDiv.textContent = resultadoValidacion.mensaje;
-                  detallesEvento.appendChild(errorDiv);
-                }
-              }
-            } else if (detallesEvento) {
-              detallesEvento.innerHTML = `
-                <div class="text-amber-300/80 mb-2">Formato: DíaHora[Líder]BandaDificultad (ej: l20rlicc10h)</div>
-                <div class="text-amber-300/80 text-sm">
-                  <div class="font-semibold">Detalles:</div>
-                  <ul class="list-disc list-inside">
-                    <li>Día: L (Lunes) a D (Domingo)</li>
-                    <li>Hora: 0-23 (ej: 20 para las 8 PM)</li>
-                    <li>Líder: Opcional, 'rl' para indicar que arma el grupo</li>
-                    <li>Banda: 1-3 letras (ej: icc, toc, rs)</li>
-                    <li>Dificultad: Número + 'h' opcional para heroico (ej: 10, 25h)</li>
-                  </ul>
-                </div>
-              `;
-            }
-
-            // Actualizar iconos principales
-            const personajeIcon = document.getElementById('personajeIcon');
-            const personajeText = document.getElementById('personajeText');
-            const eventoIcon = document.getElementById('eventoIcon');
-            const eventoText = document.getElementById('eventoText');
-
-            if (personajeIcon && personajeText) {
-              personajeIcon.textContent = tienePersonaje ? '✓' : '✗';
-              personajeIcon.className = `w-5 mt-0.5 ${tienePersonaje ? 'text-green-400' : 'text-red-400'} font-bold`;
-              personajeText.className = tienePersonaje
-                ? 'font-medium'
-                : 'font-medium text-amber-100/70';
-            }
-
-            if (eventoIcon && eventoText) {
-              eventoIcon.textContent = tieneEvento ? '✓' : '✗';
-              eventoIcon.className = `w-5 mt-0.5 ${tieneEvento ? 'text-green-400' : 'text-red-400'} font-bold`;
-              eventoText.className = tieneEvento ? 'font-medium' : 'font-medium text-amber-100/70';
-            }
-
             // Mostrar resultados
-            if (notaResult && (tienePersonaje || tieneEvento)) {
+            if (notaResult && tienePersonaje) {
               notaResult.classList.remove('hidden');
               if (notaError) notaError.classList.add('hidden');
             } else if (notaError) {
@@ -844,7 +502,7 @@ const classIcons = {
         </div>
         <h2 class="text-2xl font-bold text-amber-200">Formato de la Nota</h2>
       </div>
-      <div class="grid md:grid-cols-2 gap-6">
+      <div class="grid md:grid-cols-1 gap-6">
         <!-- Estructura Básica -->
         <div
           class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors duration-200"
@@ -913,117 +571,63 @@ const classIcons = {
               </svg>
               DATOS DEL PERSONAJE
             </h2>
-            <div class="bg-amber-900/10 p-5 rounded-lg border border-amber-900/20 hover:border-amber-700/50 transition-colors duration-200 backdrop-blur-sm">
-              <div class="grid grid-cols-1 gap-3">
-                <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">M/A</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Indica si es tu personaje principal (M) o alternativo (A)</span>
-                </div>
-                <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">T/H/D</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Rol principal (Tank/Healer/DPS)</span>
-                </div>
-                <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">X.X</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Gear Score Principal (ej: 6.2, 5.8)</span>
-                </div>
-                <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">T/H/D</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Rol Secundario (Tank/Healer/DPS)</span>
-                </div>
-                <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">X.X</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Gear Score Secundario (ej: 6.2, 5.8)</span>
-                </div>
-                <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">JCBS</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Tus profesiones principales (ver sección de profesiones)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors duration-200">
-          <h2 class="text-lg font-semibold text-amber-200 mb-3 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-2 text-amber-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              ></path>
-            </svg>
-            BLOQUE DE EVENTO
-          </h2>
-          <div class="flex flex-wrap gap-1 mb-2">
-            <span class="text-yellow-300 font-mono text-sm">[</span>
-            <span class="text-blue-300 font-mono text-sm">Dia/s</span>
-            <span class="text-yellow-300 font-mono text-sm">][</span>
-            <span class="text-purple-300 font-mono text-sm">Horario</span>
-            <span class="text-yellow-300 font-mono text-sm">][</span>
-            <span class="text-green-300 font-mono text-sm">Raid Leader</span>
-            <span class="text-yellow-300 font-mono text-sm">][</span>
-            <span class="text-red-300 font-mono text-sm">Banda</span>
-            <span class="text-yellow-300 font-mono text-sm">][</span>
-            <span class="text-pink-300 font-mono text-sm">Dificultad</span>
-            <span class="text-yellow-300 font-mono text-sm">]</span>
-          </div>
-          <div class="p-3 bg-steel-dark/50 rounded-lg">
-            <span class="text-xs font-medium text-text-muted/80 mb-1">Ejemplo:</span>
             <div
-              class="px-3 py-2 bg-steel-darker rounded font-mono text-sm whitespace-nowrap overflow-x-auto"
+              class="bg-amber-900/10 p-5 rounded-lg border border-amber-900/20 hover:border-amber-700/50 transition-colors duration-200 backdrop-blur-sm"
             >
-              <span class="text-blue-300 font-semibold">x</span><span
-                class="text-purple-300 font-semibold">18</span
-              ><span class="text-green-300 font-semibold">rl</span><span
-                class="text-red-300 font-semibold">voa</span
-              ><span class="text-pink-300 font-semibold">25n</span>
-            </div>
-          </div>
-          <div>
-            <h2 class="text-lg font-semibold text-amber-100 mb-3 flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-2 text-amber-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              DATOS DEL EVENTO
-            </h2>
-            <div class="bg-amber-900/10 p-5 rounded-lg border border-amber-900/20 hover:border-amber-700/50 transition-colors duration-200 backdrop-blur-sm">
               <div class="grid grid-cols-1 gap-3">
                 <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">LMXJVS</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Días de la semana conectado (ej: LJ, L-V)</span>
+                  <span
+                    class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0"
+                    >M/A</span
+                  >
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors"
+                    >Indica si es tu personaje principal (M) o alternativo (A)</span
+                  >
                 </div>
                 <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">HORA</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Hora de conexión (ej: 18:00, 20)</span>
+                  <span
+                    class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0"
+                    >T/H/D</span
+                  >
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors"
+                    >Rol principal (Tank/Healer/DPS)</span
+                  >
                 </div>
                 <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">RL</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Raid Leader es quien arma y lidera el evento</span>
+                  <span
+                    class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0"
+                    >X.X</span
+                  >
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors"
+                    >Gear Score Principal (ej: 6.2, 5.8)</span
+                  >
                 </div>
                 <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">BANDA</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Nombre de la banda (ej: VOA, ICC)</span>
+                  <span
+                    class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0"
+                    >T/H/D</span
+                  >
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors"
+                    >Rol Secundario (Tank/Healer/DPS)</span
+                  >
                 </div>
                 <div class="flex items-start group">
-                  <span class="bg-amber-900/50 text-amber-300 font-mono w-16 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0">DIF</span>
-                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors">Dificultad del evento (ej: 10n, 25H)</span>
+                  <span
+                    class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0"
+                    >X.X</span
+                  >
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors"
+                    >Gear Score Secundario (ej: 6.2, 5.8)</span
+                  >
+                </div>
+                <div class="flex items-start group">
+                  <span
+                    class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors shrink-0"
+                    >JCBS</span
+                  >
+                  <span class="text-amber-100 group-hover:text-amber-50 transition-colors"
+                    >Tus profesiones principales (ver sección de profesiones)</span
+                  >
                 </div>
               </div>
             </div>
@@ -1253,191 +857,6 @@ const classIcons = {
                 >SK</span
               >
               <span class="text-amber-100">Desuello</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Sección de Bandas y Dificultades -->
-    <section
-      class="bg-gradient-to-br from-steel-darker/90 to-steel-dark/90 backdrop-blur-sm p-6 rounded-xl border border-amber-900/30 shadow-lg hover:border-amber-800/50 transition-colors duration-200"
-    >
-      <div class="flex items-center mb-6">
-        <div class="bg-amber-900/50 p-2 rounded-lg mr-3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 text-amber-300"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-            ></path>
-          </svg>
-        </div>
-        <h2 class="text-2xl font-bold text-amber-200">Bandas y Dificultades</h2>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-8">
-        <!-- Bandas -->
-        <div
-          class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors"
-        >
-          <h3 class="text-lg font-semibold text-amber-200 mb-4 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-2 text-amber-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              ></path>
-            </svg>
-            Bandas Disponibles
-          </h3>
-          <div class="grid grid-cols-2 gap-3">
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >ICC</span
-              >
-              <span class="text-amber-100">Ciudadela del Corona de Hielo</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >TOC</span
-              >
-              <span class="text-amber-100">Prueba del Cruzado</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >ULD</span
-              >
-              <span class="text-amber-100">Ulduar</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >NAX</span
-              >
-              <span class="text-amber-100">Naxxramas</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >OS</span
-              >
-              <span class="text-amber-100">Santuario Obsidiana</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >RS</span
-              >
-              <span class="text-amber-100">Santuario Rubí</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >EOE</span
-              >
-              <span class="text-amber-100">Ojo de la Eternidad</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >VOA</span
-              >
-              <span class="text-amber-100">La Cámara de Archavon</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dificultades -->
-        <div
-          class="bg-steel-darker/80 p-5 rounded-lg border border-amber-900/30 hover:border-amber-700/50 transition-colors"
-        >
-          <h3 class="text-lg font-semibold text-amber-200 mb-4 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-2 text-amber-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-              ></path>
-            </svg>
-            Dificultades
-          </h3>
-          <div class="grid grid-cols-1 gap-3">
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >10N</span
-              >
-              <span class="text-amber-100">10 Jugadores Normal</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >25N</span
-              >
-              <span class="text-amber-100">25 Jugadores Normal</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >10H</span
-              >
-              <span class="text-amber-100">10 Jugadores Heroico</span>
-            </div>
-            <div
-              class="flex items-center bg-amber-900/10 hover:bg-amber-900/20 p-3 rounded-lg border border-amber-900/20 transition-colors group"
-            >
-              <span
-                class="bg-amber-900/50 text-amber-300 font-mono w-12 text-center py-1 rounded mr-3 group-hover:bg-amber-800/50 transition-colors"
-                >25H</span
-              >
-              <span class="text-amber-100">25 Jugadores Heroico</span>
             </div>
           </div>
         </div>
