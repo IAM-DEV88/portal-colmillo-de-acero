@@ -313,34 +313,50 @@ const parseCharacterBlock = (content: string): CharacterBlock | null => {
   // Procesar rol dual si existe
   let dualRole: Role | undefined;
   let dualGearScore: number | undefined;
+  let professionsStr = '';
 
   if (dualInfo) {
-    // Manejar el formato de rol dual con gear score (ej: d5.9)
-    const dualMatch = dualInfo.match(/^([THD])(\d+(?:\.\d+)?)/i);
-    if (dualMatch) {
-      dualRole = dualMatch[1].toUpperCase() as Role;
-      dualGearScore = parseFloat(dualMatch[2]);
-    } else {
-      // Si no coincide con el formato de gear score, verificar si es solo el rol dual
-      const roleOnlyMatch = dualInfo.match(/^([THD])/i);
-      if (roleOnlyMatch) {
-        dualRole = roleOnlyMatch[1].toUpperCase() as Role;
+    // Primero verificar si es un rol dual válido (T, H, D)
+    const roleOnlyMatch = dualInfo.match(/^([THD])/i);
+    if (roleOnlyMatch) {
+      // Si el resto del string después del rol no es un número, probablemente son profesiones
+      const remaining = dualInfo.substring(1);
+      if (!/^\d+(\.\d+)?$/.test(remaining)) {
+        // No es un gear score, asumir que son profesiones
+        professionsStr = dualInfo;
+      } else {
+        // Es un gear score, procesar normalmente
+        const dualMatch = dualInfo.match(/^([THD])(\d+(?:\.\d+)?)/i);
+        if (dualMatch) {
+          dualRole = dualMatch[1].toUpperCase() as Role;
+          dualGearScore = parseFloat(dualMatch[2]);
+        }
       }
+    } else {
+      // No comienza con un rol, asumir que son profesiones
+      professionsStr = dualInfo;
     }
   }
 
   // Procesar profesiones (2 letras cada una, máximo 2)
   const professions: ProfessionCode[] = [];
-  if (profs) {
-    for (let i = 0; i < profs.length; i += 2) {
-      const prof = profs.substring(i, i + 2).toUpperCase();
-      if (PROFESSION_CODES.includes(prof as ProfessionCode) && !professions.includes(prof as ProfessionCode)) {
+  const processProfessions = (profString: string) => {
+    if (!profString) return;
+    
+    for (let i = 0; i < profString.length; i += 2) {
+      const prof = profString.substring(i, i + 2).toUpperCase();
+      if (PROFESSION_CODES.includes(prof as ProfessionCode) && 
+          !professions.includes(prof as ProfessionCode)) {
         professions.push(prof as ProfessionCode);
         // Solo permitir hasta 2 profesiones
         if (professions.length >= 2) break;
       }
     }
-  }
+  };
+
+  // Procesar profesiones de ambos lugares posibles
+  if (profs) processProfessions(profs);
+  if (professionsStr) processProfessions(professionsStr);
 
   // Si no hay rol principal, solo permitir si es exactamente M o A
   if (!mainRole) {

@@ -2635,25 +2635,24 @@ const totalRaiders = rosterData.members.filter(
                   }
                 }
 
-                // Rol dual (si existe) con su GS
-                const dualRoleToShow =
-                  charData.dualRole ||
-                  member.publicNote?.match(/[dD](\d+\.?\d*)([tThHdD])/i)?.[2]?.toUpperCase();
-
-                if (dualRoleToShow) {
-                  const dualRoleName = roleNamesData[dualRoleToShow]?.name || dualRoleToShow;
+                // Rol dual (solo si está explícitamente definido)
+                if (charData.dualRole) {
+                  const dualRoleName = roleNamesData[charData.dualRole]?.name || charData.dualRole;
                   const dualGS = gearScores[1];
 
-                  formattedInfo.push({
-                    label: `Dual ${dualRoleName}`,
-                    class: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-200',
-                  });
-
-                  if (dualGS) {
+                  // Solo mostrar el rol dual si es diferente al rol principal
+                  if (charData.dualRole !== charData.mainRole) {
                     formattedInfo.push({
-                      label: `GS ${dualGS}`,
-                      class: 'bg-amber-500/20 border-amber-500/50 text-amber-200',
+                      label: `Dual ${dualRoleName}`,
+                      class: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-200',
                     });
+
+                    if (dualGS) {
+                      formattedInfo.push({
+                        label: `GS ${dualGS}`,
+                        class: 'bg-amber-500/20 border-amber-500/50 text-amber-200',
+                      });
+                    }
                   }
                 }
 
