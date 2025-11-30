@@ -67,11 +67,14 @@ const { title = 'Colmillo de Acero' } = Astro.props;
       }
     </style>
   </head>
-  <body class="overflow-x-hidden w-full relative">
-    <!-- Background Image with fixed positioning -->
-    <div class="fixed inset-0 -z-10 w-full h-full bg-center bg-cover bg-no-repeat" style="background-image: url('/images/background.png');"></div>
-    <!-- Overlay to control background darkness if needed -->
-    <div class="fixed inset-0 -z-10 w-full h-full bg-black/70"></div>
+  <body class="overflow-x-hidden w-full">
+    <!-- Background container with hardware acceleration -->
+    <div class="fixed inset-0 -z-10 w-full h-full overflow-hidden">
+      <!-- Background image with transform for better performance -->
+      <div class="absolute inset-0 w-full h-full bg-center bg-cover bg-no-repeat transform-gpu will-change-transform" style="background-image: url('/images/background.png');"></div>
+      <!-- Overlay with reduced motion awareness -->
+      <div class="absolute inset-0 w-full h-full bg-black/70"></div>
+    </div>
       <Navigation />
       <main class="min-h-screen relative z-10 mt-28 pb-32 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <slot />
@@ -90,8 +93,36 @@ const { title = 'Colmillo de Acero' } = Astro.props;
       )}
       
       <Footer />
-    </div> <!-- Close the main content wrapper -->
+    
     <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+    
+    <style is:inline>
+      /* Optimize background rendering */
+      html, body {
+        height: 100%;
+        overscroll-behavior-y: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Prevent background flicker on mobile */
+      @media (max-width: 768px) {
+        body {
+          background-color: #000;
+          position: relative;
+          overflow-x: hidden;
+          width: 100%;
+          height: 100%;
+        }
+        
+        /* Force hardware acceleration */
+        .transform-gpu {
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
+          backface-visibility: hidden;
+          perspective: 1000px;
+        }
+      }
+    </style>
   </body>
 </html>
