@@ -2408,10 +2408,21 @@ const totalRaiders = rosterData.members.filter(
       const sortButtons = document.querySelectorAll('.sort-button');
 
       let currentPage = 1;
-      const itemsPerPage = 6;
+      let itemsPerPage = 6; // Will be updated based on screen size
       let allMembers = [];
       let filteredMembers = [];
       let sortConfig = { key: 'name', direction: 'asc' };
+      
+      // Function to update items per page based on screen size
+      function updateItemsPerPage() {
+        itemsPerPage = window.innerWidth < 768 ? 3 : 9; // 3 for mobile, 9 for desktop
+        updateTable();
+        updatePaginationInfo();
+      }
+      
+      // Initial update and add resize listener
+      updateItemsPerPage();
+      window.addEventListener('resize', updateItemsPerPage);
 
       // Funciones de utilidad para formatear
       const formatTime = (timeStr) => {

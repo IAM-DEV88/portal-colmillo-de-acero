@@ -103,9 +103,26 @@ const featuredPlayers = currentMonthData
   )
   .reverse(); // Invertir el orden para mostrar los más recientes primero
 
-// Manejar la paginación
-let itemsPerPage = 6;
-let totalPages = Math.ceil(featuredPlayers.length / itemsPerPage);
+// Manejar la paginación - 3 en móvil, 10 en pantallas más grandes
+let itemsPerPage = 3; // Valor por defecto para móvil
+let totalPages = 1; // Inicializar variable
+
+// Función para actualizar items por página según el ancho de pantalla
+function updateItemsPerPage() {
+  itemsPerPage = window.innerWidth < 768 ? 3 : 9;
+  totalPages = Math.ceil(featuredPlayers.length / itemsPerPage);
+  // Asegurarse de que la página actual no exceda el número total de páginas
+  if (currentPage > totalPages && totalPages > 0) {
+    currentPage = totalPages;
+  }
+}
+
+// Inicializar con el valor correcto
+if (typeof window !== 'undefined') {
+  updateItemsPerPage();
+  // Actualizar al cambiar el tamaño de la ventana
+  window.addEventListener('resize', updateItemsPerPage);
+}
 
 // Obtener la página actual de la URL
 let currentPage = 1;
