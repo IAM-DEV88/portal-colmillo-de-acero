@@ -2640,7 +2640,7 @@ const totalRaiders = rosterData.members.filter(
 
                   if (mainGS) {
                     formattedInfo.push({
-                      label: `GS ${mainGS}`,
+                      label: `GS ${mainGS}k`,
                       class: 'border-amber-500/50 text-amber-200',
                     });
                   }
@@ -2660,7 +2660,7 @@ const totalRaiders = rosterData.members.filter(
 
                     if (dualGS) {
                       formattedInfo.push({
-                        label: `GS ${dualGS}`,
+                        label: `GS ${dualGS}k`,
                         class: 'border-amber-500/50 text-amber-200',
                       });
                     }
@@ -2708,9 +2708,12 @@ const totalRaiders = rosterData.members.filter(
             }
 
             return `
-            <div class="group bg-gray-900/40 backdrop-blur-sm border border-amber-900/20 rounded-xl p-4 hover:bg-gray-800/60 hover:border-amber-500/30 transition-all duration-300 relative overflow-hidden">
+            <div class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm rounded-lg p-4 transition-all duration-300 overflow-hidden" 
+                 style="border: 1px solid #${classColor}66;"
+                 onmouseover="this.style.borderColor='#${classColor}99'; this.style.boxShadow='0 10px 15px -3px #${classColor}1a, 0 4px 6px -2px #${classColor}0a';"
+                 onmouseout="this.style.borderColor='#${classColor}66'; this.style.boxShadow='none';">
                 <!-- Class color accent -->
-                <div class="absolute top-0 left-0 w-1 h-full bg-[#${classColor}] opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute top-0 left-0 w-1 h-full transition-opacity" style="background-color: #${classColor}; opacity: 0.5;" onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.5';"></div>
                 
                 <div class="flex flex-col items-start gap-4 pl-2">
                   <div class="flex items-center gap-2">
@@ -2798,7 +2801,7 @@ const totalRaiders = rosterData.members.filter(
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mt-2">
     <!-- Total de Miembros y Mains/Alts -->
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-xl p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
     >
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center space-x-2">
@@ -2835,7 +2838,7 @@ const totalRaiders = rosterData.members.filter(
 
     <!-- Distribución de Roles -->
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-xl p-4 hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10"
+      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-lg p-4 hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10"
     >
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center space-x-2">
@@ -2878,7 +2881,7 @@ const totalRaiders = rosterData.members.filter(
 
     <!-- Combinaciones de Roles Duales -->
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-xl p-4 hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10"
+      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-lg p-4 hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10"
     >
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center space-x-2">
@@ -2932,7 +2935,7 @@ const totalRaiders = rosterData.members.filter(
 
     <!-- Gear Score -->
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-green-600/40 rounded-xl p-4 hover:border-green-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10"
+      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-green-600/40 rounded-lg p-4 hover:border-green-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10"
     >
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center space-x-2">
@@ -2975,7 +2978,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Filtros y Ordenamiento - Diseño Compacto -->
-  <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-xl p-4 mb-6">
+  <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
     <div class="flex flex-col sm:flex-row flex-wrap gap-4 items-start sm:items-end">
       <!-- Buscador -->
       <div class="flex-1 min-w-[200px]">
@@ -3082,7 +3085,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <div id="pagination-container" class="mt-8">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-gray-900/50 backdrop-blur-sm border border-amber-900/30 rounded-lg">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
       <!-- Mobile: Stacked layout -->
       <div class="w-full flex flex-col sm:flex-row items-center justify-between sm:justify-start gap-4 sm:gap-6">
         <!-- Page info - more compact on mobile -->
@@ -3125,11 +3128,6 @@ const totalRaiders = rosterData.members.filter(
             </svg>
           </button>
         </div>
-      </div>
-
-      <!-- Mobile: Show member count on a separate row -->
-      <div class="w-full text-center sm:hidden text-xs text-gray-400">
-        <span id="total-members-mobile">0</span> miembros en total
       </div>
     </div>
   </div>
@@ -3475,15 +3473,14 @@ const totalRaiders = rosterData.members.filter(
   </script>
 
 
-<div class="mt-6"> <div class="bg-gray-900/50 backdrop-blur-sm border border-amber-600/30 rounded-xl p-4"> <div class="flex items-center justify-center mb-4"> <div class="flex items-center space-x-2"> <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center"> <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path> </svg> </div> <h2 class="text-xl font-bold text-amber-200 uppercase">
+<div class="mt-6"> <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"> <div class="flex items-center justify-center mb-4"> <div class="flex items-center space-x-2"> <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center"> <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path> </svg> </div> <h2 class="text-xl font-bold text-amber-200 uppercase">
   Reglas de Hermandad
   </h2> </div> </div> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"> <!-- Norma 1 --> <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3"> <div class="flex items-start space-x-3"> <div class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"> <span class="text-white text-sm font-bold">1</span> </div> <div class="flex-1 min-w-0"> <div class="flex items-center space-x-1 mb-1"> <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path> </svg> <h4 class="font-bold text-amber-300 text-sm">Código de Nota</h4> </div> <p class="text-gray-300 text-xs leading-snug mb-1">
-  Envien su función y gear score al GM/Alter u Oficial en línea por wisp para
-                    ascender.
+  WISP función y gear score al GM/Alter u Oficial en línea por wisp para subir de rango.
   </p> <p class="text-gray-400 text-xs leading-snug">
   Asi garantizan su participación en raids y sorteos.
   </p> </div> </div> </div> <!-- Norma 2 --> <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3"> <div class="flex items-start space-x-3"> <div class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"> <span class="text-white text-sm font-bold">2</span> </div> <div class="flex-1 min-w-0"> <div class="flex items-center space-x-1 mb-1"> <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path> </svg> <h4 class="font-bold text-amber-300 text-sm">Baul de Sorteos</h4> </div> <p class="text-gray-300 text-xs leading-snug mb-1">
-  BOEs en venta con 40% de descuento. Se acepta oro o farm lvl74+ como pago.
+  BOEs en venta con 30% de descuento. Se acepta oro o farm lvl74+ como pago.
   </p> <p class="text-gray-400 text-xs leading-snug">
   Se reciben donaciones para mantener el baul funcionando.
   </p> </div> </div> </div> <!-- Norma 3 --> <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3"> <div class="flex items-start space-x-3"> <div class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"> <span class="text-white text-sm font-bold">3</span> </div> <div class="flex-1 min-w-0"> <div class="flex items-center space-x-1 mb-1"> <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path> </svg> <h4 class="font-bold text-amber-300 text-sm">Farm lvl 74+</h4> </div> <p class="text-gray-300 text-xs leading-snug mb-1">
@@ -3509,7 +3506,7 @@ const totalRaiders = rosterData.members.filter(
   </p> </div> </div> </div></div></div></div>
 
 <!-- Sección de estadísticas -->
-<details class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-xl overflow-hidden transition-all duration-300 hover:border-amber-500/50">
+<details class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg overflow-hidden transition-all duration-300 hover:border-amber-500/50">
   <summary class="px-4 py-3 flex items-center justify-between cursor-pointer select-none">
     <div class="flex items-center space-x-3">
       <div class="w-8 h-8 bg-amber-600/20 rounded-lg flex items-center justify-center group-hover:bg-amber-500/30 transition-colors">
@@ -3529,7 +3526,7 @@ const totalRaiders = rosterData.members.filter(
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Columna 1: Distribución por Rango -->
       <div
-        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-xl p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
       >
         <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
           <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
@@ -3585,7 +3582,7 @@ const totalRaiders = rosterData.members.filter(
 
       <!-- Columna 2: Distribución por Clase -->
       <div
-        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-xl p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
       >
         <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
           <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
@@ -3637,7 +3634,7 @@ const totalRaiders = rosterData.members.filter(
 
       <!-- Columna 3: Distribución por Profesión -->
       <div
-        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-xl p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
       >
         <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
           <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">

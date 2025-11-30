@@ -223,7 +223,7 @@ if (!session) {
           </div>
 
           {errorMessage && (
-            <div class="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-xl flex items-center animate-fade-in">
+            <div class="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-lg flex items-center animate-fade-in">
               <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   stroke-linecap="round"
@@ -244,23 +244,23 @@ if (!session) {
             <>
               {/* Stats Overview */}
               <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl border border-gray-700/50">
+                <div class="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
                   <div class="text-gray-400 text-sm font-medium mb-1">Total Solicitudes</div>
                   <div class="text-3xl font-bold text-white">{registrations.length}</div>
                 </div>
-                <div class="bg-blue-900/20 backdrop-blur-sm p-4 rounded-xl border border-blue-700/30">
+                <div class="bg-blue-900/20 backdrop-blur-sm p-4 rounded-lg border border-blue-700/30">
                   <div class="text-blue-300 text-sm font-medium mb-1">En Revisión</div>
                   <div class="text-3xl font-bold text-blue-400">
                     {registrations.filter((r) => r.status === 'en_revision').length}
                   </div>
                 </div>
-                <div class="bg-green-900/20 backdrop-blur-sm p-4 rounded-xl border border-green-700/30">
+                <div class="bg-green-900/20 backdrop-blur-sm p-4 rounded-lg border border-green-700/30">
                   <div class="text-green-300 text-sm font-medium mb-1">Aceptados</div>
                   <div class="text-3xl font-bold text-green-400">
                     {registrations.filter((r) => r.status === 'aceptado').length}
                   </div>
                 </div>
-                <div class="bg-amber-900/20 backdrop-blur-sm p-4 rounded-xl border border-amber-700/30">
+                <div class="bg-amber-900/20 backdrop-blur-sm p-4 rounded-lg border border-amber-700/30">
                   <div class="text-amber-300 text-sm font-medium mb-1">En Espera</div>
                   <div class="text-3xl font-bold text-amber-400">
                     {registrations.filter((r) => r.status === 'en_espera').length}
@@ -341,7 +341,7 @@ if (!session) {
                       const eligibleCount = raidEligibleMembers[raid.raid_id]?.length || 0;
 
                       return (
-                        <details class="group bg-gray-800/40 backdrop-blur-sm rounded-xl border border-gray-700/50 overflow-hidden transition-all duration-300 open:shadow-2xl open:bg-gray-800/60">
+                        <details class="group bg-gray-800/40 backdrop-blur-sm rounded-lg border border-gray-700/50 overflow-hidden transition-all duration-300 open:shadow-2xl open:bg-gray-800/60">
                           <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-700/30 transition-colors select-none">
                             <div class="flex items-center space-x-4 flex-1">
                               <div class="p-2 bg-gray-700/50 rounded-lg group-open:bg-amber-500/20 group-open:text-amber-400 transition-colors">
@@ -693,7 +693,7 @@ if (!session) {
           id="edit-modal"
           class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
-          <div class="bg-gray-800 rounded-xl shadow-2xl max-w-lg w-full border border-gray-700">
+          <div class="bg-gray-800 rounded-lg shadow-2xl max-w-lg w-full border border-gray-700">
             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
               <h2 class="text-xl font-bold text-white">Editar Registro</h2>
               <button
