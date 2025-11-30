@@ -67,7 +67,11 @@ const { title = 'Colmillo de Acero' } = Astro.props;
       }
     </style>
   </head>
-  <body class="overflow-x-hidden w-full">
+  <body class="overflow-x-hidden w-full relative">
+    <!-- Background Image with fixed positioning -->
+    <div class="fixed inset-0 -z-10 w-full h-full bg-center bg-cover bg-no-repeat" style="background-image: url('/images/background.png');"></div>
+    <!-- Overlay to control background darkness if needed -->
+    <div class="fixed inset-0 -z-10 w-full h-full bg-black/70"></div>
       <Navigation />
       <main class="min-h-screen relative z-10 mt-28 pb-32 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <slot />
@@ -86,6 +90,7 @@ const { title = 'Colmillo de Acero' } = Astro.props;
       )}
       
       <Footer />
+    </div> <!-- Close the main content wrapper -->
     <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
   </body>

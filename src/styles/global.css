@@ -77,30 +77,14 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url('/images/background.jpg');
   margin: 0;
   padding: 0;
   position: relative;
-}
-
-/* Fixed background for all devices */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  background-image: url('/images/background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  will-change: transform;
 }
 
 h1, h2, h3, h4, h5, h6 {
