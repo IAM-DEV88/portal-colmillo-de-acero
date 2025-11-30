@@ -216,6 +216,8 @@ const parsedMembers = rosterData.map((member) => {
 
   let gs = 0;
   let role = 'D'; // Default to DPS
+  let dualGs = 0;
+  let dualRole = null;
 
   if (charBlock) {
     // Normalize GS: if < 100, assume it's k (e.g. 5.8 -> 5800)
@@ -227,6 +229,15 @@ const parsedMembers = rosterData.map((member) => {
     }
 
     role = charBlock.mainRole || 'D';
+
+    // Handle dual role
+    let rawDualGs = charBlock.dualGearScore || 0;
+    if (rawDualGs > 0 && rawDualGs < 100) {
+      dualGs = rawDualGs * 1000;
+    } else {
+      dualGs = rawDualGs;
+    }
+    dualRole = charBlock.dualRole || null;
   }
 
   return {
@@ -234,6 +245,8 @@ const parsedMembers = rosterData.map((member) => {
     class: member.class,
     role: role,
     gearScore: gs,
+    dualRole: dualRole,
+    dualGearScore: dualGs,
     publicNote: publicNote,
   };
 });
@@ -245,16 +258,22 @@ const raidEligibleMembers = {};
 const raidEligibleMembersRange = {};
 
 wotlkRaids.forEach((raid, index) => {
-  // All eligible (Min GS)
-  raidEligibleMembers[raid.id] = parsedMembers.filter((m) => m.gearScore >= raid.minGearScore);
+  // All eligible (Min GS) - Check both main and dual GS
+  raidEligibleMembers[raid.id] = parsedMembers.filter(
+    (m) =>
+      m.gearScore >= raid.minGearScore || (m.dualGearScore && m.dualGearScore >= raid.minGearScore)
+  );
 
   // Range filtered
   const minGs = raid.minGearScore;
-  const nextRaid = wotlkRaids[index + 1];
-  const maxGs = nextRaid ? nextRaid.minGearScore : Infinity;
+  // Find the next raid that has a strictly higher GS requirement
+  const nextTierRaid = wotlkRaids.slice(index + 1).find((r) => r.minGearScore > minGs);
+  const maxGs = nextTierRaid ? nextTierRaid.minGearScore : Infinity;
 
   raidEligibleMembersRange[raid.id] = parsedMembers.filter(
-    (m) => m.gearScore >= minGs && m.gearScore < maxGs
+    (m) =>
+      (m.gearScore >= minGs && m.gearScore < maxGs) ||
+      (m.dualGearScore && m.dualGearScore >= minGs && m.dualGearScore < maxGs)
   );
 });
 
@@ -2339,7 +2358,9 @@ try {
   };
 </script>
 
-<script define:vars={{ raidEligibleMembers, raidEligibleMembersRange, raids: JSON.stringify(wotlkRaids) }}>
+<script
+  define:vars={{ raidEligibleMembers, raidEligibleMembersRange, raids: JSON.stringify(wotlkRaids) }}
+>
   // Pass server-side data to client
   window.raidEligibleMembers = raidEligibleMembers;
   window.raidEligibleMembersRange = raidEligibleMembersRange;
@@ -2349,10 +2370,10 @@ try {
     const modal = document.getElementById('roster-modal');
     const content = document.getElementById('roster-modal-content');
     const raidNameEl = document.getElementById('roster-modal-raid-name');
-    
+
     // If raidName is not provided, try to get it from the raid data
     if (!raidName) {
-      const raid = wotlkRaids.find(r => r.id === parseInt(raidId));
+      const raid = wotlkRaids.find((r) => r.id === parseInt(raidId));
       raidName = raid ? raid.name : `Raid ${raidId}`;
     }
 
@@ -2374,13 +2395,41 @@ try {
       return b.gearScore - a.gearScore;
     });
 
-    // Group by role
-    const tanks = members.filter((m) => m.role === 'T');
-    const healers = members.filter((m) => m.role === 'H');
-    const dps = members.filter((m) => m.role === 'D');
+    // Group by role with dual role support and GS validation
+    const raid = wotlkRaids.find((r) => r.id === parseInt(raidId));
+    const minGS = raid ? raid.minGearScore : 0;
+
+    // Helper to check if a member is eligible for a specific role
+    const isEligibleForRole = (member, targetRole) => {
+      // Check main role
+      if (member.role === targetRole && member.gearScore >= minGS) return true;
+      // Check dual role
+      if (member.dualRole === targetRole && member.dualGearScore >= minGS) return true;
+      return false;
+    };
+
+    // Helper to get the effective GS for a specific role
+    const getEffectiveGS = (member, targetRole) => {
+      if (member.role === targetRole && member.gearScore >= minGS) return member.gearScore;
+      if (member.dualRole === targetRole && member.dualGearScore >= minGS)
+        return member.dualGearScore;
+      return member.gearScore; // Fallback
+    };
+
+    const tanks = members
+      .filter((m) => isEligibleForRole(m, 'T'))
+      .map((m) => ({ ...m, displayGS: getEffectiveGS(m, 'T') }));
+
+    const healers = members
+      .filter((m) => isEligibleForRole(m, 'H'))
+      .map((m) => ({ ...m, displayGS: getEffectiveGS(m, 'H') }));
+
+    const dps = members
+      .filter((m) => isEligibleForRole(m, 'D'))
+      .map((m) => ({ ...m, displayGS: getEffectiveGS(m, 'D') }));
 
     // Helper to render member list
-    const renderList = (list, title, colorClass, iconPath, id) => {
+    const renderList = (list, title, colorClass, iconPath, id, roleCode) => {
       if (list.length === 0) return '';
 
       return `
@@ -2411,7 +2460,7 @@ try {
                   const isClickable = !!day && !!time;
                   const cursorClass = isClickable ? 'cursor-pointer hover:bg-gray-700/60' : '';
                   const clickHandler = isClickable
-                    ? `onclick="selectMemberForRegistration('${m.name}', '${m.class}', '${m.role}', '${raidId}', '${day}', '${time}')"`
+                    ? `onclick="selectMemberForRegistration('${m.name}', '${m.class}', '${roleCode}', '${raidId}', '${day}', '${time}')"`
                     : '';
 
                   return `
@@ -2425,7 +2474,7 @@ try {
                     </div>
                     <div class="flex items-center ml-2">
                       <span class="text-xs font-mono text-amber-400 bg-amber-900/20 px-1.5 py-0.5 rounded border border-amber-700/30">
-                        ${(m.gearScore / 1000).toFixed(1)}k
+                        ${((m.displayGS || m.gearScore) / 1000).toFixed(1)}k
                       </span>
                       ${
                         isClickable
@@ -2462,9 +2511,9 @@ try {
         </div>`;
     }
 
-    html += renderList(tanks, 'Tanques', 'bg-blue-500', tankIcon, 'tanks');
-    html += renderList(healers, 'Sanadores', 'bg-green-500', healIcon, 'healers');
-    html += renderList(dps, 'DPS', 'bg-red-500', dpsIcon, 'dps');
+    html += renderList(tanks, 'Tanques', 'bg-blue-500', tankIcon, 'tanks', 'T');
+    html += renderList(healers, 'Sanadores', 'bg-green-500', healIcon, 'healers', 'H');
+    html += renderList(dps, 'DPS', 'bg-red-500', dpsIcon, 'dps', 'D');
 
     if (html === '') {
       html =

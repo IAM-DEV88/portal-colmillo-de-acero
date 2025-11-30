@@ -1,57 +1,42 @@
 {
   "recognitions": [
     {
-      "title": "Explorador del Mes",
-      "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
+      "title": "Ganador del Evento del Mes: 1er lugar",
+      "description": "Ganador de la Gargantilla o 14000 oro.",
       "icon": "star"
     },
     {
-      "title": "Asenso a Oficial",
-      "description": "Reconocimiento por su destacada participación y contribución a la hermandad.",
-      "icon": "trophy"
-    },
-    {
-      "title": "Explorador del Mes",
-      "description": "Por su constante dedicación y apoyo al crecimiento de la hermandad.",
+      "title": "Ganador del Evento del Mes: 2do lugar",
+      "description": "Ganador de 5000 oro.",
       "icon": "star"
     },
     {
-      "title": "Contribuidor Destacado",
-      "description": "Por su aporte constante en materiales, consumibles y recursos que fortalecen el banco de la hermandad.",
-      "icon": "gift"
-    },
-    {
-      "title": "Participación Destacada",
-      "description": "Reconocimiento por mantener una participación ejemplar en las actividades y eventos de Colmillo de Acero.",
-      "icon": "users"
-    },
-    {
-      "title": "Ganador del Sorteo de Halloween",
-      "description": "Ganador de la Gargantilla de Colmillo de Acero.",
-      "icon": "gift"
-    },
-    {
-      "title": "Reconocimiento Especial",
-      "description": "Reconocimiento por su destacada colaboración en raids y disposición para apoyar al equipo en todo momento.",
+      "title": "Ganador del Evento del Mes: 3er lugar",
+      "description": "Ganador de 2000 oro.",
       "icon": "star"
     },
     {
       "title": "Jugador Ejemplar",
-      "description": "Por su participación activa en los eventos semanales y su actitud positiva dentro de la comunidad.",
+      "description": "Por su actitud positiva dentro de la comunidad.",
       "icon": "default"
     },
     {
-      "title": "Colaborador Destacado",
-      "description": "Reconocimiento por su destacada colaboración en la hermandad para apoyar a los nuevos.",
-      "icon": "star"
+      "title": "Contribuidor Destacado",
+      "description": "Por sus aportes que fortalecen el banco de la hermandad.",
+      "icon": "gift"
     },
     {
-      "title": "Asistencia Destacada",
-      "description": "Reconocimiento por su destacada asistencia a las raids de la hermandad.",
-      "icon": "star"
+      "title": "Explorador destacado", 
+      "description": "Por su destacada contribución a la hermandad.",
+      "icon": "trophy"
     },
     {
-      "title": "Elemento importante de la hermandad",
+      "title": "Elemento de raid destacado",
+      "description": "Por su excelente manejo de clase y mecánicas.",
+      "icon": "trophy"
+    },
+    {
+      "title": "Elemento destacado de la hermandad",
       "description": "Por su constante apoyo y compromiso con la hermandad.",
       "icon": "trophy"
     }
@@ -61,19 +46,19 @@
       "featuredPlayers": [
         {
           "playerName": "Metagamer",
-          "recognitionIndices": [0, 1]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Fogozza",
-          "recognitionIndices": [2]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Xelino",
-          "recognitionIndices": [3, 2]
+          "recognitionIndices": [3,4,5]
         },
         {
           "playerName": "Jainabunny",
-          "recognitionIndices": [4, 5]
+          "recognitionIndices": [0,3,4]
         },
         {
           "playerName": "Evilink",
@@ -92,96 +77,92 @@
     "11": {
       "featuredPlayers": [
         {
-          "playerName": "Metagamer",
-          "recognitionIndices": [6]
-        },
-        {
           "playerName": "Xelino",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Evilink",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Muertodasco",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4,5]
         },
         {
           "playerName": "Azsunax",
-          "recognitionIndices": [3,7]
+          "recognitionIndices": [3,4,5]
         },
         {
           "playerName": "Fogozza",
-          "recognitionIndices": [7]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Luciusvelkan",
-          "recognitionIndices": [4, 3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Beellzebu",
-          "recognitionIndices": [8]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Vance",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Yonor",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Bosakiller",
-          "recognitionIndices": [3,7]
+          "recognitionIndices": [0,3,4,5]
         },
         {
           "playerName": "Carloswiki",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Jeraim",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Misuho",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Matidom",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Daviel",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Scriphackmvp",
-          "recognitionIndices": [3,7]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Anduingg",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Legrom",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [2,3,7,10]
+          "recognitionIndices": [3,4,5,6,7]
         },
         {
           "playerName": "Tifusignite",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Ramarkan",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Luckytoloco",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Gabozinn",
@@ -189,75 +170,83 @@
         },
         {
           "playerName": "Finisht",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Jhonyc",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Alyzha",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Monquidi",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Martintetaz",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Garnush",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Dytor",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Dkvexana",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Dantallian",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Necantu",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Spartac",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Aliem",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Robindruid",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Drudael",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Reivvax",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Laurisbel",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Zitzit",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
         },
         {
           "playerName": "Asdawfdqef",
-          "recognitionIndices": [3]
+          "recognitionIndices": [3,4]
+        },
+        {
+          "playerName": "Fransismi",
+          "recognitionIndices": [1]
+        },
+        {
+          "playerName": "Redaleister",
+          "recognitionIndices": [2]
         }
 
       ]

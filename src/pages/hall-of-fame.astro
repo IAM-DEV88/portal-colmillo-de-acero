@@ -527,9 +527,15 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
                 
                 {/* Mensaje para reconocimientos adicionales */}
                 {player.recognitions.length > 2 && (
-                  <div class="text-center py-2 text-xs text-amber-400/60">
+                  <button 
+                    class="text-center w-full py-2 text-xs text-amber-400/60 hover:text-amber-300 transition-colors"
+                    onclick={`showAllRecognitions(${JSON.stringify({
+                      playerName: player.playerName,
+                      recognitions: player.recognitions
+                    }).replace(/'/g, '&#39;')})`}
+                  >
                     +{player.recognitions.length - 2} reconocimiento{player.recognitions.length > 3 ? 's' : ''} más
-                  </div>
+                  </button>
                 )}
               </div>
               
@@ -671,9 +677,134 @@ const featuredPlayers = getFeaturedPlayers(selectedYear, selectedMonth);
       }
     </script>
   </div>
+  
+  <!-- Modal para mostrar todos los reconocimientos -->
+  <div id="recognitionsModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border border-amber-800/50 w-full max-w-md max-h-[80vh] overflow-y-auto shadow-2xl">
+      <div class="sticky top-0 bg-gray-800/90 backdrop-blur-sm p-4 border-b border-amber-800/30 flex justify-between items-center">
+        <h3 class="text-lg font-semibold text-amber-300" id="modalPlayerName"></h3>
+        <button onclick="document.getElementById('recognitionsModal').classList.add('hidden')" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4 space-y-3" id="modalRecognitionsList">
+        <!-- Los reconocimientos se agregarán aquí dinámicamente -->
+      </div>
+      <div class="sticky bottom-0 bg-gradient-to-t from-gray-900 to-transparent p-4 text-center">
+        <button 
+          onclick="document.getElementById('recognitionsModal').classList.add('hidden')"
+          class="px-4 py-2 bg-amber-700/50 hover:bg-amber-600/70 text-amber-100 rounded-lg transition-colors border border-amber-600/50"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
 </Layout>
 
+<style>
+  /* Animación para el modal */
+  #recognitionsModal {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  #recognitionsModal:not(.hidden) {
+    display: flex;
+    opacity: 1;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Estilo para la barra de desplazamiento */
+  #recognitionsModal > div::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  #recognitionsModal > div::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+  
+  #recognitionsModal > div::-webkit-scrollbar-thumb {
+    background: rgba(245, 158, 11, 0.5);
+    border-radius: 3px;
+  }
+  
+  #recognitionsModal > div::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 158, 11, 0.7);
+  }
+</style>
+
 <script is:inline>
+    // Función para obtener el ícono según el tipo de reconocimiento (versión para cliente)
+    window.getRecognitionIcon = function(iconType) {
+      const icons = {
+        'trophy': '🏆',
+        'star': '⭐',
+        'gift': '🎁',
+        'award': '🏅',
+        'users': '👥',
+        'compass': '🧭',
+        'default': '✨'
+      };
+      return icons[iconType] || icons['default'];
+    };
+    
+    // Función para mostrar todos los reconocimientos en un modal
+    window.showAllRecognitions = function(playerData) {
+      const modal = document.getElementById('recognitionsModal');
+      const playerNameEl = document.getElementById('modalPlayerName');
+      const recognitionsListEl = document.getElementById('modalRecognitionsList');
+      
+      if (!modal || !playerNameEl || !recognitionsListEl) return;
+      
+      // Establecer el nombre del jugador
+      playerNameEl.textContent = playerData.playerName;
+      
+      // Limpiar reconocimientos anteriores
+      recognitionsListEl.innerHTML = '';
+      
+      // Agregar cada reconocimiento
+      playerData.recognitions.forEach(recognition => {
+        const recognitionEl = document.createElement('div');
+        recognitionEl.className = 'bg-gradient-to-r from-amber-900/30 to-amber-800/10 backdrop-blur-sm p-4 rounded-lg border border-amber-800/30';
+        recognitionEl.innerHTML = `
+          <div class="flex items-start">
+            <div class="text-amber-400 text-lg mr-3 mt-0.5">
+              ${window.getRecognitionIcon(recognition.icon)}
+            </div>
+            <div>
+              <h4 class="font-semibold text-amber-300">
+                ${recognition.title}
+              </h4>
+              <p class="text-amber-100/80 text-sm mt-1 leading-relaxed">
+                ${recognition.description}
+              </p>
+            </div>
+          </div>
+        `;
+        recognitionsListEl.appendChild(recognitionEl);
+      });
+      
+      // Mostrar el modal
+      modal.classList.remove('hidden');
+      
+      // Agregar evento para cerrar con ESC
+      const handleKeyDown = (e) => {
+        if (e.key === 'Escape') {
+          modal.classList.add('hidden');
+          document.removeEventListener('keydown', handleKeyDown);
+        }
+      };
+      
+      document.addEventListener('keydown', handleKeyDown);
+    };
+    
     // Manejar cambios en los filtros
     document.addEventListener('DOMContentLoaded', () => {
       const yearSelect = document.getElementById('year');
