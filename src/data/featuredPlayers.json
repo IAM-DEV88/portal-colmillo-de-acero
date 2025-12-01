@@ -58,7 +58,7 @@
         },
         {
           "playerName": "Jainabunny",
-          "recognitionIndices": [0,3,4]
+          "recognitionIndices": [0,2,3]
         },
         {
           "playerName": "Evilink",
@@ -77,92 +77,96 @@
     "11": {
       "featuredPlayers": [
         {
+          "playerName": "Metagamer",
+          "recognitionIndices": [6]
+        },
+        {
           "playerName": "Xelino",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [7]
         },
         {
           "playerName": "Evilink",
-          "recognitionIndices": [3,4]
-        },
-        {
-          "playerName": "Muertodasco",
-          "recognitionIndices": [3,4,5]
-        },
-        {
-          "playerName": "Azsunax",
-          "recognitionIndices": [3,4,5]
-        },
-        {
-          "playerName": "Fogozza",
           "recognitionIndices": [3]
         },
         {
+          "playerName": "Muertodasco",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "Azsunax",
+          "recognitionIndices": [3,7]
+        },
+        {
+          "playerName": "Fogozza",
+          "recognitionIndices": [7]
+        },
+        {
           "playerName": "Luciusvelkan",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [4, 3]
         },
         {
           "playerName": "Beellzebu",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [8]
         },
         {
           "playerName": "Vance",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Yonor",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Bosakiller",
-          "recognitionIndices": [0,3,4,5]
+          "recognitionIndices": [3,7]
         },
         {
           "playerName": "Carloswiki",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Jeraim",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Misuho",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Matidom",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Daviel",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Scriphackmvp",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3,7]
         },
         {
           "playerName": "Anduingg",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Legrom",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [3,4,5,6,7]
+          "recognitionIndices": [2,3,7,10]
         },
         {
           "playerName": "Tifusignite",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Ramarkan",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Luckytoloco",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Gabozinn",
@@ -170,83 +174,75 @@
         },
         {
           "playerName": "Finisht",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Jhonyc",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Alyzha",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Monquidi",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Martintetaz",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Garnush",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Dytor",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Dkvexana",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Dantallian",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Necantu",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Spartac",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Aliem",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Robindruid",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Drudael",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Reivvax",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Laurisbel",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Zitzit",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3]
         },
         {
           "playerName": "Asdawfdqef",
-          "recognitionIndices": [3,4]
-        },
-        {
-          "playerName": "Fransismi",
-          "recognitionIndices": [1]
-        },
-        {
-          "playerName": "Redaleister",
-          "recognitionIndices": [2]
+          "recognitionIndices": [3]
         }
 
       ]

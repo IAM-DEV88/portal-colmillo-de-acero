@@ -341,7 +341,7 @@ if (!session) {
                       const eligibleCount = raidEligibleMembers[raid.raid_id]?.length || 0;
 
                       return (
-                        <details class="group bg-gray-800/40 backdrop-blur-sm rounded-lg border border-gray-700/50 overflow-hidden transition-all duration-300 open:shadow-2xl open:bg-gray-800/60">
+                        <details class="group raid-group bg-gray-800/40 backdrop-blur-sm rounded-lg border border-gray-700/50 overflow-hidden transition-all duration-300 open:shadow-2xl open:bg-gray-800/60">
                           <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-700/30 transition-colors select-none">
                             <div class="flex items-center space-x-4 flex-1">
                               <div class="p-2 bg-gray-700/50 rounded-lg group-open:bg-amber-500/20 group-open:text-amber-400 transition-colors">
@@ -393,7 +393,7 @@ if (!session) {
                                   <span>•</span>
                                   <span>{totalRegistrations} solicitudes</span>
                                   {totalPending > 0 && (
-                                    <span class="text-blue-400 font-medium">
+                                    <span class="status-count-en_revision text-blue-400 font-medium">
                                       • {totalPending} pendientes
                                     </span>
                                   )}
@@ -404,7 +404,7 @@ if (!session) {
                             <div class="flex items-center space-x-2">
                               <div class="h-2 w-24 bg-gray-700 rounded-full overflow-hidden hidden sm:block">
                                 <div
-                                  class="h-full bg-gradient-to-r from-green-500 to-emerald-400"
+                                  class="progress-bar-fill h-full bg-gradient-to-r from-green-500 to-emerald-400"
                                   style={`width: ${totalRegistrations > 0 ? (raid.schedules.reduce((sum, s) => sum + s.registrations.filter(r => r.status === 'aceptado').length, 0) / totalRegistrations) * 100 : 0}%`}
                                 />
                               </div>
@@ -491,7 +491,7 @@ if (!session) {
                                         </thead>
                                         <tbody class="divide-y divide-gray-700/30 bg-gray-800/20">
                                           {schedule.registrations.map((reg) => (
-                                            <tr class="hover:bg-gray-700/20 transition-colors">
+                                            <tr class="registration-card hover:bg-gray-700/20 transition-colors">
                                               <td class="px-6 py-4 whitespace-nowrap">
                                                 <button
                                                   type="button"
@@ -520,7 +520,7 @@ if (!session) {
                                               </td>
                                               <td class="px-6 py-4 whitespace-nowrap">
                                                 <span
-                                                  class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                                                  class={`status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
                                                     reg.status === 'aceptado'
                                                       ? 'bg-green-900/20 text-green-400 border-green-700/30'
                                                       : reg.status === 'en_espera'
@@ -548,6 +548,7 @@ if (!session) {
                                                     <input type="hidden" name="status" value="aceptado" />
                                                     <button
                                                       type="submit"
+                                                      data-status="aceptado"
                                                       disabled={reg.status === 'aceptado'}
                                                       class={`p-1.5 rounded-lg transition-colors ${
                                                         reg.status === 'aceptado'
@@ -584,6 +585,7 @@ if (!session) {
                                                     />
                                                     <button
                                                       type="submit"
+                                                      data-status="en_revision"
                                                       disabled={reg.status === 'en_revision'}
                                                       class={`p-1.5 rounded-lg transition-colors ${
                                                         reg.status === 'en_revision'
@@ -617,6 +619,7 @@ if (!session) {
                                                     <input type="hidden" name="status" value="en_espera" />
                                                     <button
                                                       type="submit"
+                                                      data-status="en_espera"
                                                       disabled={reg.status === 'en_espera'}
                                                       class={`p-1.5 rounded-lg transition-colors ${
                                                         reg.status === 'en_espera'

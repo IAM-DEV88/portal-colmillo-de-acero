@@ -82,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to update all status-related UI elements
   function updateStatusButtons(container, newStatus) {
+    if (!container) return;
+
     // Format status for display (capitalize first letter, replace underscores with spaces)
     const formattedStatus = newStatus
       .replace(/_/g, ' ')
@@ -262,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update button states in this row
-        updateButtonStates(row, newStatus);
+        updateStatusButtons(row, newStatus);
 
         // Update dashboard statistics
         updateDashboardStats();
@@ -421,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Populate form fields
       document.getElementById('edit-id').value = registration.id;
       document.getElementById('edit-player-name').value = registration.player_name || '';
-      
+
       // Set the status field if it exists
       const statusField = document.getElementById('edit-status');
       if (statusField) {
