@@ -228,8 +228,13 @@ export const calculateGearScoreStats = (members: RosterMember[]): {
     }
   }
 
-  // Calcular el promedio de todos los gear scores
-  const avg = count > 0 ? total / count : 0;
+  // Filtrar gear scores para incluir solo 4.7 o superior
+  const filteredGearScores = allGearScores.filter(score => score >= 4.7);
+  const filteredCount = filteredGearScores.length;
+  const filteredTotal = filteredGearScores.reduce((sum, score) => sum + score, 0);
+  
+  // Calcular el promedio solo con gear scores de 4.7 o superior
+  const avg = filteredCount > 0 ? filteredTotal / filteredCount : 0;
 
   // Si no hay gear scores, establecer min a 0
   const finalMin = allGearScores.length > 0 ? min : 0;
@@ -237,6 +242,7 @@ export const calculateGearScoreStats = (members: RosterMember[]): {
   return {
     min: Math.round(finalMin * 10) / 10,
     max: Math.round(max * 10) / 10,
+    // El promedio ya se calculó solo con gear scores de 4.7 o superior
     avg: Math.round(avg * 10) / 10,
     total: count,
     mainGearScore: Math.round(mainGearScore * 10) / 10,
