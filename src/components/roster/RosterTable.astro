@@ -2653,8 +2653,8 @@ const totalRaiders = rosterData.members.filter(
                     label: charData.mainAlt === 'M' ? 'Main' : 'Alt',
                     class:
                       charData.mainAlt === 'M'
-                        ? 'text-blue-300 font-medium'
-                        : 'text-purple-300 font-medium',
+                        ? 'bg-blue-500/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/15 hover:border-blue-400/60'
+                        : 'bg-purple-500/10 border-purple-500/40 text-purple-300 hover:bg-purple-500/15 hover:border-purple-400/60',
                   });
                 }
 
@@ -2667,16 +2667,16 @@ const totalRaiders = rosterData.members.filter(
                     label: roleName,
                     class:
                       charData.mainRole === 'T'
-                        ? 'text-blue-300 font-medium'
+                        ? 'bg-blue-500/10 border-blue-500/40 text-blue-200 hover:bg-blue-500/15 hover:border-blue-400/60'
                         : charData.mainRole === 'H'
-                          ? 'text-green-300 font-medium'
-                          : 'text-red-300 font-medium',
+                          ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/15 hover:border-emerald-400/60'
+                          : 'bg-rose-500/10 border-rose-500/40 text-rose-200 hover:bg-rose-500/15 hover:border-rose-400/60',
                   });
 
                   if (mainGS) {
                     formattedInfo.push({
                       label: `GS ${mainGS}k`,
-                      class: 'border-amber-500/50 text-amber-200',
+                      class: 'bg-amber-500/10 border-amber-500/40 text-amber-200 hover:bg-amber-500/15 hover:border-amber-400/60',
                     });
                   }
                 }
@@ -2690,13 +2690,13 @@ const totalRaiders = rosterData.members.filter(
                   if (charData.dualRole !== charData.mainRole) {
                     formattedInfo.push({
                       label: `Dual ${dualRoleName}`,
-                      class: 'border-yellow-500/50 text-yellow-200',
+                      class: 'bg-yellow-500/10 border-yellow-500/40 text-yellow-200 hover:bg-yellow-500/15 hover:border-yellow-400/60',
                     });
 
                     if (dualGS) {
                       formattedInfo.push({
                         label: `GS ${dualGS}k`,
-                        class: 'border-amber-500/50 text-amber-200',
+                        class: 'bg-amber-500/10 border-amber-500/40 text-amber-200 hover:bg-amber-500/15 hover:border-amber-400/60',
                       });
                     }
                   }
@@ -2722,14 +2722,16 @@ const totalRaiders = rosterData.members.filter(
 
                     const profStyle = professionNamesData[profCode] || {
                       name: prof,
-                      bgColor: 'bg-indigo-500/20',
-                      borderColor: 'border-indigo-500/50',
-                      color: 'text-indigo-300',
+                      bgColor: 'bg-indigo-500/10',
+                      borderColor: 'border-indigo-500/40',
+                      color: 'text-indigo-200',
+                      hoverBg: 'hover:bg-indigo-500/20',
+                      hoverBorder: 'hover:border-indigo-400/60'
                     };
 
                     formattedInfo.push({
                       label: profStyle.name,
-                      class: `${profStyle.borderColor} ${profStyle.color}`,
+                      class: `${profStyle.bgColor || 'bg-indigo-500/10'} ${profStyle.borderColor || 'border-indigo-500/40'} ${profStyle.color || 'text-indigo-200'} ${profStyle.hoverBg || 'hover:bg-indigo-500/15'} ${profStyle.hoverBorder || 'hover:border-indigo-400/60'} transition-all duration-200`,
                     });
                   });
                 }
@@ -2737,7 +2739,7 @@ const totalRaiders = rosterData.members.filter(
                 // Nota inválida pero existente
                 formattedInfo.push({
                   label: 'Nota inválida',
-                  class: 'text-red-400 italic',
+                  class: 'bg-red-500/10 border-red-500/40 text-red-300 hover:bg-red-500/15 hover:border-red-400/60 italic',
                 });
               }
             }
@@ -2750,7 +2752,7 @@ const totalRaiders = rosterData.members.filter(
                 <!-- Class color accent -->
                 <div class="absolute top-0 left-0 w-1 h-full transition-opacity" style="background-color: #${classColor}; opacity: 0.5;" onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.5';"></div>
                 
-                <div class="flex flex-col items-start gap-4 pl-2">
+                <div class="flex flex-col items-start pl-2">
                   <div class="flex items-center gap-2">
                     <!-- Avatar -->
                     <div class="relative flex-shrink-0">
@@ -2760,14 +2762,26 @@ const totalRaiders = rosterData.members.filter(
                             class="w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classColor}]/50 transition-colors object-cover"
                             onerror="this.src='/images/avatars/default.png'"
                         />
-                        <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-gray-900 bg-[#${classColor}]" title="${className}"></div>
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900 bg-[#${classColor}]" title="${className}"></div>
                     </div>
                     
                     <!-- Info -->
                     <div class="flex-1 min-w-0">
                         <div class="">
                             <div class="font-bold text-gray-100 truncate group-hover:text-[#${classColor}] transition-colors text-lg">${member.name}</div>
-                            <span class="text-xs px-2 py-0.5 rounded bg-gray-800 border border-gray-700 text-gray-400">${member.rank}</span>
+                            <span class="text-xs px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${
+                              member.rank.toLowerCase().includes('guild master') 
+                                ? 'bg-gradient-to-r from-amber-500/10 to-amber-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60' 
+                                : member.rank.toLowerCase().includes('alter') 
+                                  ? 'bg-gradient-to-r from-purple-500/10 to-purple-600/10 border-purple-500/40 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/60' 
+                                  : member.rank.toLowerCase().includes('oficial') 
+                                    ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60' 
+                                    : member.rank.toLowerCase().includes('explorador') 
+                                      ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/60' 
+                                      : member.rank.toLowerCase().includes('iniciado') 
+                                        ? 'bg-gradient-to-r from-green-500/10 to-green-600/10 border-green-500/40 text-green-300 hover:bg-green-500/20 hover:border-green-400/60' 
+                                        : 'bg-gradient-to-r from-gray-500/10 to-gray-600/10 border-gray-500/40 text-gray-300 hover:bg-gray-500/20 hover:border-gray-400/60' 
+                            }">${member.rank}</span>
                         </div>
                         
                         
@@ -2780,7 +2794,7 @@ const totalRaiders = rosterData.members.filter(
                                 ? formattedInfo
                                     .map(
                                       (tag) => `
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${tag.class}">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium border ${tag.class} transition-all duration-200">
                                     ${tag.label}
                                 </span>
                             `
@@ -3013,7 +3027,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Filtros y Ordenamiento - Diseño Compacto -->
-  <div class="filters-container bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 mb-2">
+  <div class="filters-container bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
     <div class="flex flex-col sm:flex-row flex-wrap gap-4 items-start sm:items-end">
       <!-- Buscador -->
       <div class="flex-1 min-w-[200px]">
@@ -3105,7 +3119,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Grid de miembros -->
-  <div id="roster-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div id="roster-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
     <!-- Los miembros se cargarán aquí dinámicamente -->
   </div>
 
