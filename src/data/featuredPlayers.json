@@ -46,7 +46,7 @@
       "featuredPlayers": [
         {
           "playerName": "Metagamer",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Fogozza",
@@ -58,19 +58,19 @@
         },
         {
           "playerName": "Jainabunny",
-          "recognitionIndices": [0,2,3]
+          "recognitionIndices": [0,3,4]
         },
         {
           "playerName": "Evilink",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Muertodasco",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Azsunax",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         }
       ]
     },
@@ -86,15 +86,15 @@
         },
         {
           "playerName": "Evilink",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Muertodasco",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Azsunax",
-          "recognitionIndices": [3,7]
+          "recognitionIndices": [4,7]
         },
         {
           "playerName": "Fogozza",
@@ -110,11 +110,11 @@
         },
         {
           "playerName": "Vance",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Yonor",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Bosakiller",
@@ -122,129 +122,145 @@
         },
         {
           "playerName": "Carloswiki",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Jeraim",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Misuho",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Matidom",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Daviel",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Scriphackmvp",
-          "recognitionIndices": [3,7]
+          "recognitionIndices": [4,7]
         },
         {
           "playerName": "Anduingg",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Legrom",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [2,3,7,10]
+          "recognitionIndices": [3,4,7,10]
         },
         {
           "playerName": "Tifusignite",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Ramarkan",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Luckytoloco",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Gabozinn",
-          "recognitionIndices": [3,7]
+          "recognitionIndices": [4,7]
         },
         {
           "playerName": "Finisht",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Jhonyc",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Alyzha",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Monquidi",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Martintetaz",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Garnush",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Dytor",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Dkvexana",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Dantallian",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Necantu",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Spartac",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Aliem",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Robindruid",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Drudael",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Reivvax",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Laurisbel",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Zitzit",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         },
         {
           "playerName": "Asdawfdqef",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         }
 
+      ]
+    },
+    "12":{
+      "featuredPlayers": [
+        {
+          "playerName": "Angelesm",
+          "recognitionIndices": [3,4]
+        },
+        {
+          "playerName": "Ogmago",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Muxx",
+          "recognitionIndices": [4]
+        }
       ]
     }
   }
