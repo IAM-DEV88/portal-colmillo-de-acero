@@ -115,8 +115,7 @@ const initialPlayers = featuredPlayers.slice(
   safeCurrentPage * itemsPerPage
 );
 
-// Si no hay jugadores destacados, no mostrar la sección
-if (!featuredPlayers.length) return null;
+// La sección siempre se muestra, incluso si no hay jugadores destacados
 ---
 
 <div

@@ -722,6 +722,22 @@ if (!session) {
             >
               <input type="hidden" name="id" id="edit-id" />
               <input type="hidden" name="status" id="edit-status" value="aceptado" />
+              
+              <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">Banda</label>
+                <select
+                  name="raid_id"
+                  id="edit-raid-id"
+                  required
+                  class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                >
+                  {wotlkRaids.map((raid) => (
+                    <option value={raid.id}>
+                      {raid.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div>
                 <label class="block text-xs font-medium text-gray-400 mb-1">
@@ -1105,7 +1121,65 @@ if (!session) {
       </div>
     </Layout>
 
-    <script is:inline define:vars={{ raidEligibleMembers }}>
+    <script is:inline define:vars={{ raidEligibleMembers, raids: JSON.stringify(wotlkRaids) }}>
+      // Initialize raids in global scope
+      window.wotlkRaids = JSON.parse(raids);
+      
+      // Function to open the edit modal
+      window.openEditModal = function(registration) {
+        console.log('Opening edit modal with registration:', registration);
+        
+        // Set basic form fields
+        document.getElementById('edit-id').value = registration.id;
+        document.getElementById('edit-player-name').value = registration.player_name || '';
+        document.getElementById('edit-player-class').value = registration.player_class || '';
+        document.getElementById('edit-player-role').value = registration.player_role || '';
+        document.getElementById('edit-day').value = registration.day_of_week || '';
+        document.getElementById('edit-time').value = registration.start_time || '';
+        document.getElementById('edit-raid-role').value = registration.raid_role || 'asistente';
+        document.getElementById('edit-status').value = registration.status || 'aceptado';
+        
+        // Set the selected raid
+        const raidId = registration.raid_id ? String(registration.raid_id) : '';
+        console.log('Setting raid_id:', raidId);
+        
+        const raidSelect = document.getElementById('edit-raid-id');
+        if (raidSelect) {
+          // Ensure the select element has options before trying to set value
+          if (raidSelect.options.length > 0) {
+            // Convert raidId to string for comparison since option values are strings
+            const raidIdStr = String(raidId);
+            let found = false;
+            
+            // Check if the raid_id exists in the options
+            for (let i = 0; i < raidSelect.options.length; i++) {
+              if (raidSelect.options[i].value === raidIdStr) {
+                raidSelect.value = raidIdStr;
+                found = true;
+                console.log('Found matching raid option:', raidIdStr);
+                break;
+              }
+            }
+            
+            // If no matching option found, select the first one
+            if (!found && raidSelect.options.length > 0) {
+              raidSelect.value = raidSelect.options[0].value;
+              console.log('No matching raid found, defaulting to first option');
+            }
+          } else {
+            console.warn('No raid options available in the select element');
+          }
+        } else {
+          console.error('Could not find edit-raid-id element');
+        }
+        
+        document.getElementById('edit-modal').classList.remove('hidden');
+      };
+      
+      // Function to close the edit modal
+      window.closeEditModal = function() {
+        document.getElementById('edit-modal').classList.add('hidden');
+      };
       // Function to open the new schedule modal
       window.openNewScheduleModal = function(raidId, raidName) {
         const modal = document.getElementById('new-schedule-modal');
