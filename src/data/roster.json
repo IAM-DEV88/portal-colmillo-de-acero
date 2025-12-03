@@ -1,8 +1,8 @@
 [
     {
-        "name": "Battlelion",
+        "name": "Bernadethe",
         "officerNote": "",
-        "class": "Guerrero",
+        "class": "Pícaro",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -14,63 +14,28 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Dianaatg",
+        "name": "Maridohlg",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
         "rank": "Aspirante"
     },
     {
-        "name": "Tuyuti",
-        "officerNote": "",
-        "class": "Chamán",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Bllackout",
-        "officerNote": "",
-        "class": "Paladín",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Bloodpugde",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Ivanovaa",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Keldoray",
-        "officerNote": "",
-        "class": "Sacerdote",
-        "publicNote": "ad4.8",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Korijutsu",
-        "officerNote": "",
-        "class": "Mago",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Mythoss",
+        "name": "Samilmp",
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
         "rank": "Aspirante"
     },
     {
-        "name": "Piye",
+        "name": "Vaicens",
+        "officerNote": "",
+        "class": "Guerrero",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Wiiki",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "",
@@ -84,24 +49,31 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Drakanis",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "mt5.0",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Haltmer",
+        "name": "Nattures",
         "officerNote": "",
         "class": "Druida",
-        "publicNote": "md5.5",
+        "publicNote": "md1.0SKLW",
         "rank": "Iniciado"
     },
     {
-        "name": "Icura",
+        "name": "Aabf",
         "officerNote": "",
-        "class": "Paladín",
-        "publicNote": "mh4.5",
+        "class": "Sacerdote",
+        "publicNote": "mh4.8d4.8",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Cesareo",
+        "officerNote": "",
+        "class": "Chamán",
+        "publicNote": "md2.0",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Elbetia",
+        "officerNote": "",
+        "class": "Mago",
+        "publicNote": "md5.1",
         "rank": "Iniciado"
     },
     {
@@ -112,10 +84,17 @@
         "rank": "Iniciado"
     },
     {
-        "name": "Mugg",
+        "name": "Muzzann",
         "officerNote": "",
-        "class": "Pícaro",
-        "publicNote": "md6.4",
+        "class": "Guerrero",
+        "publicNote": "md3.0",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Paanda",
+        "officerNote": "",
+        "class": "Brujo",
+        "publicNote": "md4.8",
         "rank": "Iniciado"
     },
     {
@@ -126,59 +105,52 @@
         "rank": "Iniciado"
     },
     {
-        "name": "Tummacho",
+        "name": "Shamalker",
         "officerNote": "",
-        "class": "Guerrero",
-        "publicNote": "md4.5",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Unwin",
-        "officerNote": "",
-        "class": "Guerrero",
-        "publicNote": "md2.0",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Dytor",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "md5.8",
-        "rank": "Explorador"
-    },
-    {
-        "name": "Iloverock",
-        "officerNote": "",
-        "class": "Mago",
-        "publicNote": "ad5.6",
-        "rank": "Explorador"
-    },
-    {
-        "name": "Kuerva",
-        "officerNote": "",
-        "class": "Paladín",
-        "publicNote": "md5.7",
-        "rank": "Explorador"
-    },
-    {
-        "name": "Scime",
-        "officerNote": "",
-        "class": "Mago",
+        "class": "Pícaro",
         "publicNote": "md5.3",
-        "rank": "Explorador"
+        "rank": "Iniciado"
     },
     {
-        "name": "Xelino",
+        "name": "Superzuk",
         "officerNote": "",
         "class": "Druida",
-        "publicNote": "aD5.4HB",
+        "publicNote": "mh4.6",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Vikwar",
+        "officerNote": "",
+        "class": "Guerrero",
+        "publicNote": "md5.0",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Zatrah",
+        "officerNote": "",
+        "class": "Brujo",
+        "publicNote": "md4.7",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Mehly",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "ad6.1",
         "rank": "Explorador"
     },
     {
-        "name": "Howlshade",
+        "name": "Muertodasco",
         "officerNote": "",
-        "class": "Chamán",
-        "publicNote": "ah5.9d5.3inEN",
+        "class": "Caballero de la Muerte",
+        "publicNote": "md6.0",
+        "rank": "Explorador"
+    },
+    {
+        "name": "Voidhammer",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "md6.0t5.4jcMN ",
         "rank": "Alter"
     },
     {
@@ -294,16 +266,16 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Agraciado",
+        "name": "Orodretth",
         "officerNote": "",
-        "class": "Pícaro",
+        "class": "Druida",
         "publicNote": "",
         "rank": "Aspirante"
     },
     {
-        "name": "Orodretth",
+        "name": "Agraciado",
         "officerNote": "",
-        "class": "Druida",
+        "class": "Pícaro",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -385,13 +357,6 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Bernadethe",
-        "officerNote": "",
-        "class": "Pícaro",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
         "name": "Diozz",
         "officerNote": "",
         "class": "Paladín",
@@ -469,6 +434,13 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Kishimura",
+        "officerNote": "",
+        "class": "Guerrero",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Druidpool",
         "officerNote": "",
         "class": "Druida",
@@ -476,7 +448,7 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Extazyx",
+        "name": "Battlelion",
         "officerNote": "",
         "class": "Guerrero",
         "publicNote": "",
@@ -490,9 +462,9 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Aullidos",
+        "name": "Sanatork",
         "officerNote": "",
-        "class": "Cazador",
+        "class": "Chamán",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -500,6 +472,13 @@
         "name": "Cazalows",
         "officerNote": "",
         "class": "Cazador",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Extazyx",
+        "officerNote": "",
+        "class": "Guerrero",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -609,6 +588,13 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Vacaxiones",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Owep",
         "officerNote": "",
         "class": "Pícaro",
@@ -619,6 +605,13 @@
         "name": "Whesty",
         "officerNote": "",
         "class": "Sacerdote",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Aullidos",
+        "officerNote": "",
+        "class": "Cazador",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -679,23 +672,9 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Lolalalo",
-        "officerNote": "",
-        "class": "Mago",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
         "name": "Palawal",
         "officerNote": "",
         "class": "Paladín",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Scarlth",
-        "officerNote": "",
-        "class": "Druida",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -708,6 +687,13 @@
     },
     {
         "name": "Ozzito",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Scarlth",
         "officerNote": "",
         "class": "Druida",
         "publicNote": "",
@@ -735,9 +721,9 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Papusabroso",
+        "name": "Dianaatg",
         "officerNote": "",
-        "class": "Brujo",
+        "class": "Paladín",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -763,9 +749,16 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Claur",
+        "name": "Lolalalo",
         "officerNote": "",
-        "class": "Pícaro",
+        "class": "Mago",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Papusabroso",
+        "officerNote": "",
+        "class": "Brujo",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -780,6 +773,13 @@
         "name": "Benzi",
         "officerNote": "",
         "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Claur",
+        "officerNote": "",
+        "class": "Pícaro",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -805,6 +805,13 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Waytwogo",
+        "officerNote": "",
+        "class": "Sacerdote",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Chamanitto",
         "officerNote": "",
         "class": "Chamán",
@@ -819,16 +826,9 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Vacelinas",
+        "name": "Tuyuti",
         "officerNote": "",
-        "class": "Sacerdote",
-        "publicNote": "ah1.1",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Levitor",
-        "officerNote": "",
-        "class": "Sacerdote",
+        "class": "Chamán",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -844,6 +844,20 @@
         "officerNote": "",
         "class": "Mago",
         "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Levitor",
+        "officerNote": "",
+        "class": "Sacerdote",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Vacelinas",
+        "officerNote": "",
+        "class": "Sacerdote",
+        "publicNote": "ah1.1",
         "rank": "Aspirante"
     },
     {
@@ -913,6 +927,13 @@
         "name": "Akadio",
         "officerNote": "",
         "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Akagamin",
+        "officerNote": "",
+        "class": "Paladín",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -1144,6 +1165,20 @@
         "name": "Blancaluna",
         "officerNote": "",
         "class": "Guerrero",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Bllackout",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Bloodpugde",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -1701,6 +1736,13 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Ivanovaa",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Jainapower",
         "officerNote": "",
         "class": "Guerrero",
@@ -1778,6 +1820,20 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Kebiints",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Keldoray",
+        "officerNote": "",
+        "class": "Sacerdote",
+        "publicNote": "ad4.8",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Kendro",
         "officerNote": "",
         "class": "Sacerdote",
@@ -1788,6 +1844,13 @@
         "name": "Kepoa",
         "officerNote": "",
         "class": "Guerrero",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Khuris",
+        "officerNote": "",
+        "class": "Paladín",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -1837,6 +1900,13 @@
         "name": "Kkikass",
         "officerNote": "",
         "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Korijutsu",
+        "officerNote": "",
+        "class": "Mago",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -2037,6 +2107,13 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Mirack",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Misspizza",
         "officerNote": "",
         "class": "Guerrero",
@@ -2103,6 +2180,13 @@
         "name": "Muxx",
         "officerNote": "",
         "class": "Mago",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Mythoss",
+        "officerNote": "",
+        "class": "Guerrero",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -2198,6 +2282,13 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Orejaa",
+        "officerNote": "",
+        "class": "Mago",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Orejaslargas",
         "officerNote": "",
         "class": "Cazador",
@@ -2282,6 +2373,13 @@
         "rank": "Aspirante"
     },
     {
+        "name": "Pequecuerno",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
         "name": "Pholem",
         "officerNote": "",
         "class": "Caballero de la Muerte",
@@ -2307,6 +2405,27 @@
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "ah6.5",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Pistacucha",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Pitufinn",
+        "officerNote": "",
+        "class": "Pícaro",
+        "publicNote": "",
+        "rank": "Aspirante"
+    },
+    {
+        "name": "Piye",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "",
         "rank": "Aspirante"
     },
     {
@@ -2457,13 +2576,6 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Samilmp",
-        "officerNote": "",
-        "class": "Guerrero",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
         "name": "Sargeiras",
         "officerNote": "",
         "class": "Caballero de la Muerte",
@@ -2572,13 +2684,6 @@
         "name": "Specthum",
         "officerNote": "",
         "class": "Pícaro",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Superzuk",
-        "officerNote": "",
-        "class": "Druida",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -2723,13 +2828,6 @@
         "rank": "Aspirante"
     },
     {
-        "name": "Vaicens",
-        "officerNote": "",
-        "class": "Guerrero",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
         "name": "Vene",
         "officerNote": "",
         "class": "Paladín",
@@ -2782,13 +2880,6 @@
         "name": "Whanted",
         "officerNote": "",
         "class": "Cazador",
-        "publicNote": "",
-        "rank": "Aspirante"
-    },
-    {
-        "name": "Wiiki",
-        "officerNote": "",
-        "class": "Paladín",
         "publicNote": "",
         "rank": "Aspirante"
     },
@@ -2958,20 +3049,6 @@
         "officerNote": "",
         "class": "Pícaro",
         "publicNote": "md1.3",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Nattures",
-        "officerNote": "",
-        "class": "Druida",
-        "publicNote": "md1.0SKLW",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Aabf",
-        "officerNote": "",
-        "class": "Sacerdote",
-        "publicNote": "mh4.8d4.8",
         "rank": "Iniciado"
     },
     {
@@ -3220,6 +3297,13 @@
         "rank": "Iniciado"
     },
     {
+        "name": "Drakanis",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "mt5.0",
+        "rank": "Iniciado"
+    },
+    {
         "name": "Dreamshunter",
         "officerNote": "",
         "class": "Cazador",
@@ -3238,13 +3322,6 @@
         "officerNote": "",
         "class": "Sacerdote",
         "publicNote": "md5.5",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Elbetia",
-        "officerNote": "",
-        "class": "Mago",
-        "publicNote": "md5.1",
         "rank": "Iniciado"
     },
     {
@@ -3318,6 +3395,13 @@
         "rank": "Iniciado"
     },
     {
+        "name": "Haltmer",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "md5.5",
+        "rank": "Iniciado"
+    },
+    {
         "name": "Hellsclown",
         "officerNote": "",
         "class": "Brujo",
@@ -3336,6 +3420,13 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "ad3.0",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Icura",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "mh4.5",
         "rank": "Iniciado"
     },
     {
@@ -3479,13 +3570,6 @@
         "rank": "Iniciado"
     },
     {
-        "name": "Macabros",
-        "officerNote": "",
-        "class": "Cazador",
-        "publicNote": "md2.6",
-        "rank": "Iniciado"
-    },
-    {
         "name": "Magiclaw",
         "officerNote": "",
         "class": "Mago",
@@ -3521,17 +3605,17 @@
         "rank": "Iniciado"
     },
     {
+        "name": "Meguminnznz",
+        "officerNote": "",
+        "class": "Cazador",
+        "publicNote": "md6.3",
+        "rank": "Iniciado"
+    },
+    {
         "name": "Memeboss",
         "officerNote": "",
         "class": "Cazador",
         "publicNote": "md5.2",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Messmerxd",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "md2.0",
         "rank": "Iniciado"
     },
     {
@@ -3549,10 +3633,10 @@
         "rank": "Iniciado"
     },
     {
-        "name": "Muzzann",
+        "name": "Mugg",
         "officerNote": "",
-        "class": "Guerrero",
-        "publicNote": "md3.0",
+        "class": "Pícaro",
+        "publicNote": "md6.4",
         "rank": "Iniciado"
     },
     {
@@ -3581,13 +3665,6 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "md5.5",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Paanda",
-        "officerNote": "",
-        "class": "Brujo",
-        "publicNote": "md4.8",
         "rank": "Iniciado"
     },
     {
@@ -3710,13 +3787,6 @@
         "rank": "Iniciado"
     },
     {
-        "name": "Redwarcl",
-        "officerNote": "",
-        "class": "Druida",
-        "publicNote": "mt5.9h5.9",
-        "rank": "Iniciado"
-    },
-    {
         "name": "Retonto",
         "officerNote": "",
         "class": "Paladín",
@@ -3770,13 +3840,6 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "mh5.0",
-        "rank": "Iniciado"
-    },
-    {
-        "name": "Shamalker",
-        "officerNote": "",
-        "class": "Pícaro",
-        "publicNote": "md5.3",
         "rank": "Iniciado"
     },
     {
@@ -3871,10 +3934,24 @@
         "rank": "Iniciado"
     },
     {
+        "name": "Tummacho",
+        "officerNote": "",
+        "class": "Guerrero",
+        "publicNote": "md4.5",
+        "rank": "Iniciado"
+    },
+    {
         "name": "Ukyox",
         "officerNote": "",
         "class": "Paladín",
         "publicNote": "md6.0",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Unwin",
+        "officerNote": "",
+        "class": "Guerrero",
+        "publicNote": "md2.0",
         "rank": "Iniciado"
     },
     {
@@ -3899,17 +3976,17 @@
         "rank": "Iniciado"
     },
     {
-        "name": "Vikwar",
-        "officerNote": "",
-        "class": "Guerrero",
-        "publicNote": "md5.0",
-        "rank": "Iniciado"
-    },
-    {
         "name": "Vityh",
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "ad3.7",
+        "rank": "Iniciado"
+    },
+    {
+        "name": "Volvas",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "md5.6d5.8",
         "rank": "Iniciado"
     },
     {
@@ -3969,13 +4046,6 @@
         "rank": "Iniciado"
     },
     {
-        "name": "Zatrah",
-        "officerNote": "",
-        "class": "Brujo",
-        "publicNote": "md4.7",
-        "rank": "Iniciado"
-    },
-    {
         "name": "Zefra",
         "officerNote": "",
         "class": "Guerrero",
@@ -4001,13 +4071,6 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "AH",
-        "rank": "Explorador"
-    },
-    {
-        "name": "Aeerom",
-        "officerNote": "",
-        "class": "Paladín",
-        "publicNote": "md5.0h4.7",
         "rank": "Explorador"
     },
     {
@@ -4116,6 +4179,13 @@
         "rank": "Explorador"
     },
     {
+        "name": "Dytor",
+        "officerNote": "",
+        "class": "Caballero de la Muerte",
+        "publicNote": "md5.8",
+        "rank": "Explorador"
+    },
+    {
         "name": "Eille",
         "officerNote": "",
         "class": "Sacerdote",
@@ -4183,6 +4253,13 @@
         "officerNote": "",
         "class": "Caballero de la Muerte",
         "publicNote": "md5.7",
+        "rank": "Explorador"
+    },
+    {
+        "name": "Iloverock",
+        "officerNote": "",
+        "class": "Mago",
+        "publicNote": "ad5.6",
         "rank": "Explorador"
     },
     {
@@ -4291,6 +4368,13 @@
         "rank": "Explorador"
     },
     {
+        "name": "Kuerva",
+        "officerNote": "",
+        "class": "Paladín",
+        "publicNote": "md5.7",
+        "rank": "Explorador"
+    },
+    {
         "name": "Kukushibo",
         "officerNote": "",
         "class": "Brujo",
@@ -4347,13 +4431,6 @@
         "rank": "Explorador"
     },
     {
-        "name": "Mehly",
-        "officerNote": "",
-        "class": "Paladín",
-        "publicNote": "ad6.1",
-        "rank": "Explorador"
-    },
-    {
         "name": "Mfer",
         "officerNote": "",
         "class": "Brujo",
@@ -4379,13 +4456,6 @@
         "officerNote": "",
         "class": "Pícaro",
         "publicNote": "md5.8d5.9AL",
-        "rank": "Explorador"
-    },
-    {
-        "name": "Muertodasco",
-        "officerNote": "",
-        "class": "Caballero de la Muerte",
-        "publicNote": "md6.0",
         "rank": "Explorador"
     },
     {
@@ -4550,6 +4620,13 @@
         "rank": "Explorador"
     },
     {
+        "name": "Scime",
+        "officerNote": "",
+        "class": "Mago",
+        "publicNote": "md5.3",
+        "rank": "Explorador"
+    },
+    {
         "name": "Seahorse",
         "officerNote": "",
         "class": "Caballero de la Muerte",
@@ -4637,7 +4714,14 @@
         "name": "Vitiy",
         "officerNote": "",
         "class": "Paladín",
-        "publicNote": "ah5.8",
+        "publicNote": "ah5.9",
+        "rank": "Explorador"
+    },
+    {
+        "name": "Xelino",
+        "officerNote": "",
+        "class": "Druida",
+        "publicNote": "aD5.4HB",
         "rank": "Explorador"
     },
     {
@@ -4690,6 +4774,13 @@
         "rank": "Explorador"
     },
     {
+        "name": "Howlshade",
+        "officerNote": "",
+        "class": "Chamán",
+        "publicNote": "ah5.9d5.3inEN",
+        "rank": "Alter"
+    },
+    {
         "name": "Ravenguard",
         "officerNote": "",
         "class": "Pícaro",
@@ -4701,13 +4792,6 @@
         "officerNote": "",
         "class": "Druida",
         "publicNote": "ah6.1d5.3ALhb",
-        "rank": "Alter"
-    },
-    {
-        "name": "Voidhammer",
-        "officerNote": "",
-        "class": "Paladín",
-        "publicNote": "md6.0t5.4jcMN ",
         "rank": "Alter"
     },
     {
