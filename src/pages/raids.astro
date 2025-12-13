@@ -784,11 +784,13 @@ try {
                 id="slider-pagination"
               >
                 {
-                  wotlkRaids.map((raid, index) => {
-                    const raidSchedulesForRaid = raidSchedules.filter(
-                      (schedule) => schedule.raid_id === raid.id
-                    );
-                    const approvedSchedulesCount = raidSchedulesForRaid.filter((schedule) => {
+                  wotlkRaids
+                    .filter(raid => raidSchedules.some(schedule => schedule.raid_id === raid.id))
+                    .map((raid, index) => {
+                      const raidSchedulesForRaid = raidSchedules.filter(
+                        (schedule) => schedule.raid_id === raid.id
+                      );
+                      const approvedSchedulesCount = raidSchedulesForRaid.filter((schedule) => {
                       if (!schedule.players) return false;
                       return schedule.players.some(
                         (player) =>
@@ -827,10 +829,15 @@ try {
               </div>
               <div class="slider-track" id="slider-track">
                 {
-                  wotlkRaids.map((raid, index) => {
-                    const raidSchedulesForRaid = raidSchedules.filter(
-                      (schedule) => schedule.raid_id === raid.id
-                    );
+                  wotlkRaids
+                    .filter(raid => {
+                      // Only include raids that have at least one schedule
+                      return raidSchedules.some(schedule => schedule.raid_id === raid.id);
+                    })
+                    .map((raid, index) => {
+                      const raidSchedulesForRaid = raidSchedules.filter(
+                        (schedule) => schedule.raid_id === raid.id
+                      );
 
                     // Only count players with 'aceptado' status for the total
                     const totalPlayers = raidSchedulesForRaid.reduce((sum, sched) => {
