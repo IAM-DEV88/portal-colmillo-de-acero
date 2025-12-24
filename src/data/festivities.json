@@ -1,0 +1,410 @@
+[
+    {
+        "id": "año_nuevo",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "FELIZ AÑO NUEVO"
+        },
+        "imagen": "/images/año_nuevo.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "5,000 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "2,500 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "1,000 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "01-01",
+        "fin": "01-07",
+        "enlaces": [
+            {
+                "frase_cta": "🎆 ¡Año Nuevo, Vida Nueva! 🎊",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "san_valentin",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "FELIZ DÍA DEL AMOR"
+        },
+        "imagen": "/images/san_valentin.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "2,000 de Oro + Mascota Especial",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,000 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "500 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "02-07",
+        "fin": "02-21",
+        "enlaces": [
+            {
+                "frase_cta": "💖 ¡Día del Amor y la Amistad! 💘",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "semana_santa",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "FELICES PASCUAS"
+        },
+        "imagen": "/images/semana_santa.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "2,500 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,200 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "600 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "03-24",
+        "fin": "04-07",
+        "enlaces": [
+            {
+                "frase_cta": "🐰 ¡Evento de Pascua! 🥚",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "dia_madre",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "FELIZ DÍA DE LAS MADRES"
+        },
+        "imagen": "/images/dia_madre.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "2,000 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,000 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "500 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "05-01",
+        "fin": "05-15",
+        "enlaces": [
+            {
+                "frase_cta": "👩 ¡Día de las Madres! 💐",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "dia_padre",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "FELIZ DÍA DEL PADRE"
+        },
+        "imagen": "/images/dia_padre.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "2,000 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,000 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "500 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "06-01",
+        "fin": "06-21",
+        "enlaces": [
+            {
+                "frase_cta": "👨 ¡Día del Padre! 🎁",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "verano",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "¡FESTIVAL DE VERANO!"
+        },
+        "imagen": "/images/verano.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "3,000 de Oro + Montura",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,500 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "750 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "07-01",
+        "fin": "07-31",
+        "enlaces": [
+            {
+                "frase_cta": "☀️ ¡Festival de Verano! 🏖️",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "independencia",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "¡VIVA LA INDEPENDENCIA!"
+        },
+        "imagen": "/images/independencia.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "2,500 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,250 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "625 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "08-01",
+        "fin": "09-30",
+        "enlaces": [
+            {
+                "frase_cta": "🇲🇽 ¡Mes Patrio! 🎊",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "dia_muertos",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "DÍA DE MUERTOS"
+        },
+        "imagen": "/images/dia_muertos.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "2,500 de Oro + Título",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,250 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "625 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "11-01",
+        "fin": "11-02",
+        "enlaces": [
+            {
+                "frase_cta": "💀 ¡Día de Muertos! 🌺",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "black_friday",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "BLACK FRIDAY WOW"
+        },
+        "imagen": "/images/black_friday.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "4,000 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "2,000 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "1,000 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "11-20",
+        "fin": "11-30",
+        "enlaces": [
+            {
+                "frase_cta": "🛒 ¡Black Friday! 💰",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "halloween",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "FELIZ HALLOWEEN"
+        },
+        "imagen": "/images/halloween.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "2,000 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,000 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "500 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "10-01",
+        "fin": "10-31",
+        "enlaces": [
+            {
+                "frase_cta": "🎃 ¡Evento de Halloween! 👻",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "navidad",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "FELIZ NAVIDAD"
+        },
+        "imagen": "/images/navidad.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "3,000 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "1,500 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "750 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "12-01",
+        "fin": "12-31",
+        "enlaces": [
+            {
+                "frase_cta": "🎄 ¡Evento de Navidad! 🎅",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    },
+    {
+        "id": "default",
+        "temporada": {
+            "index": "BIENVENIDOS",
+            "voto": "VOTACIONES"
+        },
+        "imagen": "/images/default_prizes.jpg",
+        "premios": [
+            {
+                "lugar": "1er Lugar",
+                "premio": "1,000 de Oro",
+                "icon": "fas fa-trophy"
+            },
+            {
+                "lugar": "2do Lugar",
+                "premio": "500 de Oro",
+                "icon": "fas fa-medal"
+            },
+            {
+                "lugar": "3er Lugar",
+                "premio": "250 de Oro",
+                "icon": "fas fa-award"
+            }
+        ],
+        "inicio": "01-01",
+        "fin": "12-31",
+        "enlaces": [
+            {
+                "frase_cta": "🗳️ ¡Votaciones! 🗳️",
+                "url": "/voto"
+            }
+        ],
+        "activo": true
+    }
+]
