@@ -120,20 +120,31 @@ if (import.meta.env.SSR) {
       <!-- Main Content -->
       <div class="lg:col-span-4">
         <!-- Sección de Premios -->
-        <div class="lg:col-span-4 mt-8">
+        <div class="lg:col-span-4">
           <div
-            class="border border-amber-900/30 rounded-lg shadow-2xl shadow-amber-500/5 relative overflow-hidden mb-8"
-            style={`background: url('${imagen}') no-repeat center top; background-size: cover;`}
+            class="bg-gray-900/60 border border-amber-900/30 rounded-lg shadow-2xl shadow-amber-500/5 relative overflow-hidden mb-8"
           >
             <div class="border border-amber-900/10 rounded-lg p-6 shadow-2xl shadow-amber-500/5">
+              
+              <div class="relative h-0 pb-[56.25%]">
+                <img
+                  src={imagen}
+                  class="absolute inset-0 w-full h-full rounded-lg"
+                  alt={`Imagen de ${temporada}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+
+              
               <h2 class="text-2xl font-bold text-amber-100 mb-6 text-center">
                 🏆 Premios del Mes 🏆
               </h2>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {
                   premios.map((premio) => (
-                    <div class="bg-gradient-to-br from-amber-900/60 to-amber-900/10 border border-amber-800/30 rounded-lg p-6 text-center transform transition-all hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10">
+                    <div class="bg-gradient-to-br from-amber-900/60 to-amber-900/10 border border-amber-800/30 rounded-lg p-6 text-center transform transition-all hover:to-amber-900/90 hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10">
                       <div class="bg-amber-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class={`${premio.icon} text-3xl text-amber-400`} />
                       </div>
