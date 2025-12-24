@@ -15,11 +15,11 @@ import Layout from '../../components/layout/Layout.astro';
 
       <!-- Video Section -->
       <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-blue-900/30 mb-6">
-        <div class="relative pb-[56.25%] h-0 overflow-hidden">
+        <div class="relative" style="padding-bottom: 56.25%;">
           <iframe 
             id="youtube-player"
             class="absolute top-0 left-0 w-full h-full"
-            src="https://www.youtube.com/embed/Pty46HvdmEo?enablejsapi=1&origin=https://colmillo.netlify.app/guides/icc-heroico"
+            src="https://www.youtube.com/embed/Pty46HvdmEo?enablejsapi=1&rel=0"
             title="Guía de Mecánicas ICC Heroico"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -111,30 +111,30 @@ import Layout from '../../components/layout/Layout.astro';
       const player = document.getElementById('youtube-player');
       const timeLinks = document.querySelectorAll('[data-timestamp]');
       
-      // Function to send message to YouTube iframe
-      function seekTo(seconds) {
+      // Function to send command to YouTube iframe
+      function sendCommand(func, ...args) {
         player.contentWindow.postMessage(JSON.stringify({
           event: 'command',
-          func: 'seekTo',
-          args: [seconds, true],
+          func: func,
+          args: args || [],
           id: 'youtube-player'
-        }), '*');
-        
-        // Play the video
-        player.contentWindow.postMessage(JSON.stringify({
-          event: 'command',
-          func: 'playVideo',
-          args: [],
-          id: 'youtube-player'
-        }), '*');
+        }), 'https://www.youtube.com');
       }
-      
-      // Set up event listeners for timestamp links
+
+      // Wait for player to be ready
+      function onYouTubeIframeAPIReady() {
+        // This function is called by YouTube's API when ready
+      }
+
+      // Handle timestamp clicks
       timeLinks.forEach(link => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
           const timestamp = parseInt(link.getAttribute('data-timestamp'));
-          seekTo(timestamp);
+          
+          // Seek to the timestamp
+          sendCommand('seekTo', timestamp, true);
+          sendCommand('playVideo');
           
           // Update active state
           timeLinks.forEach(l => l.classList.remove('bg-blue-900/50', 'ring-2', 'ring-blue-500'));
@@ -142,12 +142,13 @@ import Layout from '../../components/layout/Layout.astro';
         });
       });
       
-      // Enable YouTube API
-      function onYouTubeIframeAPIReady() {
-        // This function is called by YouTube's API when it's ready
-      }
+      // Add global reference for YouTube API
+      window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
     });
   </script>
+  
+  <!-- Load YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
   <style>
     .aspect-w-16 {
