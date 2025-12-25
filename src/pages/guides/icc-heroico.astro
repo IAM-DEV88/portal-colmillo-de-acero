@@ -19,7 +19,7 @@ import Layout from '../../components/layout/Layout.astro';
           <iframe 
             id="youtube-player"
             class="absolute top-0 left-0 w-full h-full"
-            src=""
+            src="https://www.youtube.com/embed/Pty46HvdmEo?enablejsapi=1&rel=0"
             title="Guía de Mecánicas ICC Heroico"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -110,32 +110,45 @@ import Layout from '../../components/layout/Layout.astro';
     document.addEventListener('DOMContentLoaded', () => {
       const player = document.getElementById('youtube-player');
       const timeLinks = document.querySelectorAll('[data-timestamp]');
-      const videoId = 'Pty46HvdmEo';
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const origin = isLocalhost ? 'http://localhost:3000' : 'https://colmillo.netlify.app';
       
-      // Initialize player with the correct origin
-      player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${origin}&rel=0`;
-      
-      // Function to handle timestamp clicks
-      function handleTimeLinkClick(e) {
-        e.preventDefault();
-        const timestamp = parseInt(this.getAttribute('data-timestamp'));
-        
-        // For better cross-origin compatibility, we'll reload the iframe with the new timestamp
-        player.src = `https://www.youtube.com/embed/${videoId}?start=${timestamp}&autoplay=1&enablejsapi=1&origin=${origin}&rel=0`;
-        
-        // Update active state
-        timeLinks.forEach(l => l.classList.remove('bg-blue-900/50', 'ring-2', 'ring-blue-500'));
-        this.classList.add('bg-blue-900/50', 'ring-2', 'ring-blue-500');
+      // Function to send command to YouTube iframe
+      function sendCommand(func, ...args) {
+        player.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: func,
+          args: args || [],
+          id: 'youtube-player'
+        }), 'https://www.youtube.com');
       }
 
-      // Add click event to all timestamp links
+      // Wait for player to be ready
+      function onYouTubeIframeAPIReady() {
+        // This function is called by YouTube's API when ready
+      }
+
+      // Handle timestamp clicks
       timeLinks.forEach(link => {
-        link.addEventListener('click', handleTimeLinkClick);
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const timestamp = parseInt(link.getAttribute('data-timestamp'));
+          
+          // Seek to the timestamp
+          sendCommand('seekTo', timestamp, true);
+          sendCommand('playVideo');
+          
+          // Update active state
+          timeLinks.forEach(l => l.classList.remove('bg-blue-900/50', 'ring-2', 'ring-blue-500'));
+          link.classList.add('bg-blue-900/50', 'ring-2', 'ring-blue-500');
+        });
       });
+      
+      // Add global reference for YouTube API
+      window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
     });
   </script>
+  
+  <!-- Load YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
   <style>
     .aspect-w-16 {
