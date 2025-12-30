@@ -51,7 +51,6 @@ def lua_to_json(lua_file, json_file):
         officer_note = get_field("officerNote", block)
         
         # Optional fields
-        faction = get_field("faction", block)
         race = get_field("race", block)
         sex = get_number_field("sex", block)
         
@@ -65,8 +64,6 @@ def lua_to_json(lua_file, json_file):
             }
             
             # Add optional fields if they exist
-            if faction:
-                member_data['faction'] = faction.strip()
             if race:
                 member_data['race'] = race.strip()
             if sex is not None:

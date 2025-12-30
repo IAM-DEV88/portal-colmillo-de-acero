@@ -1,7 +1,28 @@
 [
     {
-        "name": "Asadoloko",
-        "class": "Guerrero",
+        "name": "Rijaab",
+        "class": "Paladín",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
+        "name": "Dkadhencia",
+        "class": "Caballero de la Muerte",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
+        "name": "Adonyj",
+        "class": "Paladín",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
+        "name": "Ansalu",
+        "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -14,28 +35,32 @@
         "officerNote": ""
     },
     {
-        "name": "Creeddop",
+        "name": "Cocuo",
+        "class": "Sacerdote",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
+        "name": "Hesculito",
         "class": "Caballero de la Muerte",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
     },
     {
-        "name": "Curamexd",
-        "class": "Chamán",
+        "name": "Husse",
+        "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
     },
     {
-        "name": "Liberace",
-        "class": "Sacerdote",
+        "name": "Korijutsu",
+        "class": "Mago",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Nephttys",
@@ -43,50 +68,41 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
-        "name": "Nubiz",
-        "class": "Druida",
+        "name": "Nyshinoya",
+        "class": "Sacerdote",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
     },
     {
-        "name": "Ryzengh",
-        "class": "Chamán",
+        "name": "Olaf",
+        "class": "Cazador",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
     },
     {
-        "name": "Wondern",
-        "class": "Chamán",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
-        "name": "Yinxz",
+        "name": "Raydoria",
         "class": "Paladín",
         "rank": "Aspirante",
-        "publicNote": "md3.1",
+        "publicNote": "",
         "officerNote": ""
     },
     {
-        "name": "Dracowashere",
+        "name": "Sheelem",
         "class": "Cazador",
-        "rank": "Iniciado",
-        "publicNote": "md2.0",
+        "rank": "Aspirante",
+        "publicNote": "",
         "officerNote": ""
     },
     {
-        "name": "Ahinohaa",
-        "class": "Mago",
-        "rank": "Iniciado",
-        "publicNote": "md3.0",
+        "name": "Soopro",
+        "class": "Guerrero",
+        "rank": "Aspirante",
+        "publicNote": "",
         "officerNote": ""
     },
     {
@@ -97,21 +113,33 @@
         "officerNote": ""
     },
     {
-        "name": "Ingratho",
-        "class": "Guerrero",
+        "name": "Asdks",
+        "class": "Caballero de la Muerte",
         "rank": "Iniciado",
-        "publicNote": "mt5.6d6.0",
+        "publicNote": "md4.0",
         "officerNote": ""
     },
     {
-        "name": "Rattsel",
-        "class": "Cazador",
+        "name": "Kyllbyll",
+        "class": "Pícaro",
         "rank": "Iniciado",
-        "publicNote": "md4.8",
+        "publicNote": "md5.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "HU"
+    },
+    {
+        "name": "Padreop",
+        "class": "Sacerdote",
+        "rank": "Iniciado",
+        "publicNote": "md5.3",
+        "officerNote": ""
+    },
+    {
+        "name": "Purris",
+        "class": "Paladín",
+        "rank": "Iniciado",
+        "publicNote": "mh5.1",
+        "officerNote": ""
     },
     {
         "name": "Safena",
@@ -119,60 +147,37 @@
         "rank": "Iniciado",
         "publicNote": "md5.1",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
-        "name": "Spartac",
-        "class": "Paladín",
-        "rank": "Iniciado",
-        "publicNote": "md5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
-    },
-    {
-        "name": "Thepatriota",
-        "class": "Guerrero",
-        "rank": "Iniciado",
-        "publicNote": "md5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
-    },
-    {
-        "name": "Wonderpala",
-        "class": "Paladín",
+        "name": "Tootti",
+        "class": "Brujo",
         "rank": "Iniciado",
         "publicNote": "md5.5",
         "officerNote": ""
     },
     {
-        "name": "Xiaron",
-        "class": "Sacerdote",
-        "rank": "Iniciado",
-        "publicNote": "md5.0h5.0TLEN",
-        "officerNote": ""
-    },
-    {
-        "name": "Xxoe",
+        "name": "Kuerva",
         "class": "Paladín",
-        "rank": "Iniciado",
-        "publicNote": "md5.4h5.0",
+        "rank": "Explorador",
+        "publicNote": "md5.8",
         "officerNote": ""
     },
     {
-        "name": "Howlshade",
-        "class": "Chamán",
-        "rank": "Alter",
-        "publicNote": "ah5.9d5.3inEN",
+        "name": "Lymites",
+        "class": "Caballero de la Muerte",
+        "rank": "Explorador",
+        "publicNote": "md5.4",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 2
+        "race": "GN"
+    },
+    {
+        "name": "Vorthrak",
+        "class": "Guerrero",
+        "rank": "Alter",
+        "publicNote": "ad6.0t5.4ENBS",
+        "officerNote": "",
+        "race": "HU"
     },
     {
         "name": "Gondolino",
@@ -464,13 +469,6 @@
     {
         "name": "Pintoski",
         "class": "Guerrero",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
-        "name": "Rijaab",
-        "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -805,13 +803,6 @@
         "officerNote": ""
     },
     {
-        "name": "Dkadhencia",
-        "class": "Caballero de la Muerte",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
         "name": "Iguacel",
         "class": "Brujo",
         "rank": "Aspirante",
@@ -910,13 +901,6 @@
         "officerNote": "ESPIRITU"
     },
     {
-        "name": "Adonyj",
-        "class": "Paladín",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
         "name": "Adrines",
         "class": "Paladín",
         "rank": "Aspirante",
@@ -950,9 +934,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "race": "DW"
     },
     {
         "name": "Algos",
@@ -992,13 +974,6 @@
     {
         "name": "Angelapirs",
         "class": "Caballero de la Muerte",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
-        "name": "Ansalu",
-        "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -1053,6 +1028,13 @@
         "officerNote": ""
     },
     {
+        "name": "Asadoloko",
+        "class": "Guerrero",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
         "name": "Asesinofb",
         "class": "Caballero de la Muerte",
         "rank": "Aspirante",
@@ -1071,10 +1053,7 @@
         "class": "Caballero de la Muerte",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Aslih",
@@ -1228,10 +1207,7 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Chamankitoo",
@@ -1252,10 +1228,7 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Charzy",
@@ -1283,21 +1256,11 @@
         "class": "Chamán",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "TR",
-        "sex": 3
+        "officerNote": ""
     },
     {
         "name": "Cocainomanno",
         "class": "Druida",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
-        "name": "Cocuo",
-        "class": "Sacerdote",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -1308,9 +1271,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
         "name": "Corruptiva",
@@ -1329,6 +1290,13 @@
     {
         "name": "Covenac",
         "class": "Guerrero",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
+        "name": "Creeddop",
+        "class": "Caballero de la Muerte",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -1362,14 +1330,18 @@
         "officerNote": ""
     },
     {
+        "name": "Curamexd",
+        "class": "Chamán",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
         "name": "Daoud",
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Darkbrier",
@@ -1397,10 +1369,7 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Deathclaw",
@@ -1428,7 +1397,8 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "HU"
     },
     {
         "name": "Delavega",
@@ -1436,9 +1406,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Destrohyer",
@@ -1452,10 +1420,7 @@
         "class": "Pícaro",
         "rank": "Aspirante",
         "publicNote": "md5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Dezokael",
@@ -1500,13 +1465,6 @@
         "officerNote": ""
     },
     {
-        "name": "Dpsytank",
-        "class": "Paladín",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
         "name": "Draennita",
         "class": "Chamán",
         "rank": "Aspirante",
@@ -1532,7 +1490,8 @@
         "class": "Druida",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "TA"
     },
     {
         "name": "Druidpool",
@@ -1588,10 +1547,7 @@
         "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Elmole",
@@ -1605,14 +1561,16 @@
         "class": "Chamán",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "OR"
     },
     {
         "name": "Elywhen",
         "class": "Druida",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "NE"
     },
     {
         "name": "Empaladorx",
@@ -1648,9 +1606,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Faldric",
@@ -1728,19 +1684,14 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Goldenwarr",
         "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "OR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Golemdp",
@@ -1755,9 +1706,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Gomenazai",
@@ -1816,21 +1765,11 @@
         "officerNote": ""
     },
     {
-        "name": "Hesculito",
-        "class": "Caballero de la Muerte",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
         "name": "Hiari",
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Hnoinfectus",
@@ -1849,13 +1788,6 @@
     {
         "name": "Hunteerblack",
         "class": "Cazador",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
-        "name": "Husse",
-        "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -1901,9 +1833,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "race": "DW"
     },
     {
         "name": "Jessiik",
@@ -1938,10 +1868,7 @@
         "class": "Caballero de la Muerte",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Jonycoca",
@@ -1955,10 +1882,7 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Kaihoken",
@@ -1972,7 +1896,8 @@
         "class": "Chamán",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "DR"
     },
     {
         "name": "Keldoray",
@@ -2007,10 +1932,7 @@
         "class": "Sacerdote",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Khyron",
@@ -2050,13 +1972,6 @@
     {
         "name": "Kkikass",
         "class": "Caballero de la Muerte",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
-        "name": "Korijutsu",
-        "class": "Mago",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -2132,6 +2047,14 @@
         "officerNote": ""
     },
     {
+        "name": "Liberace",
+        "class": "Sacerdote",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": "",
+        "race": "HU"
+    },
+    {
         "name": "Lonte",
         "class": "Caballero de la Muerte",
         "rank": "Aspirante",
@@ -2164,10 +2087,7 @@
         "class": "Druida",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Maleante",
@@ -2223,7 +2143,8 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "HU"
     },
     {
         "name": "Maurotee",
@@ -2294,9 +2215,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Monitido",
@@ -2352,10 +2271,7 @@
         "class": "Chamán",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Netalia",
@@ -2393,8 +2309,8 @@
         "officerNote": ""
     },
     {
-        "name": "Nyshinoya",
-        "class": "Sacerdote",
+        "name": "Nubiz",
+        "class": "Druida",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -2405,23 +2321,11 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
         "name": "Odyssers",
         "class": "Paladín",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
-    },
-    {
-        "name": "Olaf",
-        "class": "Cazador",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -2487,10 +2391,7 @@
         "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Peerreo",
@@ -2539,14 +2440,16 @@
         "class": "Sacerdote",
         "rank": "Aspirante",
         "publicNote": "ah6.4",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "HU"
     },
     {
         "name": "Pipisito",
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "DW"
     },
     {
         "name": "Pistacucha",
@@ -2596,9 +2499,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Putifarra",
@@ -2615,21 +2516,11 @@
         "officerNote": ""
     },
     {
-        "name": "Raydoria",
-        "class": "Paladín",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
         "name": "Rayitoelu",
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Razekk",
@@ -2671,20 +2562,14 @@
         "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Remydj",
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Rikupy",
@@ -2699,9 +2584,7 @@
         "rank": "Aspirante",
         "publicNote": "md5.8",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Ruvy",
@@ -2711,14 +2594,18 @@
         "officerNote": ""
     },
     {
+        "name": "Ryzengh",
+        "class": "Chamán",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
         "name": "Saitohashime",
         "class": "Caballero de la Muerte",
         "rank": "Aspirante",
         "publicNote": "md3.9",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Salvaciondd",
@@ -2767,10 +2654,7 @@
         "class": "Sacerdote",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Seulghy",
@@ -2778,9 +2662,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Shailo",
@@ -2804,13 +2686,6 @@
         "officerNote": ""
     },
     {
-        "name": "Sheelem",
-        "class": "Cazador",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
         "name": "Shuvaca",
         "class": "Druida",
         "rank": "Aspirante",
@@ -2829,21 +2704,11 @@
         "class": "Druida",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "TA",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Solismae",
         "class": "Caballero de la Muerte",
-        "rank": "Aspirante",
-        "publicNote": "",
-        "officerNote": ""
-    },
-    {
-        "name": "Soopro",
-        "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -2881,10 +2746,7 @@
         "class": "Druida",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Taridani",
@@ -2927,9 +2789,7 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Thyan",
@@ -2937,19 +2797,14 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "race": "DW"
     },
     {
         "name": "Thyrha",
         "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Tibidabo",
@@ -2998,10 +2853,7 @@
         "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Umzakala",
@@ -3016,9 +2868,7 @@
         "rank": "Aspirante",
         "publicNote": "ah5.8",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Valhellsing",
@@ -3032,10 +2882,7 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "md6.0h6.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Wadex",
@@ -3056,10 +2903,7 @@
         "class": "Paladín",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Warbunker",
@@ -3087,10 +2931,7 @@
         "class": "Guerrero",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Warunlucky",
@@ -3109,6 +2950,13 @@
     {
         "name": "Whiteclaw",
         "class": "Sacerdote",
+        "rank": "Aspirante",
+        "publicNote": "",
+        "officerNote": ""
+    },
+    {
+        "name": "Wondern",
+        "class": "Chamán",
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": ""
@@ -3147,9 +2995,14 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
+    },
+    {
+        "name": "Yinxz",
+        "class": "Paladín",
+        "rank": "Aspirante",
+        "publicNote": "md3.1",
+        "officerNote": ""
     },
     {
         "name": "Yonofuiin",
@@ -3185,19 +3038,14 @@
         "rank": "Aspirante",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Zabriela",
         "class": "Caballero de la Muerte",
         "rank": "Aspirante",
         "publicNote": "",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Zarshi",
@@ -3277,6 +3125,13 @@
         "officerNote": ""
     },
     {
+        "name": "Dracowashere",
+        "class": "Cazador",
+        "rank": "Iniciado",
+        "publicNote": "md2.0",
+        "officerNote": ""
+    },
+    {
         "name": "Fentaniila",
         "class": "Mago",
         "rank": "Iniciado",
@@ -3316,10 +3171,7 @@
         "class": "Chamán",
         "rank": "Iniciado",
         "publicNote": "mh6.1d5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "OR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Adventuretit",
@@ -3327,9 +3179,14 @@
         "rank": "Iniciado",
         "publicNote": "md5.2",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
+    },
+    {
+        "name": "Ahinohaa",
+        "class": "Mago",
+        "rank": "Iniciado",
+        "publicNote": "md3.0",
+        "officerNote": ""
     },
     {
         "name": "Alborack",
@@ -3337,19 +3194,14 @@
         "rank": "Iniciado",
         "publicNote": "mh5.8",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
         "name": "Aldhuyn",
         "class": "Brujo",
         "rank": "Iniciado",
         "publicNote": "ad5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Aldodark",
@@ -3363,17 +3215,15 @@
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md5.5",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "HU"
     },
     {
         "name": "Andrewc",
         "class": "Chamán",
         "rank": "Iniciado",
         "publicNote": "ah6.2",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Applo",
@@ -3394,10 +3244,7 @@
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md3.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Arrozconlech",
@@ -3405,16 +3252,6 @@
         "rank": "Iniciado",
         "publicNote": "md5.4",
         "officerNote": ""
-    },
-    {
-        "name": "Asdks",
-        "class": "Caballero de la Muerte",
-        "rank": "Iniciado",
-        "publicNote": "md4.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
     },
     {
         "name": "Asterizx",
@@ -3429,9 +3266,7 @@
         "rank": "Iniciado",
         "publicNote": "md4.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Baxster",
@@ -3439,19 +3274,14 @@
         "rank": "Iniciado",
         "publicNote": "md5.3",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Beledhyr",
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "mh5.2",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Bislow",
@@ -3465,17 +3295,15 @@
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "md5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Cazacontrol",
         "class": "Cazador",
         "rank": "Iniciado",
         "publicNote": "md6.0",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "NE"
     },
     {
         "name": "Cazarkan",
@@ -3496,10 +3324,7 @@
         "class": "Caballero de la Muerte",
         "rank": "Iniciado",
         "publicNote": "md2.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Chicocaguama",
@@ -3514,9 +3339,7 @@
         "rank": "Iniciado",
         "publicNote": "md5.9",
         "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "race": "DW"
     },
     {
         "name": "Chuchor",
@@ -3545,9 +3368,7 @@
         "rank": "Iniciado",
         "publicNote": "md5.6",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Connetre",
@@ -3575,20 +3396,14 @@
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "md5.2",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Darkleyend",
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "md6.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Darkyasper",
@@ -3616,7 +3431,8 @@
         "class": "Caballero de la Muerte",
         "rank": "Iniciado",
         "publicNote": "md5.1",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "HU"
     },
     {
         "name": "Demmed",
@@ -3631,9 +3447,7 @@
         "rank": "Iniciado",
         "publicNote": "md5.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Dinamic",
@@ -3696,10 +3510,7 @@
         "class": "Brujo",
         "rank": "Iniciado",
         "publicNote": "md5.9",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Drowning",
@@ -3714,29 +3525,21 @@
         "rank": "Iniciado",
         "publicNote": "md5.5",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 2
+        "race": "HU"
     },
     {
         "name": "Dytor",
         "class": "Caballero de la Muerte",
         "rank": "Iniciado",
         "publicNote": "md5.9",
-        "officerNote": "",
-        "faction": "A",
-        "race": "BE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Edmary",
         "class": "Chamán",
         "rank": "Iniciado",
         "publicNote": "mh6.2",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Elbetia",
@@ -3771,30 +3574,21 @@
         "class": "Druida",
         "rank": "Iniciado",
         "publicNote": "ah5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Fogozza",
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md5.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Freakunleash",
         "class": "Brujo",
         "rank": "Iniciado",
         "publicNote": "md5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Frostbones",
@@ -3815,20 +3609,14 @@
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Gabiramires",
         "class": "Caballero de la Muerte",
         "rank": "Iniciado",
         "publicNote": "md5.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Garnush",
@@ -3856,20 +3644,14 @@
         "class": "Caballero de la Muerte",
         "rank": "Iniciado",
         "publicNote": "md5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Hellzinn",
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "md5.6t5.0JWSK",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 2
+        "officerNote": ""
     },
     {
         "name": "Hhekler",
@@ -3905,9 +3687,15 @@
         "rank": "Iniciado",
         "publicNote": "mt5.2ENIN",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
+    },
+    {
+        "name": "Ingratho",
+        "class": "Guerrero",
+        "rank": "Iniciado",
+        "publicNote": "mt5.6d6.0",
+        "officerNote": "",
+        "race": "DW"
     },
     {
         "name": "Iveey",
@@ -3921,10 +3709,7 @@
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md5.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Janio",
@@ -3966,31 +3751,18 @@
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "mh5.1",
-        "officerNote": "",
-        "faction": "A",
-        "race": "BE",
-        "sex": 2
+        "officerNote": ""
     },
     {
         "name": "Kaeylee",
         "class": "Chamán",
         "rank": "Iniciado",
         "publicNote": "mh5.5",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Kannad",
         "class": "Guerrero",
-        "rank": "Iniciado",
-        "publicNote": "md5.7",
-        "officerNote": ""
-    },
-    {
-        "name": "Kyllbyll",
-        "class": "Pícaro",
         "rank": "Iniciado",
         "publicNote": "md5.7",
         "officerNote": ""
@@ -4001,9 +3773,7 @@
         "rank": "Iniciado",
         "publicNote": "ms5.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Lbrujas",
@@ -4024,10 +3794,7 @@
         "class": "Sacerdote",
         "rank": "Iniciado",
         "publicNote": "md5.4",
-        "officerNote": "",
-        "faction": "A",
-        "race": "UN",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Lloroncita",
@@ -4042,9 +3809,7 @@
         "rank": "Iniciado",
         "publicNote": "md4.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "race": "GN"
     },
     {
         "name": "Luciusvelkan",
@@ -4093,10 +3858,7 @@
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md6.1",
-        "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Medyff",
@@ -4111,9 +3873,7 @@
         "rank": "Iniciado",
         "publicNote": "md6.2",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Membererect",
@@ -4149,39 +3909,28 @@
         "rank": "Iniciado",
         "publicNote": "md5.9",
         "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "race": "GN"
     },
     {
         "name": "Mirachin",
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "mt3.9",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Mivase",
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md4.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Moonjacket",
         "class": "Cazador",
         "rank": "Iniciado",
         "publicNote": "md5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Motekul",
@@ -4203,9 +3952,7 @@
         "rank": "Iniciado",
         "publicNote": "mh5.4",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Nathassha",
@@ -4233,10 +3980,7 @@
         "class": "Druida",
         "rank": "Iniciado",
         "publicNote": "md4.9",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Neilany",
@@ -4267,16 +4011,6 @@
         "officerNote": ""
     },
     {
-        "name": "Padreop",
-        "class": "Sacerdote",
-        "rank": "Iniciado",
-        "publicNote": "md5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
-    },
-    {
         "name": "Palafeliz",
         "class": "Paladín",
         "rank": "Iniciado",
@@ -4303,9 +4037,7 @@
         "rank": "Iniciado",
         "publicNote": "md5.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Paryt",
@@ -4354,10 +4086,7 @@
         "class": "Pícaro",
         "rank": "Iniciado",
         "publicNote": "md5.2",
-        "officerNote": "",
-        "faction": "A",
-        "race": "BE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Polloql",
@@ -4402,21 +4131,12 @@
         "officerNote": ""
     },
     {
-        "name": "Purris",
-        "class": "Paladín",
-        "rank": "Iniciado",
-        "publicNote": "mh5.1",
-        "officerNote": ""
-    },
-    {
         "name": "Pyladin",
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "at5.0",
         "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "race": "DW"
     },
     {
         "name": "Raaikon",
@@ -4424,9 +4144,7 @@
         "rank": "Iniciado",
         "publicNote": "md4.1",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Raiikon",
@@ -4441,19 +4159,14 @@
         "rank": "Iniciado",
         "publicNote": "md5.6",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Ramarkan",
         "class": "Druida",
         "rank": "Iniciado",
         "publicNote": "md5.1",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Rassal",
@@ -4461,6 +4174,14 @@
         "rank": "Iniciado",
         "publicNote": "mh6.1",
         "officerNote": ""
+    },
+    {
+        "name": "Rattsel",
+        "class": "Cazador",
+        "rank": "Iniciado",
+        "publicNote": "md4.8",
+        "officerNote": "",
+        "race": "NE"
     },
     {
         "name": "Rayozin",
@@ -4475,9 +4196,7 @@
         "rank": "Iniciado",
         "publicNote": "md5.8ALHB",
         "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "race": "GN"
     },
     {
         "name": "Retonto",
@@ -4491,10 +4210,7 @@
         "class": "Druida",
         "rank": "Iniciado",
         "publicNote": "ah5.2",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Romeodk",
@@ -4543,20 +4259,14 @@
         "class": "Chamán",
         "rank": "Iniciado",
         "publicNote": "mh5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Saintkoga",
         "class": "Pícaro",
         "rank": "Iniciado",
         "publicNote": "md3.1",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Saintshoot",
@@ -4578,9 +4288,7 @@
         "rank": "Iniciado",
         "publicNote": "md5.0INMN",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
         "name": "Selenebubu",
@@ -4597,6 +4305,14 @@
         "officerNote": ""
     },
     {
+        "name": "Spartac",
+        "class": "Paladín",
+        "rank": "Iniciado",
+        "publicNote": "md5.6",
+        "officerNote": "",
+        "race": "HU"
+    },
+    {
         "name": "Srwiski",
         "class": "Guerrero",
         "rank": "Iniciado",
@@ -4608,20 +4324,14 @@
         "class": "Caballero de la Muerte",
         "rank": "Iniciado",
         "publicNote": "md5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Susurrakill",
         "class": "Brujo",
         "rank": "Iniciado",
         "publicNote": "md5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Tanwin",
@@ -4666,10 +4376,10 @@
         "officerNote": ""
     },
     {
-        "name": "Tootti",
-        "class": "Brujo",
+        "name": "Thepatriota",
+        "class": "Guerrero",
         "rank": "Iniciado",
-        "publicNote": "md5.5",
+        "publicNote": "md5.6",
         "officerNote": ""
     },
     {
@@ -4691,7 +4401,8 @@
         "class": "Guerrero",
         "rank": "Iniciado",
         "publicNote": "md5.6",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "OR"
     },
     {
         "name": "Tuyuti",
@@ -4699,29 +4410,21 @@
         "rank": "Iniciado",
         "publicNote": "mh5.3",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
         "name": "Twilighth",
         "class": "Pícaro",
         "rank": "Iniciado",
         "publicNote": "md5.5",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Ukyox",
         "class": "Paladín",
         "rank": "Iniciado",
         "publicNote": "md6.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Urianna",
@@ -4736,9 +4439,7 @@
         "rank": "Iniciado",
         "publicNote": "md3.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "race": "GN"
     },
     {
         "name": "Vanerh",
@@ -4773,10 +4474,7 @@
         "class": "Sacerdote",
         "rank": "Iniciado",
         "publicNote": "mh4.9TL",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Warcitoo",
@@ -4800,20 +4498,39 @@
         "officerNote": ""
     },
     {
+        "name": "Wonderpala",
+        "class": "Paladín",
+        "rank": "Iniciado",
+        "publicNote": "md5.5",
+        "officerNote": ""
+    },
+    {
         "name": "Workfast",
         "class": "Caballero de la Muerte",
         "rank": "Iniciado",
         "publicNote": "md5.0",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
+    },
+    {
+        "name": "Xiaron",
+        "class": "Sacerdote",
+        "rank": "Iniciado",
+        "publicNote": "md5.0h5.0TLEN",
+        "officerNote": ""
     },
     {
         "name": "Xonefrost",
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md4.3",
+        "officerNote": ""
+    },
+    {
+        "name": "Xxoe",
+        "class": "Paladín",
+        "rank": "Iniciado",
+        "publicNote": "md5.4h5.0",
         "officerNote": ""
     },
     {
@@ -4856,7 +4573,8 @@
         "class": "Cazador",
         "rank": "Iniciado",
         "publicNote": "md5.3",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "DR"
     },
     {
         "name": "Zefra",
@@ -4870,7 +4588,8 @@
         "class": "Mago",
         "rank": "Iniciado",
         "publicNote": "md4.4",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "HU"
     },
     {
         "name": "Zokhu",
@@ -4920,9 +4639,7 @@
         "rank": "Explorador",
         "publicNote": "md6.0",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Andrewv",
@@ -4930,19 +4647,14 @@
         "rank": "Explorador",
         "publicNote": "mt6.2d5.6",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Arteriss",
         "class": "Cazador",
         "rank": "Explorador",
         "publicNote": "md6.0SK",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Asdawfdqef",
@@ -4950,39 +4662,28 @@
         "rank": "Explorador",
         "publicNote": "md5.3",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
         "name": "Asm",
         "class": "Mago",
         "rank": "Explorador",
         "publicNote": "md5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Azshuna",
         "class": "Caballero de la Muerte",
         "rank": "Explorador",
         "publicNote": "md5.2",
-        "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Azsunax",
         "class": "Druida",
         "rank": "Explorador",
         "publicNote": "mt5.8h5.7LWSK",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Bhelld",
@@ -5024,27 +4725,22 @@
         "class": "Druida",
         "rank": "Explorador",
         "publicNote": "ad5.4t5.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Eille",
         "class": "Sacerdote",
         "rank": "Explorador",
         "publicNote": "mh5.7EN",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Electricmara",
         "class": "Chamán",
         "rank": "Explorador",
         "publicNote": "md5.1",
-        "officerNote": ""
+        "officerNote": "",
+        "race": "DR"
     },
     {
         "name": "Elpaulo",
@@ -5072,10 +4768,7 @@
         "class": "Paladín",
         "rank": "Explorador",
         "publicNote": "ad5.2t5.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Gabozinn",
@@ -5089,10 +4782,7 @@
         "class": "Caballero de la Muerte",
         "rank": "Explorador",
         "publicNote": "md5.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "BE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Hekler",
@@ -5106,20 +4796,14 @@
         "class": "Caballero de la Muerte",
         "rank": "Explorador",
         "publicNote": "md5.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Iloverock",
         "class": "Mago",
         "rank": "Explorador",
         "publicNote": "ad5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Jeringa",
@@ -5133,10 +4817,7 @@
         "class": "Sacerdote",
         "rank": "Explorador",
         "publicNote": "ad5.0h5.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Jhonyc",
@@ -5157,20 +4838,14 @@
         "class": "Guerrero",
         "rank": "Explorador",
         "publicNote": "aD5.5",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Kekos",
         "class": "Guerrero",
         "rank": "Explorador",
         "publicNote": "MT4.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Kelezet",
@@ -5191,10 +4866,7 @@
         "class": "Pícaro",
         "rank": "Explorador",
         "publicNote": "md5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "TR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Khrii",
@@ -5202,9 +4874,7 @@
         "rank": "Explorador",
         "publicNote": "md5.8",
         "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "race": "DR"
     },
     {
         "name": "Kilime",
@@ -5225,20 +4895,14 @@
         "class": "Guerrero",
         "rank": "Explorador",
         "publicNote": "md6.0",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Krialania",
         "class": "Mago",
         "rank": "Explorador",
         "publicNote": "ad3.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Krinity",
@@ -5246,16 +4910,6 @@
         "rank": "Explorador",
         "publicNote": "md5.9",
         "officerNote": ""
-    },
-    {
-        "name": "Kuerva",
-        "class": "Paladín",
-        "rank": "Explorador",
-        "publicNote": "md5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 3
     },
     {
         "name": "Kukushibo",
@@ -5276,10 +4930,7 @@
         "class": "Cazador",
         "rank": "Explorador",
         "publicNote": "md5.8JCEN",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Loranea",
@@ -5289,34 +4940,19 @@
         "officerNote": ""
     },
     {
-        "name": "Lymites",
-        "class": "Caballero de la Muerte",
-        "rank": "Explorador",
-        "publicNote": "md5.4",
-        "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
-    },
-    {
         "name": "Magim",
         "class": "Paladín",
         "rank": "Explorador",
         "publicNote": "mt5.9",
         "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "race": "DW"
     },
     {
         "name": "Maguitoz",
         "class": "Mago",
         "rank": "Explorador",
         "publicNote": "ad3.6ALHB",
-        "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Marculin",
@@ -5330,10 +4966,7 @@
         "class": "Brujo",
         "rank": "Explorador",
         "publicNote": "ad5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 3
+        "officerNote": ""
     },
     {
         "name": "Mhegara",
@@ -5347,10 +4980,7 @@
         "class": "Cazador",
         "rank": "Explorador",
         "publicNote": "ad5.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Mimarin",
@@ -5378,10 +5008,7 @@
         "class": "Cazador",
         "rank": "Explorador",
         "publicNote": "ad5.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Papeo",
@@ -5430,30 +5057,21 @@
         "class": "Caballero de la Muerte",
         "rank": "Explorador",
         "publicNote": "mt5.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Rossmary",
         "class": "Sacerdote",
         "rank": "Explorador",
         "publicNote": "md5.7",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Roussh",
         "class": "Chamán",
         "rank": "Explorador",
         "publicNote": "mh5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Rsoo",
@@ -5467,10 +5085,7 @@
         "class": "Pícaro",
         "rank": "Explorador",
         "publicNote": "md5.9",
-        "officerNote": "",
-        "faction": "A",
-        "race": "OR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Saintblack",
@@ -5484,40 +5099,28 @@
         "class": "Chamán",
         "rank": "Explorador",
         "publicNote": "ad5.8h5.8",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Saintholy",
         "class": "Paladín",
         "rank": "Explorador",
         "publicNote": "ad5.9h6.3",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Saintt",
         "class": "Caballero de la Muerte",
         "rank": "Explorador",
         "publicNote": "md5.4",
-        "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Sainttouch",
         "class": "Druida",
         "rank": "Explorador",
         "publicNote": "ah5.0d4.9",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Sashu",
@@ -5532,9 +5135,7 @@
         "rank": "Explorador",
         "publicNote": "md5.7",
         "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "race": "GN"
     },
     {
         "name": "Seahorse",
@@ -5556,9 +5157,7 @@
         "rank": "Explorador",
         "publicNote": "mt6.0d5.8",
         "officerNote": "",
-        "faction": "A",
-        "race": "DW",
-        "sex": 1
+        "race": "DW"
     },
     {
         "name": "Stewen",
@@ -5607,10 +5206,7 @@
         "class": "Cazador",
         "rank": "Explorador",
         "publicNote": "MD4.9EGMN 20icc10n 20icc25n",
-        "officerNote": "",
-        "faction": "A",
-        "race": "DR",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Valiris",
@@ -5625,19 +5221,14 @@
         "rank": "Explorador",
         "publicNote": "aD5.7HB",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Xodo",
         "class": "Cazador",
         "rank": "Explorador",
         "publicNote": "md5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Yhuroichi",
@@ -5666,9 +5257,7 @@
         "rank": "Explorador",
         "publicNote": "md5.5",
         "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "race": "NE"
     },
     {
         "name": "Zenshy",
@@ -5689,10 +5278,7 @@
         "class": "Paladín",
         "rank": "Explorador",
         "publicNote": "md5.6",
-        "officerNote": "",
-        "faction": "A",
-        "race": "BE",
-        "sex": 2
+        "officerNote": ""
     },
     {
         "name": "Zumbie",
@@ -5707,19 +5293,22 @@
         "rank": "Oficial",
         "publicNote": "",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
+        "race": "HU"
     },
     {
         "name": "Bosakiller",
         "class": "Pícaro",
         "rank": "Oficial",
         "publicNote": "md6.0",
+        "officerNote": ""
+    },
+    {
+        "name": "Howlshade",
+        "class": "Chamán",
+        "rank": "Alter",
+        "publicNote": "ah5.9d5.3inEN",
         "officerNote": "",
-        "faction": "A",
-        "race": "TR",
-        "sex": 2
+        "race": "DR"
     },
     {
         "name": "Ravenguard",
@@ -5727,19 +5316,14 @@
         "rank": "Alter",
         "publicNote": "ad6.0LWsk",
         "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 1
+        "race": "GN"
     },
     {
         "name": "Sargorath",
         "class": "Druida",
         "rank": "Alter",
         "publicNote": "ah6.1d5.3ALhb",
-        "officerNote": "",
-        "faction": "A",
-        "race": "NE",
-        "sex": 1
+        "officerNote": ""
     },
     {
         "name": "Voidhammer",
@@ -5747,19 +5331,7 @@
         "rank": "Alter",
         "publicNote": "md6.0t5.4jcMN",
         "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 1
-    },
-    {
-        "name": "Vorthrak",
-        "class": "Guerrero",
-        "rank": "Alter",
-        "publicNote": "ad6.0t5.4ENBS",
-        "officerNote": "",
-        "faction": "A",
-        "race": "HU",
-        "sex": 2
+        "race": "HU"
     },
     {
         "name": "Stormgrim",
@@ -5767,8 +5339,6 @@
         "rank": "Guild Master",
         "publicNote": "ad6.1tlen",
         "officerNote": "",
-        "faction": "A",
-        "race": "GN",
-        "sex": 2
+        "race": "GN"
     }
 ]

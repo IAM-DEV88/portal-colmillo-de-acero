@@ -12,6 +12,8 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@alpinejs/collapse": "^3.13.3",
+    "alpinejs": "^3.13.3",
     "@astrojs/check": "^0.9.4",
     "@astrojs/netlify": "^4.1.1",
     "@astrojs/tailwind": "^5.1.0",

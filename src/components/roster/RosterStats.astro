@@ -1,0 +1,434 @@
+---
+interface Props {
+  rankDistribution: Array<{ name: string; count: number; percentage: number }>;
+  classDistribution: Array<{ name: string; count: number; color: string }>;
+  professionStats: Record<string, number>;
+  raceDistribution: Array<{ name: string; count: number; percentage: number; code: string }>;
+  factionDistribution: Array<{ name: string; count: number; percentage: number; code: string }>;
+  totalMembers: number;
+}
+
+const {
+  rankDistribution,
+  classDistribution,
+  professionStats,
+  raceDistribution,
+  factionDistribution,
+  totalMembers,
+} = Astro.props;
+
+// Mapeo de colores y nombres de profesión
+const PROFESSION_INFO = {
+  JC: {
+    name: 'Joyería',
+    colors: { light: '#fde047', dark: '#d97706' },
+  },
+  BS: {
+    name: 'Herrería',
+    colors: { light: '#60a5fa', dark: '#1d4ed8' },
+  },
+  EN: {
+    name: 'Encantamiento',
+    colors: { light: '#c084fc', dark: '#7e22ce' },
+  },
+  EG: {
+    name: 'Ingeniería',
+    colors: { light: '#2dd4bf', dark: '#0d9488' },
+  },
+  AL: {
+    name: 'Alquimia',
+    colors: { light: '#4ade80', dark: '#15803d' },
+  },
+  TL: {
+    name: 'Sastrería',
+    colors: { light: '#f472b6', dark: '#db2777' },
+  },
+  IN: {
+    name: 'Inscripción',
+    colors: { light: '#818cf8', dark: '#4f46e5' },
+  },
+  HB: {
+    name: 'Herboristería',
+    colors: { light: '#84cc16', dark: '#65a30d' },
+  },
+  LW: {
+    name: 'Peletería',
+    colors: { light: '#f59e0b', dark: '#d97706' },
+  },
+  MN: {
+    name: 'Minería',
+    colors: { light: '#f97316', dark: '#c2410c' },
+  },
+  SK: {
+    name: 'Desuello',
+    colors: { light: '#f43f5e', dark: '#be123c' },
+  },
+} as const;
+
+// Helper to get race color (optional, can be improved)
+const getRaceColor = (code: string) => {
+  const colors: Record<string, string> = {
+    GN: 'text-pink-300', // Gnomo
+    HU: 'text-blue-300', // Humano
+    NE: 'text-purple-300', // Elfo de la Noche
+    DW: 'text-amber-300', // Enano
+    DR: 'text-cyan-300', // Draenei
+    OR: 'text-green-300', // Orco
+    TA: 'text-yellow-300', // Tauren
+    UN: 'text-gray-300', // No Muerto
+    TR: 'text-orange-300', // Trol
+    BE: 'text-red-300', // Elfo de Sangre
+  };
+  return colors[code] || 'text-gray-300';
+};
+
+const getFactionColor = (code: string) => {
+  if (code === '1' || code === 'A') return 'text-blue-400'; // Alianza
+  if (code === '2' || code === 'H') return 'text-red-400'; // Horda
+  return 'text-gray-400';
+};
+---
+
+<details
+  class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg overflow-hidden transition-all duration-300 hover:border-amber-500/50"
+>
+  <summary class="px-4 py-3 flex items-center justify-between cursor-pointer select-none">
+    <div class="flex items-center space-x-3">
+      <div
+        class="w-8 h-8 bg-amber-600/20 rounded-lg flex items-center justify-center group-hover:bg-amber-500/30 transition-colors"
+      >
+        <svg
+          class="w-4 h-4 text-amber-400 transform group-open:rotate-90 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-sm font-semibold text-amber-300 uppercase tracking-wider">
+        Estadísticas del Roster
+      </h3>
+    </div>
+    <span class="text-xs text-amber-400/70 group-hover:text-amber-300 transition-colors">
+      <span class="hidden group-open:inline">Ocultar</span>
+      <span class="group-open:hidden">Mostrar</span> estadísticas
+    </span>
+  </summary>
+
+  <div class="border-t border-amber-900/30 p-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Columna 1: Distribución por Rango -->
+      <div
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+      >
+        <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
+          <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-purple-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-amber-300 uppercase tracking-wide">Por Rango</h3>
+        </div>
+        <div class="space-y-3.5">
+          {
+            rankDistribution.map(({ name, count, percentage }) => {
+              // Asignar colores según el rango
+              let colorClass = 'from-accent to-accent-light';
+              if (name === 'Guild Master') colorClass = 'from-yellow-400 to-yellow-600';
+              else if (name === 'Alter') colorClass = 'from-purple-400 to-purple-600';
+              else if (name === 'Explorador') colorClass = 'from-blue-400 to-blue-600';
+              else if (name === 'Iniciado') colorClass = 'from-green-400 to-green-600';
+              else if (name === 'Aspirante') colorClass = 'from-gray-400 to-gray-600';
+
+              return (
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-amber-100 font-medium">{name}</span>
+                    <div class="flex items-center space-x-2">
+                      <span class="text-white font-bold">{count}</span>
+                      <span class="text-amber-300/70 text-xs">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="relative w-full bg-gray-800/50 rounded-full h-2 overflow-hidden shadow-inner">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-lg"
+                      class:list={[colorClass]}
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- Columna 2: Distribución por Clase -->
+      <div
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+      >
+        <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
+          <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-blue-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-amber-300 uppercase tracking-wide">Por Clase</h3>
+        </div>
+        <div class="space-y-3.5">
+          {
+            classDistribution.map(({ name, count, color: classColor }) => {
+              const percentage = totalMembers > 0 ? Math.round((count / totalMembers) * 100) : 0;
+              return (
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center space-x-2">
+                      <span
+                        class="w-3 h-3 rounded-full border-2 border-gray-700 shadow-sm"
+                        style={`background-color: #${classColor}`}
+                      />
+                      <span class="text-amber-100 font-medium">{name}</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span class="text-white font-bold">{count}</span>
+                      <span class="text-amber-300/70 text-xs">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="relative w-full bg-gray-800/50 rounded-full h-2 overflow-hidden shadow-inner">
+                    <div
+                      class="h-full rounded-full transition-all duration-700 ease-out shadow-lg"
+                      style={{
+                        width: `${percentage}%`,
+                        background: `linear-gradient(to right, #${classColor}cc, #${classColor}ff)`,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <!-- Columna 3: Distribución por Profesión -->
+      <div
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+      >
+        <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
+          <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-green-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-amber-300 uppercase tracking-wide">Por Profesión</h3>
+        </div>
+        <div class="space-y-3.5">
+          {
+            (() => {
+              if (!professionStats || Object.keys(professionStats).length === 0) {
+                return (
+                  <div class="text-center text-amber-100/60 text-sm py-8">
+                    <svg
+                      class="w-12 h-12 mx-auto mb-3 text-amber-400/40"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                      />
+                    </svg>
+                    <p>No hay datos de profesiones disponibles</p>
+                  </div>
+                );
+              }
+
+              const totalWithProfessions = Object.values(professionStats).reduce(
+                (sum, count) => sum + count,
+                0
+              );
+
+              return Object.entries(PROFESSION_INFO)
+                .map(([code, info]) => {
+                  const count = professionStats[code] || 0;
+                  const percentage =
+                    totalWithProfessions > 0
+                      ? Math.min(100, Math.round((count / totalWithProfessions) * 100))
+                      : 0;
+
+                  return {
+                    code,
+                    name: info.name,
+                    count,
+                    percentage,
+                    colors: info.colors,
+                    hasData: count > 0,
+                  };
+                })
+                .sort((a, b) => b.count - a.count)
+                .map(({ code, name, count, percentage, colors, hasData }) => (
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                      <div class="flex items-center space-x-2">
+                        <span
+                          class="w-3 h-3 rounded-full border-2 border-gray-700 shadow-sm"
+                          style={`background-color: ${colors.dark}`}
+                        />
+                        <span class="text-amber-100 font-medium">{name}</span>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="text-white font-bold">{count}</span>
+                        <span class="text-amber-300/70 text-xs">({percentage}%)</span>
+                      </div>
+                    </div>
+                    <div class="relative w-full bg-gray-800/50 rounded-full h-2 overflow-hidden shadow-inner">
+                      <div
+                        class="h-full rounded-full transition-all duration-700 ease-out shadow-lg"
+                        style={{
+                          width: `${percentage}%`,
+                          background: `linear-gradient(to right, ${colors.light}, ${colors.dark})`,
+                          opacity: hasData ? 1 : 0.5,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ));
+            })()
+          }
+        </div>
+      </div>
+
+      <!-- Columna 4: Distribución por Raza -->
+      <div
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+      >
+        <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
+          <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-amber-300 uppercase tracking-wide">Por Raza</h3>
+        </div>
+        <div class="space-y-3.5">
+          {
+            raceDistribution.length > 0 ? (
+              raceDistribution.map(({ name, count, percentage, code }) => (
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class={`font-medium ${getRaceColor(code)}`}>{name}</span>
+                    <div class="flex items-center space-x-2">
+                      <span class="text-white font-bold">{count}</span>
+                      <span class="text-amber-300/70 text-xs">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="relative w-full bg-gray-800/50 rounded-full h-2 overflow-hidden shadow-inner">
+                    <div
+                      class="h-full rounded-full bg-gradient-to-r from-gray-600 to-gray-400 transition-all duration-700 ease-out shadow-lg"
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div class="text-center text-amber-100/60 text-sm py-8">
+                <p>No hay datos de raza disponibles</p>
+              </div>
+            )
+          }
+        </div>
+      </div>
+
+      <!-- Columna 5: Distribución por Facción -->
+      <div
+        class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10"
+      >
+        <div class="flex items-center space-x-3 mb-5 pb-4 border-b border-amber-900/30">
+          <div class="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-indigo-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-amber-300 uppercase tracking-wide">Por Facción</h3>
+        </div>
+        <div class="space-y-3.5">
+          {
+            factionDistribution.length > 0 ? (
+              factionDistribution.map(({ name, count, percentage, code }) => (
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class={`font-medium ${getFactionColor(code)}`}>{name}</span>
+                    <div class="flex items-center space-x-2">
+                      <span class="text-white font-bold">{count}</span>
+                      <span class="text-amber-300/70 text-xs">({percentage}%)</span>
+                    </div>
+                  </div>
+                  <div class="relative w-full bg-gray-800/50 rounded-full h-2 overflow-hidden shadow-inner">
+                    <div
+                      class={`h-full rounded-full bg-gradient-to-r transition-all duration-700 ease-out shadow-lg ${code === '1' || code === 'A' ? 'from-blue-600 to-blue-400' : 'from-red-600 to-red-400'}`}
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div class="text-center text-amber-100/60 text-sm py-8">
+                <p>No hay datos de facción disponibles</p>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</details>
