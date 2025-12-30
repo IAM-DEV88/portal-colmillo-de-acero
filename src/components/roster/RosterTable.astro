@@ -3194,9 +3194,9 @@ const totalRaiders = rosterData.members.filter(
   <div
     class="filters-container bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
   >
-    <div class="flex flex-col sm:flex-row flex-wrap gap-4 items-center sm:items-end">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
       <!-- Buscador -->
-      <div class="flex-1 min-w-[200px]">
+      <div class="w-full">
         <label for="search" class="block text-xs font-medium text-text-muted/80 mb-1">
           Buscar nombre
         </label>
@@ -3208,7 +3208,7 @@ const totalRaiders = rosterData.members.filter(
             class="w-full bg-transparent border border-amber-500/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 placeholder-text-muted/50 transition-all duration-200"
           />
           <svg
-            class="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500/60"
+            class="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500/60 pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -3223,14 +3223,14 @@ const totalRaiders = rosterData.members.filter(
       </div>
 
       <!-- Filtro de Clase -->
-      <div class="flex-1 min-w-[180px]">
+      <div class="w-full">
         <label for="class-filter" class="block text-xs font-medium text-text-muted/80 mb-1">
           Clase
         </label>
-        <div class="select-wrapper">
+        <div class="relative">
           <select
             id="class-filter"
-            class="w-full bg-transparent border border-amber-500/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 placeholder-text-muted/50 transition-all duration-200"
+            class="w-full appearance-none bg-transparent border border-amber-500/10 rounded-lg px-3 py-1.5 pr-8 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 placeholder-text-muted/50 transition-all duration-200"
           >
             <option value="">Todas las clases</option>
             {
@@ -3268,7 +3268,7 @@ const totalRaiders = rosterData.members.filter(
 
       <!-- Botones de Ordenamiento -->
       <div class="flex-1 min-w-full sm:min-w-0 mt-2 sm:mt-0">
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 items-center justify-center">
           <button
             id="sort-name"
             class="sort-button px-3 py-1.5 text-xs rounded-lg bg-amber-900/30 border border-amber-700/50 text-amber-100 hover:bg-amber-800/40 hover:border-amber-500/60 transition-all duration-200 flex items-center gap-1.5"
