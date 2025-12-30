@@ -3032,14 +3032,14 @@ const totalRaiders = rosterData.members.filter(
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-2 hover:border-amber-500/60 transition-all duration-200"
       >
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
           <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-            </div>
-            <div class="text-left">
+            <div class="text-center">
               <p class="text-xs font-medium text-amber-300/90 uppercase tracking-wide">Miembros</p>
               <p class="text-xl font-bold text-amber-200">{stats.totalMembers || 0}</p>
             </div>
@@ -3083,14 +3083,14 @@ const totalRaiders = rosterData.members.filter(
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-lg p-2 hover:border-blue-500/60 transition-all duration-200"
       >
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+          </div>
           <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-              </svg>
-            </div>
-            <div class="text-left">
+            <div class="text-center">
               <p class="text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</p>
               <p class="text-xl font-bold text-blue-200">{Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}</p>
             </div>
@@ -3138,14 +3138,14 @@ const totalRaiders = rosterData.members.filter(
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-lg p-2 hover:border-purple-500/60 transition-all duration-200"
       >
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+            </svg>
+          </div>
           <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-              </svg>
-            </div>
-            <div class="text-left">
+            <div class="text-center">
               <p class="text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</p>
               <p class="text-xl font-bold text-purple-200">{dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}</p>
             </div>
@@ -3193,15 +3193,15 @@ const totalRaiders = rosterData.members.filter(
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-green-600/40 rounded-lg p-2 hover:border-green-500/60 transition-all duration-200"
       >
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
           <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-              </svg>
-            </div>
-            <div class="text-left">
-              <p class="text-xs font-medium text-green-300/90 uppercase tracking-wide">GS Promedio</p>
+            <div class="text-center">
+              <p class="text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</p>
               <p class="text-xl font-bold text-green-200">{averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}</p>
             </div>
           </div>
@@ -3408,7 +3408,7 @@ const totalRaiders = rosterData.members.filter(
 <!-- Modal de Detalles del Miembro -->
 <div
   id="member-modal"
-  class="fixed inset-0 z-50 hidden overflow-y-auto pt-16 sm:pt-0"
+  class="fixed inset-0 z-50 hidden overflow-y-auto pt-20 sm:pt-0"
   aria-labelledby="modal-title"
   role="dialog"
   aria-modal="true"
