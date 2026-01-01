@@ -10,16 +10,16 @@ function countPlayersByRole(players) {
   return (
     players?.reduce(
       (acc, player) => {
-        const role = player.role?.toLowerCase() || '';
-        const playerRole = player.player_role?.toLowerCase() || '';
-        const className = player.player_class?.toLowerCase() || '';
+        const role = player.noteValidation?.role?.toLowerCase() || '';
+        const dualRole = player.noteValidation?.dualRole?.toLowerCase() || '';
+        const className = player.class?.toLowerCase() || '';
 
         // Verificar si es tanque
         if (
           role.includes('tank') ||
-          playerRole.includes('tank') ||
+          dualRole.includes('tank') ||
           role.includes('tanque') ||
-          playerRole.includes('tanque')
+          dualRole.includes('tanque')
         ) {
           acc.tank = (acc.tank || 0) + 1;
         }
@@ -28,9 +28,9 @@ function countPlayersByRole(players) {
           role.includes('heal') ||
           role.includes('sanador') ||
           role.includes('sanación') ||
-          playerRole.includes('heal') ||
-          playerRole.includes('sanador') ||
-          playerRole.includes('sanación')
+          dualRole.includes('heal') ||
+          dualRole.includes('sanador') ||
+          dualRole.includes('sanación')
         ) {
           acc.heal = (acc.heal || 0) + 1;
         }
@@ -39,20 +39,20 @@ function countPlayersByRole(players) {
           // Verificar si el rol específico es 'cuerpo a cuerpo' o 'melee'
           if (
             role.includes('cuerpo a cuerpo') ||
-            playerRole.includes('cuerpo a cuerpo') ||
+            dualRole.includes('cuerpo a cuerpo') ||
             role.includes('melee') ||
-            playerRole.includes('melee')
+            dualRole.includes('melee')
           ) {
             acc.melee = (acc.melee || 0) + 1;
           }
           // Verificar si es 'a distancia' o 'ranged'
           else if (
             role.includes('a distancia') ||
-            playerRole.includes('a distancia') ||
+            dualRole.includes('a distancia') ||
             role.includes('ranged') ||
-            playerRole.includes('ranged') ||
+            dualRole.includes('ranged') ||
             role.includes('rango') ||
-            playerRole.includes('rango')
+            dualRole.includes('rango')
           ) {
             acc.ranged = (acc.ranged || 0) + 1;
           }
@@ -88,7 +88,7 @@ function countPlayersByRole(players) {
 
             const isMelee =
               meleeClasses.some((c) => className.includes(c)) ||
-              meleeSpecs.some((s) => role.includes(s) || playerRole.includes(s));
+              meleeSpecs.some((s) => role.includes(s) || dualRole.includes(s));
 
             if (isMelee) {
               acc.melee = (acc.melee || 0) + 1;
@@ -133,69 +133,7 @@ interface RaidSchedule {
 }
 
 // WotLK Raid Information
-const wotlkRaids: Raid[] = [
-  {
-    id: 1,
-    name: 'TOC 10N FARM',
-    image: '/images/raids/tocfarm.jpg',
-    description:
-      'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-    minGearScore: 4700,
-  },
-  {
-    id: 2,
-    name: 'ICC 10N FARM',
-    image: '/images/raids/iccfarm.jpg',
-    description:
-      'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-    minGearScore: 5000,
-  },
-  {
-    id: 3,
-    name: 'ICC 25N FARM',
-    image: '/images/raids/iccfarm.jpg',
-    description:
-      'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-    minGearScore: 5300,
-  },
-  {
-    id: 4,
-    name: 'ICC 10N POR LK',
-    image: '/images/raids/icclk.jpg',
-    description: 'Jugadores con experiencia que buscan el logro de ICC10N.',
-    minGearScore: 5600,
-  },
-  {
-    id: 5,
-    name: 'SAGRARIO RUBY',
-    image: '/images/raids/sr.jpg',
-    description: 'Jugadores con experiencia que buscan el logro de SR.',
-    minGearScore: 5700,
-  },
-  {
-    id: 6,
-    name: 'ICC 25N POR LK',
-    image: '/images/raids/icclk.jpg',
-    description: 'Jugadores con experiencia que buscan el logro de ICC25N.',
-    minGearScore: 5700,
-  },
-  {
-    id: 7,
-    name: 'ICC 10H FARM',
-    image: '/images/raids/iccfarm.jpg',
-    description:
-      'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-    minGearScore: 5900,
-  },
-  {
-    id: 8,
-    name: 'ICC 25H FARM',
-    image: '/images/raids/iccfarm.jpg',
-    description:
-      'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-    minGearScore: 6000,
-  },
-];
+
 
 // Fetch raid schedules from Supabase
 let raidSchedules: RaidSchedule[] = [];
@@ -207,7 +145,7 @@ import { validatePublicNote } from '../utils/rosterUtils';
 import { wotlkRaids } from '../config/raids';
 
 // Process roster data to get parsed members
-const parsedMembers = rosterData.map((member) => {
+const parsedMembers = Object.values(rosterData.players).map((member) => {
   const publicNote = member.publicNote || '';
   const validation = validatePublicNote(publicNote, member.name);
 
@@ -248,6 +186,7 @@ const parsedMembers = rosterData.map((member) => {
     dualRole: dualRole,
     dualGearScore: dualGs,
     publicNote: publicNote,
+    noteValidation: validation, // Add the full validation object
   };
 });
 
