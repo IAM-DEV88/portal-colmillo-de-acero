@@ -20,25 +20,1888 @@ RaidDominionDB = {
 			["hide"] = 0,
 		},
 	},
-	["chat"] = {
-		["channel"] = "GUILD",
+	["profiles"] = {
+		["Stormgrim - Bennu"] = {
+			["chat"] = {
+				["channel"] = "GUILD",
+			},
+		},
 	},
 	["ui"] = {
 		["showGuildMenu"] = 1,
 		["showMechanicsMenu"] = 1,
+		["showMainMenuOnStart"] = 1,
 		["position"] = {
-			["y"] = 163.6173817793073,
+			["y"] = 165.6423006132546,
 			["relativeTo"] = "UIParent",
 			["point"] = "BOTTOMLEFT",
 			["relativePoint"] = "BOTTOMLEFT",
-			["x"] = 300.985456201929,
+			["x"] = 283.5738741419307,
 		},
-		["showMainMenuOnStart"] = 1,
+	},
+	["modules"] = {
+		["roleManager"] = {
+			["enabled"] = 1,
+			["autoPromote"] = 0,
+		},
+		["messageManager"] = {
+			["enabled"] = 1,
+			["announceEvents"] = 1,
+			["channel"] = "RAID",
+		},
 	},
 	["Guild"] = {
-		["lastUpdate"] = 1767303330,
+		["lastUpdate"] = 1767304174,
 		["generatedBy"] = "Stormgrim",
 		["memberList"] = {
+			{
+				["name"] = "Dracoskull",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [1]
+			{
+				["name"] = "Jacksonxd",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [2]
+			{
+				["name"] = "Polachekcita",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [3]
+			{
+				["name"] = "Puloski",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [4]
+			{
+				["name"] = "Purrisito",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [5]
+			{
+				["name"] = "Recckful",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [6]
+			{
+				["name"] = "Anosinfilo",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [7]
+			{
+				["name"] = "Nephsy",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [8]
+			{
+				["name"] = "Krypts",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [9]
+			{
+				["name"] = "Gondolino",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [10]
+			{
+				["name"] = "Littlelion",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "md",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [11]
+			{
+				["name"] = "Montriuk",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [12]
+			{
+				["name"] = "Vaquiitamuu",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [13]
+			{
+				["name"] = "Tarino",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [14]
+			{
+				["name"] = "Wiiwiwi",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [15]
+			{
+				["name"] = "Zulkutar",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [16]
+			{
+				["name"] = "Farfanmidas",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [17]
+			{
+				["name"] = "Khaalia",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [18]
+			{
+				["name"] = "Rekt",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [19]
+			{
+				["name"] = "Travesuco",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [20]
+			{
+				["name"] = "Tresbichas",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [21]
+			{
+				["name"] = "Sefordanie",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [22]
+			{
+				["name"] = "Snakemiles",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [23]
+			{
+				["name"] = "Zeray",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [24]
+			{
+				["name"] = "Marketter",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [25]
+			{
+				["name"] = "Keetees",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [26]
+			{
+				["name"] = "Pestilenciia",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [27]
+			{
+				["name"] = "Pshao",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [28]
+			{
+				["name"] = "Wadeh",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [29]
+			{
+				["name"] = "Spheal",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [30]
+			{
+				["name"] = "Orodretth",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [31]
+			{
+				["name"] = "Sojosue",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [32]
+			{
+				["name"] = "Elminitito",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [33]
+			{
+				["name"] = "Labubuperuka",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [34]
+			{
+				["name"] = "Agraciado",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [35]
+			{
+				["name"] = "Failchat",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [36]
+			{
+				["name"] = "Khani",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "mh1.0",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [37]
+			{
+				["name"] = "Hunterblaack",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [38]
+			{
+				["name"] = "Gooddead",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [39]
+			{
+				["name"] = "Kaelthnas",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [40]
+			{
+				["name"] = "Panycanela",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [41]
+			{
+				["name"] = "Zarenah",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [42]
+			{
+				["name"] = "Jimagua",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [43]
+			{
+				["name"] = "Galtrom",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [44]
+			{
+				["name"] = "Sumofu",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [45]
+			{
+				["name"] = "Klkjacc",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [46]
+			{
+				["name"] = "Diozz",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [47]
+			{
+				["name"] = "Seray",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [48]
+			{
+				["name"] = "Kilimansharo",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [49]
+			{
+				["name"] = "Manupro",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [50]
+			{
+				["name"] = "Cuiki",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [51]
+			{
+				["name"] = "Muxaxo",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [52]
+			{
+				["name"] = "Gustavoo",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [53]
+			{
+				["name"] = "Malganlx",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [54]
+			{
+				["name"] = "Anghorroth",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [55]
+			{
+				["name"] = "Sillienne",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [56]
+			{
+				["name"] = "Zaja",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [57]
+			{
+				["name"] = "Morenaxa",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [58]
+			{
+				["name"] = "Magordox",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [59]
+			{
+				["name"] = "Pintoski",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [60]
+			{
+				["name"] = "Brozulco",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md2.0",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [61]
+			{
+				["name"] = "Magoporross",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md2.0",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [62]
+			{
+				["name"] = "Battlelion",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [63]
+			{
+				["name"] = "Nandoh",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [64]
+			{
+				["name"] = "Shadownigth",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [65]
+			{
+				["name"] = "Inferrni",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [66]
+			{
+				["name"] = "Dakroz",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [67]
+			{
+				["name"] = "Fullkils",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [68]
+			{
+				["name"] = "Kpillo",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [69]
+			{
+				["name"] = "Milkyheal",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [70]
+			{
+				["name"] = "Rijaab",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [71]
+			{
+				["name"] = "Fentaniila",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md3.8",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [72]
+			{
+				["name"] = "Bernadethe",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [73]
+			{
+				["name"] = "Miaujade",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [74]
+			{
+				["name"] = "Senira",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [75]
+			{
+				["name"] = "Edwardelriic",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [76]
+			{
+				["name"] = "Afoke",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [77]
+			{
+				["name"] = "Lishyl",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [78]
+			{
+				["name"] = "Orionxz",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [79]
+			{
+				["name"] = "Miserinos",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "ad1.0",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [80]
+			{
+				["name"] = "Jmkiuu",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [81]
+			{
+				["name"] = "Sanatork",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [82]
+			{
+				["name"] = "Dracowashere",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md2.0",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [83]
+			{
+				["name"] = "Minecraftlow",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [84]
+			{
+				["name"] = "Orcrok",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [85]
+			{
+				["name"] = "Rambear",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [86]
+			{
+				["name"] = "Bicvioleta",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [87]
+			{
+				["name"] = "Coloborracho",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [88]
+			{
+				["name"] = "Sankal",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [89]
+			{
+				["name"] = "Owep",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [90]
+			{
+				["name"] = "Whesty",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [91]
+			{
+				["name"] = "Cachadeacero",
+				["rank"] = "Explorador",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "ad",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [92]
+			{
+				["name"] = "Smarty",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [93]
+			{
+				["name"] = "Amerelda",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [94]
+			{
+				["name"] = "Exist",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [95]
+			{
+				["name"] = "Kitawa",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [96]
+			{
+				["name"] = "Rrojas",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [97]
+			{
+				["name"] = "Ryyuzaki",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [98]
+			{
+				["name"] = "Chitoo",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [99]
+			{
+				["name"] = "Darkalex",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [100]
+			{
+				["name"] = "Palawal",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [101]
+			{
+				["name"] = "Darkfield",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [102]
+			{
+				["name"] = "Tremendonene",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [103]
+			{
+				["name"] = "Blackup",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [104]
+			{
+				["name"] = "Deski",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [105]
+			{
+				["name"] = "Batmahlat",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [106]
+			{
+				["name"] = "Druhmahouk",
+				["rank"] = "Explorador",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "AH",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [107]
+			{
+				["name"] = "Luciene",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [108]
+			{
+				["name"] = "Palodyn",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [109]
+			{
+				["name"] = "Cleyre",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [110]
+			{
+				["name"] = "Escoriazuma",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md1.3",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [111]
+			{
+				["name"] = "Hirenkyaku",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [112]
+			{
+				["name"] = "Eltashy",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [113]
+			{
+				["name"] = "Molenox",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [114]
+			{
+				["name"] = "Vacaxiones",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [115]
+			{
+				["name"] = "Kishimura",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [116]
+			{
+				["name"] = "Vanwolf",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [117]
+			{
+				["name"] = "Bajitus",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md2.1",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [118]
+			{
+				["name"] = "Miqtu",
+				["rank"] = "Iniciado",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [119]
+			{
+				["name"] = "Cowlordd",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [120]
+			{
+				["name"] = "Luichq",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [121]
+			{
+				["name"] = "Extazyx",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [122]
+			{
+				["name"] = "Garonazo",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [123]
+			{
+				["name"] = "Dkadhencia",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [124]
+			{
+				["name"] = "Iguacel",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [125]
+			{
+				["name"] = "Yayizima",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [126]
+			{
+				["name"] = "Gianf",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [127]
+			{
+				["name"] = "Papivaca",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [128]
+			{
+				["name"] = "Sariphiel",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [129]
+			{
+				["name"] = "Alenoot",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [130]
+			{
+				["name"] = "Andalid",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [131]
+			{
+				["name"] = "Yahidkz",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [132]
 			{
 				["name"] = "Aabf",
 				["rank"] = "Iniciado",
@@ -52,7 +1915,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [1]
+			}, -- [133]
 			{
 				["name"] = "Aarobi",
 				["rank"] = "Aspirante",
@@ -66,7 +1929,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [2]
+			}, -- [134]
 			{
 				["name"] = "Abysusx",
 				["rank"] = "Explorador",
@@ -80,7 +1943,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [3]
+			}, -- [135]
 			{
 				["name"] = "Achidna",
 				["rank"] = "Iniciado",
@@ -94,7 +1957,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [4]
+			}, -- [136]
 			{
 				["name"] = "Addvanthary",
 				["rank"] = "Aspirante",
@@ -108,7 +1971,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [5]
+			}, -- [137]
 			{
 				["name"] = "Aderyncc",
 				["rank"] = "Aspirante",
@@ -122,7 +1985,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [6]
+			}, -- [138]
 			{
 				["name"] = "Adhatt",
 				["rank"] = "Iniciado",
@@ -136,7 +1999,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [7]
+			}, -- [139]
 			{
 				["name"] = "Adonyj",
 				["rank"] = "Iniciado",
@@ -150,7 +2013,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [8]
+			}, -- [140]
 			{
 				["name"] = "Adrines",
 				["rank"] = "Aspirante",
@@ -164,7 +2027,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [9]
+			}, -- [141]
 			{
 				["race"] = "HU",
 				["name"] = "Adventuretit",
@@ -179,21 +2042,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [10]
-			{
-				["name"] = "Afoke",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [11]
+			}, -- [142]
 			{
 				["name"] = "Agonisante",
 				["rank"] = "Aspirante",
@@ -207,21 +2056,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [12]
-			{
-				["name"] = "Agraciado",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [13]
+			}, -- [143]
 			{
 				["name"] = "Ahbregh",
 				["rank"] = "Explorador",
@@ -235,7 +2070,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [14]
+			}, -- [144]
 			{
 				["name"] = "Ahinohaa",
 				["rank"] = "Iniciado",
@@ -249,7 +2084,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [15]
+			}, -- [145]
 			{
 				["name"] = "Akadio",
 				["rank"] = "Aspirante",
@@ -263,7 +2098,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [16]
+			}, -- [146]
 			{
 				["name"] = "Akarman",
 				["rank"] = "Aspirante",
@@ -277,7 +2112,21 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [17]
+			}, -- [147]
+			{
+				["name"] = "Alastorxx",
+				["rank"] = "Aspirante",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "",
+				["raidStats"] = {
+					["byZone"] = {
+					},
+					["total"] = 0,
+					["bossKills"] = {
+					},
+				},
+			}, -- [148]
 			{
 				["race"] = "DW",
 				["name"] = "Albock",
@@ -292,7 +2141,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [18]
+			}, -- [149]
 			{
 				["race"] = "DR",
 				["name"] = "Alborack",
@@ -307,7 +2156,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [19]
+			}, -- [150]
 			{
 				["race"] = "HU",
 				["name"] = "Aldhuyn",
@@ -322,7 +2171,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [20]
+			}, -- [151]
 			{
 				["name"] = "Aldodark",
 				["rank"] = "Iniciado",
@@ -336,21 +2185,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [21]
-			{
-				["name"] = "Alenoot",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [22]
+			}, -- [152]
 			{
 				["name"] = "Alezinho",
 				["rank"] = "Iniciado",
@@ -364,7 +2199,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [23]
+			}, -- [153]
 			{
 				["name"] = "Algos",
 				["rank"] = "Aspirante",
@@ -378,7 +2213,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [24]
+			}, -- [154]
 			{
 				["race"] = "HU",
 				["name"] = "Aliem",
@@ -393,7 +2228,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [25]
+			}, -- [155]
 			{
 				["name"] = "Alitasdpollo",
 				["rank"] = "Aspirante",
@@ -407,7 +2242,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [26]
+			}, -- [156]
 			{
 				["race"] = "NE",
 				["name"] = "Alterek",
@@ -422,7 +2257,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [27]
+			}, -- [157]
 			{
 				["name"] = "Aluxe",
 				["rank"] = "Aspirante",
@@ -436,7 +2271,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [28]
+			}, -- [158]
 			{
 				["name"] = "Amarguraa",
 				["rank"] = "Aspirante",
@@ -450,7 +2285,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [29]
+			}, -- [159]
 			{
 				["name"] = "Amenet",
 				["rank"] = "Aspirante",
@@ -464,35 +2299,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [30]
-			{
-				["name"] = "Amerelda",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [31]
-			{
-				["name"] = "Andalid",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [32]
+			}, -- [160]
 			{
 				["race"] = "HU",
 				["name"] = "Andrewb",
@@ -507,7 +2314,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [33]
+			}, -- [161]
 			{
 				["race"] = "DR",
 				["name"] = "Andrewc",
@@ -522,7 +2329,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [34]
+			}, -- [162]
 			{
 				["race"] = "HU",
 				["name"] = "Andrewv",
@@ -537,7 +2344,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [35]
+			}, -- [163]
 			{
 				["name"] = "Angelapirs",
 				["rank"] = "Aspirante",
@@ -551,7 +2358,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [36]
+			}, -- [164]
 			{
 				["race"] = "HU",
 				["name"] = "Angelesm",
@@ -566,35 +2373,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [37]
-			{
-				["name"] = "Anghorroth",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [38]
-			{
-				["name"] = "Anosinfilo",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [39]
+			}, -- [165]
 			{
 				["name"] = "Applo",
 				["rank"] = "Aspirante",
@@ -608,7 +2387,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [40]
+			}, -- [166]
 			{
 				["name"] = "Aquilesc",
 				["rank"] = "Iniciado",
@@ -622,7 +2401,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [41]
+			}, -- [167]
 			{
 				["name"] = "Aragord",
 				["rank"] = "Aspirante",
@@ -636,7 +2415,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [42]
+			}, -- [168]
 			{
 				["race"] = "HU",
 				["name"] = "Architecture",
@@ -651,7 +2430,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [43]
+			}, -- [169]
 			{
 				["name"] = "Ardurax",
 				["rank"] = "Aspirante",
@@ -665,7 +2444,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [44]
+			}, -- [170]
 			{
 				["name"] = "Arezx",
 				["rank"] = "Aspirante",
@@ -679,7 +2458,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [45]
+			}, -- [171]
 			{
 				["name"] = "Armamago",
 				["rank"] = "Aspirante",
@@ -693,7 +2472,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [46]
+			}, -- [172]
 			{
 				["name"] = "Arrechito",
 				["rank"] = "Aspirante",
@@ -707,7 +2486,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [47]
+			}, -- [173]
 			{
 				["race"] = "NE",
 				["name"] = "Arrozconlech",
@@ -722,7 +2501,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [48]
+			}, -- [174]
 			{
 				["name"] = "Arsaran",
 				["rank"] = "Aspirante",
@@ -736,7 +2515,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [49]
+			}, -- [175]
 			{
 				["race"] = "NE",
 				["name"] = "Arteriss",
@@ -751,7 +2530,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [50]
+			}, -- [176]
 			{
 				["name"] = "Arthassangre",
 				["rank"] = "Aspirante",
@@ -765,7 +2544,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [51]
+			}, -- [177]
 			{
 				["name"] = "Asadoloko",
 				["rank"] = "Iniciado",
@@ -779,7 +2558,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [52]
+			}, -- [178]
 			{
 				["race"] = "DR",
 				["name"] = "Asdawfdqef",
@@ -794,7 +2573,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [53]
+			}, -- [179]
 			{
 				["name"] = "Asdks",
 				["rank"] = "Iniciado",
@@ -808,7 +2587,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [54]
+			}, -- [180]
 			{
 				["name"] = "Asesinofb",
 				["rank"] = "Aspirante",
@@ -822,7 +2601,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [55]
+			}, -- [181]
 			{
 				["name"] = "Ashsin",
 				["rank"] = "Aspirante",
@@ -836,7 +2615,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [56]
+			}, -- [182]
 			{
 				["race"] = "HU",
 				["name"] = "Ashtarteh",
@@ -851,7 +2630,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [57]
+			}, -- [183]
 			{
 				["name"] = "Aslih",
 				["rank"] = "Aspirante",
@@ -865,7 +2644,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [58]
+			}, -- [184]
 			{
 				["race"] = "GN",
 				["name"] = "Asm",
@@ -880,7 +2659,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [59]
+			}, -- [185]
 			{
 				["name"] = "Asmodheuz",
 				["rank"] = "Aspirante",
@@ -894,7 +2673,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [60]
+			}, -- [186]
 			{
 				["name"] = "Asterizx",
 				["rank"] = "Iniciado",
@@ -908,7 +2687,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [61]
+			}, -- [187]
 			{
 				["name"] = "Atan",
 				["rank"] = "Aspirante",
@@ -922,7 +2701,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [62]
+			}, -- [188]
 			{
 				["name"] = "Ausangate",
 				["rank"] = "Aspirante",
@@ -936,7 +2715,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [63]
+			}, -- [189]
 			{
 				["name"] = "Axeconbara",
 				["rank"] = "Aspirante",
@@ -950,7 +2729,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [64]
+			}, -- [190]
 			{
 				["name"] = "Axeltx",
 				["rank"] = "Aspirante",
@@ -964,7 +2743,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [65]
+			}, -- [191]
 			{
 				["race"] = "HU",
 				["name"] = "Azrhaell",
@@ -979,7 +2758,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [66]
+			}, -- [192]
 			{
 				["race"] = "GN",
 				["name"] = "Azshuna",
@@ -994,7 +2773,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [67]
+			}, -- [193]
 			{
 				["race"] = "NE",
 				["name"] = "Azsunax",
@@ -1009,21 +2788,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [68]
-			{
-				["name"] = "Bajitus",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md2.1",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [69]
+			}, -- [194]
 			{
 				["name"] = "Ballfireorb",
 				["rank"] = "Aspirante",
@@ -1037,7 +2802,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [70]
+			}, -- [195]
 			{
 				["name"] = "Bankayi",
 				["rank"] = "Aspirante",
@@ -1051,7 +2816,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [71]
+			}, -- [196]
 			{
 				["name"] = "Bashame",
 				["rank"] = "Aspirante",
@@ -1065,35 +2830,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [72]
-			{
-				["name"] = "Batmahlat",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [73]
-			{
-				["name"] = "Battlelion",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [74]
+			}, -- [197]
 			{
 				["race"] = "HU",
 				["name"] = "Baxster",
@@ -1108,7 +2845,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [75]
+			}, -- [198]
 			{
 				["name"] = "Bedy",
 				["rank"] = "Aspirante",
@@ -1122,7 +2859,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [76]
+			}, -- [199]
 			{
 				["name"] = "Beellzebu",
 				["rank"] = "Aspirante",
@@ -1136,7 +2873,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [77]
+			}, -- [200]
 			{
 				["name"] = "Behomett",
 				["rank"] = "Aspirante",
@@ -1150,7 +2887,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [78]
+			}, -- [201]
 			{
 				["name"] = "Belcebup",
 				["rank"] = "Iniciado",
@@ -1164,7 +2901,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [79]
+			}, -- [202]
 			{
 				["name"] = "Beledhyr",
 				["rank"] = "Iniciado",
@@ -1178,21 +2915,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [80]
-			{
-				["name"] = "Bernadethe",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [81]
+			}, -- [203]
 			{
 				["name"] = "Bhelld",
 				["rank"] = "Explorador",
@@ -1206,21 +2929,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [82]
-			{
-				["name"] = "Bicvioleta",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [83]
+			}, -- [204]
 			{
 				["name"] = "Bislow",
 				["rank"] = "Iniciado",
@@ -1234,7 +2943,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [84]
+			}, -- [205]
 			{
 				["name"] = "Blackcard",
 				["rank"] = "Aspirante",
@@ -1248,21 +2957,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [85]
-			{
-				["name"] = "Blackup",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [86]
+			}, -- [206]
 			{
 				["name"] = "Blancaluna",
 				["rank"] = "Aspirante",
@@ -1276,7 +2971,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [87]
+			}, -- [207]
 			{
 				["name"] = "Blockroyal",
 				["rank"] = "Aspirante",
@@ -1290,7 +2985,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [88]
+			}, -- [208]
 			{
 				["name"] = "Blunne",
 				["rank"] = "Aspirante",
@@ -1304,7 +2999,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [89]
+			}, -- [209]
 			{
 				["name"] = "Blythex",
 				["rank"] = "Aspirante",
@@ -1318,7 +3013,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [90]
+			}, -- [210]
 			{
 				["name"] = "Borgun",
 				["rank"] = "Aspirante",
@@ -1332,7 +3027,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [91]
+			}, -- [211]
 			{
 				["name"] = "Bosakiller",
 				["rank"] = "Oficial",
@@ -1346,7 +3041,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [92]
+			}, -- [212]
 			{
 				["name"] = "Briiuz",
 				["rank"] = "Aspirante",
@@ -1360,21 +3055,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [93]
-			{
-				["name"] = "Brozulco",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md2.0",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [94]
+			}, -- [213]
 			{
 				["name"] = "Brunlot",
 				["rank"] = "Aspirante",
@@ -1388,7 +3069,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [95]
+			}, -- [214]
 			{
 				["name"] = "Bugiman",
 				["rank"] = "Aspirante",
@@ -1402,7 +3083,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [96]
+			}, -- [215]
 			{
 				["name"] = "Burnicegood",
 				["rank"] = "Aspirante",
@@ -1416,21 +3097,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [97]
-			{
-				["name"] = "Cachadeacero",
-				["rank"] = "Explorador",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "ad",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [98]
+			}, -- [216]
 			{
 				["race"] = "HU",
 				["name"] = "Camerun",
@@ -1445,7 +3112,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [99]
+			}, -- [217]
 			{
 				["name"] = "Casabichos",
 				["rank"] = "Explorador",
@@ -1459,7 +3126,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [100]
+			}, -- [218]
 			{
 				["name"] = "Cazacontrol",
 				["rank"] = "Iniciado",
@@ -1473,7 +3140,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [101]
+			}, -- [219]
 			{
 				["name"] = "Cazarkan",
 				["rank"] = "Iniciado",
@@ -1487,7 +3154,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [102]
+			}, -- [220]
 			{
 				["race"] = "NE",
 				["name"] = "Cazitapro",
@@ -1502,7 +3169,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [103]
+			}, -- [221]
 			{
 				["name"] = "Cedranth",
 				["rank"] = "Aspirante",
@@ -1516,7 +3183,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [104]
+			}, -- [222]
 			{
 				["name"] = "Cesareo",
 				["rank"] = "Iniciado",
@@ -1530,7 +3197,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [105]
+			}, -- [223]
 			{
 				["race"] = "GN",
 				["name"] = "Chaliin",
@@ -1545,7 +3212,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [106]
+			}, -- [224]
 			{
 				["name"] = "Chamankitoo",
 				["rank"] = "Aspirante",
@@ -1559,7 +3226,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [107]
+			}, -- [225]
 			{
 				["name"] = "Chamelonius",
 				["rank"] = "Aspirante",
@@ -1573,7 +3240,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [108]
+			}, -- [226]
 			{
 				["race"] = "HU",
 				["name"] = "Chamelox",
@@ -1588,7 +3255,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [109]
+			}, -- [227]
 			{
 				["name"] = "Charzy",
 				["rank"] = "Aspirante",
@@ -1602,7 +3269,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [110]
+			}, -- [228]
 			{
 				["name"] = "Chicocaguama",
 				["rank"] = "Iniciado",
@@ -1616,21 +3283,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [111]
-			{
-				["name"] = "Chitoo",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [112]
+			}, -- [229]
 			{
 				["name"] = "Chritika",
 				["rank"] = "Aspirante",
@@ -1644,7 +3297,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [113]
+			}, -- [230]
 			{
 				["race"] = "DW",
 				["name"] = "Chubbminy",
@@ -1659,7 +3312,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [114]
+			}, -- [231]
 			{
 				["name"] = "Chuchor",
 				["rank"] = "Iniciado",
@@ -1673,7 +3326,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [115]
+			}, -- [232]
 			{
 				["race"] = "DR",
 				["name"] = "Chuzmi",
@@ -1688,7 +3341,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [116]
+			}, -- [233]
 			{
 				["name"] = "Circuncidor",
 				["rank"] = "Aspirante",
@@ -1702,7 +3355,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [117]
+			}, -- [234]
 			{
 				["name"] = "Clairere",
 				["rank"] = "Aspirante",
@@ -1716,7 +3369,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [118]
+			}, -- [235]
 			{
 				["name"] = "Clerigga",
 				["rank"] = "Iniciado",
@@ -1730,21 +3383,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [119]
-			{
-				["name"] = "Cleyre",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [120]
+			}, -- [236]
 			{
 				["name"] = "Cobradtwo",
 				["rank"] = "Aspirante",
@@ -1758,7 +3397,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [121]
+			}, -- [237]
 			{
 				["name"] = "Cocainomanno",
 				["rank"] = "Aspirante",
@@ -1772,7 +3411,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [122]
+			}, -- [238]
 			{
 				["name"] = "Cocuo",
 				["rank"] = "Aspirante",
@@ -1786,7 +3425,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [123]
+			}, -- [239]
 			{
 				["race"] = "DR",
 				["name"] = "Codek",
@@ -1801,7 +3440,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [124]
+			}, -- [240]
 			{
 				["race"] = "HU",
 				["name"] = "Colales",
@@ -1816,21 +3455,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [125]
-			{
-				["name"] = "Coloborracho",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [126]
+			}, -- [241]
 			{
 				["name"] = "Colrrado",
 				["rank"] = "Aspirante",
@@ -1844,7 +3469,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [127]
+			}, -- [242]
 			{
 				["race"] = "HU",
 				["name"] = "Comidian",
@@ -1859,7 +3484,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [128]
+			}, -- [243]
 			{
 				["name"] = "Connetre",
 				["rank"] = "Iniciado",
@@ -1873,7 +3498,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [129]
+			}, -- [244]
 			{
 				["name"] = "Corruptiva",
 				["rank"] = "Aspirante",
@@ -1887,7 +3512,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [130]
+			}, -- [245]
 			{
 				["name"] = "Cortabarbass",
 				["rank"] = "Aspirante",
@@ -1901,7 +3526,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [131]
+			}, -- [246]
 			{
 				["name"] = "Covenac",
 				["rank"] = "Aspirante",
@@ -1915,21 +3540,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [132]
-			{
-				["name"] = "Cowlordd",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [133]
+			}, -- [247]
 			{
 				["name"] = "Crazytown",
 				["rank"] = "Iniciado",
@@ -1943,7 +3554,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [134]
+			}, -- [248]
 			{
 				["name"] = "Creeddop",
 				["rank"] = "Aspirante",
@@ -1957,7 +3568,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [135]
+			}, -- [249]
 			{
 				["name"] = "Cristalina",
 				["rank"] = "Aspirante",
@@ -1971,7 +3582,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [136]
+			}, -- [250]
 			{
 				["name"] = "Crisxus",
 				["rank"] = "Aspirante",
@@ -1985,7 +3596,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [137]
+			}, -- [251]
 			{
 				["name"] = "Crohnos",
 				["rank"] = "Aspirante",
@@ -1999,7 +3610,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [138]
+			}, -- [252]
 			{
 				["name"] = "Cruxito",
 				["rank"] = "Aspirante",
@@ -2013,7 +3624,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [139]
+			}, -- [253]
 			{
 				["name"] = "Cryxuz",
 				["rank"] = "Iniciado",
@@ -2027,21 +3638,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [140]
-			{
-				["name"] = "Cuiki",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [141]
+			}, -- [254]
 			{
 				["name"] = "Curamexd",
 				["rank"] = "Aspirante",
@@ -2055,7 +3652,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [142]
+			}, -- [255]
 			{
 				["name"] = "Daanmago",
 				["rank"] = "Aspirante",
@@ -2069,21 +3666,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [143]
-			{
-				["name"] = "Dakroz",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [144]
+			}, -- [256]
 			{
 				["race"] = "DR",
 				["name"] = "Dantallian",
@@ -2098,7 +3681,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [145]
+			}, -- [257]
 			{
 				["race"] = "HU",
 				["name"] = "Daoud",
@@ -2113,21 +3696,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [146]
-			{
-				["name"] = "Darkalex",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [147]
+			}, -- [258]
 			{
 				["name"] = "Darkbrier",
 				["rank"] = "Aspirante",
@@ -2141,21 +3710,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [148]
-			{
-				["name"] = "Darkfield",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [149]
+			}, -- [259]
 			{
 				["race"] = "HU",
 				["name"] = "Darkleyend",
@@ -2170,7 +3725,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [150]
+			}, -- [260]
 			{
 				["name"] = "Darkweipon",
 				["rank"] = "Aspirante",
@@ -2184,7 +3739,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [151]
+			}, -- [261]
 			{
 				["race"] = "NE",
 				["name"] = "Darkyasper",
@@ -2199,7 +3754,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [152]
+			}, -- [262]
 			{
 				["name"] = "Darkzomer",
 				["rank"] = "Iniciado",
@@ -2213,7 +3768,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [153]
+			}, -- [263]
 			{
 				["name"] = "Davidg",
 				["rank"] = "Aspirante",
@@ -2227,7 +3782,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [154]
+			}, -- [264]
 			{
 				["name"] = "Daviel",
 				["rank"] = "Explorador",
@@ -2241,7 +3796,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [155]
+			}, -- [265]
 			{
 				["race"] = "DW",
 				["name"] = "Dblak",
@@ -2256,7 +3811,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [156]
+			}, -- [266]
 			{
 				["name"] = "Deadtols",
 				["rank"] = "Iniciado",
@@ -2270,7 +3825,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [157]
+			}, -- [267]
 			{
 				["name"] = "Deathclaw",
 				["rank"] = "Aspirante",
@@ -2284,7 +3839,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [158]
+			}, -- [268]
 			{
 				["name"] = "Deathxil",
 				["rank"] = "Aspirante",
@@ -2298,7 +3853,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [159]
+			}, -- [269]
 			{
 				["race"] = "HU",
 				["name"] = "Dechigner",
@@ -2313,7 +3868,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [160]
+			}, -- [270]
 			{
 				["name"] = "Deckyohan",
 				["rank"] = "Aspirante",
@@ -2327,7 +3882,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [161]
+			}, -- [271]
 			{
 				["name"] = "Deespi",
 				["rank"] = "Aspirante",
@@ -2341,7 +3896,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [162]
+			}, -- [272]
 			{
 				["name"] = "Dekkere",
 				["rank"] = "Aspirante",
@@ -2355,7 +3910,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [163]
+			}, -- [273]
 			{
 				["name"] = "Delavega",
 				["rank"] = "Aspirante",
@@ -2369,7 +3924,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [164]
+			}, -- [274]
 			{
 				["name"] = "Demmed",
 				["rank"] = "Iniciado",
@@ -2383,21 +3938,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [165]
-			{
-				["name"] = "Deski",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [166]
+			}, -- [275]
 			{
 				["name"] = "Desppi",
 				["rank"] = "Iniciado",
@@ -2411,7 +3952,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [167]
+			}, -- [276]
 			{
 				["race"] = "HU",
 				["name"] = "Destok",
@@ -2426,7 +3967,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [168]
+			}, -- [277]
 			{
 				["name"] = "Destrohyer",
 				["rank"] = "Aspirante",
@@ -2440,7 +3981,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [169]
+			}, -- [278]
 			{
 				["race"] = "HU",
 				["name"] = "Dexconocido",
@@ -2455,7 +3996,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [170]
+			}, -- [279]
 			{
 				["name"] = "Dezokael",
 				["rank"] = "Aspirante",
@@ -2469,7 +4010,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [171]
+			}, -- [280]
 			{
 				["name"] = "Dezpii",
 				["rank"] = "Aspirante",
@@ -2483,7 +4024,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [172]
+			}, -- [281]
 			{
 				["name"] = "Dhanwantari",
 				["rank"] = "Aspirante",
@@ -2497,7 +4038,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [173]
+			}, -- [282]
 			{
 				["race"] = "HU",
 				["name"] = "Dianaatg",
@@ -2512,7 +4053,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [174]
+			}, -- [283]
 			{
 				["name"] = "Diegogt",
 				["rank"] = "Aspirante",
@@ -2526,7 +4067,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [175]
+			}, -- [284]
 			{
 				["name"] = "Dinamic",
 				["rank"] = "Iniciado",
@@ -2540,7 +4081,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [176]
+			}, -- [285]
 			{
 				["name"] = "Dinkea",
 				["rank"] = "Iniciado",
@@ -2554,21 +4095,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [177]
-			{
-				["name"] = "Diozz",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [178]
+			}, -- [286]
 			{
 				["name"] = "Diplopeed",
 				["rank"] = "Aspirante",
@@ -2582,21 +4109,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [179]
-			{
-				["name"] = "Dkadhencia",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [180]
+			}, -- [287]
 			{
 				["name"] = "Dkdin",
 				["rank"] = "Iniciado",
@@ -2610,7 +4123,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [181]
+			}, -- [288]
 			{
 				["name"] = "Dkinvincible",
 				["rank"] = "Aspirante",
@@ -2624,7 +4137,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [182]
+			}, -- [289]
 			{
 				["name"] = "Dkopetin",
 				["rank"] = "Iniciado",
@@ -2638,7 +4151,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [183]
+			}, -- [290]
 			{
 				["name"] = "Dominatrixxd",
 				["rank"] = "Iniciado",
@@ -2652,7 +4165,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [184]
+			}, -- [291]
 			{
 				["name"] = "Doodridder",
 				["rank"] = "Aspirante",
@@ -2666,35 +4179,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [185]
-			{
-				["name"] = "Dracoskull",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [186]
-			{
-				["name"] = "Dracowashere",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md2.0",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [187]
+			}, -- [292]
 			{
 				["name"] = "Draennita",
 				["rank"] = "Aspirante",
@@ -2708,7 +4193,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [188]
+			}, -- [293]
 			{
 				["race"] = "HU",
 				["name"] = "Dragomira",
@@ -2723,7 +4208,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [189]
+			}, -- [294]
 			{
 				["name"] = "Dragonasaky",
 				["rank"] = "Aspirante",
@@ -2737,7 +4222,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [190]
+			}, -- [295]
 			{
 				["name"] = "Drakanis",
 				["rank"] = "Iniciado",
@@ -2751,7 +4236,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [191]
+			}, -- [296]
 			{
 				["name"] = "Drakaryzz",
 				["rank"] = "Iniciado",
@@ -2765,7 +4250,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [192]
+			}, -- [297]
 			{
 				["name"] = "Dreamshunter",
 				["rank"] = "Iniciado",
@@ -2779,7 +4264,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [193]
+			}, -- [298]
 			{
 				["race"] = "HU",
 				["name"] = "Driadg",
@@ -2794,7 +4279,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [194]
+			}, -- [299]
 			{
 				["name"] = "Drowning",
 				["rank"] = "Iniciado",
@@ -2808,7 +4293,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [195]
+			}, -- [300]
 			{
 				["name"] = "Drudael",
 				["rank"] = "Iniciado",
@@ -2822,21 +4307,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [196]
-			{
-				["name"] = "Druhmahouk",
-				["rank"] = "Explorador",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "AH",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [197]
+			}, -- [301]
 			{
 				["name"] = "Druidpool",
 				["rank"] = "Aspirante",
@@ -2850,7 +4321,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [198]
+			}, -- [302]
 			{
 				["name"] = "Drukall",
 				["rank"] = "Explorador",
@@ -2864,7 +4335,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [199]
+			}, -- [303]
 			{
 				["name"] = "Dudulinox",
 				["rank"] = "Aspirante",
@@ -2878,7 +4349,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [200]
+			}, -- [304]
 			{
 				["race"] = "NE",
 				["name"] = "Duduss",
@@ -2893,7 +4364,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [201]
+			}, -- [305]
 			{
 				["race"] = "HU",
 				["name"] = "Dundance",
@@ -2908,7 +4379,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [202]
+			}, -- [306]
 			{
 				["name"] = "Durotedark",
 				["rank"] = "Iniciado",
@@ -2922,7 +4393,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [203]
+			}, -- [307]
 			{
 				["race"] = "BE",
 				["name"] = "Dytor",
@@ -2937,7 +4408,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [204]
+			}, -- [308]
 			{
 				["name"] = "Eberth",
 				["rank"] = "Aspirante",
@@ -2951,7 +4422,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [205]
+			}, -- [309]
 			{
 				["name"] = "Edmary",
 				["rank"] = "Iniciado",
@@ -2965,21 +4436,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [206]
-			{
-				["name"] = "Edwardelriic",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [207]
+			}, -- [310]
 			{
 				["name"] = "Eille",
 				["rank"] = "Explorador",
@@ -2993,7 +4450,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [208]
+			}, -- [311]
 			{
 				["name"] = "Elbetia",
 				["rank"] = "Iniciado",
@@ -3007,7 +4464,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [209]
+			}, -- [312]
 			{
 				["name"] = "Electricmara",
 				["rank"] = "Explorador",
@@ -3021,7 +4478,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [210]
+			}, -- [313]
 			{
 				["name"] = "Electrikk",
 				["rank"] = "Aspirante",
@@ -3035,7 +4492,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [211]
+			}, -- [314]
 			{
 				["name"] = "Elfablue",
 				["rank"] = "Aspirante",
@@ -3049,7 +4506,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [212]
+			}, -- [315]
 			{
 				["name"] = "Elgrankhari",
 				["rank"] = "Aspirante",
@@ -3063,7 +4520,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [213]
+			}, -- [316]
 			{
 				["name"] = "Ellafrost",
 				["rank"] = "Aspirante",
@@ -3077,7 +4534,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [214]
+			}, -- [317]
 			{
 				["race"] = "HU",
 				["name"] = "Ellordgodoy",
@@ -3092,21 +4549,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [215]
-			{
-				["name"] = "Elminitito",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [216]
+			}, -- [318]
 			{
 				["name"] = "Elmole",
 				["rank"] = "Aspirante",
@@ -3120,7 +4563,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [217]
+			}, -- [319]
 			{
 				["name"] = "Elpaulo",
 				["rank"] = "Explorador",
@@ -3134,7 +4577,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [218]
+			}, -- [320]
 			{
 				["name"] = "Elqueteculea",
 				["rank"] = "Iniciado",
@@ -3148,7 +4591,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [219]
+			}, -- [321]
 			{
 				["name"] = "Elratero",
 				["rank"] = "Aspirante",
@@ -3162,21 +4605,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [220]
-			{
-				["name"] = "Eltashy",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [221]
+			}, -- [322]
 			{
 				["name"] = "Elywhen",
 				["rank"] = "Aspirante",
@@ -3190,7 +4619,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [222]
+			}, -- [323]
 			{
 				["name"] = "Empaladorx",
 				["rank"] = "Aspirante",
@@ -3204,7 +4633,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [223]
+			}, -- [324]
 			{
 				["name"] = "Engelwar",
 				["rank"] = "Aspirante",
@@ -3218,21 +4647,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [224]
-			{
-				["name"] = "Escoriazuma",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md1.3",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [225]
+			}, -- [325]
 			{
 				["name"] = "Estiblet",
 				["rank"] = "Aspirante",
@@ -3246,7 +4661,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [226]
+			}, -- [326]
 			{
 				["name"] = "Evilink",
 				["rank"] = "Iniciado",
@@ -3260,7 +4675,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [227]
+			}, -- [327]
 			{
 				["name"] = "Evillive",
 				["rank"] = "Aspirante",
@@ -3274,35 +4689,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [228]
-			{
-				["name"] = "Exist",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [229]
-			{
-				["name"] = "Extazyx",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [230]
+			}, -- [328]
 			{
 				["name"] = "Ezoni",
 				["rank"] = "Iniciado",
@@ -3316,21 +4703,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [231]
-			{
-				["name"] = "Failchat",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [232]
+			}, -- [329]
 			{
 				["race"] = "HU",
 				["name"] = "Faisin",
@@ -3345,7 +4718,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [233]
+			}, -- [330]
 			{
 				["name"] = "Faldric",
 				["rank"] = "Aspirante",
@@ -3359,21 +4732,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [234]
-			{
-				["name"] = "Farfanmidas",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [235]
+			}, -- [331]
 			{
 				["race"] = "GN",
 				["name"] = "Felipinho",
@@ -3388,7 +4747,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [236]
+			}, -- [332]
 			{
 				["race"] = "NE",
 				["name"] = "Fellea",
@@ -3403,7 +4762,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [237]
+			}, -- [333]
 			{
 				["name"] = "Felrick",
 				["rank"] = "Aspirante",
@@ -3417,21 +4776,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [238]
-			{
-				["name"] = "Fentaniila",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md3.8",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [239]
+			}, -- [334]
 			{
 				["name"] = "Fherrtoxic",
 				["rank"] = "Aspirante",
@@ -3445,7 +4790,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [240]
+			}, -- [335]
 			{
 				["name"] = "Fiino",
 				["rank"] = "Explorador",
@@ -3459,7 +4804,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [241]
+			}, -- [336]
 			{
 				["race"] = "DR",
 				["name"] = "Filodoble",
@@ -3474,7 +4819,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [242]
+			}, -- [337]
 			{
 				["race"] = "NE",
 				["name"] = "Finisht",
@@ -3489,7 +4834,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [243]
+			}, -- [338]
 			{
 				["race"] = "HU",
 				["name"] = "Fogozza",
@@ -3504,7 +4849,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [244]
+			}, -- [339]
 			{
 				["name"] = "Fracturadoor",
 				["rank"] = "Aspirante",
@@ -3518,7 +4863,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [245]
+			}, -- [340]
 			{
 				["race"] = "HU",
 				["name"] = "Freakunleash",
@@ -3533,7 +4878,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [246]
+			}, -- [341]
 			{
 				["race"] = "NE",
 				["name"] = "Freemyself",
@@ -3548,7 +4893,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [247]
+			}, -- [342]
 			{
 				["name"] = "Frostbones",
 				["rank"] = "Iniciado",
@@ -3562,7 +4907,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [248]
+			}, -- [343]
 			{
 				["name"] = "Frostdrake",
 				["rank"] = "Iniciado",
@@ -3576,7 +4921,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [249]
+			}, -- [344]
 			{
 				["race"] = "NE",
 				["name"] = "Frostiduduwu",
@@ -3591,7 +4936,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [250]
+			}, -- [345]
 			{
 				["race"] = "HU",
 				["name"] = "Frostrain",
@@ -3606,7 +4951,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [251]
+			}, -- [346]
 			{
 				["name"] = "Frut",
 				["rank"] = "Aspirante",
@@ -3620,21 +4965,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [252]
-			{
-				["name"] = "Fullkils",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [253]
+			}, -- [347]
 			{
 				["race"] = "DR",
 				["name"] = "Futari",
@@ -3649,7 +4980,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [254]
+			}, -- [348]
 			{
 				["name"] = "Fyzhuker",
 				["rank"] = "Aspirante",
@@ -3663,7 +4994,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [255]
+			}, -- [349]
 			{
 				["race"] = "HU",
 				["name"] = "Gabiramires",
@@ -3678,7 +5009,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [256]
+			}, -- [350]
 			{
 				["race"] = "OR",
 				["name"] = "Gabozinn",
@@ -3693,21 +5024,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [257]
-			{
-				["name"] = "Galtrom",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [258]
+			}, -- [351]
 			{
 				["name"] = "Garnush",
 				["rank"] = "Iniciado",
@@ -3721,21 +5038,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [259]
-			{
-				["name"] = "Garonazo",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [260]
+			}, -- [352]
 			{
 				["name"] = "Gasparsito",
 				["rank"] = "Iniciado",
@@ -3749,7 +5052,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [261]
+			}, -- [353]
 			{
 				["name"] = "Gebera",
 				["rank"] = "Aspirante",
@@ -3763,21 +5066,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [262]
-			{
-				["name"] = "Gianf",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [263]
+			}, -- [354]
 			{
 				["race"] = "HU",
 				["name"] = "Goldennuts",
@@ -3792,7 +5081,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [264]
+			}, -- [355]
 			{
 				["race"] = "OR",
 				["name"] = "Goldenwarr",
@@ -3807,7 +5096,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [265]
+			}, -- [356]
 			{
 				["name"] = "Golemdp",
 				["rank"] = "Aspirante",
@@ -3821,7 +5110,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [266]
+			}, -- [357]
 			{
 				["race"] = "HU",
 				["name"] = "Golyatt",
@@ -3836,7 +5125,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [267]
+			}, -- [358]
 			{
 				["name"] = "Gomenazai",
 				["rank"] = "Aspirante",
@@ -3850,21 +5139,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [268]
-			{
-				["name"] = "Gondolino",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [269]
+			}, -- [359]
 			{
 				["name"] = "Gonk",
 				["rank"] = "Iniciado",
@@ -3878,21 +5153,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [270]
-			{
-				["name"] = "Gooddead",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [271]
+			}, -- [360]
 			{
 				["name"] = "Gosheogorath",
 				["rank"] = "Aspirante",
@@ -3906,7 +5167,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [272]
+			}, -- [361]
 			{
 				["name"] = "Goshtmurder",
 				["rank"] = "Aspirante",
@@ -3920,7 +5181,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [273]
+			}, -- [362]
 			{
 				["name"] = "Grajam",
 				["rank"] = "Aspirante",
@@ -3934,7 +5195,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [274]
+			}, -- [363]
 			{
 				["name"] = "Greemory",
 				["rank"] = "Iniciado",
@@ -3948,7 +5209,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [275]
+			}, -- [364]
 			{
 				["race"] = "HU",
 				["name"] = "Griffiitth",
@@ -3963,7 +5224,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [276]
+			}, -- [365]
 			{
 				["name"] = "Groudandk",
 				["rank"] = "Aspirante",
@@ -3977,21 +5238,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [277]
-			{
-				["name"] = "Gustavoo",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [278]
+			}, -- [366]
 			{
 				["name"] = "Halasha",
 				["rank"] = "Aspirante",
@@ -4005,7 +5252,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [279]
+			}, -- [367]
 			{
 				["name"] = "Hamerrock",
 				["rank"] = "Aspirante",
@@ -4019,7 +5266,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [280]
+			}, -- [368]
 			{
 				["name"] = "Hammerboss",
 				["rank"] = "Iniciado",
@@ -4033,7 +5280,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [281]
+			}, -- [369]
 			{
 				["name"] = "Hanabata",
 				["rank"] = "Aspirante",
@@ -4047,7 +5294,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [282]
+			}, -- [370]
 			{
 				["name"] = "Hanssi",
 				["rank"] = "Explorador",
@@ -4061,7 +5308,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [283]
+			}, -- [371]
 			{
 				["race"] = "NE",
 				["name"] = "Hekler",
@@ -4076,7 +5323,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [284]
+			}, -- [372]
 			{
 				["name"] = "Hellsx",
 				["rank"] = "Aspirante",
@@ -4090,7 +5337,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [285]
+			}, -- [373]
 			{
 				["race"] = "HU",
 				["name"] = "Hellzinn",
@@ -4105,7 +5352,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [286]
+			}, -- [374]
 			{
 				["name"] = "Hhekler",
 				["rank"] = "Iniciado",
@@ -4119,7 +5366,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [287]
+			}, -- [375]
 			{
 				["race"] = "HU",
 				["name"] = "Hiari",
@@ -4134,7 +5381,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [288]
+			}, -- [376]
 			{
 				["name"] = "Hiey",
 				["rank"] = "Explorador",
@@ -4148,7 +5395,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [289]
+			}, -- [377]
 			{
 				["name"] = "Himikochan",
 				["rank"] = "Aspirante",
@@ -4162,21 +5409,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [290]
-			{
-				["name"] = "Hirenkyaku",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [291]
+			}, -- [378]
 			{
 				["name"] = "Hnoinfectus",
 				["rank"] = "Aspirante",
@@ -4190,7 +5423,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [292]
+			}, -- [379]
 			{
 				["name"] = "Hollowboss",
 				["rank"] = "Iniciado",
@@ -4204,7 +5437,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [293]
+			}, -- [380]
 			{
 				["name"] = "Hombrera",
 				["rank"] = "Iniciado",
@@ -4218,7 +5451,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [294]
+			}, -- [381]
 			{
 				["race"] = "DR",
 				["name"] = "Howlshade",
@@ -4233,7 +5466,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [295]
+			}, -- [382]
 			{
 				["race"] = "HU",
 				["name"] = "Hsaddyrdi",
@@ -4248,7 +5481,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [296]
+			}, -- [383]
 			{
 				["name"] = "Huevon",
 				["rank"] = "Aspirante",
@@ -4262,7 +5495,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [297]
+			}, -- [384]
 			{
 				["name"] = "Hunteerblack",
 				["rank"] = "Aspirante",
@@ -4276,21 +5509,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [298]
-			{
-				["name"] = "Hunterblaack",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [299]
+			}, -- [385]
 			{
 				["name"] = "Husse",
 				["rank"] = "Aspirante",
@@ -4304,7 +5523,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [300]
+			}, -- [386]
 			{
 				["name"] = "Huvoflaco",
 				["rank"] = "Aspirante",
@@ -4318,7 +5537,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [301]
+			}, -- [387]
 			{
 				["race"] = "HU",
 				["name"] = "Ichigokuroz",
@@ -4333,7 +5552,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [302]
+			}, -- [388]
 			{
 				["race"] = "BE",
 				["name"] = "Icura",
@@ -4348,7 +5567,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [303]
+			}, -- [389]
 			{
 				["race"] = "HU",
 				["name"] = "Idylla",
@@ -4363,21 +5582,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [304]
-			{
-				["name"] = "Iguacel",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [305]
+			}, -- [390]
 			{
 				["name"] = "Ikanko",
 				["rank"] = "Aspirante",
@@ -4391,7 +5596,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [306]
+			}, -- [391]
 			{
 				["race"] = "HU",
 				["name"] = "Iloverock",
@@ -4406,7 +5611,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [307]
+			}, -- [392]
 			{
 				["name"] = "Immortalwar",
 				["rank"] = "Aspirante",
@@ -4420,21 +5625,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [308]
-			{
-				["name"] = "Inferrni",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [309]
+			}, -- [393]
 			{
 				["name"] = "Ingratho",
 				["rank"] = "Iniciado",
@@ -4448,7 +5639,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [310]
+			}, -- [394]
 			{
 				["name"] = "Inquishidor",
 				["rank"] = "Iniciado",
@@ -4462,7 +5653,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [311]
+			}, -- [395]
 			{
 				["name"] = "Ivanovaa",
 				["rank"] = "Aspirante",
@@ -4476,7 +5667,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [312]
+			}, -- [396]
 			{
 				["name"] = "Iveey",
 				["rank"] = "Iniciado",
@@ -4490,21 +5681,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [313]
-			{
-				["name"] = "Jacksonxd",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [314]
+			}, -- [397]
 			{
 				["race"] = "HU",
 				["name"] = "Jainabunny",
@@ -4519,7 +5696,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [315]
+			}, -- [398]
 			{
 				["race"] = "GN",
 				["name"] = "Jainapower",
@@ -4534,7 +5711,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [316]
+			}, -- [399]
 			{
 				["name"] = "Janio",
 				["rank"] = "Iniciado",
@@ -4548,7 +5725,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [317]
+			}, -- [400]
 			{
 				["race"] = "DW",
 				["name"] = "Jaralf",
@@ -4563,7 +5740,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [318]
+			}, -- [401]
 			{
 				["name"] = "Jeringa",
 				["rank"] = "Explorador",
@@ -4577,7 +5754,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [319]
+			}, -- [402]
 			{
 				["name"] = "Jessiik",
 				["rank"] = "Aspirante",
@@ -4591,7 +5768,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [320]
+			}, -- [403]
 			{
 				["name"] = "Jhaxiel",
 				["rank"] = "Aspirante",
@@ -4605,7 +5782,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [321]
+			}, -- [404]
 			{
 				["name"] = "Jhonntanxd",
 				["rank"] = "Iniciado",
@@ -4619,7 +5796,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [322]
+			}, -- [405]
 			{
 				["race"] = "HU",
 				["name"] = "Jhonnysims",
@@ -4634,7 +5811,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [323]
+			}, -- [406]
 			{
 				["name"] = "Jhonyc",
 				["rank"] = "Explorador",
@@ -4648,7 +5825,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [324]
+			}, -- [407]
 			{
 				["name"] = "Jhuday",
 				["rank"] = "Aspirante",
@@ -4662,21 +5839,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [325]
-			{
-				["name"] = "Jimagua",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [326]
+			}, -- [408]
 			{
 				["race"] = "HU",
 				["name"] = "Jmdk",
@@ -4691,21 +5854,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [327]
-			{
-				["name"] = "Jmkiuu",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [328]
+			}, -- [409]
 			{
 				["race"] = "BE",
 				["name"] = "Johanz",
@@ -4720,7 +5869,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [329]
+			}, -- [410]
 			{
 				["name"] = "Johngordon",
 				["rank"] = "Iniciado",
@@ -4734,7 +5883,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [330]
+			}, -- [411]
 			{
 				["name"] = "Jonared",
 				["rank"] = "Explorador",
@@ -4748,7 +5897,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [331]
+			}, -- [412]
 			{
 				["name"] = "Jonycoca",
 				["rank"] = "Aspirante",
@@ -4762,7 +5911,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [332]
+			}, -- [413]
 			{
 				["name"] = "Jorz",
 				["rank"] = "Iniciado",
@@ -4776,7 +5925,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [333]
+			}, -- [414]
 			{
 				["race"] = "HU",
 				["name"] = "Jugadora",
@@ -4791,7 +5940,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [334]
+			}, -- [415]
 			{
 				["race"] = "HU",
 				["name"] = "Julih",
@@ -4806,7 +5955,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [335]
+			}, -- [416]
 			{
 				["race"] = "DR",
 				["name"] = "Juliwar",
@@ -4821,7 +5970,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [336]
+			}, -- [417]
 			{
 				["name"] = "Kaeldin",
 				["rank"] = "Iniciado",
@@ -4835,21 +5984,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [337]
-			{
-				["name"] = "Kaelthnas",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [338]
+			}, -- [418]
 			{
 				["name"] = "Kaeylee",
 				["rank"] = "Iniciado",
@@ -4863,7 +5998,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [339]
+			}, -- [419]
 			{
 				["name"] = "Kafshe",
 				["rank"] = "Iniciado",
@@ -4877,7 +6012,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [340]
+			}, -- [420]
 			{
 				["name"] = "Kaihoken",
 				["rank"] = "Aspirante",
@@ -4891,7 +6026,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [341]
+			}, -- [421]
 			{
 				["race"] = "DR",
 				["name"] = "Kannad",
@@ -4906,7 +6041,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [342]
+			}, -- [422]
 			{
 				["race"] = "DR",
 				["name"] = "Katsuri",
@@ -4921,21 +6056,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [343]
-			{
-				["name"] = "Keetees",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [344]
+			}, -- [423]
 			{
 				["race"] = "HU",
 				["name"] = "Kekos",
@@ -4950,7 +6071,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [345]
+			}, -- [424]
 			{
 				["name"] = "Keldoray",
 				["rank"] = "Aspirante",
@@ -4964,7 +6085,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [346]
+			}, -- [425]
 			{
 				["name"] = "Kelezet",
 				["rank"] = "Explorador",
@@ -4978,7 +6099,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [347]
+			}, -- [426]
 			{
 				["name"] = "Kendro",
 				["rank"] = "Aspirante",
@@ -4992,7 +6113,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [348]
+			}, -- [427]
 			{
 				["name"] = "Kepoa",
 				["rank"] = "Aspirante",
@@ -5006,7 +6127,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [349]
+			}, -- [428]
 			{
 				["name"] = "Kervin",
 				["rank"] = "Explorador",
@@ -5020,7 +6141,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [350]
+			}, -- [429]
 			{
 				["race"] = "TR",
 				["name"] = "Kguzz",
@@ -5035,35 +6156,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [351]
-			{
-				["name"] = "Khaalia",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [352]
-			{
-				["name"] = "Khani",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "mh1.0",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [353]
+			}, -- [430]
 			{
 				["name"] = "Kharichamo",
 				["rank"] = "Aspirante",
@@ -5077,7 +6170,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [354]
+			}, -- [431]
 			{
 				["race"] = "DR",
 				["name"] = "Khrii",
@@ -5092,7 +6185,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [355]
+			}, -- [432]
 			{
 				["name"] = "Khyron",
 				["rank"] = "Aspirante",
@@ -5106,7 +6199,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [356]
+			}, -- [433]
 			{
 				["name"] = "Kiahara",
 				["rank"] = "Aspirante",
@@ -5120,21 +6213,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [357]
-			{
-				["name"] = "Kilimansharo",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [358]
+			}, -- [434]
 			{
 				["name"] = "Kilime",
 				["rank"] = "Explorador",
@@ -5148,7 +6227,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [359]
+			}, -- [435]
 			{
 				["name"] = "Killtroz",
 				["rank"] = "Aspirante",
@@ -5162,7 +6241,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [360]
+			}, -- [436]
 			{
 				["name"] = "Kimbli",
 				["rank"] = "Aspirante",
@@ -5176,7 +6255,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [361]
+			}, -- [437]
 			{
 				["race"] = "NE",
 				["name"] = "Kiritoferal",
@@ -5191,35 +6270,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [362]
-			{
-				["name"] = "Kishimura",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [363]
-			{
-				["name"] = "Kitawa",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [364]
+			}, -- [438]
 			{
 				["name"] = "Kkevvins",
 				["rank"] = "Aspirante",
@@ -5233,7 +6284,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [365]
+			}, -- [439]
 			{
 				["race"] = "HU",
 				["name"] = "Kkikass",
@@ -5248,21 +6299,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [366]
-			{
-				["name"] = "Klkjacc",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [367]
+			}, -- [440]
 			{
 				["name"] = "Korijutsu",
 				["rank"] = "Aspirante",
@@ -5276,21 +6313,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [368]
-			{
-				["name"] = "Kpillo",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [369]
+			}, -- [441]
 			{
 				["name"] = "Kracentt",
 				["rank"] = "Explorador",
@@ -5304,7 +6327,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [370]
+			}, -- [442]
 			{
 				["race"] = "DR",
 				["name"] = "Krialania",
@@ -5319,7 +6342,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [371]
+			}, -- [443]
 			{
 				["race"] = "NE",
 				["name"] = "Krinity",
@@ -5334,7 +6357,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [372]
+			}, -- [444]
 			{
 				["name"] = "Krobelluss",
 				["rank"] = "Aspirante",
@@ -5348,7 +6371,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [373]
+			}, -- [445]
 			{
 				["name"] = "Krollis",
 				["rank"] = "Aspirante",
@@ -5362,21 +6385,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [374]
-			{
-				["name"] = "Krypts",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [375]
+			}, -- [446]
 			{
 				["race"] = "HU",
 				["name"] = "Kuerva",
@@ -5391,7 +6400,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [376]
+			}, -- [447]
 			{
 				["name"] = "Kukushibo",
 				["rank"] = "Explorador",
@@ -5405,7 +6414,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [377]
+			}, -- [448]
 			{
 				["name"] = "Kuramota",
 				["rank"] = "Aspirante",
@@ -5419,7 +6428,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [378]
+			}, -- [449]
 			{
 				["race"] = "HU",
 				["name"] = "Kyllbyll",
@@ -5434,7 +6443,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [379]
+			}, -- [450]
 			{
 				["name"] = "Laardillita",
 				["rank"] = "Aspirante",
@@ -5448,7 +6457,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [380]
+			}, -- [451]
 			{
 				["name"] = "Labrujadel",
 				["rank"] = "Aspirante",
@@ -5462,21 +6471,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [381]
-			{
-				["name"] = "Labubuperuka",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [382]
+			}, -- [452]
 			{
 				["race"] = "HU",
 				["name"] = "Lachyto",
@@ -5491,7 +6486,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [383]
+			}, -- [453]
 			{
 				["name"] = "Ladgherta",
 				["rank"] = "Explorador",
@@ -5505,7 +6500,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [384]
+			}, -- [454]
 			{
 				["name"] = "Lagherthaas",
 				["rank"] = "Aspirante",
@@ -5519,7 +6514,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [385]
+			}, -- [455]
 			{
 				["name"] = "Laiyla",
 				["rank"] = "Aspirante",
@@ -5533,7 +6528,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [386]
+			}, -- [456]
 			{
 				["name"] = "Laron",
 				["rank"] = "Aspirante",
@@ -5547,7 +6542,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [387]
+			}, -- [457]
 			{
 				["name"] = "Lawapa",
 				["rank"] = "Aspirante",
@@ -5561,7 +6556,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [388]
+			}, -- [458]
 			{
 				["name"] = "Lbrujas",
 				["rank"] = "Iniciado",
@@ -5575,7 +6570,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [389]
+			}, -- [459]
 			{
 				["name"] = "Lecherancea",
 				["rank"] = "Iniciado",
@@ -5589,7 +6584,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [390]
+			}, -- [460]
 			{
 				["race"] = "NE",
 				["name"] = "Legarks",
@@ -5604,7 +6599,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [391]
+			}, -- [461]
 			{
 				["name"] = "Legenpa",
 				["rank"] = "Aspirante",
@@ -5618,7 +6613,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [392]
+			}, -- [462]
 			{
 				["name"] = "Levitor",
 				["rank"] = "Iniciado",
@@ -5632,7 +6627,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [393]
+			}, -- [463]
 			{
 				["name"] = "Lianetsita",
 				["rank"] = "Aspirante",
@@ -5646,35 +6641,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [394]
-			{
-				["name"] = "Lishyl",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [395]
-			{
-				["name"] = "Littlelion",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "md",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [396]
+			}, -- [464]
 			{
 				["race"] = "HU",
 				["name"] = "Lloroncita",
@@ -5689,7 +6656,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [397]
+			}, -- [465]
 			{
 				["race"] = "GN",
 				["name"] = "Lolalalo",
@@ -5704,7 +6671,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [398]
+			}, -- [466]
 			{
 				["name"] = "Lonte",
 				["rank"] = "Aspirante",
@@ -5718,7 +6685,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [399]
+			}, -- [467]
 			{
 				["name"] = "Loranea",
 				["rank"] = "Explorador",
@@ -5732,21 +6699,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [400]
-			{
-				["name"] = "Luciene",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [401]
+			}, -- [468]
 			{
 				["name"] = "Luciusvelkan",
 				["rank"] = "Iniciado",
@@ -5760,7 +6713,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [402]
+			}, -- [469]
 			{
 				["name"] = "Luckytoloco",
 				["rank"] = "Explorador",
@@ -5774,21 +6727,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [403]
-			{
-				["name"] = "Luichq",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [404]
+			}, -- [470]
 			{
 				["name"] = "Lukboma",
 				["rank"] = "Aspirante",
@@ -5802,7 +6741,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [405]
+			}, -- [471]
 			{
 				["name"] = "Lusk",
 				["rank"] = "Aspirante",
@@ -5816,7 +6755,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [406]
+			}, -- [472]
 			{
 				["name"] = "Luzdsol",
 				["rank"] = "Iniciado",
@@ -5830,7 +6769,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [407]
+			}, -- [473]
 			{
 				["name"] = "Magato",
 				["rank"] = "Aspirante",
@@ -5844,7 +6783,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [408]
+			}, -- [474]
 			{
 				["name"] = "Magiclaw",
 				["rank"] = "Iniciado",
@@ -5858,7 +6797,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [409]
+			}, -- [475]
 			{
 				["race"] = "DW",
 				["name"] = "Magim",
@@ -5873,35 +6812,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [410]
-			{
-				["name"] = "Magoporross",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md2.0",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [411]
-			{
-				["name"] = "Magordox",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [412]
+			}, -- [476]
 			{
 				["race"] = "GN",
 				["name"] = "Maguitoz",
@@ -5916,7 +6827,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [413]
+			}, -- [477]
 			{
 				["name"] = "Maguzo",
 				["rank"] = "Iniciado",
@@ -5930,7 +6841,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [414]
+			}, -- [478]
 			{
 				["race"] = "NE",
 				["name"] = "Mahindra",
@@ -5945,7 +6856,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [415]
+			}, -- [479]
 			{
 				["name"] = "Maleante",
 				["rank"] = "Aspirante",
@@ -5959,21 +6870,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [416]
-			{
-				["name"] = "Malganlx",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [417]
+			}, -- [480]
 			{
 				["name"] = "Maltratoss",
 				["rank"] = "Aspirante",
@@ -5987,7 +6884,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [418]
+			}, -- [481]
 			{
 				["name"] = "Mamarcela",
 				["rank"] = "Iniciado",
@@ -6001,21 +6898,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [419]
-			{
-				["name"] = "Manupro",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [420]
+			}, -- [482]
 			{
 				["name"] = "Marculin",
 				["rank"] = "Explorador",
@@ -6029,7 +6912,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [421]
+			}, -- [483]
 			{
 				["name"] = "Maridohlg",
 				["rank"] = "Aspirante",
@@ -6043,7 +6926,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [422]
+			}, -- [484]
 			{
 				["name"] = "Mariguaniel",
 				["rank"] = "Aspirante",
@@ -6057,21 +6940,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [423]
-			{
-				["name"] = "Marketter",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [424]
+			}, -- [485]
 			{
 				["name"] = "Marlocky",
 				["rank"] = "Aspirante",
@@ -6085,7 +6954,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [425]
+			}, -- [486]
 			{
 				["name"] = "Marokito",
 				["rank"] = "Aspirante",
@@ -6099,7 +6968,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [426]
+			}, -- [487]
 			{
 				["name"] = "Matrixaqui",
 				["rank"] = "Aspirante",
@@ -6113,7 +6982,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [427]
+			}, -- [488]
 			{
 				["name"] = "Matygio",
 				["rank"] = "Aspirante",
@@ -6127,7 +6996,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [428]
+			}, -- [489]
 			{
 				["name"] = "Maurotee",
 				["rank"] = "Aspirante",
@@ -6141,7 +7010,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [429]
+			}, -- [490]
 			{
 				["name"] = "Mct",
 				["rank"] = "Aspirante",
@@ -6155,7 +7024,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [430]
+			}, -- [491]
 			{
 				["race"] = "GN",
 				["name"] = "Medraunt",
@@ -6170,7 +7039,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [431]
+			}, -- [492]
 			{
 				["race"] = "NE",
 				["name"] = "Meguminnznz",
@@ -6185,7 +7054,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [432]
+			}, -- [493]
 			{
 				["name"] = "Membererect",
 				["rank"] = "Iniciado",
@@ -6199,7 +7068,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [433]
+			}, -- [494]
 			{
 				["name"] = "Memeboss",
 				["rank"] = "Iniciado",
@@ -6213,7 +7082,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [434]
+			}, -- [495]
 			{
 				["name"] = "Metapala",
 				["rank"] = "Iniciado",
@@ -6227,7 +7096,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [435]
+			}, -- [496]
 			{
 				["race"] = "HU",
 				["name"] = "Mfer",
@@ -6242,7 +7111,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [436]
+			}, -- [497]
 			{
 				["name"] = "Mhegara",
 				["rank"] = "Explorador",
@@ -6256,7 +7125,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [437]
+			}, -- [498]
 			{
 				["name"] = "Miakalyfa",
 				["rank"] = "Aspirante",
@@ -6270,7 +7139,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [438]
+			}, -- [499]
 			{
 				["race"] = "NE",
 				["name"] = "Miamiau",
@@ -6285,21 +7154,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [439]
-			{
-				["name"] = "Miaujade",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [440]
+			}, -- [500]
 			{
 				["name"] = "Miglory",
 				["rank"] = "Aspirante",
@@ -6313,7 +7168,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [441]
+			}, -- [501]
 			{
 				["name"] = "Mikisaa",
 				["rank"] = "Aspirante",
@@ -6327,7 +7182,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [442]
+			}, -- [502]
 			{
 				["name"] = "Milechita",
 				["rank"] = "Aspirante",
@@ -6341,21 +7196,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [443]
-			{
-				["name"] = "Milkyheal",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [444]
+			}, -- [503]
 			{
 				["name"] = "Milotar",
 				["rank"] = "Iniciado",
@@ -6369,7 +7210,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [445]
+			}, -- [504]
 			{
 				["name"] = "Mimarin",
 				["rank"] = "Explorador",
@@ -6383,21 +7224,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [446]
-			{
-				["name"] = "Minecraftlow",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [447]
+			}, -- [505]
 			{
 				["name"] = "Mingoxs",
 				["rank"] = "Aspirante",
@@ -6411,7 +7238,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [448]
+			}, -- [506]
 			{
 				["race"] = "GN",
 				["name"] = "Minigris",
@@ -6426,21 +7253,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [449]
-			{
-				["name"] = "Miqtu",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [450]
+			}, -- [507]
 			{
 				["race"] = "HU",
 				["name"] = "Mirachin",
@@ -6455,7 +7268,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [451]
+			}, -- [508]
 			{
 				["name"] = "Mirack",
 				["rank"] = "Aspirante",
@@ -6469,21 +7282,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [452]
-			{
-				["name"] = "Miserinos",
-				["rank"] = "Iniciado",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "ad1.0",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [453]
+			}, -- [509]
 			{
 				["name"] = "Misspizza",
 				["rank"] = "Aspirante",
@@ -6497,7 +7296,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [454]
+			}, -- [510]
 			{
 				["name"] = "Mitsel",
 				["rank"] = "Aspirante",
@@ -6511,7 +7310,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [455]
+			}, -- [511]
 			{
 				["race"] = "HU",
 				["name"] = "Mivase",
@@ -6526,7 +7325,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [456]
+			}, -- [512]
 			{
 				["name"] = "Modoaiseday",
 				["rank"] = "Aspirante",
@@ -6540,7 +7339,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [457]
+			}, -- [513]
 			{
 				["race"] = "HU",
 				["name"] = "Mohrwen",
@@ -6555,21 +7354,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [458]
-			{
-				["name"] = "Molenox",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [459]
+			}, -- [514]
 			{
 				["name"] = "Monitido",
 				["rank"] = "Aspirante",
@@ -6583,7 +7368,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [460]
+			}, -- [515]
 			{
 				["race"] = "DW",
 				["name"] = "Monquidi",
@@ -6598,7 +7383,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [461]
+			}, -- [516]
 			{
 				["name"] = "Montezz",
 				["rank"] = "Aspirante",
@@ -6612,21 +7397,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [462]
-			{
-				["name"] = "Montriuk",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [463]
+			}, -- [517]
 			{
 				["race"] = "DR",
 				["name"] = "Moonjacket",
@@ -6641,21 +7412,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [464]
-			{
-				["name"] = "Morenaxa",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [465]
+			}, -- [518]
 			{
 				["name"] = "Mortisshade",
 				["rank"] = "Aspirante",
@@ -6669,7 +7426,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [466]
+			}, -- [519]
 			{
 				["name"] = "Motekul",
 				["rank"] = "Iniciado",
@@ -6683,7 +7440,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [467]
+			}, -- [520]
 			{
 				["name"] = "Muertodasco",
 				["rank"] = "Explorador",
@@ -6697,21 +7454,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [468]
-			{
-				["name"] = "Muxaxo",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [469]
+			}, -- [521]
 			{
 				["name"] = "Muzzann",
 				["rank"] = "Iniciado",
@@ -6725,7 +7468,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [470]
+			}, -- [522]
 			{
 				["name"] = "Mythoss",
 				["rank"] = "Aspirante",
@@ -6739,7 +7482,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [471]
+			}, -- [523]
 			{
 				["name"] = "Nachii",
 				["rank"] = "Aspirante",
@@ -6753,21 +7496,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [472]
-			{
-				["name"] = "Nandoh",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [473]
+			}, -- [524]
 			{
 				["name"] = "Nanitas",
 				["rank"] = "Iniciado",
@@ -6781,7 +7510,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [474]
+			}, -- [525]
 			{
 				["race"] = "NE",
 				["name"] = "Nasci",
@@ -6796,7 +7525,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [475]
+			}, -- [526]
 			{
 				["name"] = "Nasor",
 				["rank"] = "Aspirante",
@@ -6810,7 +7539,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [476]
+			}, -- [527]
 			{
 				["name"] = "Nathassha",
 				["rank"] = "Iniciado",
@@ -6824,7 +7553,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [477]
+			}, -- [528]
 			{
 				["name"] = "Natir",
 				["rank"] = "Iniciado",
@@ -6838,7 +7567,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [478]
+			}, -- [529]
 			{
 				["name"] = "Nattures",
 				["rank"] = "Iniciado",
@@ -6852,7 +7581,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [479]
+			}, -- [530]
 			{
 				["name"] = "Natusha",
 				["rank"] = "Iniciado",
@@ -6866,7 +7595,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [480]
+			}, -- [531]
 			{
 				["race"] = "NE",
 				["name"] = "Necantu",
@@ -6881,7 +7610,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [481]
+			}, -- [532]
 			{
 				["name"] = "Neilany",
 				["rank"] = "Iniciado",
@@ -6895,7 +7624,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [482]
+			}, -- [533]
 			{
 				["name"] = "Neonh",
 				["rank"] = "Aspirante",
@@ -6909,21 +7638,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [483]
-			{
-				["name"] = "Nephsy",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [484]
+			}, -- [534]
 			{
 				["race"] = "HU",
 				["name"] = "Nephttys",
@@ -6938,7 +7653,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [485]
+			}, -- [535]
 			{
 				["name"] = "Netalia",
 				["rank"] = "Aspirante",
@@ -6952,7 +7667,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [486]
+			}, -- [536]
 			{
 				["name"] = "Netharion",
 				["rank"] = "Aspirante",
@@ -6966,7 +7681,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [487]
+			}, -- [537]
 			{
 				["name"] = "Neymare",
 				["rank"] = "Explorador",
@@ -6980,7 +7695,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [488]
+			}, -- [538]
 			{
 				["name"] = "Nillsy",
 				["rank"] = "Aspirante",
@@ -6994,7 +7709,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [489]
+			}, -- [539]
 			{
 				["name"] = "Nismoli",
 				["rank"] = "Iniciado",
@@ -7008,7 +7723,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [490]
+			}, -- [540]
 			{
 				["race"] = "DW",
 				["name"] = "Nohack",
@@ -7023,7 +7738,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [491]
+			}, -- [541]
 			{
 				["name"] = "Nomalia",
 				["rank"] = "Aspirante",
@@ -7037,7 +7752,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [492]
+			}, -- [542]
 			{
 				["name"] = "Noobody",
 				["rank"] = "Aspirante",
@@ -7051,7 +7766,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [493]
+			}, -- [543]
 			{
 				["name"] = "Noxblack",
 				["rank"] = "Iniciado",
@@ -7065,7 +7780,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [494]
+			}, -- [544]
 			{
 				["race"] = "NE",
 				["name"] = "Nubiz",
@@ -7080,7 +7795,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [495]
+			}, -- [545]
 			{
 				["race"] = "NE",
 				["name"] = "Nypth",
@@ -7095,7 +7810,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [496]
+			}, -- [546]
 			{
 				["name"] = "Nyshinoya",
 				["rank"] = "Aspirante",
@@ -7109,7 +7824,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [497]
+			}, -- [547]
 			{
 				["race"] = "DR",
 				["name"] = "Obscurawow",
@@ -7124,7 +7839,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [498]
+			}, -- [548]
 			{
 				["race"] = "HU",
 				["name"] = "Odyssers",
@@ -7139,7 +7854,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [499]
+			}, -- [549]
 			{
 				["name"] = "Ogmago",
 				["rank"] = "Iniciado",
@@ -7153,7 +7868,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [500]
+			}, -- [550]
 			{
 				["name"] = "Olaf",
 				["rank"] = "Aspirante",
@@ -7167,7 +7882,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [501]
+			}, -- [551]
 			{
 				["name"] = "Olem",
 				["rank"] = "Aspirante",
@@ -7181,7 +7896,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [502]
+			}, -- [552]
 			{
 				["name"] = "Ooxtalanxoo",
 				["rank"] = "Aspirante",
@@ -7195,35 +7910,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [503]
-			{
-				["name"] = "Orcrok",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [504]
-			{
-				["name"] = "Orionxz",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [505]
+			}, -- [553]
 			{
 				["name"] = "Orkusvk",
 				["rank"] = "Aspirante",
@@ -7237,35 +7924,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [506]
-			{
-				["name"] = "Orodretth",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [507]
-			{
-				["name"] = "Owep",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [508]
+			}, -- [554]
 			{
 				["name"] = "Oziri",
 				["rank"] = "Aspirante",
@@ -7279,7 +7938,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [509]
+			}, -- [555]
 			{
 				["name"] = "Pachafuker",
 				["rank"] = "Aspirante",
@@ -7293,7 +7952,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [510]
+			}, -- [556]
 			{
 				["name"] = "Paiwix",
 				["rank"] = "Aspirante",
@@ -7307,7 +7966,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [511]
+			}, -- [557]
 			{
 				["name"] = "Palafeliz",
 				["rank"] = "Iniciado",
@@ -7321,7 +7980,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [512]
+			}, -- [558]
 			{
 				["name"] = "Palagabriel",
 				["rank"] = "Aspirante",
@@ -7335,35 +7994,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [513]
-			{
-				["name"] = "Palawal",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [514]
-			{
-				["name"] = "Palodyn",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [515]
+			}, -- [559]
 			{
 				["race"] = "NE",
 				["name"] = "Pamola",
@@ -7378,7 +8009,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [516]
+			}, -- [560]
 			{
 				["name"] = "Pandorashaw",
 				["rank"] = "Iniciado",
@@ -7392,7 +8023,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [517]
+			}, -- [561]
 			{
 				["name"] = "Pantherll",
 				["rank"] = "Aspirante",
@@ -7406,21 +8037,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [518]
-			{
-				["name"] = "Panycanela",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [519]
+			}, -- [562]
 			{
 				["race"] = "NE",
 				["name"] = "Papasalada",
@@ -7435,7 +8052,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [520]
+			}, -- [563]
 			{
 				["name"] = "Papeo",
 				["rank"] = "Explorador",
@@ -7449,21 +8066,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [521]
-			{
-				["name"] = "Papivaca",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [522]
+			}, -- [564]
 			{
 				["name"] = "Papusabroso",
 				["rank"] = "Aspirante",
@@ -7477,7 +8080,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [523]
+			}, -- [565]
 			{
 				["name"] = "Paryt",
 				["rank"] = "Iniciado",
@@ -7491,7 +8094,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [524]
+			}, -- [566]
 			{
 				["race"] = "DR",
 				["name"] = "Patitodelux",
@@ -7506,7 +8109,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [525]
+			}, -- [567]
 			{
 				["name"] = "Pauhunter",
 				["rank"] = "Iniciado",
@@ -7520,7 +8123,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [526]
+			}, -- [568]
 			{
 				["name"] = "Peerreo",
 				["rank"] = "Aspirante",
@@ -7534,7 +8137,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [527]
+			}, -- [569]
 			{
 				["name"] = "Peeru",
 				["rank"] = "Aspirante",
@@ -7548,7 +8151,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [528]
+			}, -- [570]
 			{
 				["name"] = "Pentakiil",
 				["rank"] = "Aspirante",
@@ -7562,7 +8165,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [529]
+			}, -- [571]
 			{
 				["name"] = "Pepitalaloca",
 				["rank"] = "Iniciado",
@@ -7576,7 +8179,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [530]
+			}, -- [572]
 			{
 				["name"] = "Pequecuerno",
 				["rank"] = "Aspirante",
@@ -7590,21 +8193,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [531]
-			{
-				["name"] = "Pestilenciia",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [532]
+			}, -- [573]
 			{
 				["race"] = "DR",
 				["name"] = "Phabius",
@@ -7619,7 +8208,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [533]
+			}, -- [574]
 			{
 				["name"] = "Pholem",
 				["rank"] = "Aspirante",
@@ -7633,7 +8222,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [534]
+			}, -- [575]
 			{
 				["name"] = "Picapicaron",
 				["rank"] = "Aspirante",
@@ -7647,7 +8236,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [535]
+			}, -- [576]
 			{
 				["race"] = "HU",
 				["name"] = "Pikman",
@@ -7662,7 +8251,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [536]
+			}, -- [577]
 			{
 				["race"] = "TR",
 				["name"] = "Pillamoscas",
@@ -7677,7 +8266,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [537]
+			}, -- [578]
 			{
 				["name"] = "Pinpoyo",
 				["rank"] = "Aspirante",
@@ -7691,7 +8280,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [538]
+			}, -- [579]
 			{
 				["name"] = "Pintao",
 				["rank"] = "Iniciado",
@@ -7705,22 +8294,9 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [539]
+			}, -- [580]
 			{
-				["name"] = "Pintoski",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [540]
-			{
+				["race"] = "DW",
 				["name"] = "Pipisito",
 				["rank"] = "Aspirante",
 				["officerNote"] = "",
@@ -7733,7 +8309,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [541]
+			}, -- [581]
 			{
 				["name"] = "Pistacucha",
 				["rank"] = "Aspirante",
@@ -7747,7 +8323,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [542]
+			}, -- [582]
 			{
 				["name"] = "Pitufinn",
 				["rank"] = "Iniciado",
@@ -7761,7 +8337,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [543]
+			}, -- [583]
 			{
 				["name"] = "Piye",
 				["rank"] = "Aspirante",
@@ -7775,7 +8351,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [544]
+			}, -- [584]
 			{
 				["name"] = "Pliklin",
 				["rank"] = "Explorador",
@@ -7789,7 +8365,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [545]
+			}, -- [585]
 			{
 				["name"] = "Plomito",
 				["rank"] = "Aspirante",
@@ -7803,7 +8379,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [546]
+			}, -- [586]
 			{
 				["name"] = "Poinass",
 				["rank"] = "Aspirante",
@@ -7817,7 +8393,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [547]
+			}, -- [587]
 			{
 				["name"] = "Polachek",
 				["rank"] = "Iniciado",
@@ -7831,21 +8407,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [548]
-			{
-				["name"] = "Polachekcita",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [549]
+			}, -- [588]
 			{
 				["name"] = "Polloql",
 				["rank"] = "Iniciado",
@@ -7859,7 +8421,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [550]
+			}, -- [589]
 			{
 				["name"] = "Pomberino",
 				["rank"] = "Iniciado",
@@ -7873,7 +8435,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [551]
+			}, -- [590]
 			{
 				["name"] = "Ponchy",
 				["rank"] = "Aspirante",
@@ -7887,7 +8449,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [552]
+			}, -- [591]
 			{
 				["name"] = "Ponehordas",
 				["rank"] = "Aspirante",
@@ -7901,7 +8463,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [553]
+			}, -- [592]
 			{
 				["name"] = "Pornub",
 				["rank"] = "Iniciado",
@@ -7915,7 +8477,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [554]
+			}, -- [593]
 			{
 				["name"] = "Portalmaker",
 				["rank"] = "Explorador",
@@ -7929,7 +8491,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [555]
+			}, -- [594]
 			{
 				["name"] = "Pototos",
 				["rank"] = "Aspirante",
@@ -7943,7 +8505,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [556]
+			}, -- [595]
 			{
 				["name"] = "Ppriscila",
 				["rank"] = "Iniciado",
@@ -7957,7 +8519,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [557]
+			}, -- [596]
 			{
 				["race"] = "TR",
 				["name"] = "Prestoxx",
@@ -7972,21 +8534,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [558]
-			{
-				["name"] = "Pshao",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [559]
+			}, -- [597]
 			{
 				["name"] = "Pugberto",
 				["rank"] = "Iniciado",
@@ -8000,21 +8548,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [560]
-			{
-				["name"] = "Puloski",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [561]
+			}, -- [598]
 			{
 				["name"] = "Punchfire",
 				["rank"] = "Iniciado",
@@ -8028,7 +8562,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [562]
+			}, -- [599]
 			{
 				["race"] = "HU",
 				["name"] = "Punchman",
@@ -8043,7 +8577,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [563]
+			}, -- [600]
 			{
 				["name"] = "Purris",
 				["rank"] = "Iniciado",
@@ -8057,21 +8591,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [564]
-			{
-				["name"] = "Purrisito",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [565]
+			}, -- [601]
 			{
 				["name"] = "Putifarra",
 				["rank"] = "Aspirante",
@@ -8085,7 +8605,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [566]
+			}, -- [602]
 			{
 				["race"] = "DW",
 				["name"] = "Pyladin",
@@ -8100,7 +8620,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [567]
+			}, -- [603]
 			{
 				["race"] = "HU",
 				["name"] = "Raaikon",
@@ -8115,7 +8635,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [568]
+			}, -- [604]
 			{
 				["name"] = "Ragnarups",
 				["rank"] = "Explorador",
@@ -8129,7 +8649,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [569]
+			}, -- [605]
 			{
 				["name"] = "Raiikon",
 				["rank"] = "Iniciado",
@@ -8143,7 +8663,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [570]
+			}, -- [606]
 			{
 				["race"] = "NE",
 				["name"] = "Raizet",
@@ -8158,7 +8678,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [571]
+			}, -- [607]
 			{
 				["race"] = "NE",
 				["name"] = "Ramarkan",
@@ -8173,21 +8693,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [572]
-			{
-				["name"] = "Rambear",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [573]
+			}, -- [608]
 			{
 				["name"] = "Rapftalia",
 				["rank"] = "Explorador",
@@ -8201,7 +8707,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [574]
+			}, -- [609]
 			{
 				["name"] = "Rassal",
 				["rank"] = "Iniciado",
@@ -8215,7 +8721,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [575]
+			}, -- [610]
 			{
 				["race"] = "NE",
 				["name"] = "Rattsel",
@@ -8230,7 +8736,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [576]
+			}, -- [611]
 			{
 				["name"] = "Ravenfd",
 				["rank"] = "Aspirante",
@@ -8244,7 +8750,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [577]
+			}, -- [612]
 			{
 				["race"] = "GN",
 				["name"] = "Ravenguard",
@@ -8259,7 +8765,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [578]
+			}, -- [613]
 			{
 				["name"] = "Raydoria",
 				["rank"] = "Aspirante",
@@ -8273,7 +8779,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [579]
+			}, -- [614]
 			{
 				["race"] = "HU",
 				["name"] = "Rayitoelu",
@@ -8288,7 +8794,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [580]
+			}, -- [615]
 			{
 				["name"] = "Rayozin",
 				["rank"] = "Iniciado",
@@ -8302,7 +8808,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [581]
+			}, -- [616]
 			{
 				["name"] = "Razekk",
 				["rank"] = "Aspirante",
@@ -8316,21 +8822,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [582]
-			{
-				["name"] = "Recckful",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [583]
+			}, -- [617]
 			{
 				["race"] = "HU",
 				["name"] = "Reda",
@@ -8345,7 +8837,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [584]
+			}, -- [618]
 			{
 				["race"] = "GN",
 				["name"] = "Redaleister",
@@ -8360,7 +8852,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [585]
+			}, -- [619]
 			{
 				["race"] = "DR",
 				["name"] = "Redrat",
@@ -8375,7 +8867,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [586]
+			}, -- [620]
 			{
 				["race"] = "HU",
 				["name"] = "Redroland",
@@ -8390,7 +8882,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [587]
+			}, -- [621]
 			{
 				["name"] = "Reinkes",
 				["rank"] = "Aspirante",
@@ -8404,7 +8896,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [588]
+			}, -- [622]
 			{
 				["name"] = "Reivvax",
 				["rank"] = "Aspirante",
@@ -8418,21 +8910,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [589]
-			{
-				["name"] = "Rekt",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [590]
+			}, -- [623]
 			{
 				["name"] = "Relinchin",
 				["rank"] = "Aspirante",
@@ -8446,7 +8924,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [591]
+			}, -- [624]
 			{
 				["race"] = "HU",
 				["name"] = "Remydj",
@@ -8461,7 +8939,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [592]
+			}, -- [625]
 			{
 				["name"] = "Retonto",
 				["rank"] = "Iniciado",
@@ -8475,21 +8953,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [593]
-			{
-				["name"] = "Rijaab",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [594]
+			}, -- [626]
 			{
 				["race"] = "NE",
 				["name"] = "Rikinal",
@@ -8504,7 +8968,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [595]
+			}, -- [627]
 			{
 				["name"] = "Rikupy",
 				["rank"] = "Aspirante",
@@ -8518,7 +8982,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [596]
+			}, -- [628]
 			{
 				["name"] = "Romeodk",
 				["rank"] = "Iniciado",
@@ -8532,7 +8996,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [597]
+			}, -- [629]
 			{
 				["race"] = "BE",
 				["name"] = "Romeopicacul",
@@ -8547,7 +9011,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [598]
+			}, -- [630]
 			{
 				["race"] = "DW",
 				["name"] = "Rossmary",
@@ -8562,7 +9026,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [599]
+			}, -- [631]
 			{
 				["name"] = "Rothmanss",
 				["rank"] = "Iniciado",
@@ -8576,7 +9040,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [600]
+			}, -- [632]
 			{
 				["race"] = "DR",
 				["name"] = "Roussh",
@@ -8591,7 +9055,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [601]
+			}, -- [633]
 			{
 				["race"] = "NE",
 				["name"] = "Rrloco",
@@ -8606,21 +9070,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [602]
-			{
-				["name"] = "Rrojas",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [603]
+			}, -- [634]
 			{
 				["race"] = "OR",
 				["name"] = "Rsoo",
@@ -8635,7 +9085,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [604]
+			}, -- [635]
 			{
 				["name"] = "Rubka",
 				["rank"] = "Explorador",
@@ -8649,7 +9099,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [605]
+			}, -- [636]
 			{
 				["name"] = "Ruglud",
 				["rank"] = "Iniciado",
@@ -8663,7 +9113,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [606]
+			}, -- [637]
 			{
 				["name"] = "Rumbler",
 				["rank"] = "Iniciado",
@@ -8677,7 +9127,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [607]
+			}, -- [638]
 			{
 				["name"] = "Rumian",
 				["rank"] = "Iniciado",
@@ -8691,7 +9141,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [608]
+			}, -- [639]
 			{
 				["name"] = "Ruvy",
 				["rank"] = "Aspirante",
@@ -8705,7 +9155,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [609]
+			}, -- [640]
 			{
 				["race"] = "DR",
 				["name"] = "Rychell",
@@ -8720,21 +9170,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [610]
-			{
-				["name"] = "Ryyuzaki",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [611]
+			}, -- [641]
 			{
 				["name"] = "Ryzengh",
 				["rank"] = "Iniciado",
@@ -8748,7 +9184,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [612]
+			}, -- [642]
 			{
 				["race"] = "DR",
 				["name"] = "Safena",
@@ -8763,7 +9199,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [613]
+			}, -- [643]
 			{
 				["name"] = "Saintblack",
 				["rank"] = "Explorador",
@@ -8777,7 +9213,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [614]
+			}, -- [644]
 			{
 				["race"] = "DR",
 				["name"] = "Saintdash",
@@ -8792,7 +9228,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [615]
+			}, -- [645]
 			{
 				["race"] = "HU",
 				["name"] = "Saintholy",
@@ -8807,7 +9243,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [616]
+			}, -- [646]
 			{
 				["race"] = "NE",
 				["name"] = "Saintkoga",
@@ -8822,7 +9258,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [617]
+			}, -- [647]
 			{
 				["name"] = "Saintshoot",
 				["rank"] = "Iniciado",
@@ -8836,7 +9272,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [618]
+			}, -- [648]
 			{
 				["race"] = "GN",
 				["name"] = "Saintt",
@@ -8851,7 +9287,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [619]
+			}, -- [649]
 			{
 				["race"] = "NE",
 				["name"] = "Sainttouch",
@@ -8866,7 +9302,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [620]
+			}, -- [650]
 			{
 				["name"] = "Saitohashime",
 				["rank"] = "Aspirante",
@@ -8880,7 +9316,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [621]
+			}, -- [651]
 			{
 				["name"] = "Saltamundos",
 				["rank"] = "Iniciado",
@@ -8894,7 +9330,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [622]
+			}, -- [652]
 			{
 				["name"] = "Salvaciondd",
 				["rank"] = "Aspirante",
@@ -8908,7 +9344,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [623]
+			}, -- [653]
 			{
 				["name"] = "Samilmp",
 				["rank"] = "Aspirante",
@@ -8922,35 +9358,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [624]
-			{
-				["name"] = "Sanatork",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [625]
-			{
-				["name"] = "Sankal",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [626]
+			}, -- [654]
 			{
 				["name"] = "Sargeiras",
 				["rank"] = "Aspirante",
@@ -8964,7 +9372,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [627]
+			}, -- [655]
 			{
 				["race"] = "NE",
 				["name"] = "Sargorath",
@@ -8979,21 +9387,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [628]
-			{
-				["name"] = "Sariphiel",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [629]
+			}, -- [656]
 			{
 				["name"] = "Sashu",
 				["rank"] = "Explorador",
@@ -9007,7 +9401,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [630]
+			}, -- [657]
 			{
 				["name"] = "Sawetie",
 				["rank"] = "Aspirante",
@@ -9021,7 +9415,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [631]
+			}, -- [658]
 			{
 				["race"] = "GN",
 				["name"] = "Scime",
@@ -9036,7 +9430,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [632]
+			}, -- [659]
 			{
 				["race"] = "DR",
 				["name"] = "Seahorse",
@@ -9051,7 +9445,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [633]
+			}, -- [660]
 			{
 				["name"] = "Seban",
 				["rank"] = "Explorador",
@@ -9065,21 +9459,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [634]
-			{
-				["name"] = "Sefordanie",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [635]
+			}, -- [661]
 			{
 				["race"] = "DR",
 				["name"] = "Seha",
@@ -9094,7 +9474,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [636]
+			}, -- [662]
 			{
 				["name"] = "Selenebubu",
 				["rank"] = "Iniciado",
@@ -9108,7 +9488,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [637]
+			}, -- [663]
 			{
 				["race"] = "DW",
 				["name"] = "Semevaelagro",
@@ -9123,21 +9503,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [638]
-			{
-				["name"] = "Senira",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [639]
+			}, -- [664]
 			{
 				["name"] = "Senjuro",
 				["rank"] = "Aspirante",
@@ -9151,7 +9517,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [640]
+			}, -- [665]
 			{
 				["name"] = "Sepherina",
 				["rank"] = "Aspirante",
@@ -9165,7 +9531,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [641]
+			}, -- [666]
 			{
 				["race"] = "HU",
 				["name"] = "Serape",
@@ -9180,21 +9546,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [642]
-			{
-				["name"] = "Seray",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [643]
+			}, -- [667]
 			{
 				["race"] = "HU",
 				["name"] = "Seulghy",
@@ -9209,21 +9561,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [644]
-			{
-				["name"] = "Shadownigth",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [645]
+			}, -- [668]
 			{
 				["name"] = "Shailo",
 				["rank"] = "Aspirante",
@@ -9237,7 +9575,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [646]
+			}, -- [669]
 			{
 				["name"] = "Shakkax",
 				["rank"] = "Aspirante",
@@ -9251,7 +9589,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [647]
+			}, -- [670]
 			{
 				["name"] = "Shakkox",
 				["rank"] = "Aspirante",
@@ -9265,7 +9603,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [648]
+			}, -- [671]
 			{
 				["name"] = "Sheelem",
 				["rank"] = "Aspirante",
@@ -9279,7 +9617,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [649]
+			}, -- [672]
 			{
 				["name"] = "Shuvaca",
 				["rank"] = "Aspirante",
@@ -9293,7 +9631,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [650]
+			}, -- [673]
 			{
 				["name"] = "Sigillo",
 				["rank"] = "Aspirante",
@@ -9307,21 +9645,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [651]
-			{
-				["name"] = "Sillienne",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [652]
+			}, -- [674]
 			{
 				["name"] = "Simara",
 				["rank"] = "Iniciado",
@@ -9335,7 +9659,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [653]
+			}, -- [675]
 			{
 				["name"] = "Skyworker",
 				["rank"] = "Aspirante",
@@ -9349,49 +9673,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [654]
-			{
-				["name"] = "Smarty",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [655]
-			{
-				["name"] = "Snakemiles",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [656]
-			{
-				["name"] = "Sojosue",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [657]
+			}, -- [676]
 			{
 				["name"] = "Solismae",
 				["rank"] = "Aspirante",
@@ -9405,7 +9687,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [658]
+			}, -- [677]
 			{
 				["race"] = "HU",
 				["name"] = "Soopro",
@@ -9420,7 +9702,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [659]
+			}, -- [678]
 			{
 				["name"] = "Sooulkingss",
 				["rank"] = "Aspirante",
@@ -9434,7 +9716,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [660]
+			}, -- [679]
 			{
 				["name"] = "Soyheleer",
 				["rank"] = "Aspirante",
@@ -9448,7 +9730,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [661]
+			}, -- [680]
 			{
 				["race"] = "HU",
 				["name"] = "Spartac",
@@ -9463,7 +9745,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [662]
+			}, -- [681]
 			{
 				["name"] = "Specthum",
 				["rank"] = "Aspirante",
@@ -9477,21 +9759,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [663]
-			{
-				["name"] = "Spheal",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [664]
+			}, -- [682]
 			{
 				["race"] = "OR",
 				["name"] = "Srwiski",
@@ -9506,7 +9774,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [665]
+			}, -- [683]
 			{
 				["name"] = "Steffanny",
 				["rank"] = "Aspirante",
@@ -9520,7 +9788,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [666]
+			}, -- [684]
 			{
 				["name"] = "Stewen",
 				["rank"] = "Explorador",
@@ -9534,7 +9802,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [667]
+			}, -- [685]
 			{
 				["race"] = "HU",
 				["name"] = "Sthacy",
@@ -9549,7 +9817,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [668]
+			}, -- [686]
 			{
 				["race"] = "GN",
 				["name"] = "Stormgrim",
@@ -9564,7 +9832,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [669]
+			}, -- [687]
 			{
 				["name"] = "Sumetal",
 				["rank"] = "Explorador",
@@ -9578,21 +9846,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [670]
-			{
-				["name"] = "Sumofu",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [671]
+			}, -- [688]
 			{
 				["name"] = "Suprsayajin",
 				["rank"] = "Aspirante",
@@ -9606,7 +9860,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [672]
+			}, -- [689]
 			{
 				["name"] = "Surik",
 				["rank"] = "Explorador",
@@ -9620,7 +9874,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [673]
+			}, -- [690]
 			{
 				["race"] = "HU",
 				["name"] = "Susurrakill",
@@ -9635,7 +9889,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [674]
+			}, -- [691]
 			{
 				["race"] = "NE",
 				["name"] = "Talentosa",
@@ -9650,7 +9904,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [675]
+			}, -- [692]
 			{
 				["name"] = "Tanwin",
 				["rank"] = "Iniciado",
@@ -9664,7 +9918,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [676]
+			}, -- [693]
 			{
 				["name"] = "Taridani",
 				["rank"] = "Aspirante",
@@ -9678,21 +9932,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [677]
-			{
-				["name"] = "Tarino",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [678]
+			}, -- [694]
 			{
 				["name"] = "Taylorswitf",
 				["rank"] = "Iniciado",
@@ -9706,7 +9946,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [679]
+			}, -- [695]
 			{
 				["race"] = "HU",
 				["name"] = "Tealivio",
@@ -9721,7 +9961,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [680]
+			}, -- [696]
 			{
 				["name"] = "Tekkhu",
 				["rank"] = "Aspirante",
@@ -9735,7 +9975,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [681]
+			}, -- [697]
 			{
 				["name"] = "Tesstarosa",
 				["rank"] = "Iniciado",
@@ -9749,7 +9989,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [682]
+			}, -- [698]
 			{
 				["name"] = "Tezeo",
 				["rank"] = "Aspirante",
@@ -9763,7 +10003,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [683]
+			}, -- [699]
 			{
 				["race"] = "TR",
 				["name"] = "Tharlias",
@@ -9778,7 +10018,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [684]
+			}, -- [700]
 			{
 				["name"] = "Thebion",
 				["rank"] = "Aspirante",
@@ -9792,7 +10032,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [685]
+			}, -- [701]
 			{
 				["name"] = "Theborz",
 				["rank"] = "Iniciado",
@@ -9806,7 +10046,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [686]
+			}, -- [702]
 			{
 				["name"] = "Thelaris",
 				["rank"] = "Iniciado",
@@ -9820,7 +10060,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [687]
+			}, -- [703]
 			{
 				["race"] = "HU",
 				["name"] = "Thepatriota",
@@ -9835,7 +10075,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [688]
+			}, -- [704]
 			{
 				["race"] = "HU",
 				["name"] = "Thonyfrost",
@@ -9850,7 +10090,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [689]
+			}, -- [705]
 			{
 				["race"] = "DW",
 				["name"] = "Thyan",
@@ -9865,7 +10105,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [690]
+			}, -- [706]
 			{
 				["race"] = "HU",
 				["name"] = "Thyrha",
@@ -9880,7 +10120,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [691]
+			}, -- [707]
 			{
 				["name"] = "Tibidabo",
 				["rank"] = "Aspirante",
@@ -9894,7 +10134,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [692]
+			}, -- [708]
 			{
 				["name"] = "Tioxxs",
 				["rank"] = "Aspirante",
@@ -9908,7 +10148,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [693]
+			}, -- [709]
 			{
 				["name"] = "Tjota",
 				["rank"] = "Aspirante",
@@ -9922,7 +10162,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [694]
+			}, -- [710]
 			{
 				["name"] = "Tokkol",
 				["rank"] = "Aspirante",
@@ -9936,7 +10176,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [695]
+			}, -- [711]
 			{
 				["race"] = "BE",
 				["name"] = "Tootti",
@@ -9951,7 +10191,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [696]
+			}, -- [712]
 			{
 				["name"] = "Topopikachu",
 				["rank"] = "Iniciado",
@@ -9965,7 +10205,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [697]
+			}, -- [713]
 			{
 				["name"] = "Toritox",
 				["rank"] = "Aspirante",
@@ -9979,7 +10219,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [698]
+			}, -- [714]
 			{
 				["name"] = "Toruz",
 				["rank"] = "Explorador",
@@ -9993,7 +10233,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [699]
+			}, -- [715]
 			{
 				["name"] = "Trapfrost",
 				["rank"] = "Explorador",
@@ -10007,49 +10247,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [700]
-			{
-				["name"] = "Travesuco",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [701]
-			{
-				["name"] = "Tremendonene",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [702]
-			{
-				["name"] = "Tresbichas",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [703]
+			}, -- [716]
 			{
 				["name"] = "Troliador",
 				["rank"] = "Aspirante",
@@ -10063,7 +10261,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [704]
+			}, -- [717]
 			{
 				["name"] = "Ttotti",
 				["rank"] = "Iniciado",
@@ -10077,7 +10275,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [705]
+			}, -- [718]
 			{
 				["name"] = "Tummacho",
 				["rank"] = "Iniciado",
@@ -10091,7 +10289,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [706]
+			}, -- [719]
 			{
 				["race"] = "DR",
 				["name"] = "Tuquiti",
@@ -10106,7 +10304,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [707]
+			}, -- [720]
 			{
 				["race"] = "DR",
 				["name"] = "Tuyuti",
@@ -10121,7 +10319,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [708]
+			}, -- [721]
 			{
 				["race"] = "HU",
 				["name"] = "Twilighth",
@@ -10136,7 +10334,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [709]
+			}, -- [722]
 			{
 				["race"] = "HU",
 				["name"] = "Ukyox",
@@ -10151,7 +10349,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [710]
+			}, -- [723]
 			{
 				["name"] = "Umzakala",
 				["rank"] = "Aspirante",
@@ -10165,7 +10363,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [711]
+			}, -- [724]
 			{
 				["name"] = "Urcis",
 				["rank"] = "Explorador",
@@ -10179,7 +10377,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [712]
+			}, -- [725]
 			{
 				["name"] = "Urianna",
 				["rank"] = "Iniciado",
@@ -10193,21 +10391,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [713]
-			{
-				["name"] = "Vacaxiones",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [714]
+			}, -- [726]
 			{
 				["race"] = "HU",
 				["name"] = "Vacelinas",
@@ -10222,7 +10406,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [715]
+			}, -- [727]
 			{
 				["race"] = "GN",
 				["name"] = "Vakuum",
@@ -10237,7 +10421,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [716]
+			}, -- [728]
 			{
 				["race"] = "DR",
 				["name"] = "Valatrax",
@@ -10252,7 +10436,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [717]
+			}, -- [729]
 			{
 				["race"] = "HU",
 				["name"] = "Valgruun",
@@ -10267,7 +10451,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [718]
+			}, -- [730]
 			{
 				["name"] = "Valhellsing",
 				["rank"] = "Aspirante",
@@ -10281,7 +10465,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [719]
+			}, -- [731]
 			{
 				["name"] = "Valiris",
 				["rank"] = "Explorador",
@@ -10295,7 +10479,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [720]
+			}, -- [732]
 			{
 				["name"] = "Vanerh",
 				["rank"] = "Iniciado",
@@ -10309,7 +10493,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [721]
+			}, -- [733]
 			{
 				["race"] = "TA",
 				["name"] = "Vanersito",
@@ -10324,35 +10508,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [722]
-			{
-				["name"] = "Vanwolf",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [723]
-			{
-				["name"] = "Vaquiitamuu",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [724]
+			}, -- [734]
 			{
 				["race"] = "HU",
 				["name"] = "Vene",
@@ -10367,7 +10523,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [725]
+			}, -- [735]
 			{
 				["race"] = "HU",
 				["name"] = "Veronikamor",
@@ -10382,7 +10538,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [726]
+			}, -- [736]
 			{
 				["name"] = "Vikwar",
 				["rank"] = "Iniciado",
@@ -10396,7 +10552,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [727]
+			}, -- [737]
 			{
 				["race"] = "HU",
 				["name"] = "Voidhammer",
@@ -10411,7 +10567,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [728]
+			}, -- [738]
 			{
 				["race"] = "HU",
 				["name"] = "Vorthrak",
@@ -10426,7 +10582,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [729]
+			}, -- [739]
 			{
 				["name"] = "Vulpys",
 				["rank"] = "Iniciado",
@@ -10440,21 +10596,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [730]
-			{
-				["name"] = "Wadeh",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [731]
+			}, -- [740]
 			{
 				["name"] = "Wadex",
 				["rank"] = "Aspirante",
@@ -10468,7 +10610,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [732]
+			}, -- [741]
 			{
 				["name"] = "Wallack",
 				["rank"] = "Aspirante",
@@ -10482,7 +10624,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [733]
+			}, -- [742]
 			{
 				["race"] = "HU",
 				["name"] = "Wanjie",
@@ -10497,7 +10639,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [734]
+			}, -- [743]
 			{
 				["race"] = "HU",
 				["name"] = "Wapri",
@@ -10512,7 +10654,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [735]
+			}, -- [744]
 			{
 				["name"] = "Warbunker",
 				["rank"] = "Aspirante",
@@ -10526,7 +10668,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [736]
+			}, -- [745]
 			{
 				["name"] = "Warcitoo",
 				["rank"] = "Iniciado",
@@ -10540,7 +10682,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [737]
+			}, -- [746]
 			{
 				["name"] = "Warck",
 				["rank"] = "Aspirante",
@@ -10554,7 +10696,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [738]
+			}, -- [747]
 			{
 				["name"] = "Warrowarmax",
 				["rank"] = "Aspirante",
@@ -10568,7 +10710,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [739]
+			}, -- [748]
 			{
 				["race"] = "HU",
 				["name"] = "Warsatochi",
@@ -10583,7 +10725,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [740]
+			}, -- [749]
 			{
 				["name"] = "Warunlucky",
 				["rank"] = "Aspirante",
@@ -10597,7 +10739,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [741]
+			}, -- [750]
 			{
 				["name"] = "Waytwogo",
 				["rank"] = "Iniciado",
@@ -10611,7 +10753,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [742]
+			}, -- [751]
 			{
 				["name"] = "Whanted",
 				["rank"] = "Aspirante",
@@ -10625,21 +10767,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [743]
-			{
-				["name"] = "Whesty",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [744]
+			}, -- [752]
 			{
 				["name"] = "Whi",
 				["rank"] = "Iniciado",
@@ -10653,7 +10781,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [745]
+			}, -- [753]
 			{
 				["name"] = "Whiteclaw",
 				["rank"] = "Aspirante",
@@ -10667,21 +10795,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [746]
-			{
-				["name"] = "Wiiwiwi",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [747]
+			}, -- [754]
 			{
 				["name"] = "Wolfanni",
 				["rank"] = "Iniciado",
@@ -10695,7 +10809,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [748]
+			}, -- [755]
 			{
 				["name"] = "Wondern",
 				["rank"] = "Aspirante",
@@ -10709,7 +10823,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [749]
+			}, -- [756]
 			{
 				["name"] = "Wonderpala",
 				["rank"] = "Iniciado",
@@ -10723,7 +10837,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [750]
+			}, -- [757]
 			{
 				["race"] = "HU",
 				["name"] = "Workfast",
@@ -10738,7 +10852,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [751]
+			}, -- [758]
 			{
 				["name"] = "Wrakronz",
 				["rank"] = "Aspirante",
@@ -10752,7 +10866,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [752]
+			}, -- [759]
 			{
 				["name"] = "Xdcooperxd",
 				["rank"] = "Aspirante",
@@ -10766,7 +10880,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [753]
+			}, -- [760]
 			{
 				["race"] = "NE",
 				["name"] = "Xelino",
@@ -10781,7 +10895,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [754]
+			}, -- [761]
 			{
 				["name"] = "Xelvara",
 				["rank"] = "Aspirante",
@@ -10795,7 +10909,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [755]
+			}, -- [762]
 			{
 				["name"] = "Xhell",
 				["rank"] = "Aspirante",
@@ -10809,7 +10923,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [756]
+			}, -- [763]
 			{
 				["race"] = "HU",
 				["name"] = "Xhyomi",
@@ -10824,7 +10938,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [757]
+			}, -- [764]
 			{
 				["name"] = "Xiaron",
 				["rank"] = "Explorador",
@@ -10838,7 +10952,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [758]
+			}, -- [765]
 			{
 				["race"] = "NE",
 				["name"] = "Xodo",
@@ -10853,7 +10967,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [759]
+			}, -- [766]
 			{
 				["name"] = "Xonefrost",
 				["rank"] = "Iniciado",
@@ -10867,7 +10981,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [760]
+			}, -- [767]
 			{
 				["name"] = "Xxoe",
 				["rank"] = "Explorador",
@@ -10881,21 +10995,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [761]
-			{
-				["name"] = "Yahidkz",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [762]
+			}, -- [768]
 			{
 				["name"] = "Yamalube",
 				["rank"] = "Iniciado",
@@ -10909,21 +11009,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [763]
-			{
-				["name"] = "Yayizima",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [764]
+			}, -- [769]
 			{
 				["name"] = "Yezika",
 				["rank"] = "Iniciado",
@@ -10937,7 +11023,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [765]
+			}, -- [770]
 			{
 				["race"] = "HU",
 				["name"] = "Yhisuz",
@@ -10952,7 +11038,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [766]
+			}, -- [771]
 			{
 				["race"] = "NE",
 				["name"] = "Yhuroichi",
@@ -10967,7 +11053,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [767]
+			}, -- [772]
 			{
 				["name"] = "Yinxz",
 				["rank"] = "Aspirante",
@@ -10981,7 +11067,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [768]
+			}, -- [773]
 			{
 				["name"] = "Yonofuiin",
 				["rank"] = "Aspirante",
@@ -10995,7 +11081,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [769]
+			}, -- [774]
 			{
 				["race"] = "NE",
 				["name"] = "Yonor",
@@ -11010,7 +11096,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [770]
+			}, -- [775]
 			{
 				["name"] = "Yotha",
 				["rank"] = "Aspirante",
@@ -11024,7 +11110,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [771]
+			}, -- [776]
 			{
 				["name"] = "Youngmikoo",
 				["rank"] = "Aspirante",
@@ -11038,7 +11124,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [772]
+			}, -- [777]
 			{
 				["race"] = "HU",
 				["name"] = "Yovanipro",
@@ -11053,7 +11139,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [773]
+			}, -- [778]
 			{
 				["name"] = "Yuis",
 				["rank"] = "Explorador",
@@ -11067,7 +11153,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [774]
+			}, -- [779]
 			{
 				["name"] = "Yulima",
 				["rank"] = "Iniciado",
@@ -11081,7 +11167,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [775]
+			}, -- [780]
 			{
 				["name"] = "Yunderl",
 				["rank"] = "Aspirante",
@@ -11095,7 +11181,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [776]
+			}, -- [781]
 			{
 				["race"] = "HU",
 				["name"] = "Yuning",
@@ -11110,7 +11196,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [777]
+			}, -- [782]
 			{
 				["race"] = "HU",
 				["name"] = "Zabriela",
@@ -11125,7 +11211,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [778]
+			}, -- [783]
 			{
 				["name"] = "Zaidh",
 				["rank"] = "Iniciado",
@@ -11139,21 +11225,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [779]
-			{
-				["name"] = "Zaja",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [780]
+			}, -- [784]
 			{
 				["race"] = "BE",
 				["name"] = "Zanathosa",
@@ -11168,21 +11240,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [781]
-			{
-				["name"] = "Zarenah",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [782]
+			}, -- [785]
 			{
 				["name"] = "Zarshi",
 				["rank"] = "Aspirante",
@@ -11196,7 +11254,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [783]
+			}, -- [786]
 			{
 				["name"] = "Zefra",
 				["rank"] = "Iniciado",
@@ -11210,7 +11268,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [784]
+			}, -- [787]
 			{
 				["race"] = "HU",
 				["name"] = "Zeiszz",
@@ -11225,7 +11283,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [785]
+			}, -- [788]
 			{
 				["race"] = "NE",
 				["name"] = "Zelatrice",
@@ -11240,7 +11298,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [786]
+			}, -- [789]
 			{
 				["name"] = "Zenshy",
 				["rank"] = "Explorador",
@@ -11254,7 +11312,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [787]
+			}, -- [790]
 			{
 				["name"] = "Zeraph",
 				["rank"] = "Aspirante",
@@ -11268,21 +11326,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [788]
-			{
-				["name"] = "Zeray",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [789]
+			}, -- [791]
 			{
 				["name"] = "Zhaitan",
 				["rank"] = "Aspirante",
@@ -11296,7 +11340,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [790]
+			}, -- [792]
 			{
 				["name"] = "Zhamed",
 				["rank"] = "Aspirante",
@@ -11310,7 +11354,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [791]
+			}, -- [793]
 			{
 				["name"] = "Zherodim",
 				["rank"] = "Iniciado",
@@ -11324,7 +11368,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [792]
+			}, -- [794]
 			{
 				["name"] = "Zhorath",
 				["rank"] = "Explorador",
@@ -11338,7 +11382,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [793]
+			}, -- [795]
 			{
 				["name"] = "Zitzit",
 				["rank"] = "Iniciado",
@@ -11352,7 +11396,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [794]
+			}, -- [796]
 			{
 				["name"] = "Zokhu",
 				["rank"] = "Iniciado",
@@ -11366,7 +11410,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [795]
+			}, -- [797]
 			{
 				["race"] = "BE",
 				["name"] = "Zorito",
@@ -11381,7 +11425,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [796]
+			}, -- [798]
 			{
 				["race"] = "NE",
 				["name"] = "Ztiso",
@@ -11396,21 +11440,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [797]
-			{
-				["name"] = "Zulkutar",
-				["rank"] = "Aspirante",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "",
-				["raidStats"] = {
-					["byZone"] = {
-					},
-					["total"] = 0,
-					["bossKills"] = {
-					},
-				},
-			}, -- [798]
+			}, -- [799]
 			{
 				["name"] = "Zumbie",
 				["rank"] = "Explorador",
@@ -11424,7 +11454,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [799]
+			}, -- [800]
 			{
 				["name"] = "Zurianela",
 				["rank"] = "Aspirante",
@@ -11438,7 +11468,7 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [800]
+			}, -- [801]
 			{
 				["name"] = "Zzuko",
 				["rank"] = "Iniciado",
@@ -11452,25 +11482,10 @@ RaidDominionDB = {
 					["bossKills"] = {
 					},
 				},
-			}, -- [801]
+			}, -- [802]
 		},
 	},
-	["modules"] = {
-		["messageManager"] = {
-			["enabled"] = 1,
-			["channel"] = "RAID",
-			["announceEvents"] = 1,
-		},
-		["roleManager"] = {
-			["enabled"] = 1,
-			["autoPromote"] = 0,
-		},
-	},
-	["profiles"] = {
-		["Stormgrim - Bennu"] = {
-			["chat"] = {
-				["channel"] = "GUILD",
-			},
-		},
+	["chat"] = {
+		["channel"] = "GUILD",
 	},
 }
