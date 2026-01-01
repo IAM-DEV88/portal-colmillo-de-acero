@@ -2576,34 +2576,66 @@ const totalRaiders = rosterData.members.filter(
         let html = '';
 
         if (member.recognitions && member.recognitions.length > 0) {
-          html += `
-            <div class="space-y-3">
-          `;
-
-          member.recognitions.forEach(rec => {
+          // Group recognitions by title
+          const groupedRecs = member.recognitions.reduce((acc, rec) => {
             const date = new Date(rec.date);
-            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            const dateStr = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+            const dateStr = `${monthNames[month]}-${year.toString().slice(2)}`;
+            
+            const key = rec.title || 'Mención Honorífica';
+            if (!acc[key]) {
+              acc[key] = [];
+            }
+            acc[key].push({...rec, dateStr});
+            return acc;
+          }, {});
 
+          // Sort recognition groups by most recent date
+          Object.entries(groupedRecs).forEach(([title, recs]) => {
+            recs.sort((a, b) => new Date(b.date) - new Date(a.date));
+          });
+
+          // Create compact display
+          html += '<div class="space-y-2">';
+          
+          Object.entries(groupedRecs).forEach(([title, recs]) => {
+            const firstRec = recs[0];
+            const dateRange = recs.length > 1 
+              ? `${recs[recs.length-1].dateStr} - ${firstRec.dateStr}` 
+              : firstRec.dateStr;
+            
             html += `
-              <div class="bg-gray-800/40 p-3 rounded-lg border border-amber-600/20 hover:border-amber-500/40 transition-colors">
-                <div class="flex justify-between items-start mb-1">
-                  <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">${rec.title || 'Mención Honorífica'}</span>
-                  <span class="text-[10px] text-gray-500 font-medium">${dateStr}</span>
+              <div class="bg-gray-800/40 p-2 rounded-lg border border-amber-600/20 hover:border-amber-500/40 transition-colors text-sm">
+                <div class="flex justify-between items-center">
+                  <span class="font-medium text-amber-300">${title}</span>
+                  <span class="text-xs text-gray-400 bg-gray-700/50 px-1.5 py-0.5 rounded">${recs.length}x</span>
                 </div>
-                <p class="text-sm text-gray-200 leading-relaxed">${rec.description || ''}</p>
-                ${rec.achievement ? `<div class="mt-2 flex items-center gap-1.5 text-[10px] text-amber-200/70"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${rec.achievement}</div>` : ''}
+                <div class="flex justify-between items-center mt-1">
+                  <span class="text-xs text-gray-400">${dateRange}</span>
+                  ${firstRec.achievement ? `
+                    <span class="text-xs text-amber-200/70 flex items-center gap-1">
+                      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      ${firstRec.achievement}
+                    </span>
+                  ` : ''}
+                </div>
               </div>
             `;
           });
 
-          html += `
+          html += '</div>';
+        } else {
+          html = `
+            <div class="text-center py-3">
+              <p class="text-sm text-gray-400">No hay reconocimientos registrados</p>
             </div>
           `;
-        } else {
-          html = '<p class="text-sm text-gray-400 text-center py-4">No hay reconocimientos especiales para este personaje.</p>';
         }
-        
+
         container.innerHTML = html;
       }
 
@@ -2757,16 +2789,58 @@ const totalRaiders = rosterData.members.filter(
           }, 10);
         }
 
-        // Populate basic info
-        if (modalName) modalName.textContent = member.name;
-        if (modalClass) {
-          modalClass.textContent = member.class;
-          modalClass.style.color =
-            member.class && rosterInfo.classInfo[member.class]
-              ? `#${rosterInfo.classInfo[member.class].color}`
-              : '#fff';
+        // Update modal header with class icon and name
+        const modalClassIcon = document.getElementById('modal-class-icon');
+        const modalCharacterName = document.getElementById('modal-character-name');
+        
+        if (modalClassIcon && member.class) {
+          const classData = rosterInfo.classInfo[member.class] || {
+            color: 'FFFFFF',
+            name: member.class,
+          };
+          const className = classData.name;
+          const classColor = classData.color;
+          
+          // Clear previous content
+          modalClassIcon.innerHTML = '';
+          
+          // Create avatar container
+          const avatarContainer = document.createElement('div');
+          avatarContainer.className = 'relative flex-shrink-0';
+          
+          // Create class avatar image
+          const avatarImg = document.createElement('img');
+          avatarImg.src = `/images/avatars/class_${className}.jpg`;
+          avatarImg.alt = className;
+          avatarImg.className = 'w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 object-cover';
+          avatarImg.onerror = "this.src='/images/avatars/default.png'";
+          
+          // Create class color indicator
+          const classIndicator = document.createElement('div');
+          classIndicator.className = 'absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900';
+          classIndicator.style.backgroundColor = `#${classColor}`;
+          classIndicator.title = className;
+          
+          // Assemble the avatar
+          avatarContainer.appendChild(avatarImg);
+          avatarContainer.appendChild(classIndicator);
+          
+          // Replace the existing icon with the new avatar
+          modalClassIcon.className = ''; // Remove old classes
+          modalClassIcon.appendChild(avatarContainer);
         }
-        if (modalRank) modalRank.textContent = member.rank;
+        
+        if (modalCharacterName) {
+          modalCharacterName.textContent = member.name || 'Personaje';
+        }
+
+        // Only show rank in the content area
+        if (modalName) modalName.textContent = member.rank || '';
+        if (modalClass) {
+          modalClass.textContent = '';
+          modalClass.style.display = 'none';
+        }
+        if (modalRank) modalRank.style.display = 'none';
 
         // Avatar
         if (modalAvatar) {
@@ -2990,10 +3064,22 @@ const totalRaiders = rosterData.members.filter(
         const recognitionsTab = document.getElementById('tab-recognitions');
         const indicatorsTab = document.getElementById('tab-indicators');
         const badgeRaids = document.getElementById('badge-raids');
+        const badgeRecognitions = document.getElementById('badge-recognitions');
 
         if (raidsTab) raidsTab.style.display = hasRaidData ? 'flex' : 'none';
         if (recognitionsTab) recognitionsTab.style.display = hasRecognitions ? 'flex' : 'none';
         if (indicatorsTab) indicatorsTab.style.display = hasIndicators ? 'flex' : 'none';
+        
+        // Update recognition badge
+        if (badgeRecognitions) {
+          if (hasRecognitions) {
+            const recognitionCount = member.recognitions?.length || 0;
+            badgeRecognitions.textContent = recognitionCount;
+            badgeRecognitions.classList.remove('hidden');
+          } else {
+            badgeRecognitions.classList.add('hidden');
+          }
+        }
 
         if (hasRaidData) {
           // Update badges
@@ -3837,34 +3923,26 @@ const totalRaiders = rosterData.members.filter(
 </div>
 
 <!-- Modal de Detalles del Miembro -->
-<div
-  id="member-modal"
-  class="fixed inset-0 z-50 hidden overflow-y-auto pt-20 sm:pt-0"
-  aria-labelledby="modal-title"
-  role="dialog"
-  aria-modal="true"
-  style="transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;"
->
-  <!-- Backdrop with click handler -->
-  <div
-    class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity duration-200"
-    aria-hidden="true"
-  >
-  </div>
+<div id="member-modal" class="fixed inset-0 z-[9999] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <!-- Backdrop -->
+  <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity duration-200" aria-hidden="true" onclick="document.getElementById('member-modal').classList.add('hidden')"></div>
 
-  <div
-    class="flex min-h-full items-start sm:items-center justify-center p-0 sm:p-4 text-center transition-all duration-200"
-  >
-    <div
-      class="modal-content relative transform overflow-hidden rounded-none sm:rounded-lg bg-gray-800 border-x-0 sm:border border-amber-600/30 text-left shadow-xl sm:my-8 w-full sm:max-w-2xl transition-all duration-200 scale-95 opacity-0 translate-y-4"
-    >
-      <!-- Header -->
+  <!-- Modal container -->
+  <div class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
+    <!-- Modal panel -->
+    <div class="relative transform overflow-hidden rounded-lg bg-gray-800 border border-amber-600/30 text-left shadow-xl transition-all mt-16 w-full max-w-2xl">
+      <!-- Header with Character Info -->
       <div
         class="bg-gray-900/50 px-4 py-3 sm:px-6 border-b border-amber-600/20 flex justify-between items-center"
       >
-        <h3 class="text-lg font-semibold leading-6 text-amber-100" id="modal-title">
-          Detalles del Personaje
-        </h3>
+        <div class="flex items-center space-x-3">
+          <div id="modal-class-icon" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+            <!-- Class icon will be inserted here by JavaScript -->
+          </div>
+          <h3 class="text-lg font-semibold leading-6 text-amber-100" id="modal-title">
+            <span id="modal-character-name">Detalles del Personaje</span>
+          </h3>
+        </div>
         <button
           type="button"
           id="close-modal"
@@ -3912,6 +3990,11 @@ const totalRaiders = rosterData.members.filter(
             onclick="window.switchModalTab('recognitions')"
           >
             Reconocimientos
+            <span
+              id="badge-recognitions"
+              class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              >0</span
+            >
           </button>
           <button
             id="tab-indicators"
@@ -4002,17 +4085,6 @@ const totalRaiders = rosterData.members.filter(
       </div>
     </div>
 
-    <!-- Footer -->
-    <div
-      class="bg-gray-900/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-amber-600/20"
-    >
-      <button
-        type="button"
-        id="close-modal-btn"
-        class="mt-3 inline-flex w-full justify-center rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-600 hover:bg-gray-700 sm:mt-0 sm:w-auto transition-colors"
-        >Cerrar</button
-      >
-    </div>
   </div>
 </div>
 
