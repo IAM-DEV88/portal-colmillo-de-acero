@@ -16,7 +16,8 @@ interface RosterMember {
 }
 
 // Asegurarse de que los datos tengan la estructura esperada
-const formattedRosterData = (Array.isArray(rosterData) ? rosterData : []).map((member: any) => {
+const players = (rosterData as any).players || {};
+const formattedRosterData = Object.values(players).map((member: any) => {
   try {
     // Validar la nota pública si existe
     const publicNote = String(member.publicNote || '').trim();

@@ -20,43 +20,6 @@ export interface PublicNoteValidation extends Omit<BasePublicNoteValidation, 'pu
   officerNote?: string;
 }
 
-declare module '../types/roster' {
-  interface RosterMember {
-    level?: number;
-    gearScore?: number;
-    validation?: {
-      isValid: boolean;
-      missingFields: string[];
-    };
-  }
-
-  export interface PublicNoteValidation {
-    isValid: boolean;
-    mainAlt?: MainAlt;
-    role?: Role;
-    dualRole?: Role;
-    gearScore?: number;
-    dualGearScore?: number;
-    professions?: ProfessionCode[];
-    schedules?: string[];
-    raids?: RaidInfo[];
-    isRaidLeader?: boolean;
-    hasSchedule?: boolean;
-    hasRaids?: boolean;
-    blocks?: Array<{
-      type: string;
-      content: string;
-      isValid: boolean;
-      parsedData?: any;
-      error?: string;
-    }>;
-    error?: string;
-    missingFields?: string[];
-    days?: string[];
-    publicNote?: string;
-    officerNote?: string;
-  }
-}
 
 // Definir constantes de profesiones
 export const PROFESSION_CODES: ProfessionCode[] = ['AL', 'BS', 'EN', 'EG', 'JC', 'IN', 'MN', 'SK', 'TL', 'HB', 'LW'];
@@ -232,7 +195,7 @@ export const calculateGearScoreStats = (members: RosterMember[]): {
   const filteredGearScores = allGearScores.filter(score => score >= 4.7);
   const filteredCount = filteredGearScores.length;
   const filteredTotal = filteredGearScores.reduce((sum, score) => sum + score, 0);
-  
+
   // Calcular el promedio solo con gear scores de 4.7 o superior
   const avg = filteredCount > 0 ? filteredTotal / filteredCount : 0;
 
@@ -348,11 +311,11 @@ const parseCharacterBlock = (content: string): CharacterBlock | null => {
   const professions: ProfessionCode[] = [];
   const processProfessions = (profString: string) => {
     if (!profString) return;
-    
+
     for (let i = 0; i < profString.length; i += 2) {
       const prof = profString.substring(i, i + 2).toUpperCase();
-      if (PROFESSION_CODES.includes(prof as ProfessionCode) && 
-          !professions.includes(prof as ProfessionCode)) {
+      if (PROFESSION_CODES.includes(prof as ProfessionCode) &&
+        !professions.includes(prof as ProfessionCode)) {
         professions.push(prof as ProfessionCode);
         // Solo permitir hasta 2 profesiones
         if (professions.length >= 2) break;

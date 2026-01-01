@@ -1,7 +1,7 @@
 // Tipos básicos
 export type Role = 'T' | 'H' | 'D';
 export type MainAlt = 'M' | 'A';
-export type ClassName = 'Guerrero' | 'Paladín' | 'Cazador' | 'Pícaro' | 'Sacerdote' | 
+export type ClassName = 'Guerrero' | 'Paladín' | 'Cazador' | 'Pícaro' | 'Sacerdote' |
   'Caballero de la Muerte' | 'Chamán' | 'Mago' | 'Brujo' | 'Druida';
 
 export type RaidCode = 'ICC' | 'TOC' | 'ULD' | 'NAX' | 'OS' | 'VOA' | 'EOE' | 'ONY' | 'RS';
@@ -20,7 +20,7 @@ export interface RaidInfo {
   difficulty: string;  // Changed from DifficultyCode to string to allow for display names
   name: string;
   difficultyCode: DifficultyCode;
-  isRaidLeader: boolean;  // Made required since it's being used as a required field
+  isRaidLeader?: boolean;  // Made optional
   days?: string[];
   dayRange?: string; // Para rangos como 'L-V'
   time?: string;
@@ -58,26 +58,40 @@ export interface NoteBlock {
 
 export interface PublicNoteValidation {
   isValid: boolean;
-  blocks: NoteBlock[];
+  blocks?: NoteBlock[];
   mainAlt?: MainAlt;
   role?: Role;
-  mainRole?: Role;  // Added mainRole property
+  mainRole?: Role;
   dualRole?: Role;
   gearScore?: number;
   dualGearScore?: number;
   professions?: ProfessionCode[];
-  schedules?: Schedule[];
+  schedules?: (string | Schedule)[];
   raids?: RaidInfo[];
-  isRaidLeader: boolean;
-  hasSchedule: boolean;
-  hasRaids: boolean;
+  isRaidLeader?: boolean;
+  hasSchedule?: boolean;
+  hasRaids?: boolean;
   error?: string;
   missingFields?: string[];
+  days?: string[];
+  publicNote?: string;
+  officerNote?: string;
 }
 
 export interface ClassInfo {
   color: string;
   name: string;
+}
+
+export interface LeaderRaidStats {
+  byZone: Record<string, number>;
+  total: number;
+  bossKills: Record<string, number>;
+}
+
+export interface LeaderData {
+  lastUpdate: number;
+  raidStats: LeaderRaidStats;
 }
 
 export interface RosterMember {
@@ -88,6 +102,16 @@ export interface RosterMember {
   officerNote?: string;
   noteValidation?: PublicNoteValidation;
   mainAlt: MainAlt;
+  race?: string | null;
+  guildLeave?: boolean;
+  leaderData?: Record<string, LeaderData>;
+  level?: number;
+  gearScore?: number;
+  faction?: string;
+  validation?: {
+    isValid: boolean;
+    missingFields: string[];
+  };
 }
 
 export interface Member extends RosterMember {

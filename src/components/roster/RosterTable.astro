@@ -2346,7 +2346,9 @@ const totalRaiders = rosterData.members.filter(
     #member-modal {
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+      transition:
+        opacity 0.2s ease-in-out,
+        visibility 0.2s ease-in-out;
     }
 
     #member-modal.show {
@@ -2430,6 +2432,25 @@ const totalRaiders = rosterData.members.filter(
     select option:hover {
       background-color: #4a5568 !important;
     }
+
+    /* Custom scrollbar for boss stats */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(245, 158, 11, 0.3);
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(245, 158, 11, 0.5);
+    }
   </style>
   <!-- Script del cliente con la lógica de JavaScript -->
   <script
@@ -2511,20 +2532,151 @@ const totalRaiders = rosterData.members.filter(
       const modalRank = document.getElementById('modal-rank');
       const modalNote = document.getElementById('modal-note');
       const modalTags = document.getElementById('modal-tags');
+      const modalRaidSummary = document.getElementById('modal-raid-summary');
+      const modalZoneStats = document.getElementById('modal-zone-stats');
+      const modalBossStats = document.getElementById('modal-boss-stats');
 
+      // Function to update boss kills display
+      function updateBossKillsDisplay(member) {
+        const container = document.getElementById('boss-kills-container');
+        if (!container) return;
+        
+        // Get the boss kills data
+        const bossKills = {};
+        
+        // Try to get the boss kills data from the expected path
+        try {
+          const raidStats = member.leaderData?.Voidhammer?.raidStats;
+          if (raidStats?.bossKills) {
+            Object.entries(raidStats.bossKills).forEach(([boss, data]) => {
+              bossKills[boss] = data;
+            });
+          } else if (member.leaderData) {
+            const findBossKills = (obj) => {
+              Object.entries(obj).forEach(([key, value]) => {
+                if (key === 'bossKills' && value && typeof value === 'object') {
+                  Object.assign(bossKills, value);
+                } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                  findBossKills(value);
+                }
+              });
+            };
+            findBossKills(member.leaderData);
+          }
+        } catch (e) {
+          console.error('Error processing boss kills:', e);
+        }
+        
+        if (Object.keys(bossKills).length === 0) {
+          container.innerHTML = '<p class="text-sm text-gray-400 text-center py-4">No hay registros de jefes derrotados.</p>';
+          return;
+        }
+        
+        // Sort bosses alphabetically
+        const sortedBosses = Object.entries(bossKills).sort((a, b) => a[0].localeCompare(b[0]));
+        
+        // Create table header
+        let html = `
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-700">
+              <thead class="bg-gray-800/50">
+                <tr>
+                  <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-amber-300 uppercase tracking-wider">Jefe</th>
+                  <th scope="col" class="px-2 py-2 text-center text-xs font-medium text-green-400 uppercase tracking-wider">Normal</th>
+                  <th scope="col" class="px-2 py-2 text-center text-xs font-medium text-purple-400 uppercase tracking-wider">Heroico</th>
+                  <th scope="col" class="px-2 py-2 text-center text-xs font-medium text-blue-400 uppercase tracking-wider">Total</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-700">
+        `;
+        
+        // Add boss rows
+        sortedBosses.forEach(([boss, data]) => {
+          let normalKills = 0;
+          let heroicKills = 0;
+          
+          if (data && typeof data === 'object') {
+            normalKills = data['1'] || 0;
+            heroicKills = data['2'] || 0;
+          } else if (typeof data === 'number') {
+            if (data === 1) normalKills = 1;
+            else if (data === 2) heroicKills = 1;
+          }
+          
+          const totalKills = normalKills + heroicKills;
+          
+          html += `
+            <tr class="hover:bg-gray-800/30">
+              <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-200">${boss}</td>
+              <td class="px-2 py-2 whitespace-nowrap text-center">
+                <span class="px-2 py-1 text-xs font-bold rounded-full ${normalKills > 0 ? 'bg-green-900/30 text-green-400' : 'text-gray-500'}">
+                  ${normalKills}
+                </span>
+              </td>
+              <td class="px-2 py-2 whitespace-nowrap text-center">
+                <span class="px-2 py-1 text-xs font-bold rounded-full ${heroicKills > 0 ? 'bg-purple-900/30 text-purple-400' : 'text-gray-500'}">
+                  ${heroicKills}
+                </span>
+              </td>
+              <td class="px-2 py-2 whitespace-nowrap text-center text-sm font-medium text-gray-300">
+                ${totalKills}
+              </td>
+            </tr>
+          `;
+        });
+        
+        // Close table
+        html += `
+              </tbody>
+            </table>
+          </div>
+        `;
+        
+        container.innerHTML = html;
+      }
+
+      window.switchModalTab = function (tabId) {
+        // Update tab buttons
+        document.querySelectorAll('.modal-tab').forEach((tab) => {
+          tab.classList.remove('text-amber-400', 'border-amber-500');
+          tab.classList.add('text-gray-400', 'border-transparent');
+        });
+        const activeTab = document.getElementById(`tab-${tabId}`);
+        if (activeTab) {
+          activeTab.classList.remove('text-gray-400', 'border-transparent');
+          activeTab.classList.add('text-amber-400', 'border-amber-500');
+        }
+
+        // Update panes
+        document.querySelectorAll('.modal-pane').forEach((pane) => pane.classList.add('hidden'));
+        const activePane = document.getElementById(`pane-${tabId}`);
+        if (activePane) activePane.classList.remove('hidden');
+        
+        // If switching to indicators tab, update the boss kills display
+        if (tabId === 'indicators' && currentMember) {
+          updateBossKillsDisplay(currentMember);
+        }
+      };
+
+      // Store current member for tab switching
+      let currentMember = null;
+      
       function openModal(member) {
         if (!modal) return;
         
+        // Store the current member
+        currentMember = member;
+
         // Show modal with transition
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        
+
         // Trigger reflow to ensure the initial state is applied
         void modal.offsetWidth;
-        
+
         // Add show class to trigger the transition
         modal.classList.add('show');
-        
+
         // Animate the modal content
         const modalContent = modal.querySelector('.modal-content');
         if (modalContent) {
@@ -2730,6 +2882,82 @@ const totalRaiders = rosterData.members.filter(
           modalNote.textContent = member.publicNote || 'Sin nota pública';
         }
 
+        // Reset to General tab
+        window.switchModalTab('general');
+
+        // Raid Stats Aggregation
+        const leaderData = member.leaderData || {};
+        const aggregatedStats = {
+          total: 0,
+          byZone: {},
+          bossKills: {},
+        };
+
+        Object.values(leaderData).forEach((data) => {
+          const stats = data.raidStats || {};
+          aggregatedStats.total += stats.total || 0;
+
+          if (stats.byZone) {
+            Object.entries(stats.byZone).forEach(([zone, count]) => {
+              aggregatedStats.byZone[zone] = (aggregatedStats.byZone[zone] || 0) + count;
+            });
+          }
+
+          if (stats.bossKills) {
+            Object.entries(stats.bossKills).forEach(([boss, count]) => {
+              aggregatedStats.bossKills[boss] = (aggregatedStats.bossKills[boss] || 0) + count;
+            });
+          }
+        });
+
+        // Hide/Show tabs based on data availability
+        const hasRaidData = aggregatedStats.total > 0;
+        const raidsTab = document.getElementById('tab-raids');
+        const badgeRaids = document.getElementById('badge-raids');
+
+        if (raidsTab) raidsTab.style.display = hasRaidData ? 'flex' : 'none';
+
+        if (hasRaidData) {
+          // Update badges
+          if (badgeRaids) {
+            badgeRaids.textContent = aggregatedStats.total;
+            badgeRaids.classList.remove('hidden');
+          }
+
+          // Populate Raids Tab
+          if (modalRaidSummary) {
+            modalRaidSummary.innerHTML = `
+              <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-700/30 text-center">
+                <p class="text-2xl font-bold text-white">${aggregatedStats.total}</p>
+                <p class="text-[10px] text-amber-300/70 uppercase font-medium">Total Raids</p>
+              </div>
+              <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-700/30 text-center">
+                <p class="text-2xl font-bold text-white">${Object.keys(aggregatedStats.byZone).length}</p>
+                <p class="text-[10px] text-amber-300/70 uppercase font-medium">Zonas Visitadas</p>
+              </div>
+            `;
+          }
+
+          if (modalZoneStats) {
+            modalZoneStats.innerHTML = `
+              <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Participación por Zona</p>
+              <div class="space-y-2">
+                ${Object.entries(aggregatedStats.byZone)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(
+                    ([zone, count]) => `
+                    <div class="flex items-center justify-between bg-gray-900/30 px-3 py-2 rounded-md border border-gray-700/20">
+                      <span class="text-sm text-gray-300">${zone}</span>
+                      <span class="text-sm font-bold text-amber-400">${count}</span>
+                    </div>
+                  `
+                  )
+                  .join('')}
+              </div>
+            `;
+          }
+        }
+
         // Show modal
         modal.classList.remove('hidden');
         modal.classList.add('show');
@@ -2738,14 +2966,14 @@ const totalRaiders = rosterData.members.filter(
 
       function closeModal() {
         if (!modal) return;
-        
+
         // Animate out the modal content
         const modalContent = modal.querySelector('.modal-content');
         if (modalContent) {
           modalContent.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
           modalContent.classList.add('opacity-0', 'scale-95', 'translate-y-4');
         }
-        
+
         // Remove show class after the animation completes
         setTimeout(() => {
           modal.classList.remove('show');
@@ -2934,14 +3162,44 @@ const totalRaiders = rosterData.members.filter(
             const className = classData.name;
             const classColor = classData.color;
 
+            // Calculate raid stats for this member
+            const leaderData = member.leaderData || {};
+            let totalRaids = 0;
+            const allBossKills = {};
+
+            Object.values(leaderData).forEach((data) => {
+              const stats = data.raidStats || {};
+              totalRaids += stats.total || 0;
+              if (stats.bossKills) {
+                Object.entries(stats.bossKills).forEach(([boss, count]) => {
+                  allBossKills[boss] = (allBossKills[boss] || 0) + count;
+                });
+              }
+            });
+
+            const totalBosses = Object.keys(allBossKills).length;
+
             return `
-            <div class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm rounded-lg p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20" 
+            <div class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm rounded-lg p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
                  style="border: 1px solid #${classColor}66;"
                  onclick='window.openMemberModal(${JSON.stringify(member).replace(/'/g, '&#39;')})'
                  onmouseover="this.style.borderColor='#${classColor}99'; this.style.boxShadow='0 10px 15px -3px #${classColor}1a, 0 4px 6px -2px #${classColor}0a';"
                  onmouseout="this.style.borderColor='#${classColor}66'; this.style.boxShadow='none';">
                 <!-- Class color accent -->
                 <div class="absolute top-0 left-0 w-1 h-full transition-opacity" style="background-color: #${classColor}; opacity: 0.5;" onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.5';"></div>
+                
+                ${
+                  totalRaids > 0
+                    ? `
+                <!-- Raid Stats Indicators -->
+                <div class="absolute top-2 right-2 flex gap-1 z-10">
+                  <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30" title="${totalRaids} raids">
+                    ${totalRaids}
+                  </div>
+                </div>
+                `
+                    : ''
+                }
                 
                 <div class="flex flex-col items-start pl-2">
                   <div class="flex items-center gap-2">
@@ -3028,14 +3286,24 @@ const totalRaiders = rosterData.members.filter(
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6 mt-2" x-data>
     <!-- Total de Miembros y Mains/Alts -->
     <div x-data="{ expanded: false }" class="relative group" x-cloak>
-      <div 
+      <div
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-2 hover:border-amber-500/60 transition-all duration-200"
       >
         <div class="flex items-center justify-around">
           <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            <svg
+              class="w-5 h-5 text-amber-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
             </svg>
           </div>
           <div class="flex items-center space-x-2">
@@ -3045,17 +3313,24 @@ const totalRaiders = rosterData.members.filter(
             </div>
           </div>
           <div class="text-right">
-            <div class="w-4 h-4 text-amber-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+            <div
+              class="w-4 h-4 text-amber-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </div>
           </div>
         </div>
       </div>
-      <div 
-        x-show="expanded" 
-        x-collapse 
+      <div
+        x-show="expanded"
+        x-collapse
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 transform scale-95"
         x-transition:enter-end="opacity-100 transform scale-100"
@@ -3079,34 +3354,53 @@ const totalRaiders = rosterData.members.filter(
 
     <!-- Distribución de Roles -->
     <div x-data="{ expanded: false }" class="relative group" x-cloak>
-      <div 
+      <div
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-lg p-2 hover:border-blue-500/60 transition-all duration-200"
       >
         <div class="flex items-center justify-around">
           <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            <svg
+              class="w-5 h-5 text-blue-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
             </svg>
           </div>
           <div class="flex items-center space-x-2">
             <div class="text-center">
               <p class="text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</p>
-              <p class="text-xl font-bold text-blue-200">{Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}</p>
+              <p class="text-xl font-bold text-blue-200">
+                {Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}
+              </p>
             </div>
           </div>
           <div class="text-right">
-            <div class="w-4 h-4 text-blue-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+            <div
+              class="w-4 h-4 text-blue-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </div>
           </div>
         </div>
       </div>
-      <div 
-        x-show="expanded" 
-        x-collapse 
+      <div
+        x-show="expanded"
+        x-collapse
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 transform scale-95"
         x-transition:enter-end="opacity-100 transform scale-100"
@@ -3134,34 +3428,52 @@ const totalRaiders = rosterData.members.filter(
 
     <!-- Combinaciones de Roles Duales -->
     <div x-data="{ expanded: false }" class="relative group" x-cloak>
-      <div 
+      <div
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-lg p-2 hover:border-purple-500/60 transition-all duration-200"
       >
         <div class="flex items-center justify-around">
           <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+            <svg
+              class="w-5 h-5 text-purple-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
             </svg>
           </div>
           <div class="flex items-center space-x-2">
             <div class="text-center">
               <p class="text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</p>
-              <p class="text-xl font-bold text-purple-200">{dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}</p>
+              <p class="text-xl font-bold text-purple-200">
+                {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
+              </p>
             </div>
           </div>
           <div class="text-right">
-            <div class="w-4 h-4 text-purple-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+            <div
+              class="w-4 h-4 text-purple-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </div>
           </div>
         </div>
       </div>
-      <div 
-        x-show="expanded" 
-        x-collapse 
+      <div
+        x-show="expanded"
+        x-collapse
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 transform scale-95"
         x-transition:enter-end="opacity-100 transform scale-100"
@@ -3173,15 +3485,21 @@ const totalRaiders = rosterData.members.filter(
         <div class="grid grid-cols-3 gap-2">
           <div class="text-center bg-gray-700/60 rounded p-1.5">
             <p class="text-lg font-bold text-white">{dualRoleStats.TH}</p>
-            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">Tank<br>Heal</p>
+            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
+              Tank<br />Heal
+            </p>
           </div>
           <div class="text-center bg-gray-700/60 rounded p-1.5">
             <p class="text-lg font-bold text-white">{dualRoleStats.TD}</p>
-            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">Tank<br>DPS</p>
+            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
+              Tank<br />DPS
+            </p>
           </div>
           <div class="text-center bg-gray-700/60 rounded p-1.5">
             <p class="text-lg font-bold text-white">{dualRoleStats.HD}</p>
-            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">Heal<br>DPS</p>
+            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
+              Heal<br />DPS
+            </p>
           </div>
         </div>
       </div>
@@ -3189,34 +3507,53 @@ const totalRaiders = rosterData.members.filter(
 
     <!-- Gear Score -->
     <div x-data="{ expanded: false }" class="relative group">
-      <div 
+      <div
         @click="expanded = !expanded"
         class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-green-600/40 rounded-lg p-2 hover:border-green-500/60 transition-all duration-200"
       >
         <div class="flex items-center justify-around">
           <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            <svg
+              class="w-5 h-5 text-green-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
             </svg>
           </div>
           <div class="flex items-center space-x-2">
             <div class="text-center">
               <p class="text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</p>
-              <p class="text-xl font-bold text-green-200">{averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}</p>
+              <p class="text-xl font-bold text-green-200">
+                {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
+              </p>
             </div>
           </div>
           <div class="text-right">
-            <div class="w-4 h-4 text-green-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+            <div
+              class="w-4 h-4 text-green-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
               </svg>
             </div>
           </div>
         </div>
       </div>
-      <div 
-        x-show="expanded" 
-        x-collapse 
+      <div
+        x-show="expanded"
+        x-collapse
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 transform scale-95"
         x-transition:enter-end="opacity-100 transform scale-100"
@@ -3227,11 +3564,15 @@ const totalRaiders = rosterData.members.filter(
       >
         <div class="grid grid-cols-2 gap-2">
           <div class="text-center bg-gray-700/60 rounded p-1.5">
-            <p class="text-lg font-bold text-white">{minGearScore !== 'N/A' ? minGearScore : 'N/A'}</p>
+            <p class="text-lg font-bold text-white">
+              {minGearScore !== 'N/A' ? minGearScore : 'N/A'}
+            </p>
             <p class="text-[10px] text-green-300/90 font-medium uppercase">Mínimo</p>
           </div>
           <div class="text-center bg-gray-700/60 rounded p-1.5">
-            <p class="text-lg font-bold text-white">{maxGearScore !== 'N/A' ? maxGearScore : 'N/A'}</p>
+            <p class="text-lg font-bold text-white">
+              {maxGearScore !== 'N/A' ? maxGearScore : 'N/A'}
+            </p>
             <p class="text-[10px] text-green-300/90 font-medium uppercase">Máximo</p>
           </div>
         </div>
@@ -3396,7 +3737,8 @@ const totalRaiders = rosterData.members.filter(
             title="Página siguiente"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"
+              ></path>
             </svg>
           </button>
         </div>
@@ -3415,10 +3757,15 @@ const totalRaiders = rosterData.members.filter(
   style="transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;"
 >
   <!-- Backdrop with click handler -->
-  <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity duration-200" aria-hidden="true">
+  <div
+    class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity duration-200"
+    aria-hidden="true"
+  >
   </div>
 
-  <div class="flex min-h-full items-start sm:items-center justify-center p-4 text-center transition-all duration-200">
+  <div
+    class="flex min-h-full items-start sm:items-center justify-center p-4 text-center transition-all duration-200"
+  >
     <div
       class="modal-content relative transform overflow-hidden rounded-lg bg-gray-800 border border-amber-600/30 text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg transition-all duration-200 scale-95 opacity-0 translate-y-4"
     >
@@ -3448,53 +3795,106 @@ const totalRaiders = rosterData.members.filter(
       </div>
 
       <!-- Content -->
-      <div class="px-4 py-5 sm:p-6 space-y-4">
-        <!-- Basic Info -->
-        <div class="flex items-center space-x-4">
-          <div
-            id="modal-avatar"
-            class="w-16 h-16 rounded-full bg-amber-900/30 flex items-center justify-center text-2xl font-bold text-amber-400 border-2 border-amber-500/30"
+      <div class="px-4 py-5 sm:p-6">
+        <!-- Tabs Navigation -->
+        <div class="flex border-b border-gray-700/50 mb-4">
+          <button
+            id="tab-general"
+            class="modal-tab px-4 py-2 text-sm font-medium text-amber-400 border-b-2 border-amber-500 transition-all duration-200"
+            onclick="window.switchModalTab('general')"
           >
-            <!-- Initial -->
-          </div>
-          <div>
-            <h4 id="modal-name" class="text-xl font-bold text-white">Name</h4>
-            <p id="modal-class" class="text-sm text-amber-200">Class</p>
+            General
+          </button>
+          <button
+            id="tab-raids"
+            class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200 flex items-center gap-1.5"
+            onclick="window.switchModalTab('raids')"
+          >
+            Raids
             <span
-              id="modal-rank"
-              class="inline-flex items-center rounded-md bg-amber-900/30 px-2 py-1 text-xs font-medium text-amber-300 ring-1 ring-inset ring-amber-500/20 mt-1"
-              >Rank</span
+              id="badge-raids"
+              class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              >0</span
             >
+          </button>
+          <button
+            id="tab-indicators"
+            class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200"
+            onclick="window.switchModalTab('indicators')"
+          >
+            Indicadores
+          </button>
+        </div>
+
+        <!-- Tab Panes -->
+        <div id="pane-general" class="modal-pane space-y-4">
+          <!-- Basic Info -->
+          <div class="flex items-center space-x-4">
+            <div
+              id="modal-avatar"
+              class="w-16 h-16 rounded-full bg-amber-900/30 flex items-center justify-center text-2xl font-bold text-amber-400 border-2 border-amber-500/30"
+            >
+              <!-- Initial -->
+            </div>
+            <div>
+              <h4 id="modal-name" class="text-xl font-bold text-white">Name</h4>
+              <p id="modal-class" class="text-sm text-amber-200">Class</p>
+              <span
+                id="modal-rank"
+                class="inline-flex items-center rounded-md bg-amber-900/30 px-2 py-1 text-xs font-medium text-amber-300 ring-1 ring-inset ring-amber-500/20 mt-1"
+                >Rank</span
+              >
+            </div>
+          </div>
+
+          <!-- Tags Summary -->
+          <div id="modal-tags" class="flex flex-wrap gap-2 py-2 border-y border-gray-700/30">
+            <!-- Color coded tags will be inserted here -->
+          </div>
+
+          <!-- Original Note (Details) -->
+          <div class="mt-4">
+            <span class="text-sm text-gray-400 block mb-1">Nota Pública (Detalles)</span>
+            <p
+              id="modal-note"
+              class="text-sm text-gray-300 bg-gray-900/50 p-3 rounded-lg border border-gray-700/30 italic"
+            >
+            </p>
           </div>
         </div>
 
-        <!-- Tags Summary -->
-        <div id="modal-tags" class="flex flex-wrap gap-2 py-2 border-y border-gray-700/30">
-          <!-- Color coded tags will be inserted here -->
+        <div id="pane-raids" class="modal-pane hidden space-y-4">
+          <div id="modal-raid-summary" class="grid grid-cols-2 gap-4">
+            <!-- Summary cards -->
+          </div>
+          <div id="modal-zone-stats" class="space-y-2">
+            <!-- Zone list -->
+          </div>
         </div>
-
-        <!-- Original Note (Details) -->
-        <div class="mt-4">
-          <span class="text-sm text-gray-400 block mb-1">Nota Pública (Detalles)</span>
-          <p
-            id="modal-note"
-            class="text-sm text-gray-300 bg-gray-900/50 p-3 rounded-lg border border-gray-700/30 italic"
-          >
-          </p>
+        
+        <!-- Indicators Tab Content -->
+        <div id="pane-indicators" class="modal-pane hidden space-y-4">
+          <div class="bg-gray-900/50 p-4 rounded-lg border border-amber-800/30">
+            <h4 class="text-sm font-semibold text-amber-300 mb-3 border-b border-amber-900/50 pb-1"> Jefes derrotados</h4>
+            <div id="boss-kills-container" class="space-y-3">
+              <!-- Boss kills will be inserted here by JavaScript -->
+              <p class="text-sm text-gray-400 text-center py-4">Cargando estadísticas de jefes...</p>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Footer -->
-      <div
-        class="bg-gray-900/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-amber-600/20"
+    <!-- Footer -->
+    <div
+      class="bg-gray-900/50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-amber-600/20"
+    >
+      <button
+        type="button"
+        id="close-modal-btn"
+        class="mt-3 inline-flex w-full justify-center rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-600 hover:bg-gray-700 sm:mt-0 sm:w-auto transition-colors"
+        >Cerrar</button
       >
-        <button
-          type="button"
-          id="close-modal-btn"
-          class="mt-3 inline-flex w-full justify-center rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-600 hover:bg-gray-700 sm:mt-0 sm:w-auto transition-colors"
-          >Cerrar</button
-        >
-      </div>
     </div>
   </div>
 </div>
