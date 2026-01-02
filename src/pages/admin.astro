@@ -31,7 +31,12 @@ let registrations = [];
 let isLoading = true;
 
 // Process roster data to get eligible members per raid (available for all contexts)
-const parsedMembers = rosterData.map((member) => {
+// Convert rosterData.players object to array if needed
+const rosterMembers = Array.isArray(rosterData) 
+  ? rosterData 
+  : rosterData.players ? Object.values(rosterData.players) : [];
+
+const parsedMembers = rosterMembers.map((member) => {
   const publicNote = member.publicNote || '';
   const validation = validatePublicNote(publicNote, member.name);
 

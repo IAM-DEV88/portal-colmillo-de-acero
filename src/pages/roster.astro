@@ -17,7 +17,8 @@ interface RosterMember {
 
 // Asegurarse de que los datos tengan la estructura esperada
 const players = (rosterData as any).players || {};
-const formattedRosterData = Object.values(players).map((member: any) => {
+const formattedRosterData = Object.entries(players).map(([name, memberData]: [string, any]) => {
+  const member = { ...memberData, name }; // Asegurar que el nombre esté incluido
   try {
     // Validar la nota pública si existe
     const publicNote = String(member.publicNote || '').trim();
@@ -28,7 +29,7 @@ const formattedRosterData = Object.values(players).map((member: any) => {
 
     return {
       ...member,
-      name: String(member.name || 'Sin nombre').trim(),
+      name: String(name || 'Sin nombre').trim(),
       class: className,
       rank: String(member.rank || 'Miembro').trim(),
       publicNote,

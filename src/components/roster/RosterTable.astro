@@ -27,18 +27,38 @@ import type {
   RosterData,
   ClassInfo,
   ClassName as ClassNameType,
-  Role,
-  MainAlt,
-  ProfessionCode,
+  Role as RosterRole,
+  MainAlt as RosterMainAlt,
+  ProfessionCode as RosterProfessionCode,
   RaidCode,
   DifficultyCode,
   PublicNoteValidation as RosterPublicNoteValidation,
   MainAltDistributionItem as MainAltDistItem,
   NoteBlock,
-  Member,
-  RosterStats,
+  Member as RosterMemberBase,
+  RosterStats as BaseRosterStats,
   RaidInfo,
 } from '../../types/roster';
+
+// Local type extensions
+interface RosterMemberType extends RosterMemberBase {
+  leaderData?: Record<string, unknown>;
+  validation?: {
+    isValid: boolean;
+    missingFields: string[];
+  };
+}
+
+interface RosterStats extends BaseRosterStats {
+  gearScoreStats: {
+    min: number;
+    max: number;
+    avg: number;
+    total: number;
+    mainGearScore: number;
+    dualGearScore: number | null;
+  };
+}
 
 import RosterStatsComponent from './RosterStats.astro';
 import featuredPlayersData from '../../data/featuredPlayers.json';
@@ -55,7 +75,7 @@ import {
   PROFESSION_CODES,
 } from '../../utils/rosterUtils';
 
-type ProfessionCode = (typeof PROFESSION_CODES)[number];
+type LocalProfessionCode = (typeof PROFESSION_CODES)[number];
 
 // Variables para las estadísticas de Gear Score
 let gearScoreStats = {
@@ -80,7 +100,6 @@ import {
   DIFFICULTY_NAMES,
   DAY_NAMES,
   RAID_CODES,
-  DIFFICULTIES,
   STATUS,
 } from '../../types/roster';
 
@@ -100,6 +119,9 @@ const initialStats: RosterStats = {
   validNotesCount: 0,
 };
 
+// Define raid pattern for parsing
+const raidPattern = /(.*?)(?:\s*\(([^)]+)\))?\s*\[(.*?)\](?:\s*\(([^)]+)\))?/;
+
 // Define RAIDS constant with proper typing
 const RAIDS: Array<{ code: RaidCode; name: string }> = Object.entries(RAID_NAMES).map(
   ([code, name]) => ({
@@ -109,7 +131,17 @@ const RAIDS: Array<{ code: RaidCode; name: string }> = Object.entries(RAID_NAMES
 );
 
 // Initialize stats with default values
-let stats: RosterStats = { ...initialStats };
+let stats: RosterStats = { 
+  ...initialStats,
+  gearScoreStats: {
+    min: 0,
+    max: 0,
+    avg: 0,
+    total: 0,
+    mainGearScore: 0,
+    dualGearScore: null
+  }
+};
 
 // Type definitions for the component
 interface RoleInfo {
@@ -117,8 +149,6 @@ interface RoleInfo {
   color: string;
   icon: string;
 }
-
-// Usar RosterMemberType importado directamente
 
 // Component props interface
 export interface RosterTableProps {
@@ -140,14 +170,7 @@ const defaultRosterData: RosterData = {
   rankInfo: {},
   classes: [],
   totalMembers: 0,
-  guildInfo: {
-    name: '',
-    realm: '',
-    faction: 0,
-    level: 25,
-    memberCount: 0,
-    achievementPoints: 0,
-  },
+  // guildInfo removed as it's not part of RosterData type
   stats: {
     ...initialStats,
     totalMembers: 0,
@@ -162,21 +185,35 @@ const defaultRosterData: RosterData = {
 
 // Process members with proper typing
 const processRosterMember = (member: any): RosterMemberType => {
+  // Handle the case where member might be in the new format with nested data
+  const memberData = member.leaderData ? {
+    ...member,
+    name: member.name || '',
+    class: member.class || 'Desconocido',
+    rank: member.rank || 'Miembro',
+    publicNote: member.publicNote || '',
+    officerNote: member.officerNote || '',
+    race: member.race || '',
+    guildLeave: member.guildLeave || false,
+    level: 80, // Default level for WoW Classic
+    gearScore: 0, // Will be calculated from note validation
+  } : member;
+
   const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).includes(
-    member.class
+    memberData.class
   )
-    ? (member.class as keyof typeof defaultClassInfo)
+    ? (memberData.class as keyof typeof defaultClassInfo)
     : ('Desconocido' as const);
 
   // Ensure mainAlt is either 'M' or 'A'
   const mainAlt =
-    member.mainAlt === 'main' ? 'M' : member.mainAlt === 'alt' ? 'A' : member.mainAlt || 'A';
+    memberData.mainAlt === 'main' ? 'M' : memberData.mainAlt === 'alt' ? 'A' : memberData.mainAlt || 'A';
 
   // Validar la nota pública usando el alias importado
   const noteValidation = validateRosterNote(
-    member.publicNote || '',
-    member.name || '',
-    member.officerNote || ''
+    memberData.publicNote || '',
+    memberData.name || '',
+    memberData.officerNote || ''
   );
 
   // Asegurar que noteValidation cumpla con PublicNoteValidation
@@ -199,27 +236,30 @@ const processRosterMember = (member: any): RosterMemberType => {
   };
 
   // Deducir facción de la raza
-  const allianceRaces = ['HU', 'NE', 'DW', 'GN', 'DR'];
-  const hordeRaces = ['OR', 'TA', 'UN', 'TR', 'BE'];
+  const allianceRaces = ['HU', 'NE', 'DW', 'GN', 'DR'] as const;
+  const hordeRaces = ['OR', 'TA', 'UN', 'TR', 'BE'] as const;
   let deducedFaction = '';
   if (member.race) {
-    if (allianceRaces.includes(member.race)) deducedFaction = '1';
-    else if (hordeRaces.includes(member.race)) deducedFaction = '2';
+    if ((allianceRaces as readonly string[]).includes(member.race)) {
+      deducedFaction = '1';
+    } else if ((hordeRaces as readonly string[]).includes(member.race)) {
+      deducedFaction = '2';
+    }
   }
 
   // Recopilar reconocimientos de featuredPlayers.json
-  const playerRecognitions = [];
+  const playerRecognitions: Array<{title: string; description: string; date: string}> = [];
   const typedFeaturedData = featuredPlayersData as any;
   const recognitionsList = typedFeaturedData.recognitions || [];
 
   Object.entries(typedFeaturedData).forEach(([year, yearData]) => {
     if (year === 'recognitions') return;
     
-    Object.entries(yearData as any).forEach(([month, monthData]: [string, any]) => {
+    Object.entries(yearData as Record<string, any>).forEach(([month, monthData]) => {
       if (monthData.featuredPlayers) {
-        monthData.featuredPlayers.forEach((fp) => {
+        (monthData.featuredPlayers || []).forEach((fp: any) => {
           if (fp.playerName?.toLowerCase() === member.name?.toLowerCase()) {
-            (fp.recognitionIndices || []).forEach((idx) => {
+            (fp.recognitionIndices || []).forEach((idx: number) => {
               const rec = recognitionsList[idx];
               if (rec) {
                 playerRecognitions.push({
@@ -239,21 +279,22 @@ const processRosterMember = (member: any): RosterMemberType => {
 
   // Create a valid RosterMember object with required properties
   const processedMember: RosterMemberType = {
-    ...member,
-    name: member.name || '',
+    ...memberData,
+    name: memberData.name || 'Unknown',
     class: className,
-    rank: member.rank || '',
-    publicNote: member.publicNote || '',
-    officerNote: member.officerNote || '',
+    rank: memberData.rank || 'Miembro',
+    publicNote: memberData.publicNote || '',
+    officerNote: memberData.officerNote || '',
+    race: memberData.race || '',
+    guildLeave: memberData.guildLeave || false,
+    level: memberData.level || 80,
+    gearScore: noteValidation.gearScore || 0,
+    mainAlt,
     noteValidation: validNoteValidation,
-    mainAlt: mainAlt as MainAlt,
-    faction: deducedFaction, // Usar la facción deducida
-    recognitions: playerRecognitions, // Añadir reconocimientos
-  };
-
-  return processedMember;
-};
-
+    leaderData: member.leaderData || {},
+    validation: {
+      isValid: noteValidation.isValid,
+      missingFields: noteValidation.missingFields || [],
 // Las funciones de cálculo ahora se importan desde rosterUtils.ts
 
 // Define the roster data with proper typing
@@ -375,20 +416,10 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
   const mainAltDistribution = calculateMainAlts(members);
   const validNotesCount = members.filter((m) => m.noteValidation?.isValid).length;
 
-  // Initialize professions object with all possible profession codes set to 0
-  const professions: Record<string, number> = {
-    JC: 0,
-    BS: 0,
-    EN: 0,
-    EG: 0,
-    LW: 0,
-    AL: 0,
-    TL: 0,
-    IN: 0,
-    HB: 0,
-    MN: 0,
-    SK: 0,
-  };
+  // Initialize profession counts to 0
+  PROFESSION_CODES.forEach((code) => {
+    professions[code] = 0;
+  });
 
   // Initialize profession counts to 0
   PROFESSION_CODES.forEach((code) => {
@@ -397,6 +428,13 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
 
   let totalProcessed = 0;
   let membersWithValidNotes = 0;
+
+  // Initialize profession counts
+  const professions: Record<string, number> = {};
+  // Initialize profession counts to 0
+  PROFESSION_CODES.forEach((code) => {
+    professions[code] = 0;
+  });
 
   // Process each member's professions
   for (const member of members) {
@@ -437,13 +475,13 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
         return normalizedCode.length === 2 ? normalizedCode : null;
       })
       .filter((code): code is string => Boolean(code)) // Remove null codes after normalization
-      .filter((code): code is ProfessionCode => {
-        const isValid = PROFESSION_CODES.includes(code as ProfessionCode);
+      .filter((code): code is LocalProfessionCode => {
+        const isValid = PROFESSION_CODES.includes(code as LocalProfessionCode);
         if (!isValid && code) {
           console.warn(`  Unrecognized profession code: "${code}"`);
         }
         return isValid;
-      }) as ProfessionCode[]; // Ensure TypeScript knows these are valid profession codes
+      }) as LocalProfessionCode[]; // Ensure TypeScript knows these are valid profession codes
 
     // Count the professions
     allProfs.forEach((profCode) => {
@@ -2647,18 +2685,32 @@ const totalRaiders = rosterData.members.filter(
         let html = '';
         const bossKills = {};
         
-        // Try to get the boss kills data from the expected path
+        // Try to get the boss kills data from multiple possible locations
         try {
-          const raidStats = member.leaderData?.Voidhammer?.raidStats;
-          if (raidStats?.bossKills) {
-            Object.entries(raidStats.bossKills).forEach(([boss, data]) => {
-              bossKills[boss] = data;
+          // Check if bossKills is directly on the member
+          if (member.bossKills && typeof member.bossKills === 'object') {
+            Object.assign(bossKills, member.bossKills);
+          }
+          
+          // Check in leaderData.Voidhammer.raidStats
+          if (member.leaderData?.Voidhammer?.raidStats?.bossKills) {
+            Object.entries(member.leaderData.Voidhammer.raidStats.bossKills).forEach(([boss, data]) => {
+              bossKills[boss] = bossKills[boss] || {};
+              Object.assign(bossKills[boss], data);
             });
-          } else if (member.leaderData) {
+          }
+          
+          // Recursively search for bossKills in leaderData
+          if (member.leaderData) {
             const findBossKills = (obj) => {
+              if (!obj) return;
+              
               Object.entries(obj).forEach(([key, value]) => {
                 if (key === 'bossKills' && value && typeof value === 'object') {
-                  Object.assign(bossKills, value);
+                  Object.entries(value).forEach(([boss, data]) => {
+                    bossKills[boss] = bossKills[boss] || {};
+                    Object.assign(bossKills[boss], data);
+                  });
                 } else if (value && typeof value === 'object' && !Array.isArray(value)) {
                   findBossKills(value);
                 }
@@ -2666,8 +2718,17 @@ const totalRaiders = rosterData.members.filter(
             };
             findBossKills(member.leaderData);
           }
+          
+          // Also check in member.indicators if it exists
+          if (member.indicators?.bossKills) {
+            Object.entries(member.indicators.bossKills).forEach(([boss, data]) => {
+              bossKills[boss] = bossKills[boss] || {};
+              Object.assign(bossKills[boss], data);
+            });
+          }
         } catch (e) {
           console.error('Error processing boss kills:', e);
+          console.debug('Member data:', member);
         }
         
         if (Object.keys(bossKills).length > 0) {
@@ -3058,7 +3119,14 @@ const totalRaiders = rosterData.members.filter(
         // Hide/Show tabs based on data availability
         const hasRaidData = aggregatedStats.total > 0;
         const hasRecognitions = member.recognitions && member.recognitions.length > 0;
-        const hasIndicators = Object.keys(aggregatedStats.bossKills).length > 0;
+        // Check for bossKills in multiple locations
+        const hasBossKills = (
+          (member.bossKills && Object.keys(member.bossKills).length > 0) ||
+          (member.leaderData?.Voidhammer?.raidStats?.bossKills && Object.keys(member.leaderData.Voidhammer.raidStats.bossKills).length > 0) ||
+          (member.indicators?.bossKills && Object.keys(member.indicators.bossKills).length > 0) ||
+          (aggregatedStats.bossKills && Object.keys(aggregatedStats.bossKills).length > 0)
+        );
+        const hasIndicators = hasBossKills;
 
         const raidsTab = document.getElementById('tab-raids');
         const recognitionsTab = document.getElementById('tab-recognitions');
