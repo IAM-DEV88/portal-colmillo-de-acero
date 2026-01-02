@@ -294,7 +294,15 @@ const processRosterMember = (member: any): RosterMemberType => {
     leaderData: member.leaderData || {},
     validation: {
       isValid: noteValidation.isValid,
-      missingFields: noteValidation.missingFields || [],
+      missingFields: noteValidation.missingFields || []
+    },
+    playerRecognitions,
+    faction: deducedFaction
+  };
+
+  return processedMember;
+};
+
 // Las funciones de cálculo ahora se importan desde rosterUtils.ts
 
 // Define the roster data with proper typing
@@ -409,6 +417,14 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
       validNotesCount: 0,
     } as RosterStats;
 
+  // Initialize profession counts
+  const professions: Record<string, number> = {};
+  
+  // Initialize profession counts to 0
+  PROFESSION_CODES.forEach((code) => {
+    professions[code] = 0;
+  });
+
   // Use members directly with proper type
   const roleDistribution = calculateRoleDistro(members);
   const gearScoreStats = calculateGSStats(members);
@@ -416,21 +432,8 @@ const calculateStats = (members: RosterMember[]): RosterStats => {
   const mainAltDistribution = calculateMainAlts(members);
   const validNotesCount = members.filter((m) => m.noteValidation?.isValid).length;
 
-  // Initialize profession counts to 0
-  PROFESSION_CODES.forEach((code) => {
-    professions[code] = 0;
-  });
-
-  // Initialize profession counts to 0
-  PROFESSION_CODES.forEach((code) => {
-    professions[code] = 0;
-  });
-
   let totalProcessed = 0;
   let membersWithValidNotes = 0;
-
-  // Initialize profession counts
-  const professions: Record<string, number> = {};
   // Initialize profession counts to 0
   PROFESSION_CODES.forEach((code) => {
     professions[code] = 0;
