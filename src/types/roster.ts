@@ -86,7 +86,6 @@ export interface ClassInfo {
 export interface LeaderRaidStats {
   byZone: Record<string, number>;
   total: number;
-  bossKills: Record<string, number>;
 }
 
 export interface LeaderData {
@@ -108,6 +107,12 @@ export interface RosterMember {
   level?: number;
   gearScore?: number;
   faction?: string;
+  recognitions?: Array<{
+    title: string;
+    description: string;
+    date: string;
+    icon?: string;
+  }>;
   validation?: {
     isValid: boolean;
     missingFields: string[];

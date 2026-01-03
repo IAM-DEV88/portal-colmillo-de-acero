@@ -12,7 +12,7 @@ def get_val(key, text):
     return None
 
 def get_raid_stats(text):
-    stats = {"byZone": {}, "total": 0, "bossKills": {}}
+    stats = {"byZone": {}, "total": 0}
     
     print(f"DEBUG: get_raid_stats input text (first 200 chars): {text[:200]}")
 
@@ -37,48 +37,8 @@ def get_raid_stats(text):
     else:
         print(f"DEBUG: No byZone match found for pattern: {'\\s*\\["byZone"\\]\\s*=\\s*\\{(.*?)\\}'}")
 
-    # bossKills
-    print(f"DEBUG: Attempting to find 'bossKills' in text (first 200 chars): {text[:200]}")
-    bk_match = re.search(r'\s*\["bossKills"\]\s*=\s*({(?:[^}{]+|{(?:[^}{]+|{[^}{]*})*})*})', text, re.DOTALL)
-    if bk_match:
-        print(f"DEBUG: bossKills match found. Group 1 (first 100 chars): {bk_match.group(1)[:100]}")
-        stats["bossKills"] = get_boss_kills_stats(bk_match.group(1))
-        print(f"DEBUG: bossKills stats: {stats['bossKills']}")
-    else:
-        print(f"DEBUG: No bossKills match found for pattern: {'\\s*\\["bossKills"\\]\\s*=\\s*\\{(.*?)\\}'}")
-
     return stats
             
-def get_boss_kills_stats(text):
-    boss_kills = {}
-    print(f"DEBUG: get_boss_kills_stats input text (first 200 chars): {text[:200]}")
-    # Regex para encontrar cada bloque de jefe, que incluye el nombre del jefe y sus dificultades/valores
-    # Modificado para manejar bloques anidados correctamente
-    boss_blocks = re.findall(r'\["([^"]+)"\]\s*=\s*\{([^}]+)\}', text, re.DOTALL)
-    for boss_name, block_content in boss_blocks:
-        print(f"DEBUG: Processing boss: {boss_name}, block_content (first 200 chars): {block_content[:200]}")
-        difficulties = {}
-        # Regex para encontrar los valores numéricos y sus índices (dificultades)
-        # Esto manejará tanto [1] = 1, como 1, -- [1], y ["string"] = 1
-        # Modificado para ser más robusto y manejar claves de dificultad de cadena
-        diff_matches = re.findall(r'(?:(\d+),\s*--\s*\[(\d+)\]|\s*\[(\d+)\]\s*=\s*(\d+)|\s*\["([^"]+)"\]\s*=\s*(\d+))', block_content)
-        print(f"DEBUG: diff_matches for {boss_name}: {diff_matches}")
-        for match in diff_matches:
-            if match[0]: # Caso: 1, -- [1]
-                value = int(match[0])
-                difficulty = int(match[1])
-            elif match[2]: # Caso: [1] = 1
-                difficulty = int(match[2])
-                value = int(match[3])
-            elif match[4]: # Caso: ["Normal"] = 10
-                difficulty = match[4] # Difficulty is string
-                value = int(match[5])
-            difficulties[difficulty] = value
-        boss_kills[boss_name] = difficulties
-    return boss_kills
-
-
-
 def lua_to_json(lua_file, json_file):
     try:
         with open(lua_file, "r", encoding="utf-8") as f:

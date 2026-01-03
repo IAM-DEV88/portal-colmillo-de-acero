@@ -248,7 +248,7 @@ const processRosterMember = (member: any): RosterMemberType => {
   }
 
   // Recopilar reconocimientos de featuredPlayers.json
-  const playerRecognitions: Array<{title: string; description: string; date: string}> = [];
+  const memberRecognitions: Array<{title: string; description: string; date: string; icon?: string}> = [];
   const typedFeaturedData = featuredPlayersData as any;
   const recognitionsList = typedFeaturedData.recognitions || [];
 
@@ -258,11 +258,15 @@ const processRosterMember = (member: any): RosterMemberType => {
     Object.entries(yearData as Record<string, any>).forEach(([month, monthData]) => {
       if (monthData.featuredPlayers) {
         (monthData.featuredPlayers || []).forEach((fp: any) => {
-          if (fp.playerName?.toLowerCase() === member.name?.toLowerCase()) {
+          // Robust name matching
+          const fpName = String(fp.playerName || '').trim().toLowerCase();
+          const targetName = String(memberData.name || '').trim().toLowerCase();
+          
+          if (fpName === targetName && fpName !== '') {
             (fp.recognitionIndices || []).forEach((idx: number) => {
               const rec = recognitionsList[idx];
               if (rec) {
-                playerRecognitions.push({
+                memberRecognitions.push({
                   ...rec,
                   date: `${year}-${month.padStart(2, '0')}-01`
                 });
@@ -275,7 +279,7 @@ const processRosterMember = (member: any): RosterMemberType => {
   });
 
   // Ordenar por fecha descendente
-  playerRecognitions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  memberRecognitions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   // Create a valid RosterMember object with required properties
   const processedMember: RosterMemberType = {
@@ -296,7 +300,7 @@ const processRosterMember = (member: any): RosterMemberType => {
       isValid: noteValidation.isValid,
       missingFields: noteValidation.missingFields || []
     },
-    playerRecognitions,
+    recognitions: memberRecognitions,
     faction: deducedFaction
   };
 
@@ -370,6 +374,7 @@ function ensureRosterMember(member: Partial<RosterMember>): RosterMember {
       error: 'No note provided',
     },
     mainAlt: member.mainAlt || 'A',
+    recognitions: Array.isArray(member.recognitions) ? member.recognitions : [],
     ...member,
   };
 }
@@ -2681,124 +2686,8 @@ const totalRaiders = rosterData.members.filter(
       }
 
       // Function to update boss kills display
-      function updateBossKillsDisplay(member) {
-        const container = document.getElementById('boss-kills-container');
-        if (!container) return;
-        
-        let html = '';
-        const bossKills = {};
-        
-        // Try to get the boss kills data from multiple possible locations
-        try {
-          // Check if bossKills is directly on the member
-          if (member.bossKills && typeof member.bossKills === 'object') {
-            Object.assign(bossKills, member.bossKills);
-          }
-          
-          // Check in leaderData.Voidhammer.raidStats
-          if (member.leaderData?.Voidhammer?.raidStats?.bossKills) {
-            Object.entries(member.leaderData.Voidhammer.raidStats.bossKills).forEach(([boss, data]) => {
-              bossKills[boss] = bossKills[boss] || {};
-              Object.assign(bossKills[boss], data);
-            });
-          }
-          
-          // Recursively search for bossKills in leaderData
-          if (member.leaderData) {
-            const findBossKills = (obj) => {
-              if (!obj) return;
-              
-              Object.entries(obj).forEach(([key, value]) => {
-                if (key === 'bossKills' && value && typeof value === 'object') {
-                  Object.entries(value).forEach(([boss, data]) => {
-                    bossKills[boss] = bossKills[boss] || {};
-                    Object.assign(bossKills[boss], data);
-                  });
-                } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-                  findBossKills(value);
-                }
-              });
-            };
-            findBossKills(member.leaderData);
-          }
-          
-          // Also check in member.indicators if it exists
-          if (member.indicators?.bossKills) {
-            Object.entries(member.indicators.bossKills).forEach(([boss, data]) => {
-              bossKills[boss] = bossKills[boss] || {};
-              Object.assign(bossKills[boss], data);
-            });
-          }
-        } catch (e) {
-          console.error('Error processing boss kills:', e);
-          console.debug('Member data:', member);
-        }
-        
-        if (Object.keys(bossKills).length > 0) {
-          // Sort bosses alphabetically
-          const sortedBosses = Object.entries(bossKills).sort((a, b) => a[0].localeCompare(b[0]));
-          
-          // Create table header
-          html += `
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-700">
-                <thead class="bg-gray-800/50">
-                  <tr>
-                    <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-amber-300 uppercase tracking-wider">Jefe</th>
-                    <th scope="col" class="px-2 py-2 text-center text-xs font-medium text-green-400 uppercase tracking-wider">Normal</th>
-                    <th scope="col" class="px-2 py-2 text-center text-xs font-medium text-purple-400 uppercase tracking-wider">Heroico</th>
-                    <th scope="col" class="px-2 py-2 text-center text-xs font-medium text-blue-400 uppercase tracking-wider">Total</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-700">
-          `;
-          
-          // Add boss rows
-          sortedBosses.forEach(([boss, data]) => {
-            let normalKills = 0;
-            let heroicKills = 0;
-            
-            if (data && typeof data === 'object') {
-              normalKills = data['1'] || 0;
-              heroicKills = data['2'] || 0;
-            } else if (typeof data === 'number') {
-              if (data === 1) normalKills = 1;
-              else if (data === 2) heroicKills = 1;
-            }
-            
-            const totalKills = normalKills + heroicKills;
-            
-            html += `
-              <tr class="hover:bg-gray-800/30">
-                <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-200">${boss}</td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <span class="px-2 py-1 text-xs font-bold rounded-full ${normalKills > 0 ? 'bg-green-900/30 text-green-400' : 'text-gray-500'}">
-                    ${normalKills}
-                  </span>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center">
-                  <span class="px-2 py-1 text-xs font-bold rounded-full ${heroicKills > 0 ? 'bg-purple-900/30 text-purple-400' : 'text-gray-500'}">
-                    ${heroicKills}
-                  </span>
-                </td>
-                <td class="px-2 py-2 whitespace-nowrap text-center text-sm font-medium text-gray-300">
-                  ${totalKills}
-                </td>
-              </tr>
-            `;
-          });
-          
-          html += `
-                </tbody>
-              </table>
-            </div>
-          `;
-        } else {
-          html = '<p class="text-sm text-gray-400 text-center py-4">No hay indicadores disponibles para este personaje.</p>';
-        }
-        
-        container.innerHTML = html;
-      }
+      // Function to update boss kills display
+      // Note: Removed because boss kills data will no longer be included in roster.json
 
       window.switchModalTab = function (tabId) {
         // Update tab buttons
@@ -2817,10 +2706,8 @@ const totalRaiders = rosterData.members.filter(
         const activePane = document.getElementById(`pane-${tabId}`);
         if (activePane) activePane.classList.remove('hidden');
         
-        // If switching to indicators or recognitions tab, update the display
-        if (tabId === 'indicators' && currentMember) {
-          updateBossKillsDisplay(currentMember);
-        } else if (tabId === 'recognitions' && currentMember) {
+        // If switching to recognitions tab, update the display
+        if (tabId === 'recognitions' && currentMember) {
           updateRecognitionsDisplay(currentMember);
         }
       };
@@ -3097,55 +2984,46 @@ const totalRaiders = rosterData.members.filter(
         // Raid Stats Aggregation
         const leaderData = member.leaderData || {};
         const aggregatedStats = {
-          total: 0,
+          totalRaids: 0,
           byZone: {},
-          bossKills: {},
         };
 
         Object.values(leaderData).forEach((data) => {
           const stats = data.raidStats || {};
-          aggregatedStats.total += stats.total || 0;
+          aggregatedStats.totalRaids += stats.total || 0;
 
           if (stats.byZone) {
             Object.entries(stats.byZone).forEach(([zone, count]) => {
               aggregatedStats.byZone[zone] = (aggregatedStats.byZone[zone] || 0) + count;
             });
           }
-
-          if (stats.bossKills) {
-            Object.entries(stats.bossKills).forEach(([boss, count]) => {
-              aggregatedStats.bossKills[boss] = (aggregatedStats.bossKills[boss] || 0) + count;
-            });
-          }
         });
 
         // Hide/Show tabs based on data availability
-        const hasRaidData = aggregatedStats.total > 0;
-        const hasRecognitions = member.recognitions && member.recognitions.length > 0;
-        // Check for bossKills in multiple locations
-        const hasBossKills = (
-          (member.bossKills && Object.keys(member.bossKills).length > 0) ||
-          (member.leaderData?.Voidhammer?.raidStats?.bossKills && Object.keys(member.leaderData.Voidhammer.raidStats.bossKills).length > 0) ||
-          (member.indicators?.bossKills && Object.keys(member.indicators.bossKills).length > 0) ||
-          (aggregatedStats.bossKills && Object.keys(aggregatedStats.bossKills).length > 0)
-        );
-        const hasIndicators = hasBossKills;
+        const hasRaidData = aggregatedStats.totalRaids > 0;
+        const hasRecognitions = member.recognitions && Array.isArray(member.recognitions) && member.recognitions.length > 0;
 
         const raidsTab = document.getElementById('tab-raids');
         const recognitionsTab = document.getElementById('tab-recognitions');
-        const indicatorsTab = document.getElementById('tab-indicators');
         const badgeRaids = document.getElementById('badge-raids');
         const badgeRecognitions = document.getElementById('badge-recognitions');
 
         if (raidsTab) raidsTab.style.display = hasRaidData ? 'flex' : 'none';
         if (recognitionsTab) recognitionsTab.style.display = hasRecognitions ? 'flex' : 'none';
-        if (indicatorsTab) indicatorsTab.style.display = hasIndicators ? 'flex' : 'none';
         
-        // Update recognition badge
+        // Update badges
+        if (badgeRaids) {
+          if (hasRaidData) {
+            badgeRaids.textContent = aggregatedStats.totalRaids.toString();
+            badgeRaids.classList.remove('hidden');
+          } else {
+            badgeRaids.classList.add('hidden');
+          }
+        }
+
         if (badgeRecognitions) {
           if (hasRecognitions) {
-            const recognitionCount = member.recognitions?.length || 0;
-            badgeRecognitions.textContent = recognitionCount;
+            badgeRecognitions.textContent = member.recognitions.length.toString();
             badgeRecognitions.classList.remove('hidden');
           } else {
             badgeRecognitions.classList.add('hidden');
@@ -3153,17 +3031,11 @@ const totalRaiders = rosterData.members.filter(
         }
 
         if (hasRaidData) {
-          // Update badges
-          if (badgeRaids) {
-            badgeRaids.textContent = aggregatedStats.total;
-            badgeRaids.classList.remove('hidden');
-          }
-
           // Populate Raids Tab
           if (modalRaidSummary) {
             modalRaidSummary.innerHTML = `
               <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-700/30 text-center">
-                <p class="text-2xl font-bold text-white">${aggregatedStats.total}</p>
+                <p class="text-2xl font-bold text-white">${aggregatedStats.totalRaids}</p>
                 <p class="text-[10px] text-amber-300/70 uppercase font-medium">Total Raids</p>
               </div>
               <div class="bg-gray-900/40 p-3 rounded-lg border border-gray-700/30 text-center">
@@ -3400,19 +3272,11 @@ const totalRaiders = rosterData.members.filter(
             // Calculate raid stats for this member
             const leaderData = member.leaderData || {};
             let totalRaids = 0;
-            const allBossKills = {};
 
             Object.values(leaderData).forEach((data) => {
               const stats = data.raidStats || {};
               totalRaids += stats.total || 0;
-              if (stats.bossKills) {
-                Object.entries(stats.bossKills).forEach(([boss, count]) => {
-                  allBossKills[boss] = (allBossKills[boss] || 0) + count;
-                });
-              }
             });
-
-            const totalBosses = Object.keys(allBossKills).length;
 
             return `
             <div class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm rounded-lg p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
@@ -4067,13 +3931,6 @@ const totalRaiders = rosterData.members.filter(
               >0</span
             >
           </button>
-          <button
-            id="tab-indicators"
-            class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200 whitespace-nowrap"
-            onclick="window.switchModalTab('indicators')"
-          >
-            Indicadores
-          </button>
         </div>
 
         <!-- Tab Panes -->
@@ -4137,25 +3994,8 @@ const totalRaiders = rosterData.members.filter(
             </div>
           </div>
         </div>
-        
-        <!-- Indicators Tab Content -->
-        <div id="pane-indicators" class="modal-pane hidden space-y-4">
-          <div class="bg-gray-900/50 p-4 rounded-lg border border-amber-800/30">
-            <h4 class="text-sm font-semibold text-amber-300 mb-3 border-b border-amber-900/50 pb-1 flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-              </svg>
-              Jefes Derrotados
-            </h4>
-            <div id="boss-kills-container" class="space-y-3">
-              <!-- Boss kills will be inserted here by JavaScript -->
-              <p class="text-sm text-gray-400 text-center py-4">Cargando estadísticas de jefes...</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
-
   </div>
 </div>
 
