@@ -41,6 +41,24 @@
       "icon": "trophy"
     }
   ],
+  "2026": {
+    "01": {
+      "featuredPlayers": [
+        {
+          "playerName": "bosakill",
+          "recognitionIndices": [3, 4]
+        },
+        {
+          "playerName": "mivase",
+          "recognitionIndices": [3]
+        },
+        {
+          "playerName": "angelesm",
+          "recognitionIndices": [3, 4]
+        }
+      ]
+    }
+  },
   "2025": {
     "10": {
       "featuredPlayers": [
@@ -249,6 +267,10 @@
     },
     "12":{
       "featuredPlayers": [
+        {
+          "playerName": "Bosakiller",
+          "recognitionIndices": [3,4]
+        },
         {
           "playerName": "Angelesm",
           "recognitionIndices": [3,4]
