@@ -2472,9 +2472,7 @@ const totalRaiders = rosterData.members.filter(
     #member-modal {
       opacity: 0;
       visibility: hidden;
-      transition:
-        opacity 0.2s ease-in-out,
-        visibility 0.2s ease-in-out;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
 
     #member-modal.show {
@@ -2483,99 +2481,46 @@ const totalRaiders = rosterData.members.filter(
     }
 
     #member-modal .modal-content {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Estilos para los tooltips */
-    .tooltip-container {
-      position: relative;
-      display: inline-block;
-    }
-
-    /* Estilos para los contenedores de select personalizados */
-    .select-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-    }
-
-    .select-wrapper::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 0.75rem;
-      transform: translateY(-50%);
-      width: 1em;
-      height: 1em;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: center;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    /* Ocultar la flecha predeterminada en todos los navegadores */
-    select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      padding-right: 2rem !important;
-      background-image: none !important;
-    }
-
-    /* Para IE11 */
-    select::-ms-expand {
-      display: none;
-    }
-
-    .tooltip-container:hover .tooltip {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .tooltip {
-      transform: translateY(-5px);
-      transition: all 0.2s ease-in-out;
-      box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.1),
-        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-
-    /* Estilos para los dropdowns */
-    select option {
-      background-color: #1a202c; /* Fondo oscuro */
-      color: #e2e8f0; /* Texto claro */
-      padding: 0.5rem;
-    }
-
-    select:focus option:checked {
-      background-color: #4a5568; /* Color de fondo para la opción seleccionada */
-      color: white;
-    }
-
-    /* Estilo para el hover en las opciones */
-    select option:hover {
-      background-color: #4a5568 !important;
-    }
-
-    /* Custom scrollbar for boss stats */
+    /* Custom scrollbar for better legibility */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
+      height: 6px;
     }
 
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(31, 41, 55, 0.5);
-      border-radius: 3px;
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 10px;
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(245, 158, 11, 0.3);
-      border-radius: 3px;
+      background: rgba(217, 119, 6, 0.3);
+      border-radius: 10px;
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(245, 158, 11, 0.5);
+      background: rgba(217, 119, 6, 0.5);
+    }
+
+    /* Select customization */
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23d97706'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+    }
+
+    /* Animation for grid items */
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .animate-card {
+      animation: fadeInScale 0.3s ease-out forwards;
     }
   </style>
   <!-- Script del cliente con la lógica de JavaScript -->
@@ -3330,13 +3275,13 @@ const totalRaiders = rosterData.members.filter(
             });
 
             return `
-            <div class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm rounded-lg p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
+            <div class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm rounded-lg p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative animate-card" 
                  style="border: 1px solid #${classColor}66;"
                  onclick='window.openMemberModal(${JSON.stringify(member).replace(/'/g, '&#39;')})'
                  onmouseover="this.style.borderColor='#${classColor}99'; this.style.boxShadow='0 10px 15px -3px #${classColor}1a, 0 4px 6px -2px #${classColor}0a';"
                  onmouseout="this.style.borderColor='#${classColor}66'; this.style.boxShadow='none';">
                 <!-- Class color accent -->
-                <div class="absolute top-0 left-0 w-1 h-full transition-opacity" style="background-color: #${classColor}; opacity: 0.5;" onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.5';"></div>
+                <div class="absolute top-0 left-0 w-1.5 h-full transition-opacity" style="background-color: #${classColor}; opacity: 0.7;" onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.7';"></div>
                 
                 <!-- Stats Indicators -->
                 <div class="absolute top-2 right-2 flex gap-1 z-10">
@@ -3381,22 +3326,22 @@ const totalRaiders = rosterData.members.filter(
                     
                     <!-- Info -->
                     <div class="flex-1 min-w-0">
-                        <div class="">
-                            <div class="font-bold truncate transition-colors text-lg" style="color: #${classColor}">${member.name}</div>
-                            <span class="text-xs px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${
-                              member.rank.toLowerCase().includes('general admin')
-                                ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
-                                : member.rank.toLowerCase().includes('oficial')
-                                    ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60'
-                                    : member.rank.toLowerCase().includes('explorador')
-                                      ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/60'
-                                      : member.rank.toLowerCase().includes('iniciado')
-                                        ? 'bg-gradient-to-r from-green-500/10 to-green-600/10 border-green-500/40 text-green-300 hover:bg-green-500/20 hover:border-green-400/60'
-                                        : 'bg-gradient-to-r from-gray-500/10 to-gray-600/10 border-gray-500/40 text-gray-300 hover:bg-gray-500/20 hover:border-gray-400/60'
-                            }">${member.rank}</span>
+                        <div class="flex flex-col gap-1">
+                            <div class="font-bold truncate transition-colors text-lg tracking-tight" style="color: #${classColor}">${member.name}</div>
+                            <div class="flex">
+                              <span class="text-[10px] px-2 py-0.5 rounded-md font-bold border transition-all duration-200 uppercase tracking-wider ${
+                                member.rank.toLowerCase().includes('general admin')
+                                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                                  : member.rank.toLowerCase().includes('oficial')
+                                      ? 'bg-blue-500/20 border-blue-500/40 text-blue-300'
+                                      : member.rank.toLowerCase().includes('explorador')
+                                        ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                                        : member.rank.toLowerCase().includes('iniciado')
+                                          ? 'bg-green-500/20 border-green-500/40 text-green-300'
+                                          : 'bg-gray-500/20 border-gray-500/40 text-gray-300'
+                              }">${member.rank}</span>
+                            </div>
                         </div>
-                        
-                        
                     </div>
                 </div>
             </div>
@@ -3758,10 +3703,10 @@ const totalRaiders = rosterData.members.filter(
             type="text"
             id="search"
             placeholder="Nombre..."
-            class="w-full bg-transparent border border-amber-500/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 placeholder-text-muted/50 transition-all duration-200"
+            class="w-full bg-gray-900/40 border border-amber-600/30 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 placeholder-text-muted/50 transition-all duration-200"
           />
           <svg
-            class="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500/60 pointer-events-none"
+            class="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-500/80 pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -3783,12 +3728,12 @@ const totalRaiders = rosterData.members.filter(
         <div class="relative">
           <select
             id="class-filter"
-            class="w-full appearance-none bg-transparent border border-amber-500/10 rounded-lg px-3 py-1.5 pr-8 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 placeholder-text-muted/50 transition-all duration-200"
+            class="w-full appearance-none bg-gray-900/40 border border-amber-600/30 rounded-lg px-3 py-1.5 pr-8 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 placeholder-text-muted/50 transition-all duration-200"
           >
-            <option value="">Todas las clases</option>
+            <option value="" class="bg-gray-900 text-white">Todas las clases</option>
             {
               Object.entries(rosterData.classInfo).map(([key, info]) => (
-                <option value={key} style={`color: #${info.color}`}>
+                <option value={key} style={`color: #${info.color}`} class="bg-gray-900">
                   {info.name}
                 </option>
               ))
@@ -3802,15 +3747,15 @@ const totalRaiders = rosterData.members.filter(
         <label for="rank-filter" class="block text-xs font-medium text-text-muted/80 mb-1">
           Rango
         </label>
-        <div class="select-wrapper">
+        <div class="">
           <select
             id="rank-filter"
-            class="w-full bg-transparent border border-amber-500/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 placeholder-text-muted/50 transition-all duration-200"
+            class="w-full appearance-none bg-gray-900/40 border border-amber-600/30 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 placeholder-text-muted/50 transition-all duration-200"
           >
-            <option value="">Todos los rangos</option>
+            <option value="" class="bg-gray-900 text-white">Todos los rangos</option>
             {
               ranks.map((rank) => (
-                <option value={rank} class="text-white">
+                <option value={rank} class="bg-gray-900 text-white">
                   {rank}
                 </option>
               ))
@@ -3850,9 +3795,9 @@ const totalRaiders = rosterData.members.filter(
     <!-- Los miembros se cargarán aquí dinámicamente -->
   </div>
 
-  <div id="pagination-container" class="mt-4">
+  <div id="pagination-container" class="mt-6">
     <div
-      class="flex flex-col sm:flex-row justify-center gap-4 p-4 bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+      class="flex flex-col sm:flex-row justify-center gap-4 p-4 bg-gradient-to-br from-gray-900/90 to-gray-800/70 backdrop-blur-md border border-amber-600/50 rounded-xl hover:border-amber-500/70 transition-all duration-300 shadow-xl shadow-black/40"
     >
       <!-- Mobile: Stacked layout -->
       <div
@@ -3918,29 +3863,29 @@ const totalRaiders = rosterData.members.filter(
   <!-- Modal container -->
   <div class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
     <!-- Modal panel -->
-    <div class="relative transform overflow-hidden rounded-lg bg-gray-800 border border-amber-600/30 text-left shadow-xl transition-all mt-16 w-full max-w-2xl">
+    <div class="relative transform overflow-hidden rounded-xl bg-gray-900 border border-amber-600/40 text-left shadow-2xl transition-all mt-16 w-full max-w-2xl shadow-black/60">
       <!-- Header with Character Info -->
       <div
-        class="bg-gray-900/50 px-4 py-3 sm:px-6 border-b border-amber-600/20 flex justify-between items-center"
+        class="bg-gray-800/80 px-4 py-4 sm:px-6 border-b border-amber-600/30 flex justify-between items-center backdrop-blur-sm"
       >
         <div class="flex items-center space-x-3">
-          <div id="modal-class-icon" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+          <div id="modal-class-icon" class="w-10 h-10 rounded-lg bg-gray-900 border border-gray-700 flex items-center justify-center shadow-inner">
             <!-- Class icon will be inserted here by JavaScript -->
           </div>
-          <h3 class="text-lg font-semibold leading-6 text-amber-100" id="modal-title">
+          <h3 class="text-xl font-bold leading-6 text-white tracking-tight" id="modal-title">
             <span id="modal-character-name">Detalles del Personaje</span>
           </h3>
         </div>
         <button
           type="button"
           id="close-modal"
-          class="text-gray-400 hover:text-white focus:outline-none"
+          class="text-gray-400 hover:text-amber-400 focus:outline-none transition-colors p-1"
         >
           <svg
-            class="h-6 w-6"
+            class="h-7 w-7"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            stroke-width="2"
             stroke="currentColor"
             aria-hidden="true"
           >
@@ -3952,58 +3897,61 @@ const totalRaiders = rosterData.members.filter(
       <!-- Content -->
       <div class="px-4 py-5 sm:p-6">
         <!-- Tabs Navigation -->
-        <div class="flex border-b border-gray-700/50 mb-4 overflow-x-auto custom-scrollbar">
+        <div class="flex border-b border-gray-700/50 mb-6 overflow-x-auto custom-scrollbar gap-2">
           <button
             id="tab-general"
-            class="modal-tab px-4 py-2 text-sm font-medium text-amber-400 border-b-2 border-amber-500 transition-all duration-200 whitespace-nowrap"
+            class="modal-tab px-5 py-2.5 text-sm font-bold text-amber-400 border-b-2 border-amber-500 transition-all duration-300 whitespace-nowrap bg-amber-500/5 rounded-t-lg"
             onclick="window.switchModalTab('general')"
           >
             General
           </button>
           <button
             id="tab-raids"
-            class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
+            class="modal-tab px-5 py-2.5 text-sm font-bold text-gray-400 border-b-2 border-transparent hover:text-amber-300 hover:bg-white/5 transition-all duration-300 flex items-center gap-2 whitespace-nowrap rounded-t-lg"
             onclick="window.switchModalTab('raids')"
           >
             Raids
             <span
               id="badge-raids"
-              class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              class="hidden px-2 py-0.5 text-[11px] font-black rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40"
               >0</span
             >
           </button>
           <button
             id="tab-recognitions"
-            class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
+            class="modal-tab px-5 py-2.5 text-sm font-bold text-gray-400 border-b-2 border-transparent hover:text-amber-300 hover:bg-white/5 transition-all duration-300 flex items-center gap-2 whitespace-nowrap rounded-t-lg"
             onclick="window.switchModalTab('recognitions')"
           >
             Reconocimientos
             <span
               id="badge-recognitions"
-              class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              class="hidden px-2 py-0.5 text-[11px] font-black rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40"
               >0</span
             >
           </button>
         </div>
 
         <!-- Tab Panes -->
-        <div id="pane-general" class="modal-pane space-y-4">
+        <div id="pane-general" class="modal-pane space-y-6">
           <!-- Basic Info -->
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-5 bg-gray-800/40 p-4 rounded-xl border border-gray-700/30 shadow-inner">
             <div
               id="modal-avatar"
-              class="w-16 h-16 rounded-full bg-amber-900/30 flex items-center justify-center text-2xl font-bold text-amber-400 border-2 border-amber-500/30"
+              class="w-20 h-20 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-900/40 flex items-center justify-center text-3xl font-black text-amber-400 border-2 border-amber-500/40 shadow-lg"
             >
               <!-- Initial -->
             </div>
-            <div>
-              <h4 id="modal-name" class="text-xl font-bold text-white">Name</h4>
-              <p id="modal-class" class="text-sm text-amber-200">Class</p>
-              <span
-                id="modal-rank"
-                class="inline-flex items-center rounded-md bg-amber-900/30 px-2 py-1 text-xs font-medium text-amber-300 ring-1 ring-inset ring-amber-500/20 mt-1"
-                >Rank</span
-              >
+            <div class="flex-1 min-w-0">
+              <h4 id="modal-name" class="text-2xl font-black text-white tracking-tight truncate">Name</h4>
+              <p id="modal-class" class="text-base font-bold text-amber-200/90 mb-2">Class</p>
+              <div class="flex">
+                <span
+                  id="modal-rank"
+                  class="inline-flex items-center rounded-lg bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-300 border border-amber-500/30 shadow-sm uppercase tracking-wider"
+                >
+                  Rank
+                </span>
+              </div>
             </div>
           </div>
 
