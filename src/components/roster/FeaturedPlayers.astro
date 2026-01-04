@@ -127,45 +127,27 @@ const initialPlayers = featuredPlayers.slice(
 // La sección siempre se muestra, incluso si no hay jugadores destacados
 ---
 
+<!-- Título de la sección -->
+<div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6">
+  <div class="flex items-center space-x-4">
+    <div class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+      </svg>
+    </div>
+    <div>
+      <h2 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter italic">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">Jugadores Destacados</span>
+      </h2>
+      <p class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] mt-0.5">Reconocimientos del mes actual</p>
+    </div>
+  </div>
+</div>
+
 <div
-  class="bg-gradient-to-br from-amber-900/10 via-gray-900/40 to-amber-800/5 backdrop-blur-md border border-amber-600/20 rounded-3xl p-6 sm:p-10 shadow-2xl relative"
+  class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 mb-20 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
 >
-  <!-- Decorative background elements - wrapped in a container with overflow-hidden -->
-  <div class="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
-    <div class="absolute -top-24 -right-24 w-64 h-64 bg-amber-600/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-amber-700/5 rounded-full blur-3xl"></div>
-  </div>
-
-  <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-10 gap-6 relative z-10">
-    <div class="flex items-center space-x-5">
-      <div
-        class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-amber-900/40 transform -rotate-3 hover:rotate-0 transition-transform duration-300"
-      >
-        <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-          ></path>
-        </svg>
-      </div>
-      <div>
-        <h2 class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 uppercase tracking-tighter italic">
-          Hall de la Fama
-        </h2>
-        <p class="text-amber-300/60 font-medium tracking-widest uppercase text-xs mt-1">Excelencia y Compromiso • {new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(new Date())}</p>
-      </div>
-    </div>
-    
-    <div class="hidden md:block">
-      <div class="bg-gray-800/40 backdrop-blur-sm border border-amber-600/20 rounded-full px-4 py-1.5 text-[10px] text-amber-300/80 uppercase tracking-widest font-bold">
-        Miembros Destacados de la Hermandad
-      </div>
-    </div>
-  </div>
-
-  <div id="featured-players-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+  <div id="featured-players-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     {
       initialPlayers.map((player) => {
         const playerName = getPlayerName(player);
@@ -207,59 +189,81 @@ const initialPlayers = featuredPlayers.slice(
         return (
           <div 
             x-data="{ expanded: false }"
-            class="group relative bg-gray-900/40 backdrop-blur-md border border-amber-900/30 rounded-2xl transition-all duration-500 hover:bg-gray-800/60 hover:border-amber-500/40 hover:shadow-2xl hover:shadow-amber-900/20 cursor-pointer overflow-visible"
-            :class="{'z-[60] scale-[1.02] border-amber-500/50 bg-gray-800/80 shadow-amber-900/40': expanded}"
+            class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-lg transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer"
+            :class="{'z-[60]': expanded}"
+            style={`border-color: #${classData.color}66;`}
             onclick={`if(!event.target.closest('.expand-button')) window.openMemberModal(JSON.parse(decodeURIComponent('${encodeURIComponent(playerString)}')))`}
+            onmouseover={`this.style.borderColor='#${classData.color}99'; this.style.boxShadow='0 10px 15px -3px #${classData.color}1a, 0 4px 6px -2px #${classData.color}0a';`}
+            onmouseout={`this.style.borderColor='#${classData.color}66'; this.style.boxShadow='none';`}
           >
-            <!-- Background glow on hover -->
-            <div class="absolute -right-8 -top-8 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-colors duration-500"></div>
-
-            <!-- Class color accent line -->
-            <div class="absolute top-0 left-0 w-1 h-full opacity-20 group-hover:opacity-100 transition-opacity rounded-l-2xl" style={`background-color: #${classData.color};`}></div>
+            <!-- Class color accent -->
+            <div class="absolute top-0 left-0 w-1 h-full transition-opacity opacity-50 group-hover:opacity-100 rounded-l-lg" style={`background-color: #${classData.color};`}></div>
             
-            <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10">
+            <!-- Stats Indicators -->
+            <div class="absolute top-2 right-2 flex gap-1 z-10">
               {recognitionCount > 0 && (
-                <div class="h-6 px-2 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1 backdrop-blur-md shadow-sm" title={`${recognitionCount} Reconocimientos`}>
-                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1" title={`${recognitionCount} Reconocimientos`}>
+                  <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                   </svg>
                   <span>{recognitionCount}</span>
                 </div>
               )}
+              {totalRaids > 0 && (
+                <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1" title={`${totalRaids} raids`}>
+                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                  </svg>
+                  <span>{totalRaids}</span>
+                </div>
+              )}
+              
+              <!-- Expand Button -->
+              <button 
+                @click.stop="expanded = !expanded"
+                class="expand-button p-1 rounded bg-gray-800/50 border border-amber-600/30 text-amber-400 hover:text-amber-200 hover:border-amber-500/50 transition-all"
+                title="Ver reconocimiento"
+              >
+                <svg class="w-3 h-3 transform transition-transform" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
             </div>
             
-            <div class="p-5 pl-7 relative z-10">
-              <div class="flex items-center gap-4">
-                <!-- Avatar with ring -->
-                <div class="relative flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
-                  <div class="absolute -inset-1.5 bg-gradient-to-br from-amber-500/30 to-transparent rounded-2xl blur-sm group-hover:blur-md transition-all"></div>
+            <div class="p-4 pl-6">
+              <div class="flex items-center gap-3">
+                <!-- Avatar -->
+                <div class="relative flex-shrink-0">
                   <img
                     src={`/images/avatars/class_${playerData.class || 'default'}.jpg`}
                     alt={playerData.class || 'Clase'}
-                    class="w-14 h-14 rounded-xl shadow-2xl border border-amber-500/20 relative z-10 object-cover"
+                    class={`w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover`}
                     onerror="this.src='/images/avatars/default.png'"
                   />
-                  <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-lg border-2 border-gray-900 bg-white shadow-lg z-20 flex items-center justify-center overflow-hidden" title={playerData.class}>
-                    <div class="w-full h-full" style={`background-color: #${classData.color}`}></div>
-                  </div>
+                  <div class={`absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900 bg-[#${classData.color}]`} title={playerData.class}></div>
                 </div>
 
                 <!-- Info -->
                 <div class="flex-1 min-w-0">
-                  <div class="text-[10px] font-bold tracking-[0.2em] text-amber-500/60 uppercase mb-0.5">Jugador Elite</div>
-                  <div class="font-black text-xl tracking-tight truncate group-hover:translate-x-1 transition-transform duration-300 uppercase italic" style={`color: #${classData.color}; text-shadow: 0 0 20px #${classData.color}33;`}>
+                  <div class="font-bold text-gray-100 truncate group-hover:text-amber-200 transition-colors text-lg capitalize" style={`color: #${classData.color}`}>
                     {playerName}
                   </div>
-                  <div class="flex items-center gap-2 mt-1">
-                    <span class={`text-[9px] px-2 py-0.5 rounded-md font-black uppercase tracking-tighter border shadow-sm ${
-                      playerData.rank.toLowerCase().includes('general admin')
-                        ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-amber-900/20'
-                        : playerData.rank.toLowerCase().includes('oficial')
-                            ? 'bg-blue-500/10 border-blue-500/30 text-blue-400 shadow-blue-900/20'
-                            : 'bg-gray-800/40 border-white/10 text-gray-400'
-                    }`}>
-                      {playerData.rank}
-                    </span>
+                  <div class="flex flex-wrap items-center gap-2">
+                    {playerData.rank && (
+                      <span class={`text-[10px] px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${
+                        playerData.rank.toLowerCase().includes('general admin')
+                          ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
+                          : playerData.rank.toLowerCase().includes('oficial')
+                              ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60'
+                              : playerData.rank.toLowerCase().includes('explorador')
+                                ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/60'
+                                : playerData.rank.toLowerCase().includes('iniciado')
+                                  ? 'bg-gradient-to-r from-green-500/10 to-green-600/10 border-green-500/40 text-green-300 hover:bg-green-500/20 hover:border-green-400/60'
+                                  : 'bg-gradient-to-r from-gray-500/10 to-gray-600/10 border-gray-500/40 text-gray-300 hover:bg-gray-500/20 hover:border-gray-400/60'
+                      }`}>
+                        {playerData.rank}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -267,43 +271,29 @@ const initialPlayers = featuredPlayers.slice(
               <!-- Expandable Recognition Description Overlay -->
               <div 
                 x-show="expanded" 
-                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform -translate-y-2 scale-95"
                 x-transition:enter-end="opacity-100 transform translate-y-0 scale-100"
-                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-start="opacity-100 transform translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95"
-                class="absolute top-full left-0 w-full z-50 mt-2 px-2"
+                class="absolute top-full left-0 w-full z-50 mt-1"
                 @click.stop
               >
-                <div class="flex items-start gap-3 bg-gray-900/95 backdrop-blur-xl p-4 rounded-xl border border-amber-500/30 shadow-2xl shadow-black">
-                  <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                  </div>
+                <div class="flex items-start gap-2 bg-gray-900/95 backdrop-blur-md p-3 rounded-lg border border-amber-600/30 shadow-2xl">
+                  <svg class="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
                   <div class="flex-1">
-                    <p class="text-xs font-bold text-amber-200 uppercase tracking-wider leading-tight mb-1">{recognitionText}</p>
+                    <p class="text-[11px] font-bold text-amber-200 uppercase tracking-tight leading-tight">{recognitionText}</p>
                     {player.recognitionIndices && player.recognitionIndices.map((idx: number) => (
                       recognitions[idx]?.description && (
-                        <p class="text-[10px] text-amber-300/60 italic leading-relaxed">{recognitions[idx].description}</p>
+                        <p class="text-[10px] text-amber-300/70 mt-1 italic leading-tight">{recognitions[idx].description}</p>
                       )
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
-            <!-- Expand Button -->
-            <div class="absolute bottom-3 right-3 z-20">
-              <button 
-                @click.stop="expanded = !expanded"
-                class="expand-button w-8 h-8 rounded-full bg-gray-900/80 border border-amber-500/20 text-amber-500/60 hover:text-amber-400 hover:border-amber-500/50 transition-all flex items-center justify-center shadow-md"
-                title="Ver reconocimiento"
-              >
-                <svg class="w-4 h-4 transform transition-transform duration-300" :class="{'rotate-180 text-amber-400': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
             </div>
           </div>
         );
@@ -319,7 +309,7 @@ const initialPlayers = featuredPlayers.slice(
           <button
             onclick={`changePage(${safeCurrentPage - 1})`}
             disabled={safeCurrentPage === 1}
-            class={`px-3 py-1 rounded-md transition-all duration-300 ${safeCurrentPage === 1 ? 'bg-gray-800/50 text-gray-600 cursor-not-allowed' : 'bg-amber-700/40 hover:bg-amber-600/60 text-amber-100 shadow-lg shadow-amber-900/20'}`}
+            class={`px-3 py-1 rounded-md ${safeCurrentPage === 1 ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-amber-700/50 hover:bg-amber-600/60 text-amber-100'}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -334,15 +324,15 @@ const initialPlayers = featuredPlayers.slice(
               />
             </svg>
           </button>
-          <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-1">
             {paginationPages.map((page) => {
               if (page === '...') {
-                return <span class="px-1 text-gray-600">...</span>;
+                return <span class="px-2">...</span>;
               }
               return (
                 <button
                   onclick={`changePage(${page})`}
-                  class={`w-8 h-8 rounded-md transition-all duration-300 ${page === safeCurrentPage ? 'bg-gradient-to-br from-amber-500 to-amber-700 text-white shadow-lg shadow-amber-900/40 font-bold' : 'bg-gray-800/60 hover:bg-gray-700 text-gray-400 hover:text-amber-200'}`}
+                  class={`w-8 h-8 rounded-md ${page === safeCurrentPage ? 'bg-amber-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'}`}
                 >
                   {page}
                 </button>
@@ -352,7 +342,7 @@ const initialPlayers = featuredPlayers.slice(
           <button
             onclick={`changePage(${safeCurrentPage + 1})`}
             disabled={safeCurrentPage === totalPagesValue}
-            class={`px-3 py-1 rounded-md transition-all duration-300 ${safeCurrentPage === totalPagesValue ? 'bg-gray-800/50 text-gray-600 cursor-not-allowed' : 'bg-amber-700/40 hover:bg-amber-600/60 text-amber-100 shadow-lg shadow-amber-900/20'}`}
+            class={`px-3 py-1 rounded-md ${safeCurrentPage === totalPagesValue ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-amber-700/50 hover:bg-amber-600/60 text-amber-100'}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -448,83 +438,80 @@ const initialPlayers = featuredPlayers.slice(
         .map((idx) => {
           const recog = recognitionsData[idx];
           if (!recog || !recog.description) return '';
-          return `<p class="text-[10px] text-amber-300/60 italic leading-relaxed">${recog.description}</p>`;
+          return `<p class="text-[10px] text-amber-300/70 mt-1 italic leading-tight">${recog.description}</p>`;
         })
         .join('');
     }
 
     const rankClass = playerData.rank.toLowerCase().includes('general admin')
-      ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-amber-900/20'
+      ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
       : playerData.rank.toLowerCase().includes('oficial')
-          ? 'bg-blue-500/10 border-blue-500/30 text-blue-400 shadow-blue-900/20'
-          : 'bg-gray-800/40 border-white/10 text-gray-400';
+          ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60'
+          : playerData.rank.toLowerCase().includes('explorador')
+            ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/60'
+            : playerData.rank.toLowerCase().includes('iniciado')
+              ? 'bg-gradient-to-r from-green-500/10 to-green-600/10 border-green-500/40 text-green-300 hover:bg-green-500/20 hover:border-green-400/60'
+              : 'bg-gradient-to-r from-gray-500/10 to-gray-600/10 border-gray-500/40 text-gray-300 hover:bg-gray-500/20 hover:border-gray-400/60';
 
     return `
       <div 
         x-data="{ expanded: false }"
-        class="group relative bg-gray-900/40 backdrop-blur-md border border-amber-900/30 rounded-2xl transition-all duration-500 hover:bg-gray-800/60 hover:border-amber-500/40 hover:shadow-2xl hover:shadow-amber-900/20 cursor-pointer overflow-visible"
-        :class="{'z-[60] scale-[1.02] border-amber-500/50 bg-gray-800/80 shadow-amber-900/40': expanded}"
+        class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-lg transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer overflow-hidden"
+        style="border-color: #${classData.color}66;"
         onclick="if(!event.target.closest('.expand-button')) window.openMemberModal(JSON.parse(decodeURIComponent('${encodeURIComponent(playerString)}')))"
+        onmouseover="this.style.borderColor='#${classData.color}99'; this.style.boxShadow='0 10px 15px -3px #${classData.color}1a, 0 4px 6px -2px #${classData.color}0a';"
+        onmouseout="this.style.borderColor='#${classData.color}66'; this.style.boxShadow='none';"
       >
-        <div class="absolute -right-8 -top-8 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-colors duration-500"></div>
-        <div class="absolute top-0 left-0 w-1 h-full opacity-20 group-hover:opacity-100 transition-opacity rounded-l-2xl" style="background-color: #${classData.color};"></div>
+        <div class="absolute top-0 left-0 w-1 h-full transition-opacity opacity-50 group-hover:opacity-100" style="background-color: #${classData.color};"></div>
         
-        <div class="absolute top-3 right-3 flex items-center gap-1.5 z-10">
+        <div class="absolute top-2 right-2 flex gap-1 z-10">
           ${recognitionCount > 0 ? `
-            <div class="h-6 px-2 rounded-lg text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1 backdrop-blur-md shadow-sm" title="${recognitionCount} Reconocimientos">
-              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+            <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1" title="${recognitionCount} Reconocimientos">
+              <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
               </svg>
               <span>${recognitionCount}</span>
             </div>
           ` : ''}
+          ${totalRaids > 0 ? `
+            <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1" title="${totalRaids} raids">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+              <span>${totalRaids}</span>
+            </div>
+          ` : ''}
           <button 
             @click.stop="expanded = !expanded"
-            class="expand-button w-6 h-6 rounded-lg bg-gray-900/80 border border-amber-500/20 text-amber-500/60 hover:text-amber-400 hover:border-amber-500/50 transition-all flex items-center justify-center shadow-sm"
+            class="expand-button p-1 rounded bg-gray-800/50 border border-amber-600/30 text-amber-400 hover:text-amber-200 hover:border-amber-500/50 transition-all"
             title="Ver reconocimiento"
           >
-            <svg class="w-3.5 h-3.5 transform transition-transform duration-300" :class="{'rotate-180 text-amber-400': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+            <svg class="w-3 h-3 transform transition-transform" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
           </button>
         </div>
         
-        <div class="p-5 pl-7 relative z-10">
-          <div class="flex items-center gap-4">
-            <div class="relative flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
-              <div class="absolute -inset-1.5 bg-gradient-to-br from-amber-500/30 to-transparent rounded-2xl blur-sm group-hover:blur-md transition-all"></div>
-              <img src="/images/avatars/class_${playerData.class || 'default'}.jpg" alt="${playerData.class || 'Clase'}" class="w-14 h-14 rounded-xl shadow-2xl border border-amber-500/20 relative z-10 object-cover" onerror="this.src='/images/avatars/default.png'" />
-              <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-lg border-2 border-gray-900 bg-white shadow-lg z-20 flex items-center justify-center overflow-hidden" title="${playerData.class}">
-                <div class="w-full h-full" style="background-color: #${classData.color}"></div>
-              </div>
+        <div class="p-4 pl-6">
+          <div class="flex items-center gap-3">
+            <div class="relative flex-shrink-0">
+              <img src="/images/avatars/class_${playerData.class || 'default'}.jpg" alt="${playerData.class || 'Clase'}" class="w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover" onerror="this.src='/images/avatars/default.png'" />
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900 bg-[#${classData.color}]" title="${playerData.class}"></div>
             </div>
             <div class="flex-1 min-w-0">
-              <div class="text-[10px] font-bold tracking-[0.2em] text-amber-500/60 uppercase mb-0.5">Jugador Elite</div>
-              <div class="font-black text-xl tracking-tight truncate group-hover:translate-x-1 transition-transform duration-300 uppercase italic" style="color: #${classData.color}; text-shadow: 0 0 20px #${classData.color}33;">${playerName}</div>
-              <div class="flex items-center gap-2 mt-1">
-                ${playerData.rank ? `<span class="text-[9px] px-2 py-0.5 rounded-md font-black uppercase tracking-tighter border shadow-sm ${rankClass}">${playerData.rank}</span>` : ''}
+              <div class="font-bold text-gray-100 truncate group-hover:text-amber-200 transition-colors text-lg capitalize" style="color: #${classData.color}">${playerName}</div>
+              <div class="flex flex-wrap items-center gap-2">
+                ${playerData.rank ? `<span class="text-[10px] px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${rankClass}">${playerData.rank}</span>` : ''}
               </div>
             </div>
           </div>
-          <div 
-            x-show="expanded" 
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 transform -translate-y-2 scale-95"
-            x-transition:enter-end="opacity-100 transform translate-y-0 scale-100"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100 transform translate-y-0 scale-100"
-            x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95"
-            class="absolute top-full left-0 w-full z-50 mt-2 px-2"
-            @click.stop
-          >
-            <div class="flex items-start gap-3 bg-gray-900/95 backdrop-blur-xl p-4 rounded-xl border border-amber-500/30 shadow-2xl shadow-black">
-              <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex-shrink-0 flex items-center justify-center">
-                <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div class="flex-1">
-                <p class="text-xs font-bold text-amber-200 uppercase tracking-wider leading-tight mb-1">${recognitionText}</p>
+          <div x-show="expanded" x-collapse x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="mt-3 pt-3 border-t border-amber-900/20">
+            <div class="flex items-start gap-2 bg-amber-900/10 p-2 rounded border border-amber-600/20">
+              <svg class="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <p class="text-[11px] font-bold text-amber-200 uppercase tracking-tight leading-tight">${recognitionText}</p>
                 ${recognitionsDescriptions}
               </div>
             </div>
@@ -543,13 +530,13 @@ const initialPlayers = featuredPlayers.slice(
         <button 
           onclick="changePage(${currentPage - 1})" 
           ${currentPage === 1 ? 'disabled' : ''}
-          class="px-3 py-1 rounded-md transition-all duration-300 ${currentPage === 1 ? 'bg-gray-800/50 text-gray-600 cursor-not-allowed' : 'bg-amber-700/40 hover:bg-amber-600/60 text-amber-100 shadow-lg shadow-amber-900/20'}"
+          class="px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-amber-700/50 hover:bg-amber-600/60 text-amber-100'}"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline text-amber-400" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
           </svg>
         </button>
-        <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-1">
     `;
 
     let startPage = Math.max(1, currentPage - 2);
@@ -563,11 +550,11 @@ const initialPlayers = featuredPlayers.slice(
       paginationHTML += `
         <button 
           onclick="changePage(1)" 
-          class="w-8 h-8 rounded-md transition-all duration-300 ${1 === currentPage ? 'bg-gradient-to-br from-amber-500 to-amber-700 text-white shadow-lg shadow-amber-900/40 font-bold' : 'bg-gray-800/60 hover:bg-gray-700 text-gray-400 hover:text-amber-200'}"
+          class="w-8 h-8 rounded-md ${1 === currentPage ? 'bg-amber-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'}"
         >
           1
         </button>
-        ${startPage > 2 ? '<span class="px-1 text-gray-600">...</span>' : ''}
+        ${startPage > 2 ? '<span class="px-2">...</span>' : ''}
       `;
     }
 
@@ -575,7 +562,7 @@ const initialPlayers = featuredPlayers.slice(
       paginationHTML += `
         <button 
           onclick="changePage(${i})" 
-          class="w-8 h-8 rounded-md transition-all duration-300 ${i === currentPage ? 'bg-gradient-to-br from-amber-500 to-amber-700 text-white shadow-lg shadow-amber-900/40 font-bold' : 'bg-gray-800/60 hover:bg-gray-700 text-gray-400 hover:text-amber-200'}"
+          class="w-8 h-8 rounded-md ${i === currentPage ? 'bg-amber-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'}"
         >
           ${i}
         </button>
@@ -584,10 +571,10 @@ const initialPlayers = featuredPlayers.slice(
 
     if (endPage < totalPages) {
       paginationHTML += `
-        ${endPage < totalPages - 1 ? '<span class="px-1 text-gray-600">...</span>' : ''}
+        ${endPage < totalPages - 1 ? '<span class="px-2">...</span>' : ''}
         <button 
           onclick="changePage(${totalPages})" 
-          class="w-8 h-8 rounded-md transition-all duration-300 ${totalPages === currentPage ? 'bg-gradient-to-br from-amber-500 to-amber-700 text-white shadow-lg shadow-amber-900/40 font-bold' : 'bg-gray-800/60 hover:bg-gray-700 text-gray-400 hover:text-amber-200'}"
+          class="w-8 h-8 rounded-md ${totalPages === currentPage ? 'bg-amber-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'}"
         >
           ${totalPages}
         </button>
@@ -599,7 +586,7 @@ const initialPlayers = featuredPlayers.slice(
         <button 
           onclick="changePage(${currentPage + 1})" 
           ${currentPage === totalPages ? 'disabled' : ''}
-          class="px-3 py-1 rounded-md transition-all duration-300 ${currentPage === totalPages ? 'bg-gray-800/50 text-gray-600 cursor-not-allowed' : 'bg-amber-700/40 hover:bg-amber-600/60 text-amber-100 shadow-lg shadow-amber-900/20'}"
+          class="px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-amber-700/50 hover:bg-amber-600/60 text-amber-100'}"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline text-amber-400" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -619,10 +606,6 @@ const initialPlayers = featuredPlayers.slice(
     const container = document.getElementById('featured-players-container');
     if (container) {
       container.innerHTML = pagePlayers.map(renderPlayerCard).join('');
-      // Re-inicializar Alpine.js para los nuevos elementos
-      if (window.Alpine) {
-        window.Alpine.initTree(container);
-      }
     }
 
     renderPagination();
@@ -634,3 +617,12 @@ const initialPlayers = featuredPlayers.slice(
     updateDisplay();
   };
 </script>
+
+<style>
+  .featured-player {
+    transition: all 0.3s ease;
+  }
+  .featured-player:hover {
+    transform: translateY(-2px);
+  }
+</style>
