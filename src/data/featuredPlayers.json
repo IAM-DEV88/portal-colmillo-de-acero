@@ -45,7 +45,7 @@
     "01": {
       "featuredPlayers": [
         {
-          "playerName": "bosakill",
+          "playerName": "bosakiller",
           "recognitionIndices": [3, 4]
         },
         {
@@ -55,6 +55,10 @@
         {
           "playerName": "angelesm",
           "recognitionIndices": [3, 4]
+        },
+        {
+          "playerName": "durotedark",
+          "recognitionIndices": [3]
         }
       ]
     }
@@ -63,11 +67,11 @@
     "10": {
       "featuredPlayers": [
         {
-          "playerName": "Metagamer",
+          "playerName": "metagamer",
           "recognitionIndices": [4]
         },
         {
-          "playerName": "Fogozza",
+          "playerName": "fogozza",
           "recognitionIndices": [3]
         },
         {

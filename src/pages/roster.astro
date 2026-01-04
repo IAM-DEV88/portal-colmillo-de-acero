@@ -15,10 +15,52 @@ interface RosterMember {
   noteValidation?: any;
 }
 
+// Importar tipos y datos
+import type { FeaturedPlayersData, FeaturedPlayer, Recognition } from '../types/featuredPlayers';
+import featuredDataRaw from '../data/featuredPlayers.json';
+
+// Hacer un type assertion para los datos
+const featuredData = featuredDataRaw as unknown as FeaturedPlayersData;
+const allRecognitionsBase = featuredData.recognitions || [];
+
+// Mapear todos los reconocimientos por jugador a través del tiempo
+const playerAllRecognitions: Record<string, any[]> = {};
+
+Object.entries(featuredData).forEach(([year, yearData]) => {
+  if (year === 'recognitions') return;
+  
+  Object.entries(yearData as Record<string, any>).forEach(([month, monthData]) => {
+    if (!monthData.featuredPlayers) return;
+    
+    monthData.featuredPlayers.forEach((player: FeaturedPlayer) => {
+      if (!player.playerName) return;
+      const name = player.playerName.toLowerCase();
+      if (!playerAllRecognitions[name]) {
+        playerAllRecognitions[name] = [];
+      }
+      
+      const playerMonthRecs = (player.recognitionIndices || []).map(idx => {
+        const baseRec = allRecognitionsBase[idx];
+        if (!baseRec) return null;
+        return {
+          ...baseRec,
+          date: `${year}-${month}-01`, // Asignar una fecha para el modal
+          index: idx
+        };
+      }).filter(Boolean);
+      
+      playerAllRecognitions[name].push(...playerMonthRecs);
+    });
+  });
+});
+
 // Asegurarse de que los datos tengan la estructura esperada
 const players = (rosterData as any).players || {};
 const formattedRosterData = Object.entries(players).map(([name, memberData]: [string, any]) => {
   const member = { ...memberData, name }; // Asegurar que el nombre esté incluido
+  const lowerName = name.toLowerCase();
+  const playerRecognitions = playerAllRecognitions[lowerName] || [];
+
   try {
     // Validar la nota pública si existe
     const publicNote = String(member.publicNote || '').trim();
@@ -38,6 +80,7 @@ const formattedRosterData = Object.entries(players).map(([name, memberData]: [st
       mainAlt: member.mainAlt || 'A',
       level: Number(member.level) || 80,
       gearScore: Number(member.gearScore) || 0,
+      recognitions: playerRecognitions,
       // Asegurar que los campos de validación estén presentes
       validation: {
         ...noteValidation,
@@ -73,13 +116,6 @@ const formattedRosterData = Object.entries(players).map(([name, memberData]: [st
   }
 });
 
-// Importar tipos y datos
-import type { FeaturedPlayersData, FeaturedPlayer } from '../types/featuredPlayers';
-import featuredDataRaw from '../data/featuredPlayers.json';
-
-// Hacer un type assertion para los datos
-const featuredData = featuredDataRaw as unknown as FeaturedPlayersData;
-
 // Obtener el año y mes actual
 const currentYear = new Date().getFullYear().toString();
 const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
@@ -87,9 +123,8 @@ const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
 // Obtener jugadores destacados del mes actual
 const currentYearData = featuredData[currentYear];
 const currentMonthData =
-  currentYearData && currentMonth in currentYearData
-    ? (currentYearData as Record<string, { featuredPlayers: FeaturedPlayer[] }>)[currentMonth]
-        .featuredPlayers
+  currentYearData && currentMonth in (currentYearData as any)
+    ? (currentYearData as any)[currentMonth].featuredPlayers
     : [];
 
 const allRecognitions = featuredData.recognitions || [];
@@ -139,12 +174,12 @@ if (Astro.url.searchParams.has('page')) {
 <Layout title="Roster">
   <div class="mx-auto animate-fade-in max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- Tabla de Roster -->
-    <div class="mt-8">
+    <div>
       <RosterTable initialRosterData={formattedRosterData} />
     </div>
 
     <!-- Sección de Jugadores Destacados -->
-    <div class="mt-6">
+    <div class="mt-6 relative z-30">
       <FeaturedPlayers
         featuredPlayers={featuredPlayers}
         rosterData={formattedRosterData}
@@ -153,5 +188,236 @@ if (Astro.url.searchParams.has('page')) {
         totalPages={totalPages}
       />
     </div>
+
+    
+  
+<div class="mt-6 relative z-10">
+  <div
+    class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+  >
+    <div class="flex items-center justify-center mb-4">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-amber-200 uppercase">Reglas de Hermandad</h2>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <!-- Norma 1 -->
+      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
+        <div class="flex items-start space-x-3">
+          <div
+            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
+          >
+            <span class="text-white text-sm font-bold">1</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1 mb-1">
+              <svg
+                class="w-4 h-4 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              <h4 class="font-bold text-amber-300 text-sm">Código de Nota</h4>
+            </div>
+            <p class="text-gray-300 text-xs leading-snug mb-1">
+              WISP función y gear score al General Admin u Oficial en línea por wisp para subir de rango.
+            </p>
+            <p class="text-gray-400 text-xs leading-snug">
+              Asi garantizan su participación en raids y sorteos.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Norma 2 -->
+      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
+        <div class="flex items-start space-x-3">
+          <div
+            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
+          >
+            <span class="text-white text-sm font-bold">2</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1 mb-1">
+              <svg
+                class="w-4 h-4 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+              <h4 class="font-bold text-amber-300 text-sm">Baul de Sorteos</h4>
+            </div>
+            <p class="text-gray-300 text-xs leading-snug mb-1">
+              Se realizan sorteos aleatorios para recompensar a los jugadores en línea.
+            </p>
+            <p class="text-gray-400 text-xs leading-snug">
+              Se reciben donaciones para mantener el baul funcionando.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Norma 3 -->
+      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
+        <div class="flex items-start space-x-3">
+          <div
+            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
+          >
+            <span class="text-white text-sm font-bold">3</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1 mb-1">
+              <svg
+                class="w-4 h-4 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                ></path>
+              </svg>
+              <h4 class="font-bold text-amber-300 text-sm">Farm lvl 74+</h4>
+            </div>
+            <p class="text-gray-300 text-xs leading-snug mb-1">
+              Materiales e items lvl 74+ como orbes congelados, fragmento onirico, consumibles, etc.
+            </p>
+            <p class="text-gray-400 text-xs leading-snug">
+              Se reciben donaciones para mantener el baul funcionando.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Norma 4 -->
+      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
+        <div class="flex items-start space-x-3">
+          <div
+            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
+          >
+            <span class="text-white text-sm font-bold">4</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1 mb-1">
+              <svg
+                class="w-4 h-4 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                ></path>
+              </svg>
+              <h4 class="font-bold text-amber-300 text-sm">Reconocimientos</h4>
+            </div>
+            <p class="text-gray-300 text-xs leading-snug mb-1">
+              Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos
+              mensualmente.
+            </p>
+            <p class="text-gray-400 text-xs leading-snug">
+              Se anima a todos los miembros a liderar actividades y eventos para que todos puedan
+              participar.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Norma 5 - Trabajo en Equipo -->
+      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
+        <div class="flex items-start space-x-3">
+          <div
+            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
+          >
+            <span class="text-white text-sm font-bold">5</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1 mb-1">
+              <svg
+                class="w-4 h-4 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
+              </svg>
+              <h4 class="font-bold text-amber-300 text-sm">Baul de Equipamiento</h4>
+            </div>
+            <p class="text-gray-300 text-xs leading-snug mb-1">
+              Acceso instantáneo a los elementos del baul de equipamiento.
+            </p>
+            <p class="text-gray-400 text-xs leading-snug">
+              Solicitar al GM en el servidor de Discord <a class="text-blue-400 hover:underline" href="https://discord.gg/kMK2ZRRCza">kMK2ZRRCza</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Norma 6 - Respeto -->
+      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
+        <div class="flex items-start space-x-3">
+          <div
+            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
+          >
+            <span class="text-white text-sm font-bold">6</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1 mb-1">
+              <svg
+                class="w-4 h-4 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <h4 class="font-bold text-amber-300 text-sm">Respeto</h4>
+            </div>
+            <p class="text-gray-300 text-xs leading-snug mb-1">
+              Respeto y cooperación entre todos los miembros. No se tolerará el racismo, discriminación o acoso de ningún tipo.
+            </p>
+            <p class="text-gray-400 text-xs leading-snug">
+              Mantener un ambiente sano y de respeto mutuo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
   </div></Layout
 >

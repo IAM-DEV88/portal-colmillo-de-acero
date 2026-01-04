@@ -60,7 +60,6 @@ interface RosterStats extends BaseRosterStats {
   };
 }
 
-import RosterStatsComponent from './RosterStats.astro';
 import featuredPlayersData from '../../data/featuredPlayers.json';
 
 // Usar los tipos directamente desde la importación
@@ -190,14 +189,17 @@ const processRosterMember = (member: any): RosterMemberType => {
     ...member,
     name: member.name || '',
     class: member.class || 'Desconocido',
-    rank: member.rank || 'Miembro',
+    rank: (member.rank && (member.rank.toLowerCase().includes('guild master') || member.rank.toLowerCase().includes('alter'))) ? 'General Admin' : (member.rank || 'Miembro'),
     publicNote: member.publicNote || '',
     officerNote: member.officerNote || '',
     race: member.race || '',
     guildLeave: member.guildLeave || false,
     level: 80, // Default level for WoW Classic
     gearScore: 0, // Will be calculated from note validation
-  } : member;
+  } : {
+    ...member,
+    rank: (member.rank && (member.rank.toLowerCase().includes('guild master') || member.rank.toLowerCase().includes('alter'))) ? 'General Admin' : (member.rank || 'Miembro'),
+  };
 
   const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).includes(
     memberData.class
@@ -311,7 +313,7 @@ const processRosterMember = (member: any): RosterMemberType => {
 
 // Define the roster data with proper typing
 // Procesar los miembros del roster
-const members = rosterDataFromProps.map(processRosterMember);
+const members = rosterDataFromProps.map(processRosterMember).filter(m => !m.guildLeave);
 const totalMembers = members.length;
 const validNotesCount = members.filter((m) => m.publicNote).length;
 
@@ -2211,13 +2213,12 @@ const classList = Object.keys(rosterClassInfo) as ClassName[];
 // Función para determinar la prioridad del rango
 const getRankPriority = (rank: string): number => {
   const rankLower = rank.toLowerCase();
-  if (rankLower.includes('guild master')) return 0;
-  if (rankLower.includes('alter')) return 1;
-  if (rankLower.includes('oficial')) return 2;
-  if (rankLower.includes('explorador')) return 3;
-  if (rankLower.includes('iniciado')) return 4;
-  if (rankLower.includes('aspirante')) return 5;
-  return 6;
+  if (rankLower.includes('oficial')) return 0;
+  if (rankLower.includes('general admin')) return 1;
+  if (rankLower.includes('explorador')) return 2;
+  if (rankLower.includes('iniciado')) return 3;
+  if (rankLower.includes('aspirante')) return 4;
+  return 5;
 };
 
 // Ordenar miembros
@@ -2282,7 +2283,7 @@ function calculateRankDistribution(
   }, {});
 
   // Definir el orden de los rangos
-  const rankOrder = ['Aspirante', 'Iniciado', 'Explorador', 'Oficial', 'Alter', 'Guild Master'];
+  const rankOrder = ['Oficial', 'General Admin', 'Explorador', 'Iniciado', 'Aspirante'];
 
   // Calcular porcentajes y redondear a 1 decimal
   return Object.entries(rankCounts)
@@ -2350,43 +2351,90 @@ const FACTION_NAMES: Record<string, string> = {
 };
 
 // Calculate new distributions
-const raceDistribution = Object.entries(
-  rosterData.members.reduce(
+const raceDistribution = (() => {
+  const counts = rosterData.members.reduce(
     (acc, member) => {
-      if (member.race) {
-        acc[member.race] = (acc[member.race] || 0) + 1;
-      }
+      const race = member.race || 'UNKNOWN';
+      acc[race] = (acc[race] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>
-  )
-)
-  .map(([code, count]) => ({
-    name: RACE_NAMES[code] || code,
-    count,
-    percentage: getRolePercentage(count, rosterData.members.length),
-    code,
-  }))
-  .sort((a, b) => b.count - a.count);
+  );
 
-const factionDistribution = Object.entries(
-  rosterData.members.reduce(
+  return Object.entries(counts)
+    .map(([code, count]) => ({
+      name: code === 'UNKNOWN' ? 'No Censada' : (RACE_NAMES[code] || code),
+      count,
+      percentage: getRolePercentage(count, rosterData.members.length),
+      code,
+    }))
+    .sort((a, b) => {
+      if (a.name === 'No Censada') return 1;
+      if (b.name === 'No Censada') return -1;
+      return b.count - a.count;
+    });
+})();
+
+const factionDistribution = (() => {
+  const counts = rosterData.members.reduce(
     (acc, member) => {
-      if (member.faction) {
-        acc[member.faction] = (acc[member.faction] || 0) + 1;
-      }
+      const faction = member.faction || 'UNKNOWN';
+      acc[faction] = (acc[faction] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>
-  )
-)
-  .map(([code, count]) => ({
-    name: FACTION_NAMES[code] || code,
-    count,
-    percentage: getRolePercentage(count, rosterData.members.length),
-    code,
-  }))
-  .sort((a, b) => b.count - a.count);
+  );
+
+  return Object.entries(counts)
+    .map(([code, count]) => ({
+      name: code === 'UNKNOWN' ? 'No Censada' : (FACTION_NAMES[code] || code),
+      count,
+      percentage: getRolePercentage(count, rosterData.members.length),
+      code,
+    }))
+    .sort((a, b) => {
+      if (a.name === 'No Censada') return 1;
+      if (b.name === 'No Censada') return -1;
+      return b.count - a.count;
+    });
+})();
+
+// Calculate profession distribution including non-censored
+const professionDistribution = (() => {
+  const counts: Record<string, number> = {};
+  let uncensoredCount = 0;
+
+  rosterData.members.forEach(member => {
+    const professions = member.noteValidation?.professions || [];
+    if (professions.length === 0) {
+      uncensoredCount++;
+    } else {
+      professions.forEach(prof => {
+        counts[prof] = (counts[prof] || 0) + 1;
+      });
+    }
+  });
+
+  const dist = Object.entries(counts)
+    .map(([code, count]) => ({
+      name: PROFESSIONS[code as keyof typeof PROFESSIONS] || code,
+      count,
+      percentage: getRolePercentage(count, rosterData.members.length),
+      code,
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  if (uncensoredCount > 0) {
+    dist.push({
+      name: 'No Censada',
+      count: uncensoredCount,
+      percentage: getRolePercentage(uncensoredCount, rosterData.members.length),
+      code: 'UNKNOWN'
+    });
+  }
+
+  return dist;
+})();
 
 // Calcular estadísticas del formato de notas
 // Usando el stats ya definido anteriormente
@@ -2410,15 +2458,15 @@ const filteredMembers = [...sortedMembers];
 const totalRaiders = rosterData.members.filter(
   (m) =>
     m.rank.toLowerCase().includes('élite') ||
-    m.rank.toLowerCase().includes('alter') ||
+    m.rank.toLowerCase().includes('general admin') ||
     m.rank.toLowerCase().includes('comandante') ||
-    m.rank.toLowerCase().includes('guild master')
+    m.rank.toLowerCase().includes('oficial')
 ).length;
 
 // rosterClientData is already defined above with the sorted members
 ---
 
-<div class="space-y-6">
+<div>
   <style>
     /* Estilos para el modal */
     #member-modal {
@@ -2625,10 +2673,14 @@ const totalRaiders = rosterData.members.filter(
           // Group recognitions by title
           const groupedRecs = member.recognitions.reduce((acc, rec) => {
             const date = new Date(rec.date);
-            const month = date.getMonth();
-            const year = date.getFullYear();
-            const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-            const dateStr = `${monthNames[month]}-${year.toString().slice(2)}`;
+            let dateStr = 'Fecha desconocida';
+            
+            if (!isNaN(date.getTime())) {
+              const month = date.getMonth();
+              const year = date.getFullYear();
+              const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+              dateStr = `${monthNames[month]}-${year.toString().slice(2)}`;
+            }
             
             const key = rec.title || 'Mención Honorífica';
             if (!acc[key]) {
@@ -3135,13 +3187,12 @@ const totalRaiders = rosterData.members.filter(
               // Ordenar por nombre y prioridad de rango
               const getRankPriority = (rank) => {
                 const rankLower = rank?.toLowerCase() || '';
-                if (rankLower.includes('guild master')) return 0;
-                if (rankLower.includes('alter')) return 1;
-                if (rankLower.includes('oficial')) return 2;
-                if (rankLower.includes('explorador')) return 3;
-                if (rankLower.includes('iniciado')) return 4;
-                if (rankLower.includes('aspirante')) return 5;
-                return 6;
+                if (rankLower.includes('oficial')) return 0;
+                if (rankLower.includes('general admin')) return 1;
+                if (rankLower.includes('explorador')) return 2;
+                if (rankLower.includes('iniciado')) return 3;
+                if (rankLower.includes('aspirante')) return 4;
+                return 5;
               };
 
               const priorityA = getRankPriority(a.rank);
@@ -3331,13 +3382,11 @@ const totalRaiders = rosterData.members.filter(
                     <!-- Info -->
                     <div class="flex-1 min-w-0">
                         <div class="">
-                            <div class="font-bold text-gray-100 truncate group-hover:text-[#${classColor}] transition-colors text-lg">${member.name}</div>
+                            <div class="font-bold truncate transition-colors text-lg" style="color: #${classColor}">${member.name}</div>
                             <span class="text-xs px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${
-                              member.rank.toLowerCase().includes('guild master')
-                                ? 'bg-gradient-to-r from-amber-500/10 to-amber-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
-                                : member.rank.toLowerCase().includes('alter')
-                                  ? 'bg-gradient-to-r from-purple-500/10 to-purple-600/10 border-purple-500/40 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/60'
-                                  : member.rank.toLowerCase().includes('oficial')
+                              member.rank.toLowerCase().includes('general admin')
+                                ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
+                                : member.rank.toLowerCase().includes('oficial')
                                     ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60'
                                     : member.rank.toLowerCase().includes('explorador')
                                       ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/60'
@@ -3396,8 +3445,8 @@ const totalRaiders = rosterData.members.filter(
     });
   </script>
 
-  <!-- Estadísticas del Roster - Compactas y Colapsables -->
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6 mt-2" x-data>
+  <!-- Estadísticas del Roster Superiores -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2" x-data>
     <!-- Total de Miembros y Mains/Alts -->
     <div x-data="{ expanded: false }" class="relative group" x-cloak>
       <div
@@ -3696,7 +3745,7 @@ const totalRaiders = rosterData.members.filter(
 
   <!-- Filtros y Ordenamiento - Diseño Compacto -->
   <div
-    class="filters-container bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+    class="filters-container bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 mb-4"
   >
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
       <!-- Buscador -->
@@ -3801,7 +3850,7 @@ const totalRaiders = rosterData.members.filter(
     <!-- Los miembros se cargarán aquí dinámicamente -->
   </div>
 
-  <div id="pagination-container" class="mt-2">
+  <div id="pagination-container" class="mt-4">
     <div
       class="flex flex-col sm:flex-row justify-center gap-4 p-4 bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
     >
@@ -4003,334 +4052,291 @@ const totalRaiders = rosterData.members.filter(
   </div>
 </div>
 
-<div class="mt-6">
-  <div
-    class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
-  >
-    <div class="flex items-center justify-center mb-4">
-      <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center">
-          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-            ></path>
-          </svg>
+<!-- Sección de estadísticas inferior -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 mb-4 mt-1" x-data>
+    <!-- Distribución de Clases -->
+    <div x-data="{ expanded: false }" class="relative group" x-cloak>
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-cyan-600/40 rounded-lg p-2 hover:border-cyan-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <p class="text-xs font-medium text-cyan-300/90 uppercase tracking-wide">Clases</p>
+              <p class="text-xl font-bold text-cyan-200">{classDistribution.length}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="w-4 h-4 text-cyan-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
         </div>
-        <h2 class="text-xl font-bold text-amber-200 uppercase">Reglas de Hermandad</h2>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-cyan-600/40 rounded-lg p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {classDistribution.sort((a, b) => b.count - a.count).map(item => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium" style={`color: #${item.color}`}>{item.name}</span>
+                <div class="w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full" style={`background-color: #${item.color}; width: ${Math.round((item.count / rosterData.members.length) * 100)}%`}></div>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold" style={`color: #${item.color}`}>{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{Math.round((item.count / rosterData.members.length) * 100)}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-      <!-- Norma 1 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
-          >
-            <span class="text-white text-sm font-bold">1</span>
+
+    <!-- Distribución de Rangos -->
+    <div x-data="{ expanded: false }" class="relative group" x-cloak>
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-indigo-600/40 rounded-lg p-2 hover:border-indigo-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+            </svg>
           </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <svg
-                class="w-4 h-4 text-amber-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                ></path>
-              </svg>
-              <h4 class="font-bold text-amber-300 text-sm">Código de Nota</h4>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <p class="text-xs font-medium text-indigo-300/90 uppercase tracking-wide">Rangos</p>
+              <p class="text-xl font-bold text-indigo-200">{rankDistribution.length}</p>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              WISP función y gear score al GM/Alter u Oficial en línea por wisp para subir de rango.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Asi garantizan su participación en raids y sorteos.
-            </p>
+          </div>
+          <div class="text-right">
+            <div class="w-4 h-4 text-indigo-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Norma 2 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
-          >
-            <span class="text-white text-sm font-bold">2</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <svg
-                class="w-4 h-4 text-amber-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-              </svg>
-              <h4 class="font-bold text-amber-300 text-sm">Baul de Sorteos</h4>
+      <div
+        x-show="expanded"
+        x-collapse
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-indigo-600/40 rounded-lg p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {rankDistribution.map(item => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-indigo-500" style={`width: ${item.percentage}%`}></div>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-indigo-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Se realizan sorteos aleatorios para recompensar a los jugadores en línea.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Se reciben donaciones para mantener el baul funcionando.
-            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribución por Profesión -->
+    <div x-data="{ expanded: false }" class="relative group" x-cloak>
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-emerald-600/40 rounded-lg p-2 hover:border-emerald-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <p class="text-xs font-medium text-emerald-300/90 uppercase tracking-wide">Profesiones</p>
+              <p class="text-xl font-bold text-emerald-200">{professionDistribution.filter(i => i.name !== 'No Censada').length}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="w-4 h-4 text-emerald-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Norma 3 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
-          >
-            <span class="text-white text-sm font-bold">3</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <svg
-                class="w-4 h-4 text-amber-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                ></path>
-              </svg>
-              <h4 class="font-bold text-amber-300 text-sm">Farm lvl 74+</h4>
+      <div
+        x-show="expanded"
+        x-collapse
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-emerald-600/40 rounded-lg p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {professionDistribution.map(item => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-emerald-500" style={`width: ${item.percentage}%`}></div>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-emerald-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Materiales e items lvl 74+ como orbes congelados, fragmento onirico, consumibles, etc.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Se reciben donaciones para mantener el baul funcionando.
-            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribución por Raza -->
+    <div x-data="{ expanded: false }" class="relative group" x-cloak>
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-orange-600/40 rounded-lg p-2 hover:border-orange-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <p class="text-xs font-medium text-orange-300/90 uppercase tracking-wide">Razas</p>
+              <p class="text-xl font-bold text-orange-200">{raceDistribution.filter(i => i.name !== 'No Censada').length}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="w-4 h-4 text-orange-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Norma 4 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
-          >
-            <span class="text-white text-sm font-bold">4</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <svg
-                class="w-4 h-4 text-amber-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                ></path>
-              </svg>
-              <h4 class="font-bold text-amber-300 text-sm">Reconocimientos</h4>
+      <div
+        x-show="expanded"
+        x-collapse
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-orange-600/40 rounded-lg p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {raceDistribution.map(item => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-orange-500" style={`width: ${item.percentage}%`}></div>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-orange-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos
-              mensualmente.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Se anima a todos los miembros a liderar actividades y eventos para que todos puedan
-              participar.
-            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Distribución por Facción -->
+    <div x-data="{ expanded: false }" class="relative group" x-cloak>
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-rose-600/40 rounded-lg p-2 hover:border-rose-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-rose-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-7h.01M9 16h.01"></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <p class="text-xs font-medium text-rose-300/90 uppercase tracking-wide">Facciones</p>
+              <p class="text-xl font-bold text-rose-200">{factionDistribution.filter(i => i.name !== 'No Censada').length}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="w-4 h-4 text-rose-400/70 transform transition-transform duration-200 ml-auto" :class="{'rotate-180': expanded}">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Norma 5 - Trabajo en Equipo -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
-          >
-            <span class="text-white text-sm font-bold">5</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <svg
-                class="w-4 h-4 text-amber-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                ></path>
-              </svg>
-              <h4 class="font-bold text-amber-300 text-sm">Baul de Equipamiento</h4>
+      <div
+        x-show="expanded"
+        x-collapse
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-rose-600/40 rounded-lg p-3 shadow-lg"
+      >
+        <div class="space-y-2">
+          {factionDistribution.map(item => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-rose-500" style={`width: ${item.percentage}%`}></div>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-rose-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Acceso instantáneo a los elementos del baul de equipamiento.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Solicitar al GM en el servidor de Discord <a class="text-blue-400 hover:underline" href="https://discord.gg/kMK2ZRRCza">kMK2ZRRCza</a>.
-            </p>
-          </div>
-        </div>
-      </div>
-      <!-- Norma 6 - Respeto -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-lg p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-lg flex-shrink-0 flex items-center justify-center"
-          >
-            <span class="text-white text-sm font-bold">6</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <svg
-                class="w-4 h-4 text-amber-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-              </svg>
-              <h4 class="font-bold text-amber-300 text-sm">Respeto</h4>
-            </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Respeto y cooperación entre todos los miembros. No se tolerará el racismo, discriminación o acoso de ningún tipo.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Mantener un ambiente sano y de respeto mutuo.
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Sección de estadísticas -->
-<!-- Sección de estadísticas -->
-<RosterStatsComponent
-  rankDistribution={rankDistribution}
-  classDistribution={classDistribution}
-  professionStats={stats.professions}
-  raceDistribution={raceDistribution}
-  factionDistribution={factionDistribution}
-  totalMembers={rosterData.members.length}
-/>
-
-<!-- Script para el manejo de pestañas -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const tabButtons = document.querySelectorAll<HTMLButtonElement>('.tab-button');
-    const tabPanes = document.querySelectorAll<HTMLElement>('.tab-pane');
-    const defaultTab = document.getElementById('legend-tab');
-
-    // Activar la pestaña por defecto
-    if (defaultTab) {
-      defaultTab.classList.remove('hidden');
-    }
-
-    tabButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        // Remover clases activas
-        tabButtons.forEach((btn) => {
-          btn.classList.remove('active', 'border-accent', 'text-white');
-          btn.classList.add('text-text-muted');
-        });
-
-        tabPanes.forEach((pane) => pane.classList.add('hidden'));
-
-        // Activar pestaña clickeada
-        button.classList.remove('text-text-muted');
-        button.classList.add('active', 'border-accent', 'text-white');
-
-        const tabId = button.getAttribute('data-tab');
-        if (tabId) {
-          const tabPane = document.getElementById(`${tabId}-tab`);
-          if (tabPane) {
-            tabPane.classList.remove('hidden');
-
-            // Forzar reflow para activar la animación
-            void tabPane.offsetWidth;
-            tabPane.style.animation = 'fadeIn 0.3s ease';
-
-            // Remover la animación después de que termine
-            setTimeout(() => {
-              tabPane.style.animation = '';
-            }, 300);
-          }
-        }
-      });
-    });
-  });
-</script>
-
-<style>
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .tab-pane {
-    animation: fadeIn 0.3s ease-out;
-  }
-</style>
-
-<!-- Estilos para las pestañas -->
-<style>
-  .tab-button {
-    transition: all 0.2s ease;
-    margin-bottom: -1px;
-  }
-  .tab-button:hover {
-    color: white;
-  }
-  .tab-button.active {
-    border-bottom-color: #3b82f6;
-    color: white;
-  }
-  .tab-pane {
-    animation: fadeIn 0.3s ease;
-  }
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-</style>

@@ -96,10 +96,19 @@ const getPlayerName = (player: any): string => {
 };
 
 // Función para obtener el texto de reconocimiento
-const getRecognitionText = (player: any): string => {
+const getRecognitionText = (player: any, historicalRecognitions: any[] = []): string => {
   if ('recognition' in player) {
     return player.recognition;
   }
+  
+  // Si tenemos reconocimientos históricos (que ya incluyen el título), los usamos
+  if (historicalRecognitions.length > 0) {
+    return historicalRecognitions
+      .map(rec => rec.title)
+      .filter((value, index, self) => self.indexOf(value) === index) // Unique titles
+      .join(' • ');
+  }
+
   if (player.recognitionIndices && player.recognitionIndices.length > 0) {
     const recogs = player.recognitionIndices
       .map((idx: number) => recognitions[idx]?.title || '')
@@ -119,7 +128,7 @@ const initialPlayers = featuredPlayers.slice(
 ---
 
 <div
-  class="mb-8 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-6 sm:p-8 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+  class="mb-8 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
 >
   <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
     <div class="flex items-center space-x-3">
@@ -158,92 +167,139 @@ const initialPlayers = featuredPlayers.slice(
           name: playerData.class || 'Desconocido',
         };
 
-        const recognitionText = getRecognitionText(player);
+        const playerRecognitions = playerData.recognitions || [];
+        const recognitionText = getRecognitionText(player, playerRecognitions);
+        
+        const featuredRecognitions = player.recognitionIndices
+          ? player.recognitionIndices.map((idx: number) => recognitions[idx]).filter(Boolean)
+          : [];
+        
+        // Use full historical recognitions for the modal
+        const playerDataForModal = {
+          ...playerData,
+          recognitions: playerRecognitions.length > 0 ? playerRecognitions : featuredRecognitions
+        };
+        const playerString = JSON.stringify(playerDataForModal);
+
+        // Calculate raid stats for this member
+        const leaderData = playerData.leaderData || {};
+        let totalRaids = 0;
+        Object.values(leaderData).forEach((data: any) => {
+          const stats = data.raidStats || {};
+          totalRaids += stats.total || 0;
+        });
+
+        // Use the total historical recognition count for the badge
+        const recognitionCount = playerRecognitions.length;
 
         return (
-          <div class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
-            <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-amber-500/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-            <div class="relative">
-              <div class="flex items-start gap-4 mb-4">
+          <div 
+            x-data="{ expanded: false }"
+            class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-lg transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer"
+            :class="{'z-[60]': expanded}"
+            style={`border-color: #${classData.color}66;`}
+            onclick={`if(!event.target.closest('.expand-button')) window.openMemberModal(JSON.parse(decodeURIComponent('${encodeURIComponent(playerString)}')))`}
+            onmouseover={`this.style.borderColor='#${classData.color}99'; this.style.boxShadow='0 10px 15px -3px #${classData.color}1a, 0 4px 6px -2px #${classData.color}0a';`}
+            onmouseout={`this.style.borderColor='#${classData.color}66'; this.style.boxShadow='none';`}
+          >
+            <!-- Class color accent -->
+            <div class="absolute top-0 left-0 w-1 h-full transition-opacity opacity-50 group-hover:opacity-100 rounded-l-lg" style={`background-color: #${classData.color};`}></div>
+            
+            <!-- Stats Indicators -->
+            <div class="absolute top-2 right-2 flex gap-1 z-10">
+              {recognitionCount > 0 && (
+                <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1" title={`${recognitionCount} Reconocimientos`}>
+                  <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  </svg>
+                  <span>{recognitionCount}</span>
+                </div>
+              )}
+              {totalRaids > 0 && (
+                <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1" title={`${totalRaids} raids`}>
+                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                  </svg>
+                  <span>{totalRaids}</span>
+                </div>
+              )}
+              
+              <!-- Expand Button -->
+              <button 
+                @click.stop="expanded = !expanded"
+                class="expand-button p-1 rounded bg-gray-800/50 border border-amber-600/30 text-amber-400 hover:text-amber-200 hover:border-amber-500/50 transition-all"
+                title="Ver reconocimiento"
+              >
+                <svg class="w-3 h-3 transform transition-transform" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="p-4 pl-6">
+              <div class="flex items-center gap-3">
+                <!-- Avatar -->
                 <div class="relative flex-shrink-0">
-                  <div class="absolute inset-0 bg-gradient-to-br from-amber-500/40 to-amber-600/40 rounded-full blur-md group-hover:blur-lg transition-all duration-300" />
-                  <div class="relative w-16 h-16 rounded-full border-3 border-amber-500/60 overflow-hidden shadow-lg">
-                    <img
-                      src={`/images/avatars/class_${playerData.class || 'default'}.jpg`}
-                      alt={playerData.class || 'Clase'}
-                      class="w-full h-full object-cover"
-                      onError="this.src='/images/avatars/default.png'"
-                    />
-                  </div>
-                  <div class="absolute -bottom-1 -right-1 w-7 h-7 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-lg">
-                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  </div>
+                  <img
+                    src={`/images/avatars/class_${playerData.class || 'default'}.jpg`}
+                    alt={playerData.class || 'Clase'}
+                    class={`w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover`}
+                    onerror="this.src='/images/avatars/default.png'"
+                  />
+                  <div class={`absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900 bg-[#${classData.color}]`} title={playerData.class}></div>
                 </div>
 
+                <!-- Info -->
                 <div class="flex-1 min-w-0">
-                  <h3
-                    class="text-xl font-bold truncate mb-1 drop-shadow-lg"
-                    style={`color: #${classData.color}`}
-                  >
+                  <div class="font-bold text-gray-100 truncate group-hover:text-amber-200 transition-colors text-lg capitalize" style={`color: #${classData.color}`}>
                     {playerName}
-                  </h3>
+                  </div>
                   <div class="flex flex-wrap items-center gap-2">
                     {playerData.rank && (
-                      <span class="inline-flex items-center px-2.5 py-1 bg-amber-600/30 border border-amber-500/50 text-amber-200 text-xs font-semibold rounded-full">
+                      <span class={`text-[10px] px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${
+                        playerData.rank.toLowerCase().includes('general admin')
+                          ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
+                          : playerData.rank.toLowerCase().includes('oficial')
+                              ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60'
+                              : playerData.rank.toLowerCase().includes('explorador')
+                                ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/60'
+                                : playerData.rank.toLowerCase().includes('iniciado')
+                                  ? 'bg-gradient-to-r from-green-500/10 to-green-600/10 border-green-500/40 text-green-300 hover:bg-green-500/20 hover:border-green-400/60'
+                                  : 'bg-gradient-to-r from-gray-500/10 to-gray-600/10 border-gray-500/40 text-gray-300 hover:bg-gray-500/20 hover:border-gray-400/60'
+                      }`}>
                         {playerData.rank}
                       </span>
                     )}
-                    <span class="inline-flex items-center px-2.5 py-1 bg-gray-700/50 border border-gray-600/50 text-gray-300 text-xs font-medium rounded-full">
-                      {classData.name}
-                    </span>
                   </div>
                 </div>
               </div>
 
-              <div class="mb-3 pb-3 border-b border-amber-900/30">
-                <div class="flex items-center gap-2">
-                  <svg
-                    class="w-4 h-4 text-amber-400 flex-shrink-0"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clip-rule="evenodd"
-                    />
+              <!-- Expandable Recognition Description Overlay -->
+              <div 
+                x-show="expanded" 
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 transform -translate-y-2 scale-95"
+                x-transition:enter-end="opacity-100 transform translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 transform translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 transform -translate-y-2 scale-95"
+                class="absolute top-full left-0 w-full z-50 mt-1"
+                @click.stop
+              >
+                <div class="flex items-start gap-2 bg-gray-900/95 backdrop-blur-md p-3 rounded-lg border border-amber-600/30 shadow-2xl">
+                  <svg class="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                   </svg>
-                  <p class="text-sm font-semibold text-amber-100">{recognitionText}</p>
+                  <div class="flex-1">
+                    <p class="text-[11px] font-bold text-amber-200 uppercase tracking-tight leading-tight">{recognitionText}</p>
+                    {player.recognitionIndices && player.recognitionIndices.map((idx: number) => (
+                      recognitions[idx]?.description && (
+                        <p class="text-[10px] text-amber-300/70 mt-1 italic leading-tight">{recognitions[idx].description}</p>
+                      )
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              {player.recognitionIndices?.length > 0 && (
-                <div class="space-y-2">
-                  {player.recognitionIndices.map((idx: number) => {
-                    const recog = recognitions[idx];
-                    if (!recog) return null;
-                    return (
-                      <div class="flex items-start gap-2 text-xs text-amber-100/70 leading-relaxed">
-                        <svg
-                          class="w-4 h-4 text-amber-400/60 flex-shrink-0 mt-0.5"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <span class="flex-1">{recog.description}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
           </div>
         );
@@ -359,60 +415,113 @@ const initialPlayers = featuredPlayers.slice(
     };
 
     const recognitionText = getRecognitionText(player);
+    
+    // Prepare recognitions for the modal
+    const featuredRecognitions = player.recognitionIndices
+      ? player.recognitionIndices.map((idx) => recognitionsData[idx]).filter(Boolean)
+      : [];
+    
+    // Clone and enrich playerData with recognitions for the modal
+    const playerDataForModal = {
+      ...playerData,
+      recognitions: featuredRecognitions
+    };
+    const playerString = JSON.stringify(playerDataForModal);
 
-    let recognitionsHtml = '';
+    // Calculate raid stats for this member
+    const leaderData = playerData.leaderData || {};
+    let totalRaids = 0;
+    Object.values(leaderData).forEach((data) => {
+      const stats = data.raidStats || {};
+      totalRaids += stats.total || 0;
+    });
+
+    const recognitionCount = featuredRecognitions.length;
+
+    let recognitionsDescriptions = '';
     if (player.recognitionIndices && player.recognitionIndices.length > 0) {
-      recognitionsHtml = `<div class="space-y-2">
-        ${player.recognitionIndices
-          .map((idx) => {
-            const recog = recognitionsData[idx];
-            if (!recog) return '';
-            return `<div class="flex items-start gap-2 text-xs text-amber-100/70 leading-relaxed">
-            <svg class="w-4 h-4 text-amber-400/60 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <span class="flex-1">${recog.description}</span>
-          </div>`;
-          })
-          .join('')}
-      </div>`;
+      recognitionsDescriptions = player.recognitionIndices
+        .map((idx) => {
+          const recog = recognitionsData[idx];
+          if (!recog || !recog.description) return '';
+          return `<p class="text-[10px] text-amber-300/70 mt-1 italic leading-tight">${recog.description}</p>`;
+        })
+        .join('');
     }
 
+    const rankClass = playerData.rank.toLowerCase().includes('general admin')
+      ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
+      : playerData.rank.toLowerCase().includes('oficial')
+          ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60'
+          : playerData.rank.toLowerCase().includes('explorador')
+            ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/60'
+            : playerData.rank.toLowerCase().includes('iniciado')
+              ? 'bg-gradient-to-r from-green-500/10 to-green-600/10 border-green-500/40 text-green-300 hover:bg-green-500/20 hover:border-green-400/60'
+              : 'bg-gradient-to-r from-gray-500/10 to-gray-600/10 border-gray-500/40 text-gray-300 hover:bg-gray-500/20 hover:border-gray-400/60';
+
     return `
-      <div class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-700/30 rounded-lg p-5 hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
-        <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-amber-500/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div class="relative">
-          <div class="flex items-start gap-4 mb-4">
+      <div 
+        x-data="{ expanded: false }"
+        class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-lg transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer overflow-hidden"
+        style="border-color: #${classData.color}66;"
+        onclick="if(!event.target.closest('.expand-button')) window.openMemberModal(JSON.parse(decodeURIComponent('${encodeURIComponent(playerString)}')))"
+        onmouseover="this.style.borderColor='#${classData.color}99'; this.style.boxShadow='0 10px 15px -3px #${classData.color}1a, 0 4px 6px -2px #${classData.color}0a';"
+        onmouseout="this.style.borderColor='#${classData.color}66'; this.style.boxShadow='none';"
+      >
+        <div class="absolute top-0 left-0 w-1 h-full transition-opacity opacity-50 group-hover:opacity-100" style="background-color: #${classData.color};"></div>
+        
+        <div class="absolute top-2 right-2 flex gap-1 z-10">
+          ${recognitionCount > 0 ? `
+            <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1" title="${recognitionCount} Reconocimientos">
+              <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+              <span>${recognitionCount}</span>
+            </div>
+          ` : ''}
+          ${totalRaids > 0 ? `
+            <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1" title="${totalRaids} raids">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+              <span>${totalRaids}</span>
+            </div>
+          ` : ''}
+          <button 
+            @click.stop="expanded = !expanded"
+            class="expand-button p-1 rounded bg-gray-800/50 border border-amber-600/30 text-amber-400 hover:text-amber-200 hover:border-amber-500/50 transition-all"
+            title="Ver reconocimiento"
+          >
+            <svg class="w-3 h-3 transform transition-transform" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="p-4 pl-6">
+          <div class="flex items-center gap-3">
             <div class="relative flex-shrink-0">
-              <div class="absolute inset-0 bg-gradient-to-br from-amber-500/40 to-amber-600/40 rounded-full blur-md group-hover:blur-lg transition-all duration-300"></div>
-              <div class="relative w-16 h-16 rounded-full border-3 border-amber-500/60 overflow-hidden shadow-lg">
-                <img src="/images/avatars/class_${playerData.class || 'default'}.jpg" alt="${playerData.class || 'Clase'}" class="w-full h-full object-cover" onerror="this.src='/images/avatars/default.png'" />
-              </div>
-              <div class="absolute -bottom-1 -right-1 w-7 h-7 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-lg">
-                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              </div>
+              <img src="/images/avatars/class_${playerData.class || 'default'}.jpg" alt="${playerData.class || 'Clase'}" class="w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover" onerror="this.src='/images/avatars/default.png'" />
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900 bg-[#${classData.color}]" title="${playerData.class}"></div>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="text-xl font-bold truncate mb-1 drop-shadow-lg" style="color: #${classData.color}">
-                ${playerName}
-              </h3>
+              <div class="font-bold text-gray-100 truncate group-hover:text-amber-200 transition-colors text-lg capitalize" style="color: #${classData.color}">${playerName}</div>
               <div class="flex flex-wrap items-center gap-2">
-                ${playerData.rank ? `<span class="inline-flex items-center px-2.5 py-1 bg-amber-600/30 border border-amber-500/50 text-amber-200 text-xs font-semibold rounded-full">${playerData.rank}</span>` : ''}
-                <span class="inline-flex items-center px-2.5 py-1 bg-gray-700/50 border border-gray-600/50 text-gray-300 text-xs font-medium rounded-full">${classData.name}</span>
+                ${playerData.rank ? `<span class="text-[10px] px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${rankClass}">${playerData.rank}</span>` : ''}
               </div>
             </div>
           </div>
-          <div class="mb-3 pb-3 border-b border-amber-900/30">
-            <div class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <div x-show="expanded" x-collapse x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="mt-3 pt-3 border-t border-amber-900/20">
+            <div class="flex items-start gap-2 bg-amber-900/10 p-2 rounded border border-amber-600/20">
+              <svg class="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
               </svg>
-              <p class="text-sm font-semibold text-amber-100">${recognitionText}</p>
+              <div>
+                <p class="text-[11px] font-bold text-amber-200 uppercase tracking-tight leading-tight">${recognitionText}</p>
+                ${recognitionsDescriptions}
+              </div>
             </div>
           </div>
-          ${recognitionsHtml}
         </div>
       </div>
     `;

@@ -16,7 +16,7 @@ export const wotlkRaids: Raid[] = [
         image: '/images/raids/tocfarm.jpg',
         description:
             'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-        minGearScore: 4700,
+        minGearScore: 4800,
     },
     {
         id: 2,
@@ -32,28 +32,28 @@ export const wotlkRaids: Raid[] = [
         image: '/images/raids/iccfarm.jpg',
         description:
             'Se ponen a prueba el conocimiento de mecanicas de grupo y habilidad para el combate.',
-        minGearScore: 5300,
+        minGearScore: 5400,
     },
     {
         id: 4,
         name: 'ICC 10N POR LK',
         image: '/images/raids/icclk.jpg',
         description: 'Jugadores con experiencia que buscan el logro de ICC10N.',
-        minGearScore: 5600,
+        minGearScore: 5700,
     },
     {
         id: 5,
         name: 'SAGRARIO RUBY',
         image: '/images/raids/sr.jpg',
         description: 'Jugadores con experiencia que buscan el logro de SR.',
-        minGearScore: 5700,
+        minGearScore: 5800,
     },
     {
         id: 6,
         name: 'ICC 25N POR LK',
         image: '/images/raids/icclk.jpg',
         description: 'Jugadores con experiencia que buscan el logro de ICC25N.',
-        minGearScore: 5700,
+        minGearScore: 5800,
     },
     {
         id: 7,
