@@ -36,13 +36,17 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
     raidLeaders: 0,
     roleStats: { tanks: 0, healers: 0, dps: 0, total: 0 },
     mainAltStats: { mains: 0, alts: 0, total: 0 },
-    gearScoreStats: { average: 0, min: Infinity, max: 0, total: 0, count: 0 }
+    gearScoreStats: { average: 0, min: Infinity, max: 0, total: 0, count: 0 },
   };
 
   for (const member of members) {
     // Validar la nota pública y del oficial
-    const validation = validatePublicNote(member.publicNote || '', member.name, member.officerNote || '');
-    
+    const validation = validatePublicNote(
+      member.publicNote || '',
+      member.name,
+      member.officerNote || ''
+    );
+
     // Contar raid leaders
     if (validation.isRaidLeader) {
       stats.raidLeaders++;
@@ -59,7 +63,7 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
       } else if (mainRole === 'D') {
         stats.roleStats.dps++;
       }
-      
+
       // Contar rol dual si existe
       if (validation.dualRole) {
         const dualRole = validation.dualRole.toUpperCase();
@@ -71,7 +75,7 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
           stats.roleStats.dps++;
         }
       }
-      
+
       // Actualizar el total de roles (1 por rol principal + 1 por rol dual si existe)
       const rolesCount = validation.dualRole ? 2 : 1;
       stats.roleStats.total += rolesCount;
@@ -101,10 +105,12 @@ export function calculateRosterStats(members: RosterMember[]): RosterStats {
   // Calcular totales
   stats.roleStats.total = stats.roleStats.tanks + stats.roleStats.healers + stats.roleStats.dps;
   stats.mainAltStats.total = stats.mainAltStats.mains + stats.mainAltStats.alts;
-  
+
   // Calcular promedio de gear score
   if (stats.gearScoreStats.count > 0) {
-    stats.gearScoreStats.average = parseFloat((stats.gearScoreStats.total / stats.gearScoreStats.count).toFixed(2));
+    stats.gearScoreStats.average = parseFloat(
+      (stats.gearScoreStats.total / stats.gearScoreStats.count).toFixed(2)
+    );
   } else {
     stats.gearScoreStats.min = 0;
   }
@@ -120,7 +126,7 @@ export function getRoleColor(role: 'T' | 'H' | 'D'): string {
   const colors = {
     T: 'bg-blue-500',
     H: 'bg-green-500',
-    D: 'bg-red-500'
+    D: 'bg-red-500',
   };
   return colors[role] || 'bg-gray-500';
 }
@@ -129,7 +135,7 @@ export function getRoleName(role: 'T' | 'H' | 'D'): string {
   const names = {
     T: 'Tanques',
     H: 'Sanadores',
-    D: 'DPS'
+    D: 'DPS',
   };
   return names[role] || 'Desconocido';
 }

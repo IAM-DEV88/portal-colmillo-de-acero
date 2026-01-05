@@ -1,55 +1,55 @@
 /* Base Colors */
 :root {
   /* Primary Colors */
-  --color-primary: rgba(15, 23, 42, 1);      /* Steel Darker */
-  --color-secondary: rgba(30, 41, 59, 1);    /* Steel Dark */
-  --color-tertiary: rgba(51, 65, 85, 1);     /* Steel */
+  --color-primary: rgba(15, 23, 42, 1); /* Steel Darker */
+  --color-secondary: rgba(30, 41, 59, 1); /* Steel Dark */
+  --color-tertiary: rgba(51, 65, 85, 1); /* Steel */
   --color-quaternary: rgba(100, 116, 139, 1); /* Steel Light */
 
   /* steel colors */
-  --color-steel: rgba(51, 65, 85, 1);     /* Steel */
+  --color-steel: rgba(51, 65, 85, 1); /* Steel */
   --color-steel-light: rgba(100, 116, 139, 1); /* Steel Light */
-  --color-steel-darker: rgba(15, 23, 42, 1);      /* Steel Darker */
-  --color-stil-dark: rgb(128, 135, 17);    /* Steel Dark */
-  
+  --color-steel-darker: rgba(15, 23, 42, 1); /* Steel Darker */
+  --color-stil-dark: rgb(128, 135, 17); /* Steel Dark */
+
   /* Accent Colors */
-  --color-accent: rgba(236, 201, 75, .2);     /* Accent */
+  --color-accent: rgba(236, 201, 75, 0.2); /* Accent */
   --color-accent-dark: rgba(214, 158, 46, 1);
   --color-accent-darker: rgba(183, 121, 31, 1);
-  
+
   /* Text Colors */
   --color-text-primary: rgba(255, 255, 255, 1);
   --color-text-secondary: rgba(255, 255, 255, 0.9);
   --color-text-muted: rgba(160, 174, 192, 1);
   --color-text-muted-80: rgba(160, 174, 192, 0.8);
-  
+
   /* Background Colors */
   --color-bg-primary: rgba(15, 23, 42, 1);
   --color-bg-secondary: rgba(30, 41, 59, 1);
   --color-bg-tertiary: rgba(51, 65, 85, 1);
-  
+
   /* Border Colors */
   --color-border-primary: rgba(226, 232, 240, 0.1);
   --color-border-secondary: rgba(226, 232, 240, 0.2);
   --color-border-accent: rgba(236, 201, 75, 0.5);
-  
+
   /* Status Colors */
   --color-success: rgba(72, 187, 120, 1);
   --color-warning: rgba(246, 173, 85, 1);
   --color-error: rgba(248, 113, 113, 1);
   --color-info: rgba(96, 165, 250, 1);
-  
+
   /* Transparent Overlays */
   --color-overlay-dark: rgba(0, 0, 0, 0.7);
   --color-overlay-light: rgba(255, 255, 255, 0.1);
-  
+
   /* Gradients */
   --gradient-steel: linear-gradient(
     to bottom right,
     rgba(30, 41, 59, 1) 0%,
     rgba(15, 23, 42, 1) 100%
   );
-  
+
   --gradient-accent: linear-gradient(
     to right,
     rgba(236, 201, 75, 1) 0%,
@@ -58,13 +58,22 @@
 }
 
 /* Base Styles */
-html, body {
+html,
+body {
   max-width: 100%;
   overflow-x: hidden;
 }
 
 html {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family:
+    'Montserrat',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-bg-primary);
@@ -87,7 +96,12 @@ body {
   position: relative;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   color: white;
   margin: 0.5em 0;
@@ -198,7 +212,9 @@ a:hover {
   color: var(--color-bg-primary);
   font-weight: 600;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
   text-align: center;
   text-decoration: none;
@@ -208,7 +224,9 @@ a:hover {
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .btn:focus {
@@ -223,7 +241,9 @@ a:hover {
   border-radius: 0.75rem;
   border: 1px solid rgba(31, 41, 55, 0.8);
   padding: 1.5rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
 }
 
@@ -234,8 +254,12 @@ a:hover {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .fade-in {
@@ -264,7 +288,7 @@ a:hover {
     background: white !important;
     color: black !important;
   }
-  
+
   .no-print {
     display: none !important;
   }
@@ -306,10 +330,12 @@ a:hover {
 /* Custom Shadows */
 .shadow-accent {
   --tw-shadow: 0 4px 6px -1px rgba(236, 201, 75, 0.1), 0 2px 4px -1px rgba(236, 201, 75, 0.06);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .hover\:shadow-accent:hover {
   --tw-shadow: 0 10px 15px -3px rgba(236, 201, 75, 0.1), 0 4px 6px -2px rgba(236, 201, 75, 0.05);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }

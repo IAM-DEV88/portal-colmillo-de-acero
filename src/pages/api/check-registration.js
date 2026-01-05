@@ -28,17 +28,17 @@ function isWithinThreeHours(time1, time2) {
 export async function post({ request }) {
   try {
     const { player_name, day_of_week, start_time } = await request.json();
-    
+
     // Validate required fields
     if (!player_name || !day_of_week || !start_time) {
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: 'Faltan campos requeridos',
-          details: { player_name, day_of_week, start_time }
-        }), 
-        { 
+          details: { player_name, day_of_week, start_time },
+        }),
+        {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
@@ -57,7 +57,7 @@ export async function post({ request }) {
     }
 
     // 2. Check if any existing registration is within 3 hours of the new time
-    const conflictingRegistration = existingRegistrations.find(reg => 
+    const conflictingRegistration = existingRegistrations.find((reg) =>
       isWithinThreeHours(reg.start_time, start_time)
     );
 
@@ -71,12 +71,12 @@ export async function post({ request }) {
             day_of_week: conflictingRegistration.day_of_week,
             start_time: conflictingRegistration.start_time,
             status: conflictingRegistration.status,
-            created_at: conflictingRegistration.created_at
-          }
+            created_at: conflictingRegistration.created_at,
+          },
         }),
-        { 
+        {
           status: 200,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
@@ -86,24 +86,23 @@ export async function post({ request }) {
       JSON.stringify({
         exists: false,
         message: 'No hay conflictos de horario',
-        canRegister: true
+        canRegister: true,
       }),
-      { 
+      {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       }
     );
-
   } catch (error) {
     console.error('Error in check-registration:', error);
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: 'Error al verificar la inscripción',
-        details: error.message 
+        details: error.message,
       }),
-      { 
+      {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }

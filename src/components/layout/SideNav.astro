@@ -23,21 +23,22 @@ const sections = [
         <path
           fill-rule="evenodd"
           d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
-          clip-rule="evenodd"
-        />
+          clip-rule="evenodd"></path>
       </svg>
     </button>
 
     <div class="flex flex-col items-center space-y-2">
-      {sections.map((section) => (
-        <a
-          href={`#${section.id}`}
-          class="w-2 h-2 rounded-full bg-primary/30 hover:bg-primary transition-colors"
-          data-section={section.id}
-          aria-label={`Ir a ${section.label}`}
-          title={section.label}
-        ></a>
-      ))}
+      {
+        sections.map((section) => (
+          <a
+            href={`#${section.id}`}
+            class="w-2 h-2 rounded-full bg-primary/30 hover:bg-primary transition-colors"
+            data-section={section.id}
+            aria-label={`Ir a ${section.label}`}
+            title={section.label}
+          />
+        ))
+      }
     </div>
 
     <button
@@ -54,8 +55,7 @@ const sections = [
         <path
           fill-rule="evenodd"
           d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
-          clip-rule="evenodd"
-        />
+          clip-rule="evenodd"></path>
       </svg>
     </button>
   </div>
@@ -66,29 +66,31 @@ const sections = [
   document.addEventListener('DOMContentLoaded', () => {
     const sectionLinks = document.querySelectorAll('a[data-section]');
     const sections = Array.from(sectionLinks)
-      .map(link => {
+      .map((link) => {
         const sectionId = link.getAttribute('data-section');
         if (!sectionId) return null;
-        
+
         return {
           id: sectionId,
           element: document.getElementById(sectionId),
-          link: link as HTMLElement
+          link: link as HTMLElement,
         };
       })
-      .filter((section): section is { id: string; element: HTMLElement | null; link: HTMLElement } => section !== null);
+      .filter(
+        (section): section is { id: string; element: HTMLElement | null; link: HTMLElement } =>
+          section !== null
+      );
 
     const updateActiveSection = () => {
       const scrollPosition = window.scrollY + 100;
-      
+
       sections.forEach(({ id, element, link }) => {
         if (!element) return;
-        
+
         const sectionTop = element.offsetTop;
         const sectionHeight = element.offsetHeight;
-        
-        if (scrollPosition >= sectionTop && 
-            scrollPosition < sectionTop + sectionHeight) {
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
           link.classList.remove('bg-primary/30');
           link.classList.add('bg-primary');
           link.classList.add('scale-150');

@@ -1,25 +1,33 @@
 ---
-const images = ["addon (1)", "addon (2)", "addon (3)", "addon (4)", "addon (5)", "addon (6)"]; // Nombres de las imágenes
+const images = ['addon (1)', 'addon (2)', 'addon (3)', 'addon (4)', 'addon (5)', 'addon (6)']; // Nombres de las imágenes
 ---
 
 <div class="relative max-w-[280px] lg:max-w-[560px] mx-auto overflow-hidden">
   <div id="slider" class="flex transition-transform duration-500">
-    {images.map((image, index) => (
-      <div class="flex-shrink-0 w-[280px] lg:w-[560px] h-[280px] flex items-center justify-center">
-        <img 
-          src={`/images/addon/${image}.png`} 
-          alt={`Image ${index + 1}`} 
-          class="max-w-full max-h-full object-contain" 
-          data-index={index}
-          loading="lazy"
-        />
-      </div>
-    ))}
+    {
+      images.map((image, index) => (
+        <div class="flex-shrink-0 w-[280px] lg:w-[560px] h-[280px] flex items-center justify-center">
+          <img
+            src={`/images/addon/${image}.png`}
+            alt={`Image ${index + 1}`}
+            class="max-w-full max-h-full object-contain"
+            data-index={index}
+            loading="lazy"
+          />
+        </div>
+      ))
+    }
   </div>
-  <button id="prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700 text-white px-3 py-2 z-10 rounded-r-md transition-colors">
+  <button
+    id="prev"
+    class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700 text-white px-3 py-2 z-10 rounded-r-md transition-colors"
+  >
     &lt;
   </button>
-  <button id="next" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700 text-white px-3 py-2 z-10 rounded-l-md transition-colors">
+  <button
+    id="next"
+    class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700 text-white px-3 py-2 z-10 rounded-l-md transition-colors"
+  >
     &gt;
   </button>
 </div>
@@ -29,37 +37,37 @@ const images = ["addon (1)", "addon (2)", "addon (3)", "addon (4)", "addon (5)",
     const slider = document.getElementById('slider');
     const prevButton = document.getElementById('prev');
     const nextButton = document.getElementById('next');
-    
+
     if (!slider || !prevButton || !nextButton) return;
-    
+
     const slides = Array.from(document.querySelectorAll('#slider > div'));
     let currentIndex = 0;
     const totalSlides = slides.length;
-    
+
     // Función para actualizar la posición del slider
     const updateSlider = () => {
       const slideWidth = slides[0].clientWidth;
       slider.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
     };
-    
+
     // Función para ir al slide anterior
     const goToPrev = (e) => {
       e.preventDefault();
-      currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalSlides - 1;
+      currentIndex = currentIndex > 0 ? currentIndex - 1 : totalSlides - 1;
       updateSlider();
     };
-    
+
     // Función para ir al siguiente slide
     const goToNext = (e) => {
       e.preventDefault();
-      currentIndex = (currentIndex < totalSlides - 1) ? currentIndex + 1 : 0;
+      currentIndex = currentIndex < totalSlides - 1 ? currentIndex + 1 : 0;
       updateSlider();
     };
-    
+
     // Agregar event listeners
     prevButton.addEventListener('click', goToPrev);
     nextButton.addEventListener('click', goToNext);
-    
+
     // Actualizar el slider cuando cambie el tamaño de la ventana
     let resizeTimer;
     window.addEventListener('resize', () => {
@@ -68,10 +76,10 @@ const images = ["addon (1)", "addon (2)", "addon (3)", "addon (4)", "addon (5)",
         updateSlider();
       }, 250);
     });
-    
+
     // Inicializar el slider
     updateSlider();
-    
+
     // Limpiar event listeners al desmontar el componente
     return () => {
       prevButton.removeEventListener('click', goToPrev);

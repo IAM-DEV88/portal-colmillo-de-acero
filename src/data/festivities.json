@@ -1,172 +1,172 @@
 [
-    {
-        "id": "año_nuevo",
-        "temporada": {
-            "index": "FELIZ AÑO NUEVO",
-            "voto": "VOTACIONES DE AÑO NUEVO"
-        },
-        "imagen": "/images/año_nuevo.jpg",
-        "premios": [
-            {
-                "lugar": "1er Lugar",
-                "premio": "1,000 de Oro",
-                "icon": "fas fa-trophy"
-            },
-            {
-                "lugar": "2do Lugar",
-                "premio": "500 de Oro",
-                "icon": "fas fa-medal"
-            },
-            {
-                "lugar": "3er Lugar",
-                "premio": "200 de Oro",
-                "icon": "fas fa-award"
-            }
-        ],
-        "inicio": "01-01",
-        "fin": "01-31",
-        "enlaces": [
-            {
-                "frase_cta": "🎆 ¡Año Nuevo, Vida Nueva! 🎊",
-                "url": "/voto"
-            }
-        ],
-        "activo": true
+  {
+    "id": "año_nuevo",
+    "temporada": {
+      "index": "FELIZ AÑO NUEVO",
+      "voto": "VOTACIONES DE AÑO NUEVO"
     },
-    {
-        "id": "fundacion",
-        "temporada": {
-            "index": "BIENVENIDOS",
-            "voto": "CUMPLEAÑOS DE LA HERMANDAD"
-        },
-        "imagen": "/images/fundacion.jpg",
-        "premios": [
-            {
-                "lugar": "1er Lugar",
-                "premio": "2,500 de Oro + Título",
-                "icon": "fas fa-trophy"
-            },
-            {
-                "lugar": "2do Lugar",
-                "premio": "1,250 de Oro",
-                "icon": "fas fa-medal"
-            },
-            {
-                "lugar": "3er Lugar",
-                "premio": "625 de Oro",
-                "icon": "fas fa-award"
-            }
-        ],
-        "inicio": "11-01",
-        "fin": "11-30",
-        "enlaces": [
-            {
-                "frase_cta": "💀 ¡Fundación de la Hermandad! 🌺",
-                "url": "/voto"
-            }
-        ],
-        "activo": true
+    "imagen": "/images/año_nuevo.jpg",
+    "premios": [
+      {
+        "lugar": "1er Lugar",
+        "premio": "1,000 de Oro",
+        "icon": "fas fa-trophy"
+      },
+      {
+        "lugar": "2do Lugar",
+        "premio": "500 de Oro",
+        "icon": "fas fa-medal"
+      },
+      {
+        "lugar": "3er Lugar",
+        "premio": "200 de Oro",
+        "icon": "fas fa-award"
+      }
+    ],
+    "inicio": "01-01",
+    "fin": "01-31",
+    "enlaces": [
+      {
+        "frase_cta": "🎆 ¡Año Nuevo, Vida Nueva! 🎊",
+        "url": "/voto"
+      }
+    ],
+    "activo": true
+  },
+  {
+    "id": "fundacion",
+    "temporada": {
+      "index": "BIENVENIDOS",
+      "voto": "CUMPLEAÑOS DE LA HERMANDAD"
     },
-    {
-        "id": "halloween",
-        "temporada": {
-            "index": "BIENVENIDOS",
-            "voto": "FELIZ HALLOWEEN"
-        },
-        "imagen": "/images/halloween.jpg",
-        "premios": [
-            {
-                "lugar": "1er Lugar",
-                "premio": "2,000 de Oro",
-                "icon": "fas fa-trophy"
-            },
-            {
-                "lugar": "2do Lugar",
-                "premio": "1,000 de Oro",
-                "icon": "fas fa-medal"
-            },
-            {
-                "lugar": "3er Lugar",
-                "premio": "500 de Oro",
-                "icon": "fas fa-award"
-            }
-        ],
-        "inicio": "10-01",
-        "fin": "10-31",
-        "enlaces": [
-            {
-                "frase_cta": "🎃 ¡Evento de Halloween! 👻",
-                "url": "/voto"
-            }
-        ],
-        "activo": true
+    "imagen": "/images/fundacion.jpg",
+    "premios": [
+      {
+        "lugar": "1er Lugar",
+        "premio": "2,500 de Oro + Título",
+        "icon": "fas fa-trophy"
+      },
+      {
+        "lugar": "2do Lugar",
+        "premio": "1,250 de Oro",
+        "icon": "fas fa-medal"
+      },
+      {
+        "lugar": "3er Lugar",
+        "premio": "625 de Oro",
+        "icon": "fas fa-award"
+      }
+    ],
+    "inicio": "11-01",
+    "fin": "11-30",
+    "enlaces": [
+      {
+        "frase_cta": "💀 ¡Fundación de la Hermandad! 🌺",
+        "url": "/voto"
+      }
+    ],
+    "activo": true
+  },
+  {
+    "id": "halloween",
+    "temporada": {
+      "index": "BIENVENIDOS",
+      "voto": "FELIZ HALLOWEEN"
     },
-    {
-        "id": "navidad",
-        "temporada": {
-            "index": "BIENVENIDOS",
-            "voto": "FELIZ NAVIDAD"
-        },
-        "imagen": "/images/navidad.png",
-        "premios": [
-            {
-                "lugar": "1er Lugar",
-                "premio": "3,000 de Oro",
-                "icon": "fas fa-trophy"
-            },
-            {
-                "lugar": "2do Lugar",
-                "premio": "1,500 de Oro",
-                "icon": "fas fa-medal"
-            },
-            {
-                "lugar": "3er Lugar",
-                "premio": "750 de Oro",
-                "icon": "fas fa-award"
-            }
-        ],
-        "inicio": "12-01",
-        "fin": "12-31",
-        "enlaces": [
-            {
-                "frase_cta": "🎄 ¡Evento de Navidad! 🎅",
-                "url": "/voto"
-            }
-        ],
-        "activo": true
+    "imagen": "/images/halloween.jpg",
+    "premios": [
+      {
+        "lugar": "1er Lugar",
+        "premio": "2,000 de Oro",
+        "icon": "fas fa-trophy"
+      },
+      {
+        "lugar": "2do Lugar",
+        "premio": "1,000 de Oro",
+        "icon": "fas fa-medal"
+      },
+      {
+        "lugar": "3er Lugar",
+        "premio": "500 de Oro",
+        "icon": "fas fa-award"
+      }
+    ],
+    "inicio": "10-01",
+    "fin": "10-31",
+    "enlaces": [
+      {
+        "frase_cta": "🎃 ¡Evento de Halloween! 👻",
+        "url": "/voto"
+      }
+    ],
+    "activo": true
+  },
+  {
+    "id": "navidad",
+    "temporada": {
+      "index": "BIENVENIDOS",
+      "voto": "FELIZ NAVIDAD"
     },
-    {
-        "id": "default",
-        "temporada": {
-            "index": "BIENVENIDOS",
-            "voto": "VOTACIONES"
-        },
-        "imagen": "/images/default_prizes.jpg",
-        "premios": [
-            {
-                "lugar": "1er Lugar",
-                "premio": "1,000 de Oro",
-                "icon": "fas fa-trophy"
-            },
-            {
-                "lugar": "2do Lugar",
-                "premio": "500 de Oro",
-                "icon": "fas fa-medal"
-            },
-            {
-                "lugar": "3er Lugar",
-                "premio": "250 de Oro",
-                "icon": "fas fa-award"
-            }
-        ],
-        "inicio": "01-01",
-        "fin": "12-31",
-        "enlaces": [
-            {
-                "frase_cta": "🗳️ ¡Votaciones! 🗳️",
-                "url": "/voto"
-            }
-        ],
-        "activo": true
-    }
+    "imagen": "/images/navidad.png",
+    "premios": [
+      {
+        "lugar": "1er Lugar",
+        "premio": "3,000 de Oro",
+        "icon": "fas fa-trophy"
+      },
+      {
+        "lugar": "2do Lugar",
+        "premio": "1,500 de Oro",
+        "icon": "fas fa-medal"
+      },
+      {
+        "lugar": "3er Lugar",
+        "premio": "750 de Oro",
+        "icon": "fas fa-award"
+      }
+    ],
+    "inicio": "12-01",
+    "fin": "12-31",
+    "enlaces": [
+      {
+        "frase_cta": "🎄 ¡Evento de Navidad! 🎅",
+        "url": "/voto"
+      }
+    ],
+    "activo": true
+  },
+  {
+    "id": "default",
+    "temporada": {
+      "index": "BIENVENIDOS",
+      "voto": "VOTACIONES"
+    },
+    "imagen": "/images/default_prizes.jpg",
+    "premios": [
+      {
+        "lugar": "1er Lugar",
+        "premio": "1,000 de Oro",
+        "icon": "fas fa-trophy"
+      },
+      {
+        "lugar": "2do Lugar",
+        "premio": "500 de Oro",
+        "icon": "fas fa-medal"
+      },
+      {
+        "lugar": "3er Lugar",
+        "premio": "250 de Oro",
+        "icon": "fas fa-award"
+      }
+    ],
+    "inicio": "01-01",
+    "fin": "12-31",
+    "enlaces": [
+      {
+        "frase_cta": "🗳️ ¡Votaciones! 🗳️",
+        "url": "/voto"
+      }
+    ],
+    "activo": true
+  }
 ]

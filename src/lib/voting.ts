@@ -30,7 +30,7 @@ interface VoteData {
 function getClientIp(request: Request): string | null {
   try {
     const headers = request.headers;
-    
+
     // Headers comunes que contienen la IP real del cliente
     const possibleIpHeaders = [
       'x-forwarded-for',
@@ -53,8 +53,11 @@ function getClientIp(request: Request): string | null {
         const firstIp = ip.split(',')[0].trim();
         if (firstIp) {
           // Validar que sea una dirección IP válida
-          if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(firstIp) || // IPv4
-              /^[0-9a-fA-F:]+$/.test(firstIp)) { // IPv6
+          if (
+            /^(?:\d{1,3}\.){3}\d{1,3}$/.test(firstIp) || // IPv4
+            /^[0-9a-fA-F:]+$/.test(firstIp)
+          ) {
+            // IPv6
             return firstIp;
           }
         }
@@ -83,7 +86,10 @@ export function isCharacterInRoster(characterName: string): boolean {
 }
 
 // Check if an IP has voted for a character recently (within 24 hours)
-export async function canIpVote(characterName: string, ipAddress: string): Promise<{ canVote: boolean; lastVotedAt?: string }> {
+export async function canIpVote(
+  characterName: string,
+  ipAddress: string
+): Promise<{ canVote: boolean; lastVotedAt?: string }> {
   const { data, error } = await supabase
     .from('votes')
     .select('voted_at')
@@ -102,14 +108,17 @@ export async function canIpVote(characterName: string, ipAddress: string): Promi
 
   return {
     canVote: hoursSinceLastVote >= 24,
-    lastVotedAt: data[0].voted_at
+    lastVotedAt: data[0].voted_at,
   };
 }
 
 // Record a vote for a character
-export async function recordVote(characterName: string, request: Request): Promise<{ success: boolean; error?: string; data?: any }> {
+export async function recordVote(
+  characterName: string,
+  request: Request
+): Promise<{ success: boolean; error?: string; data?: any }> {
   console.log('Iniciando registro de voto para:', characterName);
-  
+
   // Verificar configuración de Supabase
   if (!supabaseUrl || !supabaseKey) {
     const errorMsg = 'Error: Falta la configuración de Supabase';
@@ -119,7 +128,7 @@ export async function recordVote(characterName: string, request: Request): Promi
 
   const ipAddress = getClientIp(request);
   console.log('Dirección IP detectada:', ipAddress);
-  
+
   if (!ipAddress) {
     const errorMsg = 'No se pudo obtener la dirección IP';
     console.error(errorMsg);
@@ -129,7 +138,7 @@ export async function recordVote(characterName: string, request: Request): Promi
   // Verificar si el personaje existe en el roster
   const characterExists = isCharacterInRoster(characterName);
   console.log('¿Personaje existe en el roster?', characterExists);
-  
+
   if (!characterExists) {
     const errorMsg = 'El personaje no existe en la hermandad';
     console.error(errorMsg);
@@ -140,31 +149,31 @@ export async function recordVote(characterName: string, request: Request): Promi
   console.log('Verificando si la IP puede votar...');
   const { canVote, lastVotedAt } = await canIpVote(characterName, ipAddress);
   console.log('¿Puede votar?', canVote, 'Último voto:', lastVotedAt);
-  
+
   if (!canVote && lastVotedAt) {
     const nextVoteTime = new Date(lastVotedAt);
     nextVoteTime.setHours(nextVoteTime.getHours() + 24);
     const hoursLeft = Math.ceil((nextVoteTime.getTime() - new Date().getTime()) / (1000 * 60 * 60));
     const errorMsg = `Ya has votado por este personaje. Podrás votar de nuevo en ${hoursLeft} horas.`;
     console.error(errorMsg);
-    return { 
-      success: false, 
-      error: errorMsg 
+    return {
+      success: false,
+      error: errorMsg,
     };
   }
 
   try {
     console.log('Intentando registrar voto para:', characterName, 'desde IP:', ipAddress);
-    
+
     // Usar el cliente de Supabase directamente
     const { data, error } = await supabase
       .from('votes')
       .insert([
-        { 
+        {
           character_name: characterName,
           ip_address: ipAddress,
-          voted_at: new Date().toISOString()
-        }
+          voted_at: new Date().toISOString(),
+        },
       ])
       .select();
 
@@ -174,30 +183,34 @@ export async function recordVote(characterName: string, request: Request): Promi
       console.error('Error al insertar voto en Supabase:', error);
       throw new Error(error.message || 'Error al registrar el voto');
     }
-    
+
     if (!data || data.length === 0) {
       throw new Error('No se recibieron datos de confirmación del servidor');
     }
-    
-    return { 
+
+    return {
       success: true,
-      data: data[0]
+      data: data[0],
     };
   } catch (error: any) {
     console.error('Error al registrar voto:', error);
-    return { 
-      success: false, 
-      error: error.message || 'Error al procesar el voto. Por favor, inténtalo de nuevo.' 
+    return {
+      success: false,
+      error: error.message || 'Error al procesar el voto. Por favor, inténtalo de nuevo.',
     };
   }
 }
 
 // Get vote statistics
-export async function getVoteStats(): Promise<{ success: boolean; data?: Array<{ character: string; count: number }>; error?: string }> {
+export async function getVoteStats(): Promise<{
+  success: boolean;
+  data?: Array<{ character: string; count: number }>;
+  error?: string;
+}> {
   try {
     console.log('Conectando a Supabase...');
     console.log('URL de Supabase:', supabaseUrl ? 'Configurada' : 'No configurada');
-    
+
     if (!supabaseUrl || !supabaseKey) {
       const errorMsg = 'Error: Faltan las variables de entorno de Supabase';
       console.error(errorMsg);
@@ -212,9 +225,9 @@ export async function getVoteStats(): Promise<{ success: boolean; data?: Array<{
 
     if (error) {
       console.error('Error de Supabase al obtener estadísticas:', error);
-      return { 
-        success: false, 
-        error: `Error de base de datos: ${error.message || 'Error desconocido'}` 
+      return {
+        success: false,
+        error: `Error de base de datos: ${error.message || 'Error desconocido'}`,
       };
     }
 
@@ -226,31 +239,34 @@ export async function getVoteStats(): Promise<{ success: boolean; data?: Array<{
     }
 
     // Group votes by character
-    const votesByCharacter = data.reduce((acc, vote) => {
-      if (vote.character_name) {  // Asegurarse de que character_name no sea nulo
-        if (!acc[vote.character_name]) {
-          acc[vote.character_name] = 0;
+    const votesByCharacter = data.reduce(
+      (acc, vote) => {
+        if (vote.character_name) {
+          // Asegurarse de que character_name no sea nulo
+          if (!acc[vote.character_name]) {
+            acc[vote.character_name] = 0;
+          }
+          acc[vote.character_name]++;
         }
-        acc[vote.character_name]++;
-      }
-      return acc;
-    }, {} as Record<string, number>);
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     // Convert to array of objects
     const result = Object.entries(votesByCharacter).map(([character, count]) => ({
       character,
-      count: Number(count) || 0
+      count: Number(count) || 0,
     }));
 
     console.log('Estadísticas procesadas correctamente:', result);
     return { success: true, data: result };
-    
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
     console.error('Error inesperado en getVoteStats:', err);
-    return { 
-      success: false, 
-      error: `Error inesperado: ${errorMessage}` 
+    return {
+      success: false,
+      error: `Error inesperado: ${errorMessage}`,
     };
   }
 }

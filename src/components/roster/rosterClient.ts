@@ -34,17 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const prevButton = document.getElementById('prev-button') as HTMLButtonElement | null;
   const nextButton = document.getElementById('next-button') as HTMLButtonElement | null;
   const pageInfo = document.getElementById('page-info') as HTMLDivElement | null;
-  
+
   let currentPage = 1;
   const itemsPerPage = 10;
   let allMembers: RosterMember[] = [];
   let filteredMembers: RosterMember[] = [];
-  let sortConfig: { key: keyof RosterMember; direction: 'asc' | 'desc' } = { key: 'name', direction: 'asc' };
+  let sortConfig: { key: keyof RosterMember; direction: 'asc' | 'desc' } = {
+    key: 'name',
+    direction: 'asc',
+  };
 
   // Inicializar la tabla con los datos de window.rosterData
   function initTable() {
     if (!tableBody || !pageInfo) return;
-    
+
     // Verificar si los datos están disponibles
     if (!window.rosterData) {
       // Error manejado silenciosamente
@@ -60,16 +63,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Actualizar la tabla con los miembros filtrados y ordenados
   function updateTable() {
     if (!tableBody) return;
-    
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedMembers = filteredMembers.slice(startIndex, startIndex + itemsPerPage);
-    
-    tableBody.innerHTML = paginatedMembers.map(member => {
-      const classData = window.rosterData.classInfo[member.class] || { color: 'FFFFFF', name: member.class };
-      const className = classData.name;
-      const classColor = classData.color;
-      
-      return `
+
+    tableBody.innerHTML = paginatedMembers
+      .map((member) => {
+        const classData = window.rosterData.classInfo[member.class] || {
+          color: 'FFFFFF',
+          name: member.class,
+        };
+        const className = classData.name;
+        const classColor = classData.color;
+
+        return `
         <tr class="hover:bg-steel-dark/30 transition-colors">
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center">
@@ -86,8 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="px-6 py-4 text-text-muted">${member.publicNote || '-'}</td>
         </tr>
       `;
-    }).join('');
-    
+      })
+      .join('');
+
     updatePaginationInfo();
     updateSortIndicators();
   }
@@ -100,23 +108,23 @@ document.addEventListener('DOMContentLoaded', () => {
       sortConfig.key = key;
       sortConfig.direction = 'asc';
     }
-    
+
     filteredMembers.sort((a, b) => {
       // Asegurarse de que la clave sea una clave válida de RosterMember
       const sortKey = sortConfig.key as keyof RosterMember;
       const aValue = a[sortKey];
       const bValue = b[sortKey];
-      
+
       if (aValue === undefined || bValue === undefined) return 0;
-      
+
       const aStr = String(aValue).toLowerCase();
       const bStr = String(bValue).toLowerCase();
-      
+
       if (aStr < bStr) return sortConfig.direction === 'asc' ? -1 : 1;
       if (aStr > bStr) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
     });
-    
+
     currentPage = 1;
     updateTable();
   }
@@ -124,23 +132,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Función para actualizar la información de paginación
   function updatePaginationInfo() {
     if (!pageInfo) return;
-    
+
     const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
     pageInfo.textContent = `Página ${currentPage} de ${totalPages} (${filteredMembers.length} miembros)`;
-    
+
     if (prevButton) prevButton.disabled = currentPage === 1;
     if (nextButton) nextButton.disabled = currentPage >= totalPages;
   }
 
   // Función para actualizar los indicadores de ordenación
   function updateSortIndicators() {
-    document.querySelectorAll('th[data-sort]').forEach(th => {
+    document.querySelectorAll('th[data-sort]').forEach((th) => {
       const sortKey = th.getAttribute('data-sort') as keyof RosterMember | null;
       if (!sortKey) return;
-      
+
       const indicator = th.querySelector('.sort-indicator');
       if (!indicator) return;
-      
+
       if (sortConfig.key === sortKey) {
         indicator.textContent = sortConfig.direction === 'asc' ? '↑' : '↓';
         indicator.classList.remove('invisible');
@@ -156,18 +164,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchTerm = searchInput?.value.toLowerCase() || '';
     const selectedClass = classFilter?.value || 'all';
     const selectedRank = rankFilter?.value || 'all';
-    
-    filteredMembers = allMembers.filter(member => {
-      const matchesSearch = 
+
+    filteredMembers = allMembers.filter((member) => {
+      const matchesSearch =
         member.name.toLowerCase().includes(searchTerm) ||
         (member.publicNote && member.publicNote.toLowerCase().includes(searchTerm));
-      
+
       const matchesClass = selectedClass === 'all' || member.class === selectedClass;
       const matchesRank = selectedRank === 'all' || member.rank === selectedRank;
-      
+
       return matchesSearch && matchesClass && matchesRank;
     });
-    
+
     currentPage = 1;
     updateTable();
   }
@@ -176,15 +184,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchInput) {
     searchInput.addEventListener('input', filterMembers);
   }
-  
+
   if (classFilter) {
     classFilter.addEventListener('change', filterMembers);
   }
-  
+
   if (rankFilter) {
     rankFilter.addEventListener('change', filterMembers);
   }
-  
+
   if (prevButton) {
     prevButton.addEventListener('click', () => {
       if (currentPage > 1) {
@@ -193,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  
+
   if (nextButton) {
     nextButton.addEventListener('click', () => {
       const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
@@ -203,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  
+
   // Inicializar la tabla
   initTable();
 });

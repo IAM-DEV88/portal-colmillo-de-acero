@@ -5,15 +5,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ]
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": [
-    "src/**/*",
-    ".astro/types.d.ts",
-    "src/aos.d.ts"
-  ],
+  "include": ["src/**/*", ".astro/types.d.ts", "src/aos.d.ts"],
   "exclude": ["dist"]
 }

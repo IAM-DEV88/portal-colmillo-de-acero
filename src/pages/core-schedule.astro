@@ -5,9 +5,9 @@ import { supabase } from '../lib/supabase';
 
 // Generate time slots for the week (14 slots: 18:00 and 00:00 for each day)
 const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-const timeSlots = days.flatMap(day => [
+const timeSlots = days.flatMap((day) => [
   { day, time: '18:00', value: `${day.toLowerCase()}-18` },
-  { day, time: '00:00', value: `${day.toLowerCase()}-00` }
+  { day, time: '00:00', value: `${day.toLowerCase()}-00` },
 ]);
 
 // Get the current selected time slot from URL or default to first slot
@@ -33,23 +33,29 @@ if (Astro.request.method === 'POST') {
 
   if (characterName && timeSlot) {
     // Check if character exists in roster
-    const character = rosterData.find(c => c.name.toLowerCase() === characterName.toLowerCase());
-    
+    const character = rosterData.find((c) => c.name.toLowerCase() === characterName.toLowerCase());
+
     if (!character) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: 'El personaje no se encuentra en el roster de la hermandad.' 
-      }), { status: 400 });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'El personaje no se encuentra en el roster de la hermandad.',
+        }),
+        { status: 400 }
+      );
     }
-    
+
     // Check if character has a public note (role and gear score)
     if (!character.publicNote || character.publicNote.trim() === '') {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: `Por favor, envía tu función y gearscore a un oficial para poder registrarte.`
-      }), { status: 400 });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: `Por favor, envía tu función y gearscore a un oficial para poder registrarte.`,
+        }),
+        { status: 400 }
+      );
     }
-    
+
     // Check if character is already registered for this time slot
     const { data: existingRegistration } = await supabase
       .from('raid_attendance')
@@ -59,34 +65,39 @@ if (Astro.request.method === 'POST') {
       .single();
 
     if (existingRegistration) {
-      return new Response(JSON.stringify({
-        success: false,
-        message: `El personaje ${characterName} ya está registrado para este horario.`
-      }), { status: 400 });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: `El personaje ${characterName} ya está registrado para este horario.`,
+        }),
+        { status: 400 }
+      );
     }
-    
+
     // Register with empty attendance by default
     const attendanceRecord = '';
 
     // Use insert instead of upsert to prevent overwriting
     const { data, error: insertError } = await supabase
       .from('raid_attendance')
-      .insert(
-        { 
-          character_name: characterName,
-          schedule_slot: timeSlot,
-          attendance_records: attendanceRecord
-        }
-      )
+      .insert({
+        character_name: characterName,
+        schedule_slot: timeSlot,
+        attendance_records: attendanceRecord,
+      })
       .select();
 
     // Check for unique violation error (duplicate entry)
     if (insertError) {
-      if (insertError.code === '23505') { // Unique violation error code
-        return new Response(JSON.stringify({
-          success: false,
-          message: `El personaje ${characterName} ya está registrado para este horario.`
-        }), { status: 400 });
+      if (insertError.code === '23505') {
+        // Unique violation error code
+        return new Response(
+          JSON.stringify({
+            success: false,
+            message: `El personaje ${characterName} ya está registrado para este horario.`,
+          }),
+          { status: 400 }
+        );
       }
 
       console.error('Error registering player:', insertError);
@@ -109,9 +120,9 @@ if (Astro.request.method === 'POST') {
       </p>
     </div>
 
-    <form 
-      id="filters-section" 
-      method="POST" 
+    <form
+      id="filters-section"
+      method="POST"
       class="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700 p-4 mb-6"
       onsubmit="return handleFormSubmit(event)"
     >
@@ -127,11 +138,13 @@ if (Astro.request.method === 'POST') {
               class="block w-full pl-3 pr-8 py-2 text-sm bg-gray-900 border border-amber-600/50 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-white rounded transition-all duration-200"
               onchange="window.location.href = '/core-schedule?slot=' + this.value"
             >
-              {timeSlots.map(slot => (
-                <option value={slot.value} selected={selectedSlot === slot.value}>
-                  {slot.day} - {slot.time}
-                </option>
-              ))}
+              {
+                timeSlots.map((slot) => (
+                  <option value={slot.value} selected={selectedSlot === slot.value}>
+                    {slot.day} - {slot.time}
+                  </option>
+                ))
+              }
             </select>
           </div>
         </div>
@@ -158,14 +171,13 @@ if (Astro.request.method === 'POST') {
               oninput="validateCharacter(this.value)"
             />
             <datalist id="characterList">
-              {rosterData.map(character => (
-                <option 
-                  value={character.name} 
-                  data-note={character.publicNote || ''}
-                >
-                  {character.name} - {character.publicNote || 'Sin función/GS'}
-                </option>
-              ))}
+              {
+                rosterData.map((character) => (
+                  <option value={character.name} data-note={character.publicNote || ''}>
+                    {character.name} - {character.publicNote || 'Sin función/GS'}
+                  </option>
+                ))
+              }
             </datalist>
             <div id="characterError" class="mt-1 text-xs text-red-400"></div>
           </div>
@@ -183,140 +195,169 @@ if (Astro.request.method === 'POST') {
       </div>
     </form>
 
-    <div id="registered-players" class="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700 p-6">
+    <div
+      id="registered-players"
+      class="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700 p-6"
+    >
       <h2 class="text-2xl font-bold text-amber-300 mb-6">
-        Jugadores Registrados - {timeSlots.find(s => s.value === selectedSlot)?.day} {timeSlots.find(s => s.value === selectedSlot)?.time}
+        Jugadores Registrados - {timeSlots.find((s) => s.value === selectedSlot)?.day}
+        {timeSlots.find((s) => s.value === selectedSlot)?.time}
       </h2>
-      
-      {registeredPlayers && registeredPlayers.length > 0 ? (
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-700">
-            <thead>
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Personaje</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Asistencias</th>
-                <th class="w-10"></th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-700">
-              {registeredPlayers.map((player, playerIndex) => {
-                const rowId = `player-${playerIndex}`;
-                const attendanceCount = player.attendance_records ? player.attendance_records.split(',').length : 0;
-                const averageProgress = player.attendance_records ? (() => {
-                  const records = player.attendance_records.split(',');
-                  const totalProgress = records.reduce((acc, record) => {
-                    const [_, progress] = record.split(':');
-                    const [current = 0, total = 0] = progress ? progress.split('/').map(Number) : [0, 0];
-                    return acc + (total > 0 ? (current / total) : 0);
-                  }, 0);
-                  return (totalProgress / records.length) * 100;
-                })() : 0;
-                
-                return (
-                  <>
-                    <tr 
-                      class="cursor-pointer hover:bg-gray-800/50 transition-colors"
-                      onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.toggle-icon').classList.toggle('rotate-180')"
-                    >
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                          <div class="text-sm font-medium text-white">
-                            {player.character_name}
+
+      {
+        registeredPlayers && registeredPlayers.length > 0 ? (
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-700">
+              <thead>
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Personaje
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                    Asistencias
+                  </th>
+                  <th class="w-10" />
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-700">
+                {registeredPlayers.map((player, playerIndex) => {
+                  const rowId = `player-${playerIndex}`;
+                  const attendanceCount = player.attendance_records
+                    ? player.attendance_records.split(',').length
+                    : 0;
+                  const averageProgress = player.attendance_records
+                    ? (() => {
+                        const records = player.attendance_records.split(',');
+                        const totalProgress = records.reduce((acc, record) => {
+                          const [_, progress] = record.split(':');
+                          const [current = 0, total = 0] = progress
+                            ? progress.split('/').map(Number)
+                            : [0, 0];
+                          return acc + (total > 0 ? current / total : 0);
+                        }, 0);
+                        return (totalProgress / records.length) * 100;
+                      })()
+                    : 0;
+
+                  return (
+                    <>
+                      <tr
+                        class="cursor-pointer hover:bg-gray-800/50 transition-colors"
+                        onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.toggle-icon').classList.toggle('rotate-180')"
+                      >
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="flex items-center">
+                            <div class="text-sm font-medium text-white">
+                              {player.character_name}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td class="px-6 py-4">
-                        <div class="flex items-center">
-                          {player.attendance_records ? (
-                            <div class="flex items-center">
-                              <span class="text-amber-400 font-medium mr-3">
-                                {attendanceCount} {attendanceCount === 1 ? 'asistencia' : 'asistencias'}
-                              </span>
-                              <div class="w-20 h-2 bg-gray-700 rounded-full overflow-hidden mr-2">
-                                <div 
-                                  class="h-full rounded-full"
-                                  style={{
-                                    width: `${Math.round(averageProgress)}%`,
-                                    background: `hsl(${(averageProgress * 120) / 100}, 80%, 50%)`,
-                                    boxShadow: `0 0 8px hsla(${(averageProgress * 120) / 100}, 80%, 50%, 0.3)`
-                                  }}
-                                ></div>
+                        </td>
+                        <td class="px-6 py-4">
+                          <div class="flex items-center">
+                            {player.attendance_records ? (
+                              <div class="flex items-center">
+                                <span class="text-amber-400 font-medium mr-3">
+                                  {attendanceCount}{' '}
+                                  {attendanceCount === 1 ? 'asistencia' : 'asistencias'}
+                                </span>
+                                <div class="w-20 h-2 bg-gray-700 rounded-full overflow-hidden mr-2">
+                                  <div
+                                    class="h-full rounded-full"
+                                    style={{
+                                      width: `${Math.round(averageProgress)}%`,
+                                      background: `hsl(${(averageProgress * 120) / 100}, 80%, 50%)`,
+                                      boxShadow: `0 0 8px hsla(${(averageProgress * 120) / 100}, 80%, 50%, 0.3)`,
+                                    }}
+                                  />
+                                </div>
+                                <span class="text-xs text-gray-400">
+                                  {Math.round(averageProgress)}%
+                                </span>
                               </div>
-                              <span class="text-xs text-gray-400">
-                                {Math.round(averageProgress)}%
-                              </span>
-                            </div>
-                          ) : (
-                            <span class="text-gray-400 text-sm">Sin registros</span>
-                          )}
-                        </div>
-                      </td>
-                      <td class="px-2 text-right">
-                        <div class="text-gray-400 hover:text-amber-400 transition-transform duration-200 toggle-icon">
-                          <i class="fas fa-chevron-down text-sm"></i>
-                        </div>
-                      </td>
-                    </tr>
-                    
-                    {/* Expanded Content */}
-                    <tr class="bg-gray-800/30 hidden" id="details-{rowId}">
-                      <td colspan="3" class="px-6 py-4">
-                        <div class="pl-2 border-l-2 border-amber-500/50">
-                          <h4 class="text-sm font-medium text-gray-300 mb-3">Detalle de asistencias</h4>
-                          {player.attendance_records ? (
-                            <div class="space-y-3">
-                              {player.attendance_records.split(',').map((record, index) => {
-                                const [date, progress] = record.split(':');
-                                const [current = 0, total = 0] = progress ? progress.split('/').map(Number) : [0, 0];
-                                const progressPercent = total > 0 ? Math.round((current / total) * 100) : 0;
-                                const hue = (progressPercent * 120) / 100;
-                                
-                                return (
-                                  <div class="py-2">
-                                    <div class="flex items-center justify-between text-sm mb-1">
-                                      <span class="text-gray-300 font-medium">{date}</span>
-                                      <span class="text-gray-400 text-xs">{progress || '0/0'}</span>
+                            ) : (
+                              <span class="text-gray-400 text-sm">Sin registros</span>
+                            )}
+                          </div>
+                        </td>
+                        <td class="px-2 text-right">
+                          <div class="text-gray-400 hover:text-amber-400 transition-transform duration-200 toggle-icon">
+                            <i class="fas fa-chevron-down text-sm" />
+                          </div>
+                        </td>
+                      </tr>
+
+                      {/* Expanded Content */}
+                      <tr class="bg-gray-800/30 hidden" id="details-{rowId}">
+                        <td colspan="3" class="px-6 py-4">
+                          <div class="pl-2 border-l-2 border-amber-500/50">
+                            <h4 class="text-sm font-medium text-gray-300 mb-3">
+                              Detalle de asistencias
+                            </h4>
+                            {player.attendance_records ? (
+                              <div class="space-y-3">
+                                {player.attendance_records.split(',').map((record, index) => {
+                                  const [date, progress] = record.split(':');
+                                  const [current = 0, total = 0] = progress
+                                    ? progress.split('/').map(Number)
+                                    : [0, 0];
+                                  const progressPercent =
+                                    total > 0 ? Math.round((current / total) * 100) : 0;
+                                  const hue = (progressPercent * 120) / 100;
+
+                                  return (
+                                    <div class="py-2">
+                                      <div class="flex items-center justify-between text-sm mb-1">
+                                        <span class="text-gray-300 font-medium">{date}</span>
+                                        <span class="text-gray-400 text-xs">
+                                          {progress || '0/0'}
+                                        </span>
+                                      </div>
+
+                                      <div class="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+                                        <div
+                                          class="h-full rounded-full transition-all duration-500"
+                                          style={{
+                                            width: `${progressPercent}%`,
+                                            background: `hsl(${hue}, 80%, 50%)`,
+                                            boxShadow: `0 0 8px hsla(${hue}, 80%, 50%, 0.5)`,
+                                          }}
+                                        />
+                                      </div>
+
+                                      <div class="flex justify-between mt-1">
+                                        <span class="text-xs text-gray-400">
+                                          {current} de {total || '?'} jefes
+                                        </span>
+                                        <span
+                                          class="text-xs font-medium"
+                                          style={{ color: `hsl(${hue}, 80%, 60%)` }}
+                                        >
+                                          {progressPercent}% completado
+                                        </span>
+                                      </div>
                                     </div>
-                                    
-                                    <div class="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
-                                      <div 
-                                        class="h-full rounded-full transition-all duration-500"
-                                        style={{
-                                          width: `${progressPercent}%`,
-                                          background: `hsl(${hue}, 80%, 50%)`,
-                                          boxShadow: `0 0 8px hsla(${hue}, 80%, 50%, 0.5)`
-                                        }}
-                                      ></div>
-                                    </div>
-                                    
-                                    <div class="flex justify-between mt-1">
-                                      <span class="text-xs text-gray-400">{current} de {total || '?'} jefes</span>
-                                      <span class="text-xs font-medium" style={{ color: `hsl(${hue}, 80%, 60%)` }}>
-                                        {progressPercent}% completado
-                                      </span>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <p class="text-gray-400 text-sm">No hay registros de asistencia</p>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  </>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div class="text-center py-8 text-gray-400">
-          <i class="fas fa-users-slash text-4xl mb-2"></i>
-          <p>No hay jugadores registrados para este horario</p>
-        </div>
-      )}
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <p class="text-gray-400 text-sm">No hay registros de asistencia</p>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    </>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div class="text-center py-8 text-gray-400">
+            <i class="fas fa-users-slash text-4xl mb-2" />
+            <p>No hay jugadores registrados para este horario</p>
+          </div>
+        )
+      }
     </div>
   </div>
 
@@ -348,30 +389,35 @@ if (Astro.request.method === 'POST') {
     const characterStatus = document.getElementById('characterStatus');
     const characterError = document.getElementById('characterError');
     const rosterOptions = Array.from(document.getElementById('characterList').options);
-    
+
     if (!name) {
       characterStatus.classList.add('hidden');
       characterError.classList.add('hidden');
       characterInput.classList.remove('border-red-500', 'border-green-500');
       return { valid: false, hasNote: false };
     }
-    
-    const characterOption = rosterOptions.find(opt => opt.value.toLowerCase() === name.toLowerCase());
-    
+
+    const characterOption = rosterOptions.find(
+      (opt) => opt.value.toLowerCase() === name.toLowerCase()
+    );
+
     if (characterOption) {
       const hasNote = characterOption.dataset.note && characterOption.dataset.note.trim() !== '';
-      
+
       if (hasNote) {
-        characterStatus.innerHTML = '<i class="fas fa-check-circle text-green-400 mr-1"></i> Personaje verificado';
+        characterStatus.innerHTML =
+          '<i class="fas fa-check-circle text-green-400 mr-1"></i> Personaje verificado';
         characterStatus.classList.remove('hidden');
         characterError.classList.add('hidden');
         characterInput.classList.remove('border-red-500');
         characterInput.classList.add('border-green-500');
         return { valid: true, hasNote: true };
       } else {
-        characterStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-400 mr-1"></i> Falta información';
+        characterStatus.innerHTML =
+          '<i class="fas fa-exclamation-triangle text-yellow-400 mr-1"></i> Falta información';
         characterStatus.classList.remove('hidden');
-        characterError.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i> Debe enviar su función y gearscore a un oficial para poder ascender y registrarse.';
+        characterError.innerHTML =
+          '<i class="fas fa-exclamation-circle mr-1"></i> Debe enviar su función y gearscore a un oficial para poder ascender y registrarse.';
         characterError.classList.remove('hidden');
         characterInput.classList.remove('border-green-500');
         characterInput.classList.add('border-yellow-500');
@@ -379,94 +425,98 @@ if (Astro.request.method === 'POST') {
       }
     } else {
       characterStatus.classList.add('hidden');
-      characterError.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i> Este personaje no está en el roster';
+      characterError.innerHTML =
+        '<i class="fas fa-exclamation-circle mr-1"></i> Este personaje no está en el roster';
       characterError.classList.remove('hidden');
       characterInput.classList.remove('border-green-500');
       characterInput.classList.add('border-red-500');
       return { valid: false, hasNote: false };
     }
   }
-  
+
   async function handleFormSubmit(event) {
     event.preventDefault();
-    
+
     const form = event.target;
     const formData = new FormData(form);
     const characterName = formData.get('characterName');
     const timeSlot = formData.get('timeSlot');
     const submitButton = form.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.innerHTML;
-    
+
     // First check if character exists in the roster
     const rosterOptions = Array.from(document.getElementById('characterList').options);
-    const characterOption = rosterOptions.find(opt => 
-      opt.value.toLowerCase() === characterName.toLowerCase()
+    const characterOption = rosterOptions.find(
+      (opt) => opt.value.toLowerCase() === characterName.toLowerCase()
     );
-    
+
     if (!characterOption) {
       showAlert('error', 'Este personaje no está en el roster.');
       return false;
     }
-    
+
     // Then validate character (check for notes, etc.)
     const validation = validateCharacter(characterName);
     if (!validation.valid) {
       if (!validation.hasNote) {
-        showAlert('error', 'Este personaje no tiene información de función/gear. Por favor, contacta a un oficial.');
+        showAlert(
+          'error',
+          'Este personaje no tiene información de función/gear. Por favor, contacta a un oficial.'
+        );
       } else {
         showAlert('error', 'Por favor, ingresa un personaje válido del roster.');
       }
       return false;
     }
-    
+
     // Check if character is already in the table
     const characterRows = document.querySelectorAll('tr[data-character]');
-    const isAlreadyRegistered = Array.from(characterRows).some(row => {
+    const isAlreadyRegistered = Array.from(characterRows).some((row) => {
       const rowCharacter = row.dataset.character.toLowerCase();
       return rowCharacter === characterName.toLowerCase();
     });
-    
+
     if (isAlreadyRegistered) {
       showAlert('warning', `El personaje ${characterName} ya está registrado en este horario.`);
-      
+
       // Highlight the existing row
-      characterRows.forEach(row => {
+      characterRows.forEach((row) => {
         if (row.dataset.character.toLowerCase() === characterName.toLowerCase()) {
           row.classList.add('ring-2', 'ring-amber-500');
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          
+
           // Remove highlight after animation
           setTimeout(() => {
             row.classList.remove('ring-2', 'ring-amber-500');
           }, 3000);
         }
       });
-      
+
       return false;
     }
-    
+
     try {
       // Disable button and show loading state
       submitButton.disabled = true;
       submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Registrando...';
-      
+
       const response = await fetch(form.action, {
         method: 'POST',
         body: formData,
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
-      
+
       const result = await response.json().catch(() => ({}));
-      
+
       if (!response.ok) {
         throw new Error(result.message || 'Error al procesar la solicitud');
       }
-      
+
       // Show success message
       showAlert('success', result.message || '¡Registro exitoso!');
-      
+
       // If successful, update the UI without page reload
       if (result.success) {
         // Add the new character to the table
@@ -477,12 +527,15 @@ if (Astro.request.method === 'POST') {
             const rowId = `player-${Date.now()}`;
             const row = document.createElement('tr');
             row.className = 'cursor-pointer hover:bg-gray-800/50 transition-colors';
-            row.setAttribute('onclick', `this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.toggle-icon').classList.toggle('rotate-180')`);
-            
+            row.setAttribute(
+              'onclick',
+              `this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.toggle-icon').classList.toggle('rotate-180')`
+            );
+
             // Format the character name with class and role
             const characterClass = newPlayer.character_class || 'Desconocido';
             const classColor = getClassColor(characterClass);
-            
+
             row.innerHTML = `
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
@@ -504,7 +557,7 @@ if (Astro.request.method === 'POST') {
                 </div>
               </td>
             `;
-            
+
             // Add empty details row
             const detailsRow = document.createElement('tr');
             detailsRow.className = 'bg-gray-800/30 hidden';
@@ -516,46 +569,46 @@ if (Astro.request.method === 'POST') {
                 </div>
               </td>
             `;
-            
+
             tbody.prepend(detailsRow);
             tbody.prepend(row);
           }
         }
-        
+
         // Clear the form but keep the time slot
         const timeSlot = form.querySelector('[name="timeSlot"]').value;
         form.reset();
         if (timeSlot) {
           form.querySelector('[name="timeSlot"]').value = timeSlot;
         }
-        
+
         // Focus back on character name for next registration
         const charInput = document.getElementById('characterName');
         if (charInput) {
           charInput.focus();
         }
       }
-      
     } catch (error) {
       console.error('Error:', error);
       // Show error message to user
-      const errorMessage = error.message || 'Error al procesar la solicitud. Por favor, inténtalo de nuevo.';
+      const errorMessage =
+        error.message || 'Error al procesar la solicitud. Por favor, inténtalo de nuevo.';
       showAlert('error', errorMessage);
-      
+
       // Re-enable the submit button
       submitButton.disabled = false;
       submitButton.innerHTML = originalButtonText;
-      
+
       // If this was a duplicate registration, highlight the existing entry
       if (error.message && error.message.includes('ya está registrado')) {
         const characterName = formData.get('characterName');
         const characterRows = document.querySelectorAll('tr[data-character]');
-        
-        characterRows.forEach(row => {
+
+        characterRows.forEach((row) => {
           if (row.dataset.character.toLowerCase() === characterName.toLowerCase()) {
             row.classList.add('ring-2', 'ring-amber-500');
             row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
+
             // Remove highlight after animation
             setTimeout(() => {
               row.classList.remove('ring-2', 'ring-amber-500');
@@ -563,12 +616,12 @@ if (Astro.request.method === 'POST') {
           }
         });
       }
-      
+
       return;
     }
     return false;
   }
-  
+
   function showAlert(type, message, duration = 5000) {
     // Simple toast notification at the bottom of the screen
     const toast = document.createElement('div');
@@ -585,7 +638,7 @@ if (Astro.request.method === 'POST') {
     toast.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
     toast.style.fontSize = '16px';
     toast.style.fontWeight = '500';
-    
+
     // Set colors based on type
     if (type === 'error') {
       toast.style.backgroundColor = 'rgba(239, 68, 68, 0.95)';
@@ -604,32 +657,32 @@ if (Astro.request.method === 'POST') {
       toast.style.border = '1px solid #2563EB';
       toast.style.color = 'white';
     }
-    
+
     // Add icon and message
     let icon = '';
     if (type === 'error') icon = '❌';
     else if (type === 'success') icon = '✅';
     else if (type === 'warning') icon = '⚠️';
     else icon = 'ℹ️';
-    
+
     toast.innerHTML = `
       <span style="font-size: 1.2em; line-height: 1;">${icon}</span>
       <span>${message}</span>
     `;
-    
+
     // Add to document with animation
     toast.style.opacity = '0';
     toast.style.transform = 'translateX(-50%) translateY(20px)';
     toast.style.transition = 'all 0.3s ease-out';
     document.body.appendChild(toast);
-    
+
     // Trigger reflow to enable animation
     void toast.offsetWidth;
-    
+
     // Animate in
     toast.style.opacity = '1';
     toast.style.transform = 'translateX(-50%) translateY(0)';
-    
+
     // Auto-remove after duration
     if (duration > 0) {
       setTimeout(() => {
@@ -638,17 +691,17 @@ if (Astro.request.method === 'POST') {
         setTimeout(() => toast.remove(), 300);
       }, duration);
     }
-    
+
     // Also log to console for debugging
     console.log(`[${type.toUpperCase()}] ${message}`);
   }
-  
+
   // Handle time slot changes
   document.addEventListener('DOMContentLoaded', () => {
     // Only scroll to filters if there's a time slot in the URL
     const urlParams = new URLSearchParams(window.location.search);
     const slotParam = urlParams.get('slot');
-    
+
     // Add click handler to the filter button to scroll to results
     const filterButton = document.querySelector('button[type="submit"]');
     if (filterButton) {
@@ -671,7 +724,7 @@ if (Astro.request.method === 'POST') {
         window.location.href = url.toString();
       });
     }
-    
+
     // Initialize character validation on page load
     const characterInput = document.getElementById('characterName');
     if (characterInput) {
@@ -679,12 +732,12 @@ if (Astro.request.method === 'POST') {
       if (characterInput.value) {
         validateCharacter(characterInput.value);
       }
-      
+
       // Validate on input
       characterInput.addEventListener('input', (e) => {
         validateCharacter(e.target.value);
       });
-      
+
       // Validate on blur
       characterInput.addEventListener('blur', (e) => {
         validateCharacter(e.target.value);

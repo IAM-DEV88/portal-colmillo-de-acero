@@ -26,7 +26,7 @@
       "icon": "gift"
     },
     {
-      "title": "Explorador destacado", 
+      "title": "Explorador destacado",
       "description": "Por su destacada contribución a la hermandad.",
       "icon": "trophy"
     },
@@ -76,11 +76,11 @@
         },
         {
           "playerName": "Xelino",
-          "recognitionIndices": [3,4,5]
+          "recognitionIndices": [3, 4, 5]
         },
         {
           "playerName": "Jainabunny",
-          "recognitionIndices": [0,3,4]
+          "recognitionIndices": [0, 3, 4]
         },
         {
           "playerName": "Evilink",
@@ -116,7 +116,7 @@
         },
         {
           "playerName": "Azsunax",
-          "recognitionIndices": [4,7]
+          "recognitionIndices": [4, 7]
         },
         {
           "playerName": "Fogozza",
@@ -140,7 +140,7 @@
         },
         {
           "playerName": "Bosakiller",
-          "recognitionIndices": [3,7]
+          "recognitionIndices": [3, 7]
         },
         {
           "playerName": "Carloswiki",
@@ -164,7 +164,7 @@
         },
         {
           "playerName": "Scriphackmvp",
-          "recognitionIndices": [4,7]
+          "recognitionIndices": [4, 7]
         },
         {
           "playerName": "Anduingg",
@@ -176,7 +176,7 @@
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [3,4,7,10]
+          "recognitionIndices": [3, 4, 7, 10]
         },
         {
           "playerName": "Tifusignite",
@@ -192,7 +192,7 @@
         },
         {
           "playerName": "Gabozinn",
-          "recognitionIndices": [4,7]
+          "recognitionIndices": [4, 7]
         },
         {
           "playerName": "Finisht",
@@ -266,18 +266,17 @@
           "playerName": "Asdawfdqef",
           "recognitionIndices": [4]
         }
-
       ]
     },
-    "12":{
+    "12": {
       "featuredPlayers": [
         {
           "playerName": "Bosakiller",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3, 4]
         },
         {
           "playerName": "Angelesm",
-          "recognitionIndices": [3,4]
+          "recognitionIndices": [3, 4]
         },
         {
           "playerName": "Ogmago",

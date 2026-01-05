@@ -8,7 +8,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   if (!session) {
     return new Response(JSON.stringify({ error: 'No autorizado' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -19,30 +19,30 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   if (!id || !status) {
     return new Response(JSON.stringify({ error: 'Faltan campos requeridos' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   // Update the status in the database
-  const { error } = await supabase
-    .from('raid_registrations')
-    .update({ status })
-    .eq('id', id);
+  const { error } = await supabase.from('raid_registrations').update({ status }).eq('id', id);
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   // Return success response with the updated status
-  return new Response(JSON.stringify({ 
-    success: true, 
-    status: status,
-    message: 'Estado actualizado correctamente' 
-  }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' }
-  });
+  return new Response(
+    JSON.stringify({
+      success: true,
+      status: status,
+      message: 'Estado actualizado correctamente',
+    }),
+    {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 };

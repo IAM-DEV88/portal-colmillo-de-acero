@@ -12,27 +12,24 @@ const corsHeaders = {
 export const OPTIONS: APIRoute = () => {
   return new Response(null, {
     status: 204,
-    headers: corsHeaders
+    headers: corsHeaders,
   });
 };
 
 export const POST: APIRoute = async ({ request }) => {
   console.log('Solicitud POST recibida en /api/vote');
-  
+
   try {
     // Verificar el método de la solicitud
     if (request.method !== 'POST') {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Método no permitido' }),
-        { 
-          status: 405,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-            'Allow': 'POST, OPTIONS'
-          }
-        }
-      );
+      return new Response(JSON.stringify({ success: false, error: 'Método no permitido' }), {
+        status: 405,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+          Allow: 'POST, OPTIONS',
+        },
+      });
     }
 
     // Verificar el tipo de contenido
@@ -40,12 +37,12 @@ export const POST: APIRoute = async ({ request }) => {
     if (!contentType || !contentType.includes('application/json')) {
       return new Response(
         JSON.stringify({ success: false, error: 'Content-Type debe ser application/json' }),
-        { 
-          status: 400, 
-          headers: { 
+        {
+          status: 400,
+          headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json' 
-          } 
+            'Content-Type': 'application/json',
+          },
         }
       );
     }
@@ -58,12 +55,12 @@ export const POST: APIRoute = async ({ request }) => {
       console.error('Error al analizar el cuerpo de la solicitud:', error);
       return new Response(
         JSON.stringify({ success: false, error: 'Error al analizar el cuerpo de la solicitud' }),
-        { 
-          status: 400, 
-          headers: { 
+        {
+          status: 400,
+          headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json' 
-          } 
+            'Content-Type': 'application/json',
+          },
         }
       );
     }
@@ -71,49 +68,45 @@ export const POST: APIRoute = async ({ request }) => {
     // Validar el nombre del personaje
     const characterName = body.characterName?.toString().trim();
     console.log('Nombre del personaje recibido:', characterName);
-    
+
     if (!characterName) {
       return new Response(
         JSON.stringify({ success: false, error: 'Por favor ingresa un nombre de personaje' }),
-        { 
-          status: 400, 
-          headers: { 
+        {
+          status: 400,
+          headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json' 
-          } 
+            'Content-Type': 'application/json',
+          },
         }
       );
     }
-    
+
     // Registrar el voto
     console.log('Registrando voto para:', characterName);
     const result = await recordVote(characterName, request);
     console.log('Resultado del registro:', result);
-    
-    return new Response(
-      JSON.stringify(result),
-      { 
-        status: result.success ? 200 : 400,
-        headers: { 
-          ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
-      }
-    );
-    
+
+    return new Response(JSON.stringify(result), {
+      status: result.success ? 200 : 400,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error) {
     console.error('Error en el endpoint de voto:', error);
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: 'Error interno del servidor' 
+      JSON.stringify({
+        success: false,
+        error: 'Error interno del servidor',
       }),
-      { 
-        status: 500, 
-        headers: { 
+      {
+        status: 500,
+        headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json' 
-        } 
+          'Content-Type': 'application/json',
+        },
       }
     );
   }
@@ -124,18 +117,18 @@ export const ALL: APIRoute = async (context) => {
   if (context.request.method === 'POST') {
     return POST(context);
   }
-  
+
   return new Response(
-    JSON.stringify({ 
-      success: false, 
-      error: 'Método no permitido' 
+    JSON.stringify({
+      success: false,
+      error: 'Método no permitido',
     }),
-    { 
-      status: 405, 
-      headers: { 
+    {
+      status: 405,
+      headers: {
         'Content-Type': 'application/json',
-        'Allow': 'POST'
-      } 
+        Allow: 'POST',
+      },
     }
   );
 };

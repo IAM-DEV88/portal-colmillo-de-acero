@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
       total: allRows.length,
       en_revision: 0,
       aceptado: 0,
-      en_espera: 0
+      en_espera: 0,
     };
 
-    allRows.forEach(row => {
+    allRows.forEach((row) => {
       const statusBadge = row.querySelector('td:nth-child(5) span');
       if (statusBadge) {
         const statusText = statusBadge.textContent.toLowerCase().trim();
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update dashboard cards - find all stat cards by their structure
     const allStatCards = document.querySelectorAll('.text-3xl.font-bold');
 
-    allStatCards.forEach(valueElement => {
+    allStatCards.forEach((valueElement) => {
       const card = valueElement.closest('div');
       if (!card) return;
 
@@ -50,9 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to update button states in a row
   function updateButtonStates(row, currentStatus) {
-    const actionButtons = row.querySelectorAll('form[action$="/update-status"] button[type="submit"]');
+    const actionButtons = row.querySelectorAll(
+      'form[action$="/update-status"] button[type="submit"]'
+    );
 
-    actionButtons.forEach(btn => {
+    actionButtons.forEach((btn) => {
       const form = btn.closest('form');
       const btnStatus = form?.querySelector('input[name="status"]')?.value;
 
@@ -60,8 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Disable and style as active
         btn.disabled = true;
         btn.classList.remove(
-          'hover:bg-green-900/30', 'hover:bg-amber-900/30', 'hover:bg-blue-900/30',
-          'hover:text-green-300', 'hover:text-amber-300', 'hover:text-blue-300'
+          'hover:bg-green-900/30',
+          'hover:bg-amber-900/30',
+          'hover:bg-blue-900/30',
+          'hover:text-green-300',
+          'hover:text-amber-300',
+          'hover:text-blue-300'
         );
         btn.classList.add('cursor-not-allowed', 'text-gray-600');
       } else {
@@ -85,33 +91,38 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
 
     // Format status for display (capitalize first letter, replace underscores with spaces)
-    const formattedStatus = newStatus
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, l => l.toUpperCase());
+    const formattedStatus = newStatus.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 
     // Get the raid group container
     const raidGroup = container.closest('.raid-group');
 
     // Update all status badges in the card
-    container.querySelectorAll('.status-badge').forEach(statusBadge => {
+    container.querySelectorAll('.status-badge').forEach((statusBadge) => {
       if (statusBadge) {
         // Update classes based on status
-        statusBadge.className = `status-badge px-2.5 py-1 text-xs font-semibold rounded-full shadow-md ${newStatus === 'aceptado' ? 'bg-gradient-to-r from-green-600/90 to-green-700/90 text-green-100' :
-          newStatus === 'en_espera' ? 'bg-gradient-to-r from-amber-600/90 to-amber-700/90 text-amber-100' :
-            'bg-gradient-to-r from-blue-600/90 to-blue-700/90 text-blue-100'
-          }`;
+        statusBadge.className = `status-badge px-2.5 py-1 text-xs font-semibold rounded-full shadow-md ${
+          newStatus === 'aceptado'
+            ? 'bg-gradient-to-r from-green-600/90 to-green-700/90 text-green-100'
+            : newStatus === 'en_espera'
+              ? 'bg-gradient-to-r from-amber-600/90 to-amber-700/90 text-amber-100'
+              : 'bg-gradient-to-r from-blue-600/90 to-blue-700/90 text-blue-100'
+        }`;
         // Update text content
         statusBadge.textContent = formattedStatus;
       }
     });
 
     // Update any status text elements (if they exist)
-    container.querySelectorAll('.status-text').forEach(el => {
+    container.querySelectorAll('.status-text').forEach((el) => {
       el.textContent = formattedStatus;
       // Update text color based on status
-      el.className = `status-text ${newStatus === 'aceptado' ? 'text-green-300' :
-        newStatus === 'en_espera' ? 'text-amber-300' : 'text-blue-300'
-        }`;
+      el.className = `status-text ${
+        newStatus === 'aceptado'
+          ? 'text-green-300'
+          : newStatus === 'en_espera'
+            ? 'text-amber-300'
+            : 'text-blue-300'
+      }`;
     });
 
     // Update raid group status counts if we're in a raid group
@@ -123,10 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const statusCounts = {
         en_revision: 0,
         aceptado: 0,
-        en_espera: 0
+        en_espera: 0,
       };
 
-      registrationCards.forEach(card => {
+      registrationCards.forEach((card) => {
         const statusBadge = card.querySelector('.status-badge');
         if (statusBadge) {
           const status = statusBadge.textContent.trim().toLowerCase().replace(/ /g, '_');
@@ -159,41 +170,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update all status buttons in this card
     const statusButtons = container.querySelectorAll('[data-status]');
-    statusButtons.forEach(btn => {
+    statusButtons.forEach((btn) => {
       const status = btn.getAttribute('data-status');
       const isActive = status === newStatus;
 
       // Update button classes based on active state
       if (isActive) {
         btn.classList.add(
-          status === 'aceptado' ? 'bg-green-600/20' :
-            status === 'en_espera' ? 'bg-amber-600/20' : 'bg-blue-600/20',
-          status === 'aceptado' ? 'text-green-300' :
-            status === 'en_espera' ? 'text-amber-300' : 'text-blue-300'
+          status === 'aceptado'
+            ? 'bg-green-600/20'
+            : status === 'en_espera'
+              ? 'bg-amber-600/20'
+              : 'bg-blue-600/20',
+          status === 'aceptado'
+            ? 'text-green-300'
+            : status === 'en_espera'
+              ? 'text-amber-300'
+              : 'text-blue-300'
         );
         btn.classList.remove(
-          status === 'aceptado' ? 'hover:bg-green-900/40' :
-            status === 'en_espera' ? 'hover:bg-amber-900/40' : 'hover:bg-blue-900/40',
-          status === 'aceptado' ? 'text-green-400' :
-            status === 'en_espera' ? 'text-amber-400' : 'text-blue-400',
-          status === 'aceptado' ? 'hover:text-green-300' :
-            status === 'en_espera' ? 'hover:text-amber-300' : 'hover:text-blue-300'
+          status === 'aceptado'
+            ? 'hover:bg-green-900/40'
+            : status === 'en_espera'
+              ? 'hover:bg-amber-900/40'
+              : 'hover:bg-blue-900/40',
+          status === 'aceptado'
+            ? 'text-green-400'
+            : status === 'en_espera'
+              ? 'text-amber-400'
+              : 'text-blue-400',
+          status === 'aceptado'
+            ? 'hover:text-green-300'
+            : status === 'en_espera'
+              ? 'hover:text-amber-300'
+              : 'hover:text-blue-300'
         );
         btn.disabled = true;
       } else {
         btn.classList.remove(
-          status === 'aceptado' ? 'bg-green-600/20' :
-            status === 'en_espera' ? 'bg-amber-600/20' : 'bg-blue-600/20',
-          status === 'aceptado' ? 'text-green-300' :
-            status === 'en_espera' ? 'text-amber-300' : 'text-blue-300'
+          status === 'aceptado'
+            ? 'bg-green-600/20'
+            : status === 'en_espera'
+              ? 'bg-amber-600/20'
+              : 'bg-blue-600/20',
+          status === 'aceptado'
+            ? 'text-green-300'
+            : status === 'en_espera'
+              ? 'text-amber-300'
+              : 'text-blue-300'
         );
         btn.classList.add(
-          status === 'aceptado' ? 'hover:bg-green-900/40' :
-            status === 'en_espera' ? 'hover:bg-amber-900/40' : 'hover:bg-blue-900/40',
-          status === 'aceptado' ? 'text-green-400' :
-            status === 'en_espera' ? 'text-amber-400' : 'text-blue-400',
-          status === 'aceptado' ? 'hover:text-green-300' :
-            status === 'en_espera' ? 'hover:text-amber-300' : 'hover:text-blue-300'
+          status === 'aceptado'
+            ? 'hover:bg-green-900/40'
+            : status === 'en_espera'
+              ? 'hover:bg-amber-900/40'
+              : 'hover:bg-blue-900/40',
+          status === 'aceptado'
+            ? 'text-green-400'
+            : status === 'en_espera'
+              ? 'text-amber-400'
+              : 'text-blue-400',
+          status === 'aceptado'
+            ? 'hover:text-green-300'
+            : status === 'en_espera'
+              ? 'hover:text-amber-300'
+              : 'hover:text-blue-300'
         );
         btn.disabled = false;
       }
@@ -201,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Handle status update forms
-  document.querySelectorAll('form[action$="/update-status"]').forEach(form => {
+  document.querySelectorAll('form[action$="/update-status"]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -230,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
           method: 'POST',
           body: formData,
           headers: {
-            'Accept': 'application/json'
-          }
+            Accept: 'application/json',
+          },
         });
 
         const data = await response.json();
@@ -250,13 +291,21 @@ document.addEventListener('DOMContentLoaded', () => {
             statusBadge.style.transform = 'scale(1.1)';
 
             setTimeout(() => {
-              statusBadge.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${newStatus === 'aceptado' ? 'bg-green-900/20 text-green-400 border-green-700/30' :
-                newStatus === 'en_espera' ? 'bg-amber-900/20 text-amber-400 border-amber-700/30' :
-                  'bg-blue-900/20 text-blue-400 border-blue-700/30'
-                }`;
-              statusBadge.textContent = newStatus === 'en_revision' ? 'Revisión' :
-                newStatus === 'aceptado' ? 'Aceptado' :
-                  newStatus === 'en_espera' ? 'En Espera' : newStatus;
+              statusBadge.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                newStatus === 'aceptado'
+                  ? 'bg-green-900/20 text-green-400 border-green-700/30'
+                  : newStatus === 'en_espera'
+                    ? 'bg-amber-900/20 text-amber-400 border-amber-700/30'
+                    : 'bg-blue-900/20 text-blue-400 border-blue-700/30'
+              }`;
+              statusBadge.textContent =
+                newStatus === 'en_revision'
+                  ? 'Revisión'
+                  : newStatus === 'aceptado'
+                    ? 'Aceptado'
+                    : newStatus === 'en_espera'
+                      ? 'En Espera'
+                      : newStatus;
 
               statusBadge.style.transform = 'scale(1)';
             }, 150);
@@ -277,7 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
 
         showToast(data.message || 'Estado actualizado correctamente', 'success');
-
       } catch (error) {
         console.error('Error:', error);
         showToast(error.message || 'Error al actualizar el estado', 'error');
@@ -290,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Handle delete forms
-  document.querySelectorAll('form[action$="/delete"]').forEach(form => {
+  document.querySelectorAll('form[action$="/delete"]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       handleDelete(form);
@@ -321,8 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST',
         body: new FormData(form),
         headers: {
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
 
       if (!response.ok) throw new Error('Error al eliminar la solicitud');
@@ -349,11 +397,11 @@ document.addEventListener('DOMContentLoaded', () => {
           // Hide the table and show empty message
           const tableContainer = table.closest('.overflow-x-auto');
           if (tableContainer) {
-            tableContainer.innerHTML = '<div class="text-center py-8 text-gray-400">No hay solicitudes para este raid</div>';
+            tableContainer.innerHTML =
+              '<div class="text-center py-8 text-gray-400">No hay solicitudes para este raid</div>';
           }
         }
       }, 300);
-
     } catch (error) {
       console.error('Error:', error);
       showToast('Error al eliminar la solicitud', 'error');
@@ -365,8 +413,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show toast notification
   function showToast(message, type = 'success') {
     const toast = document.createElement('div');
-    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-600' : 'bg-red-600'
-      } text-white flex items-center space-x-2 z-50 animate-fade-in`;
+    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg ${
+      type === 'success' ? 'bg-green-600' : 'bg-red-600'
+    } text-white flex items-center space-x-2 z-50 animate-fade-in`;
 
     toast.innerHTML = `
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -408,13 +457,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const normalized = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
       // Handle special cases for Spanish days
       const daysMap = {
-        'Lunes': 'Lunes',
-        'Martes': 'Martes',
-        'Miercoles': 'Miercoles',
-        'Jueves': 'Jueves',
-        'Viernes': 'Viernes',
-        'Sabado': 'Sabado',
-        'Domingo': 'Domingo'
+        Lunes: 'Lunes',
+        Martes: 'Martes',
+        Miercoles: 'Miercoles',
+        Jueves: 'Jueves',
+        Viernes: 'Viernes',
+        Sabado: 'Sabado',
+        Domingo: 'Domingo',
       };
       return daysMap[normalized] || '';
     };
@@ -454,14 +503,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       console.error('Error in openEditModal:', error);
     }
-  }
+  };
 
   window.closeEditModal = function () {
     const modal = document.getElementById('edit-modal');
     if (modal) {
       modal.classList.add('hidden');
     }
-  }
+  };
 
   // Handle edit form submission
   const editForm = document.getElementById('edit-form');
@@ -492,8 +541,8 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(jsonData),
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
+            Accept: 'application/json',
+          },
         });
 
         const data = await response.json();
@@ -509,7 +558,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-
       } catch (error) {
         console.error('Error:', error);
         showToast(error.message || 'Error al actualizar el registro', 'error');
