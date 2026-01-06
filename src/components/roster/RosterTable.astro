@@ -3544,7 +3544,7 @@ const totalRaiders = rosterData.members.filter(
     class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 mb-20 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
   >
     <!-- Grid de miembros -->
-    <div id="roster-grid" class="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+    <div id="roster-grid" class="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
       <!-- Los miembros se cargarán aquí dinámicamente -->
     </div>
 
@@ -3882,7 +3882,7 @@ const totalRaiders = rosterData.members.filter(
 <!-- Estadísticas del Roster Superiores -->
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-20 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10" x-data>
   <!-- Total de Miembros y Mains/Alts -->
-  <div x-data="{ expanded: false }" class="relative group" x-cloak>
+  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/50 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-2 hover:border-amber-500/60 transition-all duration-200"
@@ -3900,7 +3900,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-amber-300/90 uppercase tracking-wide">Miembros</div>
+            <div class="text-[10px] md:text-xs font-medium text-amber-300/90 uppercase tracking-wide">Miembros</div>
             <span class="text-xl font-bold text-amber-200 italic">{stats.totalMembers || 0}</span>
           </div>
         </div>
@@ -3945,7 +3945,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Distribución de Roles -->
-  <div x-data="{ expanded: false }" class="relative group" x-cloak>
+  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md p-2 hover:border-blue-500/60 transition-all duration-200"
@@ -3963,7 +3963,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</div>
+            <div class="text-[10px] md:text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</div>
             <span class="text-xl font-bold text-blue-200 italic">
               {Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}
             </span>
@@ -4013,8 +4013,8 @@ const totalRaiders = rosterData.members.filter(
     </div>
   </div>
 
-  <!-- Combinaciones de Roles Duales -->
-  <div x-data="{ expanded: false }" class="relative group" x-cloak>
+  <!-- Roles Duales -->
+  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md p-2 hover:border-purple-500/60 transition-all duration-200"
@@ -4036,7 +4036,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</div>
+            <div class="text-[10px] md:text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</div>
             <span class="text-xl font-bold text-purple-200 italic">
               {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
             </span>
@@ -4093,7 +4093,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Gear Score -->
-  <div x-data="{ expanded: false }" class="relative group">
+  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-green-600/40 rounded-md p-2 hover:border-green-500/60 transition-all duration-200"
@@ -4111,7 +4111,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</div>
+            <div class="text-[10px] md:text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</div>
             <span class="text-xl font-bold text-green-200 italic">
               {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
             </span>
@@ -4161,7 +4161,7 @@ const totalRaiders = rosterData.members.filter(
     </div>
   </div>
   <!-- Distribución de Clases -->
-  <div x-data="{ expanded: false }" class="relative group" x-cloak>
+  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-cyan-600/40 rounded-md p-2 hover:border-cyan-500/60 transition-all duration-200"
@@ -4179,7 +4179,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-cyan-300/90 uppercase tracking-wide">Clases</div>
+            <div class="text-[10px] md:text-xs font-medium text-cyan-300/90 uppercase tracking-wide">Clases</div>
             <span class="text-xl font-bold text-cyan-200 italic">{classDistribution.length}</span>
           </div>
         </div>
@@ -4243,7 +4243,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Distribución de Rangos -->
-  <div x-data="{ expanded: false }" class="relative group" x-cloak>
+  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-indigo-600/40 rounded-md p-2 hover:border-indigo-500/60 transition-all duration-200"
@@ -4266,7 +4266,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-indigo-300/90 uppercase tracking-wide">Rangos</div>
+            <div class="text-[10px] md:text-xs font-medium text-indigo-300/90 uppercase tracking-wide">Rangos</div>
             <span class="text-xl font-bold text-indigo-200 italic">{rankDistribution.length}</span>
           </div>
         </div>
@@ -4302,7 +4302,7 @@ const totalRaiders = rosterData.members.filter(
           rankDistribution.map((item) => (
             <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
               <div class="flex flex-col">
-                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <span class="text-[10px] md:text-xs font-medium text-gray-200">{item.name}</span>
                 <div class="w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
                   <div class="h-full bg-indigo-500" style={`width: ${item.percentage}%`} />
                 </div>
@@ -4342,7 +4342,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-emerald-300/90 uppercase tracking-wide">
+            <div class="text-[10px] md:text-xs font-medium text-emerald-300/90 uppercase tracking-wide">
               Profesiones
             </div>
             <span class="text-xl font-bold text-emerald-200 italic">
@@ -4422,7 +4422,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-orange-300/90 uppercase tracking-wide">Razas</div>
+            <div class="text-[10px] md:text-xs font-medium text-orange-300/90 uppercase tracking-wide">Razas</div>
             <span class="text-xl font-bold text-orange-200 italic">
               {raceDistribution.filter((i) => i.name !== 'No Censada').length}
             </span>
@@ -4477,7 +4477,7 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Distribución por Facción -->
-  <div x-data="{ expanded: false }" class="relative group" x-cloak>
+  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-rose-600/40 rounded-md p-2 hover:border-rose-500/60 transition-all duration-200"
@@ -4495,7 +4495,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-xs font-medium text-rose-300/90 uppercase tracking-wide">Facciones</div>
+            <div class="text-[10px] md:text-xs font-medium text-rose-300/90 uppercase tracking-wide">Facciones</div>
             <span class="text-xl font-bold text-rose-200 italic">
               {factionDistribution.filter((i) => i.name !== 'No Censada').length}
             </span>

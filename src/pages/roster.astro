@@ -28,27 +28,29 @@ const playerAllRecognitions: Record<string, any[]> = {};
 
 Object.entries(featuredData).forEach(([year, yearData]) => {
   if (year === 'recognitions') return;
-  
+
   Object.entries(yearData as Record<string, any>).forEach(([month, monthData]) => {
     if (!monthData.featuredPlayers) return;
-    
+
     monthData.featuredPlayers.forEach((player: FeaturedPlayer) => {
       if (!player.playerName) return;
       const name = player.playerName.toLowerCase();
       if (!playerAllRecognitions[name]) {
         playerAllRecognitions[name] = [];
       }
-      
-      const playerMonthRecs = (player.recognitionIndices || []).map(idx => {
-        const baseRec = allRecognitionsBase[idx];
-        if (!baseRec) return null;
-        return {
-          ...baseRec,
-          date: `${year}-${month}-01`, // Asignar una fecha para el modal
-          index: idx
-        };
-      }).filter(Boolean);
-      
+
+      const playerMonthRecs = (player.recognitionIndices || [])
+        .map((idx) => {
+          const baseRec = allRecognitionsBase[idx];
+          if (!baseRec) return null;
+          return {
+            ...baseRec,
+            date: `${year}-${month}-01`, // Asignar una fecha para el modal
+            index: idx,
+          };
+        })
+        .filter(Boolean);
+
       playerAllRecognitions[name].push(...playerMonthRecs);
     });
   });
@@ -173,32 +175,42 @@ if (Astro.url.searchParams.has('page')) {
 
 <Layout title="Roster">
   <div class="mx-auto animate-fade-in max-w-7xl px-4 sm:px-6 lg:px-8">
-    
-    
     <!-- Tabla de Roster -->
-    <div>
+    <div class="relative z-40">
       <RosterTable initialRosterData={formattedRosterData} />
     </div>
 
-<!-- Sección de Jugadores Destacados -->
-<div class="mt-6 relative z-30">
-  <FeaturedPlayers
-    featuredPlayers={featuredPlayers}
-    rosterData={formattedRosterData}
-    recognitions={allRecognitions}
-    currentPage={currentPage}
-    totalPages={totalPages}
-  />
-</div>
-    
+    <!-- Sección de Jugadores Destacados -->
+    <div class="mt-6 relative z-30">
+      <FeaturedPlayers
+        featuredPlayers={featuredPlayers}
+        rosterData={formattedRosterData}
+        recognitions={allRecognitions}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+    </div>
 
     <!-- Título de la sección -->
-    <div id="reglas-hermandad" class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6">
+    <div
+      id="reglas-hermandad"
+      class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6"
+    >
       <div class="flex items-center space-x-4 mt-20">
         <div
           class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
         >
-          <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>scroll-unfurled</title> <path d="M26.693 23.878h-4.43l-0.042-0.076c0.016-2.709 1.069-5.48 3.069-7.666 1.495-1.633 2.623-3.783 3.202-5.918l-2.573-1.556 2.388-0.431-2.706-1.61 3.253-0.552c-0.326-2.442-1.8-4.25-4.828-4.25-2.955 0.574-11.374 0.749-15.729 0.185-0.552-0.18-1.108-0.285-1.651-0.304-0.004-0.001-0.008-0.002-0.012-0.003 0.002 0.001 0.005 0.002 0.007 0.003-1.416-0.047-2.738 0.501-3.647 1.882-1.263 1.919 0.082 5.213 3.046 5.213 0.167 0 0.32-0.009 0.46-0.026v0.023h3.702c-0.56 2.257-1.949 4.767-3.557 7.296-0.135 0.212-0.266 0.429-0.393 0.649l2.177 2.23-3.511 0.588c-2.042 5.364-1.711 11.361 3.013 11.361v-0l0.489 0.003v0.007h5.349v-0.010h14.097c4.25 0 4.833-7.039-1.171-7.039zM14.134 27.263c-0-0.029-0.001-0.059-0.002-0.089 0.001 0.030 0.002 0.059 0.002 0.089zM13.997 26.144c0.001 0.004 0.001 0.007 0.002 0.011-0.001-0.004-0.001-0.007-0.002-0.011-0.168-0.741-0.649-1.358-1.278-1.755h0c0.629 0.398 1.11 1.015 1.278 1.755zM14.128 27.071c-0.001-0.030-0.003-0.060-0.005-0.090 0.002 0.030 0.004 0.060 0.005 0.090zM14.114 26.871c-0.003-0.030-0.006-0.060-0.009-0.090 0.003 0.030 0.006 0.060 0.009 0.090zM14.090 26.662c-0.004-0.029-0.008-0.058-0.012-0.087 0.005 0.029 0.008 0.058 0.012 0.087zM14.055 26.439c-0.005-0.025-0.008-0.050-0.013-0.076 0.005 0.026 0.009 0.051 0.013 0.076zM7.393 8.433c0.876-0.746-0.036-2.509-1.085-3.976h3.617c0.605 1.167 0.667 2.514 0.358 3.976h-2.89zM10.181 24.754c1.618-0.538 3.452 0.49 3.816 2.094 0.062 0.274 0.102 0.533 0.122 0.778 0.002-0.026 0.004-0.052 0.005-0.078-0.040 0.579-0.212 1.061-0.488 1.459h-0.032c-0.031 0.044-0.063 0.087-0.096 0.128l0.050-0.022c-0.463 0.605-1.173 1.009-2.018 1.27h-0.878l0.043-0.019c-0.925-0-1.988-0.087-1.988-0.087 1.373-0.022 1.964-0.603 2.19-1.269-0.978 0.355-2.020-0.284-2.348-1.227-0.443-1.273 0.391-2.618 1.622-3.027zM14.132 27.362c-0.001 0.029-0.001 0.058-0.002 0.086 0.001-0.028 0.001-0.057 0.002-0.086zM13.563 29.108c0.025-0.033 0.049-0.066 0.073-0.099-0.023 0.034-0.048 0.067-0.073 0.099z"></path> </g></svg>
+          <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+              <title>scroll-unfurled</title>
+              <path
+                d="M26.693 23.878h-4.43l-0.042-0.076c0.016-2.709 1.069-5.48 3.069-7.666 1.495-1.633 2.623-3.783 3.202-5.918l-2.573-1.556 2.388-0.431-2.706-1.61 3.253-0.552c-0.326-2.442-1.8-4.25-4.828-4.25-2.955 0.574-11.374 0.749-15.729 0.185-0.552-0.18-1.108-0.285-1.651-0.304-0.004-0.001-0.008-0.002-0.012-0.003 0.002 0.001 0.005 0.002 0.007 0.003-1.416-0.047-2.738 0.501-3.647 1.882-1.263 1.919 0.082 5.213 3.046 5.213 0.167 0 0.32-0.009 0.46-0.026v0.023h3.702c-0.56 2.257-1.949 4.767-3.557 7.296-0.135 0.212-0.266 0.429-0.393 0.649l2.177 2.23-3.511 0.588c-2.042 5.364-1.711 11.361 3.013 11.361v-0l0.489 0.003v0.007h5.349v-0.010h14.097c4.25 0 4.833-7.039-1.171-7.039zM14.134 27.263c-0-0.029-0.001-0.059-0.002-0.089 0.001 0.030 0.002 0.059 0.002 0.089zM13.997 26.144c0.001 0.004 0.001 0.007 0.002 0.011-0.001-0.004-0.001-0.007-0.002-0.011-0.168-0.741-0.649-1.358-1.278-1.755h0c0.629 0.398 1.11 1.015 1.278 1.755zM14.128 27.071c-0.001-0.030-0.003-0.060-0.005-0.090 0.002 0.030 0.004 0.060 0.005 0.090zM14.114 26.871c-0.003-0.030-0.006-0.060-0.009-0.090 0.003 0.030 0.006 0.060 0.009 0.090zM14.090 26.662c-0.004-0.029-0.008-0.058-0.012-0.087 0.005 0.029 0.008 0.058 0.012 0.087zM14.055 26.439c-0.005-0.025-0.008-0.050-0.013-0.076 0.005 0.026 0.009 0.051 0.013 0.076zM7.393 8.433c0.876-0.746-0.036-2.509-1.085-3.976h3.617c0.605 1.167 0.667 2.514 0.358 3.976h-2.89zM10.181 24.754c1.618-0.538 3.452 0.49 3.816 2.094 0.062 0.274 0.102 0.533 0.122 0.778 0.002-0.026 0.004-0.052 0.005-0.078-0.040 0.579-0.212 1.061-0.488 1.459h-0.032c-0.031 0.044-0.063 0.087-0.096 0.128l0.050-0.022c-0.463 0.605-1.173 1.009-2.018 1.27h-0.878l0.043-0.019c-0.925-0-1.988-0.087-1.988-0.087 1.373-0.022 1.964-0.603 2.19-1.269-0.978 0.355-2.020-0.284-2.348-1.227-0.443-1.273 0.391-2.618 1.622-3.027zM14.132 27.362c-0.001 0.029-0.001 0.058-0.002 0.086 0.001-0.028 0.001-0.057 0.002-0.086zM13.563 29.108c0.025-0.033 0.049-0.066 0.073-0.099-0.023 0.034-0.048 0.067-0.073 0.099z"
+              ></path>
+            </g></svg
+          >
         </div>
         <div>
           <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
@@ -207,230 +219,215 @@ if (Astro.url.searchParams.has('page')) {
               >Hermandad</span
             >
           </span>
-          <span class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1">
-            <span class="self-end">
-              Código de conducta y normas
-            </span>
+          <span
+            class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+          >
+            <span class="self-end"> Código de conducta y normas </span>
           </span>
         </div>
       </div>
     </div>
-  <div
-    class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
-  >
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-      <!-- Norma 1 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+    <div
+      class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- Norma 1 -->
+        <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              ></path>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <h4 class="font-bold text-amber-300 text-sm">Código de Nota</h4>
-              <span class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1">
-               
-                <a
-                  href="/guides/nota-publica"
-                  class="inline-flex items-center text-amber-300/60 hover:text-amber-300 transition-colors"
-                  title="Guía de Nota Pública"
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-1 mb-1">
+                <h4 class="font-bold text-amber-300 text-sm">Código de Nota</h4>
+                <span
+                  class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </a>
-              </span>
+                  <a
+                    href="/guides/nota-publica"
+                    class="inline-flex items-center text-amber-300/60 hover:text-amber-300 transition-colors"
+                    title="Guía de Nota Pública"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                  </a>
+                </span>
+              </div>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
+          </div>
+          <div class="text-gray-300 text-xs leading-snug mb-1">
+            <div class="text-gray-300 text-xs leading-snug mb-1">
               WISP función y gear score al General Admin u Oficial en línea para subir de rango.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
+            </div>
+            <div class="text-gray-400 text-xs leading-snug">
               Asi garantizan su participación en raids y sorteos.
-            </p>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- Norma 2 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <!-- Norma 2 -->
+        <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <h4 class="font-bold text-amber-300 text-sm">Baul de Sorteos</h4>
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Se realizan sorteos aleatorios para recompensar a los jugadores en línea.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Se reciben donaciones para mantener el baul funcionando.
-            </p>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-1 mb-1">
+                <h4 class="font-bold text-amber-300 text-sm">Baul de Sorteos</h4>
+              </div>
+            </div>
+          </div>
+          <div class="text-gray-300 text-xs leading-snug mb-1">
+            Se realizan sorteos aleatorios para recompensar a los jugadores en línea.
+          </div>
+          <div class="text-gray-400 text-xs leading-snug">
+            Se reciben donaciones para mantener el baul funcionando.
           </div>
         </div>
-      </div>
-      <!-- Norma 3 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <!-- Norma 3 -->
+        <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-              ></path>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <h4 class="font-bold text-amber-300 text-sm">Farm lvl 74+</h4>
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                ></path>
+              </svg>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Materiales e items lvl 74+ como orbes congelados, fragmento onirico, consumibles, etc.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Se reciben donaciones para mantener el baul funcionando.
-            </p>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-1 mb-1">
+                <h4 class="font-bold text-amber-300 text-sm">Farm lvl 74+</h4>
+              </div>
+            </div>
+          </div>
+          <div class="text-gray-300 text-xs leading-snug mb-1">
+            Materiales e items lvl 74+ como orbes congelados, fragmento onirico, consumibles, etc.
+          </div>
+          <div class="text-gray-400 text-xs leading-snug">
+            Se reciben donaciones para mantener el baul funcionando.
           </div>
         </div>
-      </div>
-      <!-- Norma 4 -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <!-- Norma 4 -->
+        <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-              ></path>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <h4 class="font-bold text-amber-300 text-sm">Reconocimientos</h4>
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                ></path>
+              </svg>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos
-              mensualmente.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Se anima a todos los miembros a liderar actividades y eventos para que todos puedan
-              participar.
-            </p>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-1 mb-1">
+                <h4 class="font-bold text-amber-300 text-sm">Reconocimientos</h4>
+              </div>
+              
+            </div>
           </div>
+          <div class="text-gray-300 text-xs leading-snug mb-1">
+                Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos
+                mensualmente.
+              </div>
+              <div class="text-gray-400 text-xs leading-snug">
+                Se anima a todos los miembros a liderar actividades y eventos para que todos puedan
+                participar.
+              </div>
         </div>
-      </div>
-      <!-- Norma 5 - Trabajo en Equipo -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <!-- Norma 5 - Trabajo en Equipo -->
+        <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              ></path>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <h4 class="font-bold text-amber-300 text-sm">Baul de Equipamiento</h4>
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
+              </svg>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Acceso instantáneo a los elementos del baul de equipamiento.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Solicitar al GM en el servidor de Discord <a class="text-blue-400 hover:underline" href="https://discord.gg/kMK2ZRRCza">kMK2ZRRCza</a>.
-            </p>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-1 mb-1">
+                <h4 class="font-bold text-amber-300 text-sm">Baul de Equipamiento</h4>
+              </div>
+              
+            </div>
           </div>
+          <div class="text-gray-300 text-xs leading-snug mb-1">
+                Acceso instantáneo a los elementos del baul de equipamiento.
+              </div>
+              <div class="text-gray-400 text-xs leading-snug">
+                Solicitar al GM en el servidor de Discord <a
+                  class="text-blue-400 hover:underline"
+                  href="https://discord.gg/kMK2ZRRCza">kMK2ZRRCza</a
+                >.
+              </div>
         </div>
-      </div>
-      <!-- Norma 6 - Respeto -->
-      <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
-        <div class="flex items-start space-x-3">
-          <div
-            class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
-          >
-            <svg
-              class="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <!-- Norma 6 - Respeto -->
+        <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
+          <div class="flex items-start space-x-3">
+            <div
+              class="w-8 h-8 bg-amber-600 rounded-md flex-shrink-0 flex items-center justify-center"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-1 mb-1">
-              <h4 class="font-bold text-amber-300 text-sm">Respeto</h4>
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
             </div>
-            <p class="text-gray-300 text-xs leading-snug mb-1">
-              Respeto y cooperación entre todos los miembros. No se tolerará el racismo, discriminación o acoso de ningún tipo.
-            </p>
-            <p class="text-gray-400 text-xs leading-snug">
-              Mantener un ambiente sano y de respeto mutuo.
-            </p>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-1 mb-1">
+                <h4 class="font-bold text-amber-300 text-sm">Respeto</h4>
+              </div>
+              
+            </div>
           </div>
+          <div class="text-gray-300 text-xs leading-snug mb-1">
+                Respeto y cooperación entre todos los miembros. No se tolerará el racismo,
+                discriminación o acoso de ningún tipo.
+              </div>
+              <div class="text-gray-400 text-xs leading-snug">
+                Mantener un ambiente sano y de respeto mutuo.
+              </div>
         </div>
       </div>
     </div>
-</div>
   </div></Layout
 >

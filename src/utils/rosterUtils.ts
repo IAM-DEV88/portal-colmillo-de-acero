@@ -267,7 +267,7 @@ export const calculateMainAltDistribution = (members: RosterMember[]): { M: numb
  *
  * Ejemplos:
  * - MT6.2JCEN (Main Tanque 6.2 Joyería/Encantamiento)
- * - MT6.2H5.3ALMN (Main Tanque 6.2k, Heal 5.3k, Alquimia/Minería)
+ * - MT6.2H5.3ALMN (Main Tanque 6.2k, Healer 5.3k, Alquimia/Minería)
  * - MT (Solo rol)
  * - MTAL (Rol + profesiones)
  * - M (Solo main/alt)
