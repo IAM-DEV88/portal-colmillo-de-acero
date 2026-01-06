@@ -748,7 +748,7 @@ try {
                       return (
                         <div class="swiper-slide px-6">
                           <div class="w-full" data-raid-id={raid.id}>
-                            <div class="h-full bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
+                            <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
                               {/* Header with raid image and basic info */}
                               <div class="relative">
                                 <img
@@ -2802,6 +2802,14 @@ try {
       // Update track position
       track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
 
+      // Adjust track height to active slide
+      const activeSlide = slides[currentSlide];
+      if (activeSlide) {
+        // Force a layout recalculation for the active slide height
+        const contentHeight = activeSlide.scrollHeight;
+        track.style.height = `${contentHeight}px`;
+      }
+
       // Update active dot
       updateDots();
 
@@ -2828,6 +2836,16 @@ try {
     }
 
     function addEventListeners() {
+      // Listen for image loads to update height
+      const sliderImages = track.querySelectorAll('img');
+      sliderImages.forEach((img) => {
+        img.addEventListener('load', () => {
+          if (slides[currentSlide].contains(img)) {
+            updateSlider();
+          }
+        });
+      });
+
       // Navigation buttons
       prevBtn.addEventListener('click', () => {
         if (currentSlide > 0) {
@@ -2953,8 +2971,9 @@ try {
 
   .slider-track {
     display: flex;
-    transition: transform 0.4s ease;
-    will-change: transform;
+    align-items: flex-start;
+    transition: transform 0.4s ease, height 0.4s ease;
+    will-change: transform, height;
   }
 
   .swiper-slide {
