@@ -2503,7 +2503,7 @@ const totalRaiders = rosterData.members.filter(
       <div>
         <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
           Roster de la <span
-            class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200"
+            class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
             >Hermandad</span
           >
         </span>
@@ -2928,27 +2928,25 @@ const totalRaiders = rosterData.members.filter(
 
         if (modalCharacterName) {
           modalCharacterName.textContent = member.name || 'Personaje';
+          // Apply class color to name in header
+          if (member.class && rosterInfo.classInfo[member.class]) {
+            modalCharacterName.style.color = `#${rosterInfo.classInfo[member.class].color}`;
+          } else {
+            modalCharacterName.style.color = '';
+          }
         }
 
-        // Only show rank in the content area
-        if (modalName) modalName.textContent = member.rank || '';
+        // Set rank in header
+        const modalHeaderRank = document.getElementById('modal-header-rank');
+        if (modalHeaderRank) {
+          modalHeaderRank.textContent = member.rank || '';
+        }
+
+        // Update body info
+        if (modalName) modalName.textContent = member.name || '';
         if (modalClass) {
-          modalClass.textContent = '';
-          modalClass.style.display = 'none';
-        }
-        if (modalRank) modalRank.style.display = 'none';
-
-        // Avatar
-        if (modalAvatar) {
-          modalAvatar.innerHTML = `<span class="text-2xl font-bold">${member.name.charAt(0)}</span>`;
-          modalAvatar.style.borderColor =
-            member.class && rosterInfo.classInfo[member.class]
-              ? `#${rosterInfo.classInfo[member.class].color}4D`
-              : '#f59e0b4D';
-          modalAvatar.querySelector('span').style.color =
-            member.class && rosterInfo.classInfo[member.class]
-              ? `#${rosterInfo.classInfo[member.class].color}`
-              : '#fbbf24';
+          modalClass.textContent = member.class || '';
+          modalClass.style.display = 'block';
         }
 
         // Generate color-coded tags (including Faction, Race)
@@ -3426,7 +3424,7 @@ const totalRaiders = rosterData.members.filter(
             });
 
             return `
-            <div class="group bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm rounded-lg p-1 sm:p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
+            <div class="group bg-gradient-to-br from-gray-900/60 to-gray-800/50 backdrop-blur-sm rounded-lg p-1 sm:p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
                  style="border: 1px solid #${classColor}66;"
                  onclick='window.openMemberModal(${JSON.stringify(member).replace(/'/g, '&#39;')})'
                  onmouseover="this.style.borderColor='#${classColor}99'; this.style.boxShadow='0 10px 15px -3px #${classColor}1a, 0 4px 6px -2px #${classColor}0a';"
@@ -3478,7 +3476,7 @@ const totalRaiders = rosterData.members.filter(
                     <!-- Info -->
                     <div class="flex-1 min-w-0 flex-grow">
                         <div class="">
-                            <div class="font-bold truncate transition-colors text-sm sm:text-lg" style="color: #${classColor}">${member.name}</div>
+                            <div class="font-bold truncate transition-colors text-sm sm:text-lg italic pr-1" style="color: #${classColor}">${member.name}</div>
                             <span class="text-[10px] sm:text-xs px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${
                               member.rank.toLowerCase().includes('general admin')
                                 ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
@@ -3744,9 +3742,12 @@ const totalRaiders = rosterData.members.filter(
           >
             <!-- Class icon will be inserted here by JavaScript -->
           </div>
-          <h3 class="text-lg font-semibold leading-6 text-amber-100" id="modal-title">
-            <span id="modal-character-name">Detalles del Personaje</span>
-          </h3>
+          <div class="flex flex-col">
+            <span class="text-lg font-bold leading-tight" id="modal-title">
+              <span id="modal-character-name" class="italic">Detalles del Personaje</span>
+            </span>
+            <span id="modal-header-rank" class="text-xs uppercase text-white font-bold"></span>
+          </div>
         </div>
         <button
           type="button"
@@ -3805,27 +3806,8 @@ const totalRaiders = rosterData.members.filter(
 
         <!-- Tab Panes -->
         <div id="pane-general" class="modal-pane space-y-4">
-          <!-- Basic Info -->
-          <div class="flex items-center space-x-4">
-            <div
-              id="modal-avatar"
-              class="w-16 h-16 rounded-full bg-amber-900/30 flex items-center justify-center text-2xl font-bold text-amber-400 border-2 border-amber-500/30"
-            >
-              <!-- Initial -->
-            </div>
-            <div>
-              <h4 id="modal-name" class="text-xl font-bold text-white">Name</h4>
-              <p id="modal-class" class="text-sm text-amber-200">Class</p>
-              <span
-                id="modal-rank"
-                class="inline-flex items-center rounded-md bg-amber-900/30 px-2 py-1 text-xs font-medium text-amber-300 ring-1 ring-inset ring-amber-500/20 mt-1"
-                >Rank</span
-              >
-            </div>
-          </div>
-
           <!-- Tags Summary -->
-          <div id="modal-tags" class="flex flex-wrap gap-2 py-2 border-y border-gray-700/30">
+          <div id="modal-tags" class="flex flex-wrap gap-2">
             <!-- Color coded tags will be inserted here -->
           </div>
 
@@ -3884,7 +3866,7 @@ const totalRaiders = rosterData.members.filter(
     <div>
       <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
         Estadísticas del <span
-          class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200"
+          class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
           >Roster</span
         >
       </span>
@@ -3903,7 +3885,7 @@ const totalRaiders = rosterData.members.filter(
   <div x-data="{ expanded: false }" class="relative group" x-cloak>
     <div
       @click="expanded = !expanded"
-      class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-2 hover:border-amber-500/60 transition-all duration-200"
+      class="cursor-pointer bg-gradient-to-br from-gray-900/50 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-2 hover:border-amber-500/60 transition-all duration-200"
     >
       <div class="flex items-center justify-around">
         <div class="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
@@ -3919,7 +3901,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-amber-300/90 uppercase tracking-wide">Miembros</p>
-            <p class="text-xl font-bold text-amber-200">{stats.totalMembers || 0}</p>
+            <p class="text-xl font-bold text-amber-200 italic">{stats.totalMembers || 0}</p>
           </div>
         </div>
         <div class="text-right">
@@ -3982,7 +3964,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</p>
-            <p class="text-xl font-bold text-blue-200">
+            <p class="text-xl font-bold text-blue-200 italic">
               {Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}
             </p>
           </div>
@@ -4055,7 +4037,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</p>
-            <p class="text-xl font-bold text-purple-200">
+            <p class="text-xl font-bold text-purple-200 italic">
               {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
             </p>
           </div>
@@ -4130,7 +4112,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</p>
-            <p class="text-xl font-bold text-green-200">
+            <p class="text-xl font-bold text-green-200 italic">
               {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
             </p>
           </div>
@@ -4198,7 +4180,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-cyan-300/90 uppercase tracking-wide">Clases</p>
-            <p class="text-xl font-bold text-cyan-200">{classDistribution.length}</p>
+            <p class="text-xl font-bold text-cyan-200 italic">{classDistribution.length}</p>
           </div>
         </div>
         <div class="text-right">
@@ -4285,7 +4267,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-indigo-300/90 uppercase tracking-wide">Rangos</p>
-            <p class="text-xl font-bold text-indigo-200">{rankDistribution.length}</p>
+            <p class="text-xl font-bold text-indigo-200 italic">{rankDistribution.length}</p>
           </div>
         </div>
         <div class="text-right">
@@ -4363,7 +4345,7 @@ const totalRaiders = rosterData.members.filter(
             <p class="text-xs font-medium text-emerald-300/90 uppercase tracking-wide">
               Profesiones
             </p>
-            <p class="text-xl font-bold text-emerald-200">
+            <p class="text-xl font-bold text-emerald-200 italic">
               {professionDistribution.filter((i) => i.name !== 'No Censada').length}
             </p>
           </div>
@@ -4441,7 +4423,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-orange-300/90 uppercase tracking-wide">Razas</p>
-            <p class="text-xl font-bold text-orange-200">
+            <p class="text-xl font-bold text-orange-200 italic">
               {raceDistribution.filter((i) => i.name !== 'No Censada').length}
             </p>
           </div>
@@ -4514,7 +4496,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="flex items-center space-x-2">
           <div class="text-center">
             <p class="text-xs font-medium text-rose-300/90 uppercase tracking-wide">Facciones</p>
-            <p class="text-xl font-bold text-rose-200">
+            <p class="text-xl font-bold text-rose-200 italic">
               {factionDistribution.filter((i) => i.name !== 'No Censada').length}
             </p>
           </div>

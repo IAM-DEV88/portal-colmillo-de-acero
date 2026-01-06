@@ -909,10 +909,10 @@ try {
                                                 try {
                                                   const data = JSON.parse(btn.getAttribute('data-regulars') || '{}');
                                                   const regulars = data.regulars || [];
-                                                  openRegularPlayersModal(regulars, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}');
+                                                  openRegularPlayersModal(regulars, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
                                                 } catch (e) {
                                                   console.error('Error loading regular players:', e);
-                                                  openRegularPlayersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}');
+                                                  openRegularPlayersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
                                                 }
                                               })(this)`}
                                                 class="text-xs bg-blue-600/30 hover:bg-blue-600/40 text-blue-300 px-1.5 py-0.5 rounded flex items-center transition-colors"
@@ -2115,7 +2115,7 @@ try {
     return section;
   }
 
-  function openRegularPlayersModal(players, raidName = '', raidSchedule = '') {
+  function openRegularPlayersModal(players, raidName = '', raidSchedule = '', minGS = 0) {
     const modal = document.getElementById('regular-players-modal');
     const list = document.getElementById('regular-players-list');
     const summary = document.getElementById('regular-players-summary');
@@ -2124,10 +2124,18 @@ try {
 
     if (titleEl) {
       titleEl.innerHTML = `
-        <svg class="w-5 h-5 inline-block mr-2 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-        </svg>
-        Core: ${raidName} <span class="text-sm font-normal text-blue-400/70 ml-1">(${raidSchedule})</span> <span class="text-xs font-bold text-white/40 ml-2">[${players.length}]</span>
+        <div class="flex items-center flex-wrap gap-x-2 text-sm md:text-base">
+          <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+          <span class="text-white font-bold whitespace-nowrap">Core: ${raidName}</span>
+          <div class="flex items-center gap-1 bg-amber-900/30 px-1.5 py-0.5 rounded border border-amber-500/20 shrink-0">
+            <span class="text-[10px] text-amber-500/70 font-bold uppercase tracking-tighter">GS MÍN:</span>
+            <span class="text-xs text-amber-400 font-black font-mono">${minGS}</span>
+          </div>
+          <span class="text-blue-400/70 italic font-medium whitespace-nowrap">${raidSchedule}</span>
+          <span class="text-xs font-bold text-white/40">[${players.length}]</span>
+        </div>
       `;
     }
 
