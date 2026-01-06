@@ -3541,7 +3541,7 @@ const totalRaiders = rosterData.members.filter(
 
   <div
     id="roster-container"
-    class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 mb-20 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+    class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 mb-20 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
   >
     <!-- Grid de miembros -->
     <div id="roster-grid" class="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
@@ -3880,7 +3880,7 @@ const totalRaiders = rosterData.members.filter(
 </div>
 
 <!-- Estadísticas del Roster Superiores -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-20 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10" x-data>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-20 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10" x-data>
   <!-- Total de Miembros y Mains/Alts -->
   <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
     <div

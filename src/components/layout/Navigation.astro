@@ -1,8 +1,16 @@
 ---
 const navItems = [
   { name: 'Inicio', href: '/', icon: 'home' },
-  { name: 'Roster', href: '/roster', icon: 'users' },
-  { name: 'Raids', href: '/raids', icon: 'dungeon' },
+  {
+    name: 'Roster',
+    href: '/roster',
+    svgPath: 'M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z',
+  },
+  {
+    name: 'Raids',
+    href: '/raids',
+    svgPath: 'M29.273 22.896l1.593 0.252-0.945-1.164 0.012-0.017h-0.026l-13.872-17.076-4.264 3.134-11.224-6.487v2.104l11.552 6.678 3.535-2.587 10.094 12.463-15.852-2.514 0.51-4.446-9.839-5.694v2.196l3.626 2.097 1.388 6.633 1.083-5.204 1.592 0.92-0.62 5.284 0.019 0.003 1.425 7.753 0.667-3.645 1.245 7.298 1.773-10.45 1.347 7.328 1.269-6.937 1.105 2.248 0.998-2.040 1.175 0.186 1.376 8.297 1.3-7.874 0.799 0.126 1.531 3.931 0.922-2.379 1.129 6.14 1.099-6.008 1.047 1.466z',
+  },
   { name: 'Guías', href: '/guides', icon: 'book' },
 ];
 
@@ -44,7 +52,17 @@ const currentPath = Astro.url.pathname;
                     isActive ? 'text-accent font-semibold' : 'text-white hover:text-accent'
                   }`}
                 >
-                  <i class={`fas fa-${item.icon} mr-2`} />
+                  {item.svgPath ? (
+                    <svg
+                      viewBox="0 0 32 32"
+                      class="w-5 h-5 inline-block mr-2"
+                      fill="currentColor"
+                    >
+                      <path d={item.svgPath} />
+                    </svg>
+                  ) : (
+                    <i class={`fas fa-${item.icon} mr-2`} />
+                  )}
                   {item.name}
                   <span
                     class={`absolute -bottom-1 left-0 h-0.5 transition-all duration-300 ${
@@ -119,7 +137,15 @@ const currentPath = Astro.url.pathname;
                   : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
               }`}
             >
-              <i class={`fas fa-${item.icon} w-5 text-center mr-3 text-amber-400`} />
+              {item.svgPath ? (
+                <div class="w-5 mr-3 text-amber-400 flex justify-center">
+                  <svg viewBox="0 0 32 32" class="w-5 h-5" fill="currentColor">
+                    <path d={item.svgPath} />
+                  </svg>
+                </div>
+              ) : (
+                <i class={`fas fa-${item.icon} w-5 text-center mr-3 text-amber-400`} />
+              )}
               <span>{item.name}</span>
             </a>
           );

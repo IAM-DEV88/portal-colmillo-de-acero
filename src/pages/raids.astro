@@ -628,11 +628,32 @@ try {
 <Layout title="Horarios de Raid">
   <div class="text-white">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-12">
-        <h1 class="text-4xl font-extrabold tracking-tight text-white">
-          <span class="block">Horarios de Raid</span>
-        </h1>
+      <!-- Título de la sección -->
+    <div
+      id="reglas-hermandad"
+      class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6"
+    >
+      <div class="flex items-center space-x-4">
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
+        >
+          <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>frozen-arrow</title> <path d="M29.273 22.896l1.593 0.252-0.945-1.164 0.012-0.017h-0.026l-13.872-17.076-4.264 3.134-11.224-6.487v2.104l11.552 6.678 3.535-2.587 10.094 12.463-15.852-2.514 0.51-4.446-9.839-5.694v2.196l3.626 2.097 1.388 6.633 1.083-5.204 1.592 0.92-0.62 5.284 0.019 0.003 1.425 7.753 0.667-3.645 1.245 7.298 1.773-10.45 1.347 7.328 1.269-6.937 1.105 2.248 0.998-2.040 1.175 0.186 1.376 8.297 1.3-7.874 0.799 0.126 1.531 3.931 0.922-2.379 1.129 6.14 1.099-6.008 1.047 1.466z"></path> </g></svg>
+        </div>
+        <div>
+          <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
+            Raids de la <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
+              >Hermandad</span
+            >
+          </span>
+          <span
+            class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+          >
+            <span class="self-end">Temporada {new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}  </span>
+          </span>
+        </div>
       </div>
+    </div>
 
       <div class="relative">
         <div class="relative">
@@ -666,7 +687,7 @@ try {
             <div class="slider-container max-w-7xl mx-auto overflow-hidden">
               <!-- Pagination -->
               <div
-                class="slider-pagination bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+                class="slider-pagination bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
                 id="slider-pagination"
               >
                 {
@@ -748,17 +769,12 @@ try {
                       return (
                         <div class="swiper-slide px-6">
                           <div class="w-full" data-raid-id={raid.id}>
-                            <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
+                            <div class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 overflow-hidden">
                               {/* Header with raid image and basic info */}
                               <div class="relative">
-                                <img
-                                  src={raid.image}
-                                  alt={raid.name}
-                                  class="w-full h-36 object-cover"
-                                  onerror="this.onerror=null; this.src='/images/raids/default.jpg'"
-                                />
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-transparent" />
-                                <div class="absolute bottom-0 left-0 right-0 p-4">
+                                
+                                <div class="inset-0 bg-gradient-to-t from-gray-900/90 to-transparent" />
+                                <div class="bottom-0 left-0 right-0 p-4">
                                   <div class="flex justify-between items-end">
                                     <div>
                                       <h3 class="text-xl font-bold text-white">{raid.name}</h3>
@@ -809,7 +825,7 @@ try {
                               </div>
 
                               {/* Next schedule and role info */}
-                              <div class="p-4 bg-gray-900/60">
+                              <div class="p-4">
                                 {/* Eligible Roster Members Button */}
                                 <div class="mb-4">
                                   <button
@@ -880,7 +896,7 @@ try {
                                         >
                                           <button
                                             @click="open = !open; $nextTick(() => { if(window.updateSlider) window.updateSlider(); })"
-                                            class="w-full flex items-center justify-between p-2 bg-gray-800/80 hover:bg-gray-700/80 rounded-md border border-gray-700/50 transition-colors group"
+                                            class="w-full flex items-center justify-between p-2 bg-gray-800/30 hover:bg-gray-700/70 rounded-md border border-gray-700/50 transition-colors group"
                                           >
                                             <div class="flex items-center space-x-2">
                                               <svg 
@@ -937,10 +953,6 @@ try {
                                                 >
                                                   <div class="flex justify-between items-center mb-2">
                                                     <div>
-                                                      <span class="font-medium text-white">
-                                                        {schedule.day_of_week}
-                                                      </span>
-                                                      <span class="mx-2 text-gray-400">•</span>
                                                       <span class="text-amber-400">
                                                         {schedule.start_time}
                                                       </span>
@@ -1437,12 +1449,35 @@ try {
 
   {/* Weekly Schedule Section */}
   <div class="max-w-7xl mx-auto py-8">
+    <!-- Título de la sección -->
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+      id="reglas-hermandad"
+      class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6 mt-20"
     >
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-amber-400">Malla Semanal</h2>
+      <div class="flex items-center space-x-4">
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
+        >
+          <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>bell</title> <path d="M26.654 1.125h-2.624l0.264 2.359h-16.413l0.264-2.353h-2.624l-4.847 21.61v7.981h4.154l2.861-25.53h8.037v2.519c-0.463 0.151-0.798 0.585-0.798 1.098 0 0.049 0.003 0.097 0.009 0.144-2.29 0.546-3.275 2.804-4.471 7.269l0 0c-1.17 4.368-3.021 3.948-3.021 6.823 0 1.557 3.43 2.545 7.451 2.718-0.053 0.153-0.083 0.318-0.083 0.489 0 0.818 0.664 1.481 1.482 1.482s1.481-0.663 1.481-1.481c0-0.176-0.031-0.344-0.087-0.5 3.916-0.201 7.208-1.178 7.208-2.705-0-2.875-1.852-2.455-3.023-6.824-1.227-4.574-2.231-6.832-4.642-7.307 0.003-0.036 0.005-0.072 0.005-0.108 0-0.483-0.297-0.896-0.717-1.069v-2.548h7.963l2.861 25.524h4.154v-7.981l-4.847-21.61z"></path> </g></svg>
+        </div>
+        <div>
+          <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
+            Horarios de <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
+              >Core</span
+            >
+          </span>
+          <span
+            class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+          >
+            <span class="self-end">Temporada {new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}  </span>
+          </span>
+        </div>
       </div>
+    </div>
+    <div
+      class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+    >
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
         {
@@ -1531,12 +1566,38 @@ try {
   </div>
 
   {/* Raid Rules Section */}
-  <div class="max-w-7xl mx-auto py-8">
+  <div class="max-w-7xl mx-auto mt-20">
+    <!-- Título de la sección -->
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+      id="reglas-hermandad"
+      class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6"
+    >
+      <div class="flex items-center space-x-4">
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
+        >
+          <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="204:15"><g id="SVGRepo_bgCarrier" stroke-width="0" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="204:15"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="204:62"></g><g id="SVGRepo_iconCarrier" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="207:71"> <title>scroll-unfurled</title> <path d="M26.693 23.878h-4.43l-0.042-0.076c0.016-2.709 1.069-5.48 3.069-7.666 1.495-1.633 2.623-3.783 3.202-5.918l-2.573-1.556 2.388-0.431-2.706-1.61 3.253-0.552c-0.326-2.442-1.8-4.25-4.828-4.25-2.955 0.574-11.374 0.749-15.729 0.185-0.552-0.18-1.108-0.285-1.651-0.304-0.004-0.001-0.008-0.002-0.012-0.003 0.002 0.001 0.005 0.002 0.007 0.003-1.416-0.047-2.738 0.501-3.647 1.882-1.263 1.919 0.082 5.213 3.046 5.213 0.167 0 0.32-0.009 0.46-0.026v0.023h3.702c-0.56 2.257-1.949 4.767-3.557 7.296-0.135 0.212-0.266 0.429-0.393 0.649l2.177 2.23-3.511 0.588c-2.042 5.364-1.711 11.361 3.013 11.361v-0l0.489 0.003v0.007h5.349v-0.010h14.097c4.25 0 4.833-7.039-1.171-7.039zM14.134 27.263c-0-0.029-0.001-0.059-0.002-0.089 0.001 0.030 0.002 0.059 0.002 0.089zM13.997 26.144c0.001 0.004 0.001 0.007 0.002 0.011-0.001-0.004-0.001-0.007-0.002-0.011-0.168-0.741-0.649-1.358-1.278-1.755h0c0.629 0.398 1.11 1.015 1.278 1.755zM14.128 27.071c-0.001-0.030-0.003-0.060-0.005-0.090 0.002 0.030 0.004 0.060 0.005 0.090zM14.114 26.871c-0.003-0.030-0.006-0.060-0.009-0.090 0.003 0.030 0.006 0.060 0.009 0.090zM14.090 26.662c-0.004-0.029-0.008-0.058-0.012-0.087 0.005 0.029 0.008 0.058 0.012 0.087zM14.055 26.439c-0.005-0.025-0.008-0.050-0.013-0.076 0.005 0.026 0.009 0.051 0.013 0.076zM7.393 8.433c0.876-0.746-0.036-2.509-1.085-3.976h3.617c0.605 1.167 0.667 2.514 0.358 3.976h-2.89zM10.181 24.754c1.618-0.538 3.452 0.49 3.816 2.094 0.062 0.274 0.102 0.533 0.122 0.778 0.002-0.026 0.004-0.052 0.005-0.078-0.040 0.579-0.212 1.061-0.488 1.459h-0.032c-0.031 0.044-0.063 0.087-0.096 0.128l0.050-0.022c-0.463 0.605-1.173 1.009-2.018 1.27h-0.878l0.043-0.019c-0.925-0-1.988-0.087-1.988-0.087 1.373-0.022 1.964-0.603 2.19-1.269-0.978 0.355-2.020-0.284-2.348-1.227-0.443-1.273 0.391-2.618 1.622-3.027zM14.132 27.362c-0.001 0.029-0.001 0.058-0.002 0.086 0.001-0.028 0.001-0.057 0.002-0.086zM13.563 29.108c0.025-0.033 0.049-0.066 0.073-0.099-0.023 0.034-0.048 0.067-0.073 0.099z" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="209:16"></path> </g></svg>
+        </div>
+        <div>
+          <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
+            Reglas de <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
+              >Raid</span
+            >
+          </span>
+          <span
+            class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+          >
+                        <span class="self-end"> Código de conducta y normas </span>
+
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
     >
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-        <h2 class="text-2xl font-bold text-amber-400">Reglas de Raid</h2>
         <div class="flex items-center space-x-4">
           <a
             href="https://discord.gg/BwdpNV9sky"
