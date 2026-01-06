@@ -123,7 +123,7 @@ if (Astro.request.method === 'POST') {
     <form
       id="filters-section"
       method="POST"
-      class="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700 p-4 mb-6"
+      class="bg-gray-800/50 backdrop-blur-sm rounded-md shadow-xl border border-gray-700 p-4 mb-6"
       onsubmit="return handleFormSubmit(event)"
     >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -197,7 +197,7 @@ if (Astro.request.method === 'POST') {
 
     <div
       id="registered-players"
-      class="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-gray-700 p-6"
+      class="bg-gray-800/50 backdrop-blur-sm rounded-md shadow-xl border border-gray-700 p-6"
     >
       <h2 class="text-2xl font-bold text-amber-300 mb-6">
         Jugadores Registrados - {timeSlots.find((s) => s.value === selectedSlot)?.day}

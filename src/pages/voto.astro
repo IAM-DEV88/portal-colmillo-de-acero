@@ -90,7 +90,7 @@ if (import.meta.env.SSR) {
   <main class="min-h-screen w-full px-4 sm:px-6 lg:px-8">
     <!-- Top Banner Ad -->
     <div
-      class="max-w-4xl mx-auto mb-8 bg-gray-900/50 border border-amber-900/30 rounded-lg overflow-hidden hidden"
+      class="max-w-4xl mx-auto mb-8 bg-gray-900/50 border border-amber-900/30 rounded-md overflow-hidden hidden"
     >
       <div
         class="w-full h-24 bg-gradient-to-r from-amber-900/20 to-amber-800/10 flex items-center justify-center"
@@ -104,7 +104,7 @@ if (import.meta.env.SSR) {
       <!-- <div class="invisible">
         <div class="sticky top-24">
           <div
-            class="w-full h-[600px] bg-gray-900/50 border border-amber-900/30 rounded-lg overflow-hidden"
+            class="w-full h-[600px] bg-gray-900/50 border border-amber-900/30 rounded-md overflow-hidden"
           >
             <div
               class="w-full h-full bg-gradient-to-b from-amber-900/10 to-transparent flex items-center justify-center"
@@ -122,13 +122,13 @@ if (import.meta.env.SSR) {
         <!-- Sección de Premios -->
         <div class="lg:col-span-4">
           <div
-            class="bg-gray-900/60 border border-amber-900/30 rounded-lg shadow-2xl shadow-amber-500/5 relative overflow-hidden mb-8"
+            class="bg-gray-900/60 border border-amber-900/30 rounded-md shadow-2xl shadow-amber-500/5 relative overflow-hidden mb-8"
           >
-            <div class="border border-amber-900/10 rounded-lg p-6 shadow-2xl shadow-amber-500/5">
+            <div class="border border-amber-900/10 rounded-md p-6 shadow-2xl shadow-amber-500/5">
               <div class="relative h-0 pb-[56.25%]">
                 <img
                   src={imagen}
-                  class="absolute inset-0 w-full h-full rounded-lg"
+                  class="absolute inset-0 w-full h-full rounded-md"
                   alt={`Imagen de ${temporada}`}
                   loading="lazy"
                   decoding="async"
@@ -142,7 +142,7 @@ if (import.meta.env.SSR) {
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {
                   premios.map((premio) => (
-                    <div class="bg-gradient-to-br from-amber-900/60 to-amber-900/10 border border-amber-800/30 rounded-lg p-6 text-center transform transition-all hover:to-amber-900/90 hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10">
+                    <div class="bg-gradient-to-br from-amber-900/60 to-amber-900/10 border border-amber-800/30 rounded-md p-6 text-center transform transition-all hover:to-amber-900/90 hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10">
                       <div class="bg-amber-900/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class={`${premio.icon} text-3xl text-amber-400`} />
                       </div>
@@ -154,13 +154,13 @@ if (import.meta.env.SSR) {
               </div>
 
               <div class="mt-6 text-center">
-                <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-lg">
+                <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-md">
                   * Los premios se entregan al final del mes al cierre de votaciones
                 </p>
-                <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-lg">
+                <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-md">
                   * Solo puede haber un ganador por cada puesto
                 </p>
-                <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-lg">
+                <p class="text-amber-400 text-sm bg-gray-900/90 p-2 rounded-md">
                   * En caso de empate se peleara a dados por cada puesto
                 </p>
               </div>
@@ -168,7 +168,7 @@ if (import.meta.env.SSR) {
           </div>
         </div>
         <div
-          class="bg-gray-900/90 backdrop-blur-sm border border-amber-900/30 rounded-lg p-8 shadow-2xl shadow-amber-500/5"
+          class="bg-gray-900/90 backdrop-blur-sm border border-amber-900/30 rounded-md p-8 shadow-2xl shadow-amber-500/5"
         >
           <!-- Header -->
           <div class="text-center mb-8">
@@ -187,7 +187,7 @@ if (import.meta.env.SSR) {
 
           {
             error && (
-              <div class="mb-6 p-4 rounded-lg bg-red-900/30 border border-red-800/50 text-red-100">
+              <div class="mb-6 p-4 rounded-md bg-red-900/30 border border-red-800/50 text-red-100">
                 <i class="fas fa-exclamation-circle text-2xl mb-2 text-red-400" />
                 <p class="font-medium">Error</p>
                 <p class="text-sm mt-1">{error}</p>
@@ -197,7 +197,7 @@ if (import.meta.env.SSR) {
 
           {
             success && (
-              <div class="mb-6 p-4 rounded-lg bg-green-900/30 border border-green-800/50 text-green-100">
+              <div class="mb-6 p-4 rounded-md bg-green-900/30 border border-green-800/50 text-green-100">
                 <i class="fas fa-check-circle text-2xl mb-2 text-green-400" />
                 <p class="font-medium">¡Voto registrado con éxito!</p>
                 <p class="text-sm mt-1">Gracias por tu apoyo. ¡Sigue acumulando oro!</p>
@@ -269,7 +269,7 @@ if (import.meta.env.SSR) {
             <h3 class="text-lg font-medium text-amber-100 mb-4">Ranking de votos</h3>
             {
               voteStats.length > 0 ? (
-                <div class="bg-gray-900/50 border border-amber-900/30 rounded-lg overflow-hidden">
+                <div class="bg-gray-900/50 border border-amber-900/30 rounded-md overflow-hidden">
                   <table class="min-w-full divide-y divide-amber-900/30">
                     <thead class="bg-amber-900/20">
                       <tr>
@@ -353,7 +353,7 @@ if (import.meta.env.SSR) {
       <!-- <div class="invisible">
         <div class="sticky top-24">
           <div
-            class="w-full h-[600px] bg-gray-900/50 border border-amber-900/30 rounded-lg overflow-hidden"
+            class="w-full h-[600px] bg-gray-900/50 border border-amber-900/30 rounded-md overflow-hidden"
           >
             <div
               class="w-full h-full bg-gradient-to-b from-amber-900/10 to-transparent flex items-center justify-center"
@@ -369,7 +369,7 @@ if (import.meta.env.SSR) {
 
     <!-- Bottom Banner Ad -->
     <div
-      class="max-w-4xl mx-auto mt-8 bg-gray-900/50 border border-amber-900/30 rounded-lg overflow-hidden hidden"
+      class="max-w-4xl mx-auto mt-8 bg-gray-900/50 border border-amber-900/30 rounded-md overflow-hidden hidden"
     >
       <div
         class="w-full h-24 bg-gradient-to-r from-amber-900/20 to-amber-800/10 flex items-center justify-center"

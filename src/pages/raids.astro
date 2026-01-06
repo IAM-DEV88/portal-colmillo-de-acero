@@ -666,7 +666,7 @@ try {
             <div class="slider-container max-w-7xl mx-auto overflow-hidden">
               <!-- Pagination -->
               <div
-                class="slider-pagination bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+                class="slider-pagination bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
                 id="slider-pagination"
               >
                 {
@@ -748,7 +748,7 @@ try {
                       return (
                         <div class="swiper-slide px-6">
                           <div class="w-full" data-raid-id={raid.id}>
-                            <div class="h-full bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-lg hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
+                            <div class="h-full bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden">
                               {/* Header with raid image and basic info */}
                               <div class="relative">
                                 <img
@@ -814,7 +814,7 @@ try {
                                 <div class="mb-4">
                                   <button
                                     onclick={`openRosterModal(${raid.id})`}
-                                    class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-lg px-3 py-2 text-sm font-medium transition-colors flex items-center justify-between group"
+                                    class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-md px-3 py-2 text-sm font-medium transition-colors flex items-center justify-between group"
                                   >
                                     <div class="flex items-center">
                                       <svg
@@ -873,7 +873,7 @@ try {
                                       return (
                                         <div
                                           key={`${schedule.id}-${idx}`}
-                                          class="bg-gray-800/50 rounded-lg p-3 border border-gray-700/50 hover:border-amber-500/30 transition-colors"
+                                          class="bg-gray-800/50 rounded-md p-3 border border-gray-700/50 hover:border-amber-500/30 transition-colors"
                                         >
                                           <div class="flex justify-between items-center mb-2">
                                             <div>
@@ -1200,7 +1200,7 @@ try {
       >
 
       <div
-        class="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-700"
+        class="inline-block align-bottom bg-gray-900 rounded-md text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-700"
       >
         <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div class="sm:flex sm:items-start">
@@ -1261,7 +1261,7 @@ try {
       >
 
       <div
-        class="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-gray-700"
+        class="inline-block align-bottom bg-gray-800 rounded-md text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-gray-700"
       >
         <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div class="sm:flex sm:items-start">
@@ -1374,7 +1374,7 @@ try {
   {/* Weekly Schedule Section */}
   <div class="max-w-7xl mx-auto py-8">
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
     >
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-amber-400">Malla Semanal</h2>
@@ -1408,7 +1408,7 @@ try {
               });
 
             return (
-              <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-lg hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
+              <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
                 <div class="bg-gray-800/80 p-2 text-center border-b border-gray-700/50">
                   <h3 class="font-bold text-gray-200 text-sm">{day}</h3>
                 </div>
@@ -1469,7 +1469,7 @@ try {
   {/* Raid Rules Section */}
   <div class="max-w-7xl mx-auto py-8">
     <div
-      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-lg p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+      class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-4 hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
     >
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h2 class="text-2xl font-bold text-amber-400">Reglas de Raid</h2>
@@ -1506,7 +1506,7 @@ try {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Normas de Conducta */}
         <div
-          class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-lg hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden p-4"
+          class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden p-4"
         >
           <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
             <svg
@@ -1546,7 +1546,7 @@ try {
 
         {/* Sistema de Botín */}
         <div
-          class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-lg hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden p-4"
+          class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden p-4"
         >
           <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
             <svg
@@ -1586,7 +1586,7 @@ try {
 
         {/* Requisitos Generales */}
         <div
-          class="md:col-span-2 bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-lg hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden p-4"
+          class="md:col-span-2 bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden p-4"
         >
           <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
             <svg
@@ -1644,7 +1644,7 @@ try {
   class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 hidden"
 >
   <div
-    class="bg-gray-800 rounded-lg w-full max-w-2xl border border-amber-600/50 overflow-hidden shadow-xl"
+    class="bg-gray-800 rounded-md w-full max-w-2xl border border-amber-600/50 overflow-hidden shadow-xl"
   >
     <div class="p-4 border-b border-amber-600/30 bg-gray-900/50">
       <div class="flex items-center justify-between">
@@ -1704,7 +1704,7 @@ try {
   class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 hidden"
 >
   <div
-    class="bg-gray-800 rounded-lg w-full max-w-2xl border border-blue-600/50 overflow-hidden shadow-xl"
+    class="bg-gray-800 rounded-md w-full max-w-2xl border border-blue-600/50 overflow-hidden shadow-xl"
   >
     <div class="p-4 border-b border-blue-600/30 bg-gray-900/50">
       <div class="flex items-center justify-between">
@@ -1939,7 +1939,7 @@ try {
             <span class="text-sm font-bold truncate tracking-tight text-white group-hover:text-white/95">
               ${name}
             </span>
-            ${note ? `<span class="text-[9px] text-white/60 truncate italic leading-none mt-0.5 bg-black/20 px-1 rounded-sm w-fit">${note}</span>` : ''}
+            ${note ? `<span class="text-[9px] text-white/60 truncate italic leading-none mt-0.5 bg-black/20 px-1 rounded-md w-fit">${note}</span>` : ''}
           </div>
           
         </div>
@@ -2587,14 +2587,14 @@ try {
       if (list.length === 0) return '';
 
       return `
-        <div class="mb-4 last:mb-0 border border-gray-700/50 rounded-lg overflow-hidden bg-gray-800/20">
+        <div class="mb-4 last:mb-0 border border-gray-700/50 rounded-md overflow-hidden bg-gray-800/20">
           <button 
             type="button"
             class="w-full flex items-center justify-between p-3 bg-gray-800/50 hover:bg-gray-800 transition-colors"
             onclick="document.getElementById('${id}-content').classList.toggle('hidden'); document.getElementById('${id}-chevron').classList.toggle('rotate-180');"
           >
             <div class="flex items-center">
-              <div class="p-1.5 rounded-lg ${colorClass} bg-opacity-20 mr-3">
+              <div class="p-1.5 rounded-md ${colorClass} bg-opacity-20 mr-3">
                 <svg class="w-4 h-4 ${colorClass.replace('bg-', 'text-')}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   ${iconPath}
                 </svg>

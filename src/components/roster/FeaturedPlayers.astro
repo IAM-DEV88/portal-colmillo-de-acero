@@ -196,7 +196,7 @@ const initialPlayers = featuredPlayers.slice(
         return (
           <div 
             x-data="{ expanded: false }"
-            class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-lg transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer"
+            class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-md transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer"
             :class="{'z-[60]': expanded}"
             style={`border-color: #${classData.color}66;`}
             onclick={`if(!event.target.closest('.expand-button')) window.openMemberModal(JSON.parse(decodeURIComponent('${encodeURIComponent(playerString)}')))`}
@@ -244,10 +244,10 @@ const initialPlayers = featuredPlayers.slice(
                   <img
                     src={`/images/avatars/class_${playerData.class || 'default'}.jpg`}
                     alt={playerData.class || 'Clase'}
-                    class={`w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover`}
+                    class={`w-12 h-12 rounded-md shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover`}
                     onerror="this.src='/images/avatars/default.png'"
                   />
-                  <div class={`absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900 bg-[#${classData.color}]`} title={playerData.class}></div>
+                  <div class={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-gray-900 bg-[#${classData.color}]`} title={playerData.class}></div>
                 </div>
 
                 <!-- Info -->
@@ -257,7 +257,7 @@ const initialPlayers = featuredPlayers.slice(
                   </div>
                   <div class="flex flex-wrap items-center gap-2">
                     {playerData.rank && (
-                      <span class={`text-[10px] px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${
+                      <span class={`text-[10px] px-2 py-0.5 rounded-md font-medium border transition-all duration-200 ${
                         playerData.rank.toLowerCase().includes('general admin')
                           ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
                           : playerData.rank.toLowerCase().includes('oficial')
@@ -287,7 +287,7 @@ const initialPlayers = featuredPlayers.slice(
                 class="absolute top-full left-0 w-full z-50 mt-1"
                 @click.stop
               >
-                <div class="flex items-start gap-2 bg-gray-900/95 backdrop-blur-md p-3 rounded-lg border border-amber-600/30 shadow-2xl">
+                <div class="flex items-start gap-2 bg-gray-900/95 backdrop-blur-md p-3 rounded-md border border-amber-600/30 shadow-2xl">
                   <svg class="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                   </svg>
@@ -463,7 +463,7 @@ const initialPlayers = featuredPlayers.slice(
     return `
       <div 
         x-data="{ expanded: false }"
-        class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-lg transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer overflow-hidden"
+        class="group relative bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border rounded-md transition-all duration-300 hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 cursor-pointer overflow-hidden"
         style="border-color: #${classData.color}66;"
         onclick="if(!event.target.closest('.expand-button')) window.openMemberModal(JSON.parse(decodeURIComponent('${encodeURIComponent(playerString)}')))"
         onmouseover="this.style.borderColor='#${classData.color}99'; this.style.boxShadow='0 10px 15px -3px #${classData.color}1a, 0 4px 6px -2px #${classData.color}0a';"
@@ -502,13 +502,13 @@ const initialPlayers = featuredPlayers.slice(
         <div class="p-4 pl-6">
           <div class="flex items-center gap-3">
             <div class="relative flex-shrink-0">
-              <img src="/images/avatars/class_${playerData.class || 'default'}.jpg" alt="${playerData.class || 'Clase'}" class="w-12 h-12 rounded-lg shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover" onerror="this.src='/images/avatars/default.png'" />
-              <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-lg border-2 border-gray-900 bg-[#${classData.color}]" title="${playerData.class}"></div>
+              <img src="/images/avatars/class_${playerData.class || 'default'}.jpg" alt="${playerData.class || 'Clase'}" class="w-12 h-12 rounded-md shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover" onerror="this.src='/images/avatars/default.png'" />
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-md border-2 border-gray-900 bg-[#${classData.color}]" title="${playerData.class}"></div>
             </div>
             <div class="flex-1 min-w-0">
               <div class="font-bold text-gray-100 truncate group-hover:text-amber-200 transition-colors text-lg capitalize" style="color: #${classData.color}">${playerName}</div>
               <div class="flex flex-wrap items-center gap-2">
-                ${playerData.rank ? `<span class="text-[10px] px-2 py-0.5 rounded-lg font-medium border transition-all duration-200 ${rankClass}">${playerData.rank}</span>` : ''}
+                ${playerData.rank ? `<span class="text-[10px] px-2 py-0.5 rounded-md font-medium border transition-all duration-200 ${rankClass}">${playerData.rank}</span>` : ''}
               </div>
             </div>
           </div>

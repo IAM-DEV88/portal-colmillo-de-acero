@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show toast notification
   function showToast(message, type = 'success') {
     const toast = document.createElement('div');
-    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg ${
+    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg ${
       type === 'success' ? 'bg-green-600' : 'bg-red-600'
     } text-white flex items-center space-x-2 z-50 animate-fade-in`;
 
