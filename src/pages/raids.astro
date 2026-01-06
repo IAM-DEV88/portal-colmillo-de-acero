@@ -4,10 +4,10 @@ import { supabase } from '../lib/supabase';
 // Import components
 
 // Función auxiliar para contar jugadores por rol
-type PlayerRole = 'tank' | 'heal' | 'melee' | 'ranged';
+type PlayerRole = 'tank' | 'healer' | 'melee' | 'ranged';
 
 function countPlayersByRole(players) {
-  if (!players) return { tank: 0, heal: 0, melee: 0, ranged: 0 };
+  if (!players) return { tank: 0, healer: 0, melee: 0, ranged: 0 };
   return players.reduce(
     (acc, player) => {
       // Priorizar player_role o raid_role
@@ -20,7 +20,7 @@ function countPlayersByRole(players) {
       }
       // Verificar si es sanador (incluyendo variaciones de la DB como 'healer', 'heal', etc)
       else if (role.includes('heal') || role.includes('sanador') || role.includes('sanación')) {
-        acc.heal = (acc.heal || 0) + 1;
+        acc.healer = (acc.healer || 0) + 1;
       }
       // Verificar DPS
       else {
@@ -40,7 +40,7 @@ function countPlayersByRole(players) {
       }
       return acc;
     },
-    { tank: 0, heal: 0, melee: 0, ranged: 0 }
+    { tank: 0, healer: 0, melee: 0, ranged: 0 }
   );
 }
 
@@ -1105,7 +1105,7 @@ try {
                                                         </div>
                                                       </div>
 
-                                                      {/* Heal Button */}
+                                                      {/* Healer Button */}
                                                       <div class="relative group">
                                                         <button
                                                           type="button"
@@ -1114,15 +1114,15 @@ try {
                                                           data-raid-id={raid.id}
                                                           data-day={schedule.day_of_week}
                                                           data-time={schedule.start_time}
-                                                          data-role="heal"
+                                                          data-role="healer"
                                                           onclick="openRegistrationModal(this)"
                                                         >
                                                           <div class="w-1.5 h-1.5 rounded-full bg-green-500 mb-1 group-hover:scale-125 transition-transform" />
                                                           <span class="text-[10px] text-green-300 font-medium">
-                                                            Heal
+                                                            Healer
                                                           </span>
                                                           <span class="text-[10px] text-gray-400">
-                                                            {roleCounts.heal}
+                                                            {roleCounts.healer}
                                                           </span>
                                                         </button>
                                                         <div class="absolute z-10 invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -1599,7 +1599,7 @@ try {
             </li>
             <li class="flex items-start">
               <span class="text-red-400 mr-2">•</span>
-              <span>DPS/Heal/Tank con bajo rendimiento = Expulsión</span>
+              <span>DPS/Healer/Tank con bajo rendimiento = Expulsión</span>
             </li>
             <li class="flex items-start">
               <span class="text-red-400 mr-2">•</span>
@@ -2507,7 +2507,6 @@ try {
     const validClasses = {
       tank: ['death-knight', 'druid', 'paladin', 'warrior'],
       healer: ['druid', 'paladin', 'priest', 'shaman'],
-      heal: ['druid', 'paladin', 'priest', 'shaman'],
       melee: ['death-knight', 'druid', 'paladin', 'rogue', 'shaman', 'warrior'],
       ranged: ['druid', 'hunter', 'mage', 'priest', 'shaman', 'warlock'],
     };

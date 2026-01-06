@@ -94,9 +94,9 @@ export const calculateRoleDistribution = (members: RosterMember[]): Record<strin
     H: 0, // Healer
     D: 0, // DPS
     // Inicializar contadores para combinaciones de roles duales
-    TH: 0, // Tank/Heal
+    TH: 0, // Tank/Healer
     TD: 0, // Tank/DPS
-    HD: 0, // Heal/DPS
+    HD: 0, // Healer/DPS
   };
 
   for (const member of members) {

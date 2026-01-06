@@ -2183,7 +2183,7 @@ const professionInfo: Record<ProfessionCode, { name: string; color: string; bgCo
 const sortedDualRoles = [
   {
     combo: 'TH',
-    label: 'Tank / Heal',
+    label: 'Tank / Healer',
     count: dualRoleStats.TH,
     color: 'bg-blue-400/20',
     textColor: 'text-blue-400',
@@ -2197,7 +2197,7 @@ const sortedDualRoles = [
   },
   {
     combo: 'HD',
-    label: 'Heal / DPS',
+    label: 'Healer / DPS',
     count: dualRoleStats.HD,
     color: 'bg-green-400/20',
     textColor: 'text-green-400',
@@ -3900,8 +3900,8 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-amber-300/90 uppercase tracking-wide">Miembros</p>
-            <p class="text-xl font-bold text-amber-200 italic">{stats.totalMembers || 0}</p>
+            <div class="text-xs font-medium text-amber-300/90 uppercase tracking-wide">Miembros</div>
+            <span class="text-xl font-bold text-amber-200 italic">{stats.totalMembers || 0}</span>
           </div>
         </div>
         <div class="text-right">
@@ -3963,10 +3963,10 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</p>
-            <p class="text-xl font-bold text-blue-200 italic">
+            <div class="text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</div>
+            <span class="text-xl font-bold text-blue-200 italic">
               {Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}
-            </p>
+            </span>
           </div>
         </div>
         <div class="text-right">
@@ -4003,7 +4003,7 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="text-center bg-gray-700/60 rounded p-1.5">
           <p class="text-lg font-bold text-white">{roleStats.H || 0}</p>
-          <p class="text-[10px] text-green-300/90 font-medium uppercase">Heals</p>
+          <p class="text-[10px] text-green-300/90 font-medium uppercase">Healers</p>
         </div>
         <div class="text-center bg-gray-700/60 rounded p-1.5">
           <p class="text-lg font-bold text-white">{roleStats.D || 0}</p>
@@ -4036,10 +4036,10 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</p>
-            <p class="text-xl font-bold text-purple-200 italic">
+            <div class="text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</div>
+            <span class="text-xl font-bold text-purple-200 italic">
               {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
-            </p>
+            </span>
           </div>
         </div>
         <div class="text-right">
@@ -4073,7 +4073,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="text-center bg-gray-700/60 rounded p-1.5">
           <p class="text-lg font-bold text-white">{dualRoleStats.TH}</p>
           <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
-            Tank<br />Heal
+            Tank<br />Healer
           </p>
         </div>
         <div class="text-center bg-gray-700/60 rounded p-1.5">
@@ -4085,7 +4085,7 @@ const totalRaiders = rosterData.members.filter(
         <div class="text-center bg-gray-700/60 rounded p-1.5">
           <p class="text-lg font-bold text-white">{dualRoleStats.HD}</p>
           <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
-            Heal<br />DPS
+            Healer<br />DPS
           </p>
         </div>
       </div>
@@ -4111,10 +4111,10 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</p>
-            <p class="text-xl font-bold text-green-200 italic">
+            <div class="text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</div>
+            <span class="text-xl font-bold text-green-200 italic">
               {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
-            </p>
+            </span>
           </div>
         </div>
         <div class="text-right">
@@ -4179,8 +4179,8 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-cyan-300/90 uppercase tracking-wide">Clases</p>
-            <p class="text-xl font-bold text-cyan-200 italic">{classDistribution.length}</p>
+            <div class="text-xs font-medium text-cyan-300/90 uppercase tracking-wide">Clases</div>
+            <span class="text-xl font-bold text-cyan-200 italic">{classDistribution.length}</span>
           </div>
         </div>
         <div class="text-right">
@@ -4266,8 +4266,8 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-indigo-300/90 uppercase tracking-wide">Rangos</p>
-            <p class="text-xl font-bold text-indigo-200 italic">{rankDistribution.length}</p>
+            <div class="text-xs font-medium text-indigo-300/90 uppercase tracking-wide">Rangos</div>
+            <span class="text-xl font-bold text-indigo-200 italic">{rankDistribution.length}</span>
           </div>
         </div>
         <div class="text-right">
@@ -4342,12 +4342,12 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-emerald-300/90 uppercase tracking-wide">
+            <div class="text-xs font-medium text-emerald-300/90 uppercase tracking-wide">
               Profesiones
-            </p>
-            <p class="text-xl font-bold text-emerald-200 italic">
+            </div>
+            <span class="text-xl font-bold text-emerald-200 italic">
               {professionDistribution.filter((i) => i.name !== 'No Censada').length}
-            </p>
+            </span>
           </div>
         </div>
         <div class="text-right">
@@ -4422,10 +4422,10 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-orange-300/90 uppercase tracking-wide">Razas</p>
-            <p class="text-xl font-bold text-orange-200 italic">
+            <div class="text-xs font-medium text-orange-300/90 uppercase tracking-wide">Razas</div>
+            <span class="text-xl font-bold text-orange-200 italic">
               {raceDistribution.filter((i) => i.name !== 'No Censada').length}
-            </p>
+            </span>
           </div>
         </div>
         <div class="text-right">
@@ -4495,10 +4495,10 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <p class="text-xs font-medium text-rose-300/90 uppercase tracking-wide">Facciones</p>
-            <p class="text-xl font-bold text-rose-200 italic">
+            <div class="text-xs font-medium text-rose-300/90 uppercase tracking-wide">Facciones</div>
+            <span class="text-xl font-bold text-rose-200 italic">
               {factionDistribution.filter((i) => i.name !== 'No Censada').length}
-            </p>
+            </span>
           </div>
         </div>
         <div class="text-right">
