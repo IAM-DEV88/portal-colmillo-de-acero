@@ -2,6 +2,7 @@
 import Layout from '../components/layout/Layout.astro';
 import { supabase } from '../lib/supabase';
 // Import components
+import RaidRulesModal from '../components/raids/RaidRulesModal.astro';
 
 // Función auxiliar para contar jugadores por rol
 type PlayerRole = 'tank' | 'healer' | 'melee' | 'ranged';
@@ -625,6 +626,62 @@ try {
 }
 ---
 
+<script is:inline>
+    function openRaidRulesModal(btn) {
+      const name = btn.getAttribute('data-raid-name');
+      const rules = btn.getAttribute('data-raid-rules');
+      const gs = btn.getAttribute('data-raid-gs');
+
+      console.log('Datos recuperados del botón:', { name, rules, gs });
+
+      const modal = document.getElementById('raid-rules-modal');
+      // Usar querySelector para los elementos dentro del modal
+      const nameEl = modal ? modal.querySelector('[data-js-id="modal-raid-name"]') : null;
+      const gsEl = modal ? modal.querySelector('[data-js-id="modal-raid-gs"]') : null;
+      const rulesEl = modal ? modal.querySelector('[data-js-id="modal-raid-rules"]') : null;
+
+      console.log('Elementos del modal encontrados:', { modal: !!modal, nameEl: !!nameEl, gsEl: !!gsEl, rulesEl: !!rulesEl });
+
+      if (modal && nameEl && rulesEl) {
+        nameEl.textContent = name;
+        if (gsEl) gsEl.textContent = `[${gs} GS]`;
+        
+        // Procesar y formatear las reglas
+        if (rulesEl && rules) {
+          const formattedRules = rules.split('\n').map((rule, index) => {
+            const colonIndex = rule.indexOf(':');
+            if (colonIndex !== -1) {
+              const beforeColon = rule.substring(0, colonIndex);
+              const afterColon = rule.substring(colonIndex);
+              return `<span class="block">${index + 1}. <span class="font-bold text-amber-400">${beforeColon}</span>${afterColon}</span>`;
+            }
+            return `<span class="block">${index + 1}. ${rule}</span>`;
+          }).join(''); // Unir sin <br> ya que cada span es block
+          rulesEl.innerHTML = formattedRules;
+        }
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      } else {
+        console.error('Error: No se pudieron encontrar todos los elementos del modal para actualizar.');
+      }
+    }
+
+    function closeRaidRulesModal() {
+      const modal = document.getElementById('raid-rules-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Exponer globalmente
+    window.openRaidRulesModal = openRaidRulesModal;
+    window.closeRaidRulesModal = closeRaidRulesModal;
+  </script>
+
 <Layout title="Horarios de Raid">
   <div class="text-white">
     <div class="max-w-7xl mx-auto">
@@ -778,6 +835,20 @@ try {
                                   <div class="flex justify-between items-end">
                                     <div>
                                       <h3 class="text-xl font-bold text-white">{raid.name}</h3>
+                                      {raid.rules && (
+                                          <button
+                                            data-raid-name={raid.name}
+                                            data-raid-rules={raid.rules}
+                                            data-raid-gs={raid.minGearScore}
+                                            onclick="window.openRaidRulesModal(this)"
+                                            class="mt-2 px-3 py-1 bg-amber-700 hover:bg-amber-600 text-white text-xs font-medium rounded-full transition-colors duration-200 flex items-center gap-1"
+                                          >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            Ver Reglas
+                                          </button>
+                                        )}
                                       <p class="text-xs text-gray-300 flex items-center">
                                         <svg
                                           class="w-3 h-3 mr-1 text-amber-400"
@@ -1761,6 +1832,8 @@ try {
       </div>
     </div>
   </div>
+
+  <RaidRulesModal />
 </Layout>
 
 <!-- Raid Leaders Modal -->
