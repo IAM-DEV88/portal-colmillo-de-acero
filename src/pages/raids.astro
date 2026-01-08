@@ -537,7 +537,7 @@ try {
         raid_id: reg.raid_id,
         raid_name: raid.name,
         difficulty: reg.difficulty || '10',
-        day_of_week: reg.day_of_week || '',
+        day_of_week: normalizedDay, // Usar el día normalizado aquí
         start_time: normalizedTime,
         players: [],
       });
@@ -834,7 +834,7 @@ try {
                                 <div class="bottom-0 left-0 right-0 p-4">
                                   <div class="flex justify-between items-end">
                                     <div>
-                                      <h3 class="text-xl font-bold text-white">{raid.name}</h3>
+                                      <h3 class="text-xl font-bold text-white italic">{raid.name}</h3>
                                       {raid.rules && (
                                           <button
                                             data-raid-name={raid.name}
@@ -940,15 +940,18 @@ try {
                                       );
                                     }
 
-                                    // Agrupar horarios por día
+                                    // Agrupar horarios por día (asegurando normalización)
                                     const groupedSchedules = sortedSchedules.reduce((acc: any, schedule: any) => {
-                                      const day = schedule.day_of_week;
+                                      const day = (schedule.day_of_week || '').toLowerCase();
                                       if (!acc[day]) acc[day] = [];
                                       acc[day].push(schedule);
                                       return acc;
                                     }, {});
 
                                     return Object.entries(groupedSchedules).map(([day, schedules]: [string, any], dayIdx) => {
+                                      // Formatear el día para mostrar (Primera letra mayúscula)
+                                      const displayDay = day.charAt(0).toUpperCase() + day.slice(1);
+                                      
                                       // Calcular total de jugadores para este día
                                       const totalDayPlayers = schedules.reduce((sum: number, s: any) => {
                                         const count = s.players?.filter((p: any) =>
@@ -980,7 +983,7 @@ try {
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                               </svg>
                                               <span class="font-bold text-white uppercase tracking-wider text-xs">
-                                                {day}
+                                                {displayDay}
                                               </span>
                                             </div>
                                             <div class="flex items-center space-x-2">
