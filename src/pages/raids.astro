@@ -31,7 +31,12 @@ function countPlayersByRole(players) {
           acc.ranged = (acc.ranged || 0) + 1;
         } else {
           // Fallback por clase
-          const meleeClasses = ['warrior', 'paladin', 'deathknight', 'death-knight', 'rogue'];
+          const meleeClasses = [
+            'warrior', 'guerrero', 
+            'paladin', 'paladín', 
+            'deathknight', 'death-knight', 'caballero', 'dk',
+            'rogue', 'pícaro', 'picaro'
+          ];
           if (meleeClasses.some((c) => className.includes(c))) {
             acc.melee = (acc.melee || 0) + 1;
           } else {
@@ -119,7 +124,8 @@ const parsedMembers = Object.values(rosterData.players).map((member) => {
 
   return {
     name: member.name,
-    class: member.class,
+    class: member.class, // Mantener original para visualización
+    normalizedClass: (member.class || '').toLowerCase().trim().replace(/ /g, '').replace(/-/g, ''), // Clase normalizada para lógica
     role: role,
     gearScore: gs,
     dualRole: dualRole,
@@ -563,6 +569,7 @@ try {
         note: rosterPlayer?.publicNote || '',
         achievements: rosterPlayer?.reconocimientos || 0,
         raids_count: rosterPlayer?.raidsCompletadas || 0,
+        is_guild_member: !!rosterPlayer, // Indica si está en el roster.json
       });
     }
   });
@@ -1048,7 +1055,8 @@ try {
                                                               note: p.note || p.public_note || '',
                                                               achievements: p.achievements || 0,
                                                               raids_count: p.raids_count || 0,
-                                                              is_leader: ['raid_leader', 'lider_raid'].includes(p.raid_role)
+                                                              is_leader: ['raid_leader', 'lider_raid'].includes(p.raid_role),
+                                                              is_guild_member: p.is_guild_member === true
                                                             })),
                                                         })}
                                                         onclick={`(function(btn) {
@@ -1847,11 +1855,11 @@ try {
   <div
     class="bg-gray-800 rounded-md w-full max-w-2xl border border-amber-600/50 overflow-hidden shadow-xl"
   >
-    <div class="p-4 border-b border-amber-600/30 bg-gray-900/50">
+    <div class="p-2 md:p-4 border-b border-amber-600/30 bg-gray-900/50">
       <div class="flex items-center justify-between">
-        <h3 class="text-xl font-bold text-amber-400">
+        <h3 class="text-lg md:text-xl font-bold text-amber-400">
           <svg
-            class="w-5 h-5 inline-block mr-2 -mt-1"
+            class="w-4 h-4 md:w-5 md:h-5 inline-block mr-2 -mt-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -1866,7 +1874,7 @@ try {
           Líderes de Raid
         </h3>
         <button id="close-leaders-modal" class="text-gray-400 hover:text-white transition-colors">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -1877,21 +1885,21 @@ try {
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row max-h-[70vh]">
-      <div id="raid-leaders-list" class="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col gap-2">
+    <div class="flex flex-col md:flex-row max-h-[85vh] md:max-h-[70vh]">
+      <div id="raid-leaders-list" class="flex-1 overflow-y-auto p-2 md:p-4 custom-scrollbar flex flex-col gap-1.5 md:gap-2">
         <!-- Raid leaders will be listed here by JavaScript -->
       </div>
       
       <!-- Summary Sidebar -->
-      <div id="raid-leaders-summary" class="w-full md:w-24 bg-gray-900/40 border-l border-gray-700/50 p-3 overflow-y-auto custom-scrollbar flex md:flex-col gap-3 justify-center md:justify-start items-center">
+      <div id="raid-leaders-summary" class="w-full md:w-24 bg-gray-900/40 border-t md:border-t-0 md:border-l border-gray-700/50 p-2 md:p-3 overflow-y-auto custom-scrollbar flex md:flex-col gap-2 md:gap-3 justify-center md:justify-start items-center">
         <!-- Class summary icons will be listed here -->
       </div>
     </div>
 
-    <div class="p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
+    <div class="p-2 md:p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
       <button
         id="close-leaders-modal-btn"
-        class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-md transition-colors font-medium text-sm"
+        class="px-3 py-1.5 md:px-4 md:py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-md transition-colors font-medium text-xs md:text-sm"
       >
         Cerrar
       </button>
@@ -1907,11 +1915,11 @@ try {
   <div
     class="bg-gray-800 rounded-md w-full max-w-2xl border border-blue-600/50 overflow-hidden shadow-xl"
   >
-    <div class="p-4 border-b border-blue-600/30 bg-gray-900/50">
+    <div class="p-2 md:p-4 border-b border-blue-600/30 bg-gray-900/50">
       <div class="flex items-center justify-between">
-        <h3 class="text-xl font-bold text-blue-400">
+        <h3 class="text-lg md:text-xl font-bold text-blue-400">
           <svg
-            class="w-5 h-5 inline-block mr-2 -mt-1"
+            class="w-4 h-4 md:w-5 md:h-5 inline-block mr-2 -mt-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -1926,7 +1934,7 @@ try {
           Jugadores Regulares
         </h3>
         <button id="close-regulars-modal" class="text-gray-400 hover:text-white transition-colors">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -1937,21 +1945,21 @@ try {
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row max-h-[70vh]">
-      <div id="regular-players-list" class="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col gap-2">
+    <div class="flex flex-col md:flex-row max-h-[85vh] md:max-h-[70vh]">
+      <div id="regular-players-list" class="flex-1 overflow-y-auto p-2 md:p-4 custom-scrollbar flex flex-col gap-1.5 md:gap-2">
         <!-- Regular players will be listed here by JavaScript -->
       </div>
       
       <!-- Summary Sidebar -->
-      <div id="regular-players-summary" class="w-full md:w-24 bg-gray-900/40 border-l border-gray-700/50 p-3 overflow-y-auto custom-scrollbar flex md:flex-col gap-3 justify-center md:justify-start items-center">
+      <div id="regular-players-summary" class="w-full md:w-24 bg-gray-900/40 border-t md:border-t-0 md:border-l border-gray-700/50 p-2 md:p-3 overflow-y-auto custom-scrollbar flex md:flex-col gap-2 md:gap-3 justify-center md:justify-start items-center">
         <!-- Class summary icons will be listed here -->
       </div>
     </div>
 
-    <div class="p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
+    <div class="p-2 md:p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
       <button
         id="close-regulars-modal-btn"
-        class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors font-medium text-sm"
+        class="px-3 py-1.5 md:px-4 md:py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors font-medium text-xs md:text-sm"
       >
         Cerrar
       </button>
@@ -2050,6 +2058,39 @@ try {
     default: 'default.png',
   };
 
+  const classDisplayNames = {
+    deathknight: 'Caballero de la Muerte',
+    druid: 'Druida',
+    hunter: 'Cazador',
+    mage: 'Mago',
+    paladin: 'Paladín',
+    priest: 'Sacerdote',
+    rogue: 'Pícaro',
+    shaman: 'Chamán',
+    warlock: 'Brujo',
+    warrior: 'Guerrero',
+    default: 'Clase'
+  };
+
+  // Función para normalizar nombres de clase
+  function normalizeClassName(name) {
+    if (!name) return 'default';
+    const n = String(name).toLowerCase().trim();
+    
+    if (n.includes('caballero') || n.includes('death') || n.includes('dk')) return 'deathknight';
+    if (n.includes('guerrero') || n.includes('warrior')) return 'warrior';
+    if (n.includes('palad') || n.includes('paladin')) return 'paladin';
+    if (n.includes('cazador') || n.includes('hunter')) return 'hunter';
+    if (n.includes('pícaro') || n.includes('picaro') || n.includes('rogue')) return 'rogue';
+    if (n.includes('sacerdote') || n.includes('priest')) return 'priest';
+    if (n.includes('chamán') || n.includes('chaman') || n.includes('shaman')) return 'shaman';
+    if (n.includes('mago') || n.includes('mage')) return 'mage';
+    if (n.includes('brujo') || n.includes('warlock')) return 'warlock';
+    if (n.includes('druid')) return 'druid';
+    
+    return n;
+  }
+
   // Role configuration with colors and display names
   const roleConfig = {
     tank: {
@@ -2098,7 +2139,7 @@ try {
 
   function createPlayerElement(player, isLeader = false) {
     const name = player?.name ? String(player.name) : 'Desconocido';
-    const className = player?.class ? String(player.class).toLowerCase() : 'default';
+    const className = normalizeClassName(player?.class);
     const playerRole =
       player?.player_role && roleConfig[player.player_role] ? player.player_role : 'default';
     const roleInfo = roleConfig[playerRole];
@@ -2127,25 +2168,50 @@ try {
     const raidsCount = player?.raids_count || 0;
 
     const el = document.createElement('div');
-    el.className = `flex items-start gap-2 p-[.1rem] rounded border transition-all hover:brightness-110 ${colorClass} group relative overflow-hidden`;
+    el.className = `flex items-start gap-1 p-[.05rem] md:p-[.1rem] rounded border transition-all hover:brightness-110 ${colorClass} group relative overflow-hidden`;
+
+    // Iconos de indicadores
+    const leaderIcon = player.is_leader ? `
+      <div class="flex-shrink-0 flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-amber-500/10 rounded-full border border-amber-500/30 shadow-[0_0_10px_rgba(251,191,36,0.2)] animate-pulse-slow" title="Líder de Banda">
+        <svg class="w-3 h-3 md:w-4 md:h-4 text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.8)]" fill="currentColor" viewBox="0 0 32 32">
+          <path d="M29.273 22.896l1.593 0.252-0.945-1.164 0.012-0.017h-0.026l-13.872-17.076-4.264 3.134-11.224-6.487v2.104l11.552 6.678 3.535-2.587 10.094 12.463-15.852-2.514 0.51-4.446-9.839-5.694v2.196l3.626 2.097 1.388 6.633 1.083-5.204 1.592 0.92-0.62 5.284 0.019 0.003 1.425 7.753 0.667-3.645 1.245 7.298 1.773-10.45 1.347 7.328 1.269-6.937 1.105 2.248 0.998-2.040 1.175 0.186 1.376 8.297 1.3-7.874 0.799 0.126 1.531 3.931 0.922-2.379 1.129 6.14 1.099-6.008 1.047 1.466z"></path>
+        </svg>
+      </div>
+    ` : '';
+
+    const guildIcon = player.is_guild_member ? `
+      <div class="flex-shrink-0 flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-blue-500/10 rounded-full border border-blue-500/30 shadow-[0_0_10px_rgba(96,165,250,0.2)]" title="Miembro de Hermandad">
+        <svg class="w-3 h-3 md:w-4 md:h-4 text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]" fill="currentColor" viewBox="0 0 32 32">
+          <path d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"></path>
+        </svg>
+      </div>
+    ` : '';
+
+    const indicators = `
+      <div class="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 z-20">
+        ${leaderIcon}
+        ${guildIcon}
+      </div>
+    `;
 
     el.innerHTML = `
       <div class="absolute inset-0 opacity-10 bg-center bg-no-repeat bg-cover pointer-events-none" style="background-image: url('${avatarPath}')"></div>
-      <div class="flex-shrink-0 w-8 h-8 rounded border border-white/20 overflow-hidden relative z-10 shadow-sm">
+      <div class="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded border border-white/20 overflow-hidden relative z-10 shadow-sm mr-1">
         <img src="${avatarPath}" alt="${className}" class="w-full h-full object-cover" />
       </div>
-      <div class="flex-1 min-w-0 relative z-10">
-        <div class="flex items-center justify-between gap-2">
+      <div class="flex-1 min-w-0 relative z-10 pr-11 md:pr-14">
+        <div class="flex items-center justify-between gap-1">
           <div class="flex flex-col min-w-0">
-            <span class="text-sm font-bold truncate tracking-tight text-white group-hover:text-white/95">
-              ${name}
-            </span>
-            ${note ? `<span class="text-[9px] text-white/60 truncate italic leading-none mt-0.5 bg-black/20 px-1 rounded-md w-fit">${note}</span>` : ''}
+            <div class="flex items-center gap-1 min-w-0">
+              <span class="text-[15px] italic pr-1 md:text-sm font-bold truncate tracking-tight text-white group-hover:text-white/95 leading-tight">
+                ${name}
+              </span>
+            </div>
+            ${note ? `<span class="text-[8px] md:text-[9px] text-white/60 truncate italic leading-none mt-0.5 bg-black/20 px-1 rounded-md w-fit">${note}</span>` : ''}
           </div>
-          
         </div>
-        
       </div>
+      ${indicators}
     `;
     return el;
   }
@@ -2183,7 +2249,7 @@ try {
     // Count actual players
     players.forEach(player => {
       if (player.class) {
-        const className = String(player.class).toLowerCase();
+        const className = normalizeClassName(player.class);
         if (classCounts.hasOwnProperty(className)) {
           classCounts[className]++;
         }
@@ -2199,10 +2265,11 @@ try {
           const avatarFile = classAvatars[className] || classAvatars['default'];
           const avatarPath = `/images/avatars/${avatarFile}`;
           const opacityClass = count === 0 ? 'opacity-40' : 'opacity-100';
+          const displayName = classDisplayNames[className] || className;
           
           return `
             <div class="relative w-7 h-7 group flex-shrink-0 ${opacityClass}" 
-                 title="${className.charAt(0).toUpperCase() + className.slice(1)}: ${count}">
+                 title="${displayName}: ${count}">
               <div class="w-full h-full rounded border ${count > 0 ? 'border-white/20' : 'border-white/10'} overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
                 <img src="${avatarPath}" alt="${className}" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -2243,6 +2310,17 @@ try {
     const leaderList = Array.isArray(leaders) ? leaders : [];
 
     if (leaderList.length > 0) {
+      // Sort leaders by class and then by name
+      leaderList.sort((a, b) => {
+        const classA = normalizeClassName(a.player_class || a.class || '').toLowerCase();
+        const classB = normalizeClassName(b.player_class || b.class || '').toLowerCase();
+        if (classA !== classB) return classA.localeCompare(classB);
+        
+        const nameA = (a.player_name || a.name || '').toLowerCase();
+        const nameB = (b.player_name || b.name || '').toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+
       // For leaders, we don't necessarily need grouping by role if there are few,
       // but let's keep it consistent or just list them
       leaderList.forEach((leader) => {
@@ -2353,20 +2431,33 @@ try {
         default: []
       };
 
-    players.forEach((player) => {
-      const role = (player.player_role || player.role || 'default').toLowerCase();
-      
-      if (role.includes('tank') || role.includes('tanque')) {
-        groups.tank.push(player);
-      } else if (role.includes('heal') || role.includes('sanador') || role.includes('sanación') || role.includes('healer')) {
-        groups.healer.push(player);
-      } else if (role.includes('melee') || role.includes('cuerpo a cuerpo') || role.includes('melee_dps')) {
-        groups.melee.push(player);
-      } else if (role.includes('ranged') || role.includes('distancia') || role.includes('rango') || role.includes('ranged_dps')) {
-        groups.ranged.push(player);
-      } else {
-        groups.default.push(player);
-      }
+      playerList.forEach((player) => {
+        const role = (player.player_role || player.role || 'default').toLowerCase();
+        
+        if (role.includes('tank') || role.includes('tanque')) {
+          groups.tank.push(player);
+        } else if (role.includes('heal') || role.includes('sanador') || role.includes('sanación') || role.includes('healer')) {
+          groups.healer.push(player);
+        } else if (role.includes('melee') || role.includes('cuerpo a cuerpo') || role.includes('melee_dps')) {
+          groups.melee.push(player);
+        } else if (role.includes('ranged') || role.includes('distancia') || role.includes('rango') || role.includes('ranged_dps')) {
+          groups.ranged.push(player);
+        } else {
+          groups.default.push(player);
+        }
+      });
+
+    // Sort each group by class and then by name
+    Object.keys(groups).forEach(role => {
+      groups[role].sort((a, b) => {
+        const classA = normalizeClassName(a.player_class || a.class || '').toLowerCase();
+        const classB = normalizeClassName(b.player_class || b.class || '').toLowerCase();
+        if (classA !== classB) return classA.localeCompare(classB);
+        
+        const nameA = (a.player_name || a.name || '').toLowerCase();
+        const nameB = (b.player_name || b.name || '').toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
     });
 
     // Create sections in order
@@ -2896,40 +2987,18 @@ try {
     if (roleCode === 'T') finalRole = 'tank';
     else if (roleCode === 'H') finalRole = 'healer';
     else if (roleCode === 'D') {
-      // Refine DPS to melee or ranged
-      const meleeClasses = [
-        'Guerrero',
-        'Paladín',
-        'Paladin',
-        'Caballero de la Muerte',
-        'Pícaro',
-        'Picaro',
-        'Rogue',
-        'Warrior',
-        'Death Knight',
-        'Retribution',
-      ];
-      const rangedClasses = [
-        'Mago',
-        'Mage',
-        'Brujo',
-        'Warlock',
-        'Sacerdote',
-        'Priest',
-        'Cazador',
-        'Hunter',
-      ];
+      // Refine DPS to melee or ranged using normalization
+      const normalized = normalizeClassName(className);
+      
+      const meleeClasses = ['warrior', 'paladin', 'deathknight', 'rogue'];
+      const rangedClasses = ['mage', 'warlock', 'priest', 'hunter'];
 
-      // Hybrids (Druid, Shaman) default to ranged unless specified otherwise, but here we just guess
-      // Or we can check if it's in melee list.
-
-      if (meleeClasses.includes(className)) {
+      if (meleeClasses.includes(normalized)) {
         finalRole = 'melee';
-      } else if (rangedClasses.includes(className)) {
+      } else if (rangedClasses.includes(normalized)) {
         finalRole = 'ranged';
       } else {
-        // Druid/Shaman - ambiguous. Default to ranged for safety, or maybe 'dps' generic if allowed.
-        // The buttons use 'melee' and 'ranged'.
+        // Druid/Shaman/Default
         finalRole = 'ranged';
       }
     }
