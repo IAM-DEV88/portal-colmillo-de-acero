@@ -1896,7 +1896,10 @@ try {
       </div>
     </div>
 
-    <div class="p-2 md:p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
+    <div class="p-2 md:p-4 border-t border-gray-700/50 bg-gray-900/30 flex items-center justify-between">
+      <div id="raid-leaders-legend" class="flex items-center gap-3 md:gap-4">
+        <!-- Legend indicators will be injected here -->
+      </div>
       <button
         id="close-leaders-modal-btn"
         class="px-3 py-1.5 md:px-4 md:py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-md transition-colors font-medium text-xs md:text-sm"
@@ -1956,7 +1959,10 @@ try {
       </div>
     </div>
 
-    <div class="p-2 md:p-4 border-t border-gray-700/50 bg-gray-900/30 flex justify-end">
+    <div class="p-2 md:p-4 border-t border-gray-700/50 bg-gray-900/30 flex items-center justify-between">
+      <div id="regular-players-legend" class="flex items-center gap-3 md:gap-4">
+        <!-- Legend indicators will be injected here -->
+      </div>
       <button
         id="close-regulars-modal-btn"
         class="px-3 py-1.5 md:px-4 md:py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-colors font-medium text-xs md:text-sm"
@@ -2203,7 +2209,7 @@ try {
         <div class="flex items-center justify-between gap-1">
           <div class="flex flex-col min-w-0">
             <div class="flex items-center gap-1 min-w-0">
-              <span class="text-[15px] italic pr-1 md:text-sm font-bold truncate tracking-tight text-white group-hover:text-white/95 leading-tight">
+              <span class="text-[15px] italic pr-1 md:text-sm font-bold  tracking-tight text-white group-hover:text-white/95 leading-tight">
                 ${name}
               </span>
             </div>
@@ -2268,7 +2274,7 @@ try {
           const displayName = classDisplayNames[className] || className;
           
           return `
-            <div class="relative w-7 h-7 group flex-shrink-0 ${opacityClass}" 
+            <div class="relative w-6 h-6 group flex-shrink-0 ${opacityClass}" 
                  title="${displayName}: ${count}">
               <div class="w-full h-full rounded border ${count > 0 ? 'border-white/20' : 'border-white/10'} overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
                 <img src="${avatarPath}" alt="${className}" class="w-full h-full object-cover" />
@@ -2339,6 +2345,39 @@ try {
       showNoDataMessage(list, 'leader');
     }
 
+    // Calculate legend counts
+    const leaderCount = leaderList.length;
+    const guildCount = leaderList.filter(p => p.is_guild_member).length;
+    
+    const legendEl = document.getElementById('raid-leaders-legend');
+    if (legendEl) {
+      legendEl.innerHTML = `
+        <div class="flex items-center gap-2 group cursor-help" title="Líderes de Banda">
+          <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-amber-500/10 rounded-full border border-amber-500/30 shadow-[0_0_10px_rgba(251,191,36,0.2)]">
+            <svg class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.8)]" fill="currentColor" viewBox="0 0 32 32">
+              <path d="M29.273 22.896l1.593 0.252-0.945-1.164 0.012-0.017h-0.026l-13.872-17.076-4.264 3.134-11.224-6.487v2.104l11.552 6.678 3.535-2.587 10.094 12.463-15.852-2.514 0.51-4.446-9.839-5.694v2.196l3.626 2.097 1.388 6.633 1.083-5.204 1.592 0.92-0.62 5.284 0.019 0.003 1.425 7.753 0.667-3.645 1.245 7.298 1.773-10.45 1.347 7.328 1.269-6.937 1.105 2.248 0.998-2.040 1.175 0.186 1.376 8.297 1.3-7.874 0.799 0.126 1.531 3.931 0.922-2.379 1.129 6.14 1.099-6.008 1.047 1.466z"></path>
+            </svg>
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="text-[10px] font-bold text-amber-400">${leaderCount}</span>
+            <span class="text-[8px] font-black text-amber-200/50 uppercase tracking-tighter">Líderes</span>
+          </div>
+        </div>
+        <div class="w-[1px] h-4 bg-gray-700/50 self-center"></div>
+        <div class="flex items-center gap-2 group cursor-help" title="Miembros de Hermandad">
+          <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-blue-500/10 rounded-full border border-blue-500/30 shadow-[0_0_10px_rgba(96,165,250,0.2)]">
+            <svg class="w-3.5 h-3.5 text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]" fill="currentColor" viewBox="0 0 32 32">
+              <path d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"></path>
+            </svg>
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="text-[10px] font-bold text-blue-400">${guildCount}</span>
+            <span class="text-[8px] font-black text-blue-200/50 uppercase tracking-tighter">Hermandad</span>
+          </div>
+        </div>
+      `;
+    }
+
     modal.classList.remove('hidden');
   }
 
@@ -2403,7 +2442,7 @@ try {
 
     if (titleEl) {
       titleEl.innerHTML = `
-        <div class="flex items-center flex-wrap gap-x-2 text-sm md:text-base">
+        <div class="flex items-center flex-wrap gap-x-2 text-[15px] md:text-base">
           <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
           </svg>
@@ -2471,6 +2510,39 @@ try {
 
     if (list.children.length === 0) {
       showNoDataMessage(list, 'regular');
+    }
+
+    // Calculate legend counts
+    const leaderCount = playerList.filter(p => p.is_leader).length;
+    const guildCount = playerList.filter(p => p.is_guild_member).length;
+    
+    const legendEl = document.getElementById('regular-players-legend');
+    if (legendEl) {
+      legendEl.innerHTML = `
+        <div class="flex items-center gap-2 group cursor-help" title="Líderes de Banda">
+          <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-amber-500/10 rounded-full border border-amber-500/30 shadow-[0_0_10px_rgba(251,191,36,0.2)]">
+            <svg class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.8)]" fill="currentColor" viewBox="0 0 32 32">
+              <path d="M29.273 22.896l1.593 0.252-0.945-1.164 0.012-0.017h-0.026l-13.872-17.076-4.264 3.134-11.224-6.487v2.104l11.552 6.678 3.535-2.587 10.094 12.463-15.852-2.514 0.51-4.446-9.839-5.694v2.196l3.626 2.097 1.388 6.633 1.083-5.204 1.592 0.92-0.62 5.284 0.019 0.003 1.425 7.753 0.667-3.645 1.245 7.298 1.773-10.45 1.347 7.328 1.269-6.937 1.105 2.248 0.998-2.040 1.175 0.186 1.376 8.297 1.3-7.874 0.799 0.126 1.531 3.931 0.922-2.379 1.129 6.14 1.099-6.008 1.047 1.466z"></path>
+            </svg>
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="text-[10px] font-bold text-amber-400">${leaderCount}</span>
+            <span class="text-[8px] font-black text-amber-200/50 uppercase tracking-tighter">Líderes</span>
+          </div>
+        </div>
+        <div class="w-[1px] h-4 bg-gray-700/50 self-center"></div>
+        <div class="flex items-center gap-2 group cursor-help" title="Miembros de Hermandad">
+          <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-blue-500/10 rounded-full border border-blue-500/30 shadow-[0_0_10px_rgba(96,165,250,0.2)]">
+            <svg class="w-3.5 h-3.5 text-blue-400 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]" fill="currentColor" viewBox="0 0 32 32">
+              <path d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"></path>
+            </svg>
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="text-[10px] font-bold text-blue-400">${guildCount}</span>
+            <span class="text-[8px] font-black text-blue-200/50 uppercase tracking-tighter">Hermandad</span>
+          </div>
+        </div>
+      `;
     }
 
     modal.classList.remove('hidden');
