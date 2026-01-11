@@ -137,7 +137,8 @@ const featuredPlayers = currentMonthData
     (player: FeaturedPlayer) =>
       !player.playerName ||
       formattedRosterData.some(
-        (member) => member.name.toLowerCase() === player.playerName.toLowerCase()
+        (member) =>
+          member.name.toLowerCase() === player.playerName.toLowerCase() && !member.guildLeave
       )
   )
   .reverse(); // Invertir el orden para mostrar los más recientes primero
@@ -353,17 +354,16 @@ if (Astro.url.searchParams.has('page')) {
               <div class="flex items-center space-x-1 mb-1">
                 <h4 class="font-bold text-amber-300 text-sm">Reconocimientos</h4>
               </div>
-              
             </div>
           </div>
           <div class="text-gray-300 text-xs leading-snug mb-1">
-                Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos
-                mensualmente.
-              </div>
-              <div class="text-gray-400 text-xs leading-snug">
-                Se anima a todos los miembros a liderar actividades y eventos para que todos puedan
-                participar.
-              </div>
+            Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos
+            mensualmente.
+          </div>
+          <div class="text-gray-400 text-xs leading-snug">
+            Se anima a todos los miembros a liderar actividades y eventos para que todos puedan
+            participar.
+          </div>
         </div>
         <!-- Norma 5 - Trabajo en Equipo -->
         <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
@@ -384,18 +384,17 @@ if (Astro.url.searchParams.has('page')) {
               <div class="flex items-center space-x-1 mb-1">
                 <h4 class="font-bold text-amber-300 text-sm">Baul de Equipamiento</h4>
               </div>
-              
             </div>
           </div>
           <div class="text-gray-300 text-xs leading-snug mb-1">
-                Acceso instantáneo a los elementos del baul de equipamiento.
-              </div>
-              <div class="text-gray-400 text-xs leading-snug">
-                Solicitar al GM en el servidor de Discord <a
-                  class="text-blue-400 hover:underline"
-                  href="https://discord.gg/kMK2ZRRCza">kMK2ZRRCza</a
-                >.
-              </div>
+            Acceso instantáneo a los elementos del baul de equipamiento.
+          </div>
+          <div class="text-gray-400 text-xs leading-snug">
+            Solicitar al GM en el servidor de Discord <a
+              class="text-blue-400 hover:underline"
+              href="https://discord.gg/kMK2ZRRCza">kMK2ZRRCza</a
+            >.
+          </div>
         </div>
         <!-- Norma 6 - Respeto -->
         <div class="bg-gray-800/50 border border-amber-700/30 rounded-md p-3">
@@ -416,16 +415,15 @@ if (Astro.url.searchParams.has('page')) {
               <div class="flex items-center space-x-1 mb-1">
                 <h4 class="font-bold text-amber-300 text-sm">Respeto</h4>
               </div>
-              
             </div>
           </div>
           <div class="text-gray-300 text-xs leading-snug mb-1">
-                Respeto y cooperación entre todos los miembros. No se tolerará el racismo,
-                discriminación o acoso de ningún tipo.
-              </div>
-              <div class="text-gray-400 text-xs leading-snug">
-                Mantener un ambiente sano y de respeto mutuo.
-              </div>
+            Respeto y cooperación entre todos los miembros. No se tolerará el racismo,
+            discriminación o acoso de ningún tipo.
+          </div>
+          <div class="text-gray-400 text-xs leading-snug">
+            Mantener un ambiente sano y de respeto mutuo.
+          </div>
         </div>
       </div>
     </div>

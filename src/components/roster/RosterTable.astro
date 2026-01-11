@@ -246,9 +246,7 @@ const processRosterMember = (member: any): RosterMemberType => {
     professions: noteValidation.professions || [],
     isRaidLeader: noteValidation.isRaidLeader || false,
     hasSchedule: noteValidation.hasSchedule || false,
-    hasRaids: noteValidation.hasRaids || false,
     schedules: noteValidation.schedules || [],
-    raids: noteValidation.raids || [],
     error: noteValidation.error,
     missingFields: noteValidation.missingFields || [],
   };
@@ -395,7 +393,6 @@ function ensureRosterMember(member: Partial<RosterMember>): RosterMember {
       role: 'D',
       gearScore: 0,
       professions: [],
-      raids: [],
       schedules: [],
       missingFields: [],
       error: 'No note provided',
@@ -815,7 +812,6 @@ function validateNoteLegacy(
   const result: RosterPublicNoteValidation & { blocks?: Array<{ type: string; parsedData: any }> } =
     {
       isValid: false,
-      raids: [],
       blocks: [],
     };
 
@@ -909,20 +905,8 @@ function validateNoteLegacy(
       gearScore: gearScore,
       professions: professions,
       schedules: [],
-      raids: raidInfo
-        ? [
-            {
-              code: raidInfo.code as RaidCode,
-              difficulty: (raidInfo.difficulty as DifficultyCode) || '10N',
-              name: raidInfo.code,
-              difficultyCode: (raidInfo.difficulty as DifficultyCode) || '10N',
-              isRaidLeader: raidInfo.isRaidLeader || false,
-            },
-          ]
-        : [],
       isRaidLeader: raidInfo?.isRaidLeader || false,
       hasSchedule: false,
-      hasRaids: !!raidInfo,
       missingFields: [],
     };
 
@@ -952,10 +936,8 @@ function validateNoteLegacy(
         gearScore: 0,
         professions: [],
         schedules: [],
-        raids: [],
         isRaidLeader: false,
         hasSchedule: false,
-        hasRaids: false,
         missingFields: [],
       };
 
@@ -998,10 +980,8 @@ function validateNoteLegacy(
           gearScore: 0,
           professions: [],
           schedules: [],
-          raids: [],
           isRaidLeader: false,
           hasSchedule: false,
-          hasRaids: false,
           missingFields: [],
         };
       }
@@ -2498,7 +2478,17 @@ const totalRaiders = rosterData.members.filter(
       <div
         class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
       >
-      <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cracked-helm</title> <path d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"></path> </g></svg>
+        <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+            id="SVGRepo_tracerCarrier"
+            stroke-linecap="round"
+            stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+            <title>cracked-helm</title>
+            <path
+              d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"
+            ></path>
+          </g></svg
+        >
       </div>
       <div>
         <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
@@ -2507,17 +2497,22 @@ const totalRaiders = rosterData.members.filter(
             >Hermandad</span
           >
         </span>
-        <span class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1">
-          <span class="self-end">
-            Reglas de la Hermandad 
-          </span>
+        <span
+          class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+        >
+          <span class="self-end"> Reglas de la Hermandad </span>
           <a
             href="#reglas-hermandad"
             class="inline-flex items-center text-amber-300/60 hover:text-amber-300 transition-colors"
             title="Reglas de la Hermandad"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
             </svg>
           </a>
         </span>
@@ -2534,7 +2529,7 @@ const totalRaiders = rosterData.members.filter(
         opacity 0.2s ease-in-out,
         visibility 0.2s ease-in-out;
     }
-        </p>
+    </p>
       </div>
     </div>
   </div>
@@ -3124,48 +3119,15 @@ const totalRaiders = rosterData.members.filter(
         // Reset to General tab
         window.switchModalTab('general');
 
-        // Raid Stats Aggregation
-        const leaderData = member.leaderData || {};
-        const aggregatedStats = {
-          totalRaids: 0,
-          byZone: {},
-        };
-
-        Object.values(leaderData).forEach((data) => {
-          const stats = data.raidStats || {};
-          aggregatedStats.totalRaids += stats.total || 0;
-
-          if (stats.byZone) {
-            Object.entries(stats.byZone).forEach(([zone, count]) => {
-              aggregatedStats.byZone[zone] = (aggregatedStats.byZone[zone] || 0) + count;
-            });
-          }
-        });
-
-        // Hide/Show tabs based on data availability
-        const hasRaidData = aggregatedStats.totalRaids > 0;
         const hasRecognitions =
           member.recognitions &&
           Array.isArray(member.recognitions) &&
           member.recognitions.length > 0;
 
-        const raidsTab = document.getElementById('tab-raids');
         const recognitionsTab = document.getElementById('tab-recognitions');
-        const badgeRaids = document.getElementById('badge-raids');
         const badgeRecognitions = document.getElementById('badge-recognitions');
 
-        if (raidsTab) raidsTab.style.display = hasRaidData ? 'flex' : 'none';
         if (recognitionsTab) recognitionsTab.style.display = hasRecognitions ? 'flex' : 'none';
-
-        // Update badges
-        if (badgeRaids) {
-          if (hasRaidData) {
-            badgeRaids.textContent = aggregatedStats.totalRaids.toString();
-            badgeRaids.classList.remove('hidden');
-          } else {
-            badgeRaids.classList.add('hidden');
-          }
-        }
 
         if (badgeRecognitions) {
           if (hasRecognitions) {
@@ -3173,41 +3135,6 @@ const totalRaiders = rosterData.members.filter(
             badgeRecognitions.classList.remove('hidden');
           } else {
             badgeRecognitions.classList.add('hidden');
-          }
-        }
-
-        if (hasRaidData) {
-          // Populate Raids Tab
-          if (modalRaidSummary) {
-            modalRaidSummary.innerHTML = `
-              <div class="bg-gray-900/40 p-3 rounded-md border border-gray-700/30 text-center">
-                <p class="text-2xl font-bold text-white">${aggregatedStats.totalRaids}</p>
-                <p class="text-[10px] text-amber-300/70 uppercase font-medium">Total Raids</p>
-              </div>
-              <div class="bg-gray-900/40 p-3 rounded-md border border-gray-700/30 text-center">
-                <p class="text-2xl font-bold text-white">${Object.keys(aggregatedStats.byZone).length}</p>
-                <p class="text-[10px] text-amber-300/70 uppercase font-medium">Zonas Visitadas</p>
-              </div>
-            `;
-          }
-
-          if (modalZoneStats) {
-            modalZoneStats.innerHTML = `
-              <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Participación por Zona</p>
-              <div class="space-y-2">
-                ${Object.entries(aggregatedStats.byZone)
-                  .sort((a, b) => b[1] - a[1])
-                  .map(
-                    ([zone, count]) => `
-                    <div class="flex items-center justify-between bg-gray-900/30 px-3 py-2 rounded-md border border-gray-700/20">
-                      <span class="text-sm text-gray-300">${zone}</span>
-                      <span class="text-sm font-bold text-amber-400">${count}</span>
-                    </div>
-                  `
-                  )
-                  .join('')}
-              </div>
-            `;
           }
         }
 
@@ -3414,15 +3341,6 @@ const totalRaiders = rosterData.members.filter(
             const className = classData.name;
             const classColor = classData.color;
 
-            // Calculate raid stats for this member
-            const leaderData = member.leaderData || {};
-            let totalRaids = 0;
-
-            Object.values(leaderData).forEach((data) => {
-              const stats = data.raidStats || {};
-              totalRaids += stats.total || 0;
-            });
-
             return `
             <div class="group bg-gradient-to-br from-gray-900/60 to-gray-800/50 backdrop-blur-sm rounded-md p-1 sm:p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
                  style="border: 1px solid #${classColor}66;"
@@ -3446,18 +3364,7 @@ const totalRaiders = rosterData.members.filter(
                   `
                       : ''
                   }
-                  ${
-                    totalRaids > 0
-                      ? `
-                  <div class="px-1.5 py-0.5 rounded text-[9px] sm:text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1" title="${totalRaids} raids">
-                    <svg class="w-2 h-2 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                    </svg>
-                    <span>${totalRaids}</span>
-                  </div>
-                  `
-                      : ''
-                  }
+
                 </div>
                 
                 <div class="flex flex-col items-start pl-2">
@@ -3544,7 +3451,10 @@ const totalRaiders = rosterData.members.filter(
     class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 mb-20 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
   >
     <!-- Grid de miembros -->
-    <div id="roster-grid" class="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+    <div
+      id="roster-grid"
+      class="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+    >
       <!-- Los miembros se cargarán aquí dinámicamente -->
     </div>
 
@@ -3778,18 +3688,7 @@ const totalRaiders = rosterData.members.filter(
           >
             General
           </button>
-          <button
-            id="tab-raids"
-            class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
-            onclick="window.switchModalTab('raids')"
-          >
-            Raids
-            <span
-              id="badge-raids"
-              class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30"
-              >0</span
-            >
-          </button>
+
           <button
             id="tab-recognitions"
             class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
@@ -3819,15 +3718,6 @@ const totalRaiders = rosterData.members.filter(
               class="text-sm text-gray-300 bg-gray-900/50 p-3 rounded-md border border-gray-700/30 italic"
             >
             </p>
-          </div>
-        </div>
-
-        <div id="pane-raids" class="modal-pane hidden space-y-4">
-          <div id="modal-raid-summary" class="grid grid-cols-2 gap-4">
-            <!-- Summary cards -->
-          </div>
-          <div id="modal-zone-stats" class="space-y-2">
-            <!-- Zone list -->
           </div>
         </div>
 
@@ -3861,7 +3751,17 @@ const totalRaiders = rosterData.members.filter(
     <div
       class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
     >
-    <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>droplet-splash</title> <path d="M25.163 19.626c1.694 0.806 2.733 1.824 2.733 2.944 0 2.584-5.398 4.67-12.062 4.67s-12.062-2.085-12.062-4.67c0-1.12 1.039-2.138 2.733-2.944-3.211 1.041-5.284 2.617-5.284 4.365 0 3.13 6.54 5.685 14.613 5.685s14.613-2.555 14.613-5.685c0-1.748-2.073-3.325-5.284-4.365zM15.833 25.92c4.383 0 7.944-1.396 7.944-3.096 0-0.955-1.152-1.77-2.915-2.335 0.932 0.439 1.531 0.961 1.531 1.573 0 1.403-2.941 2.538-6.559 2.538s-6.559-1.135-6.559-2.538c0-0.613 0.598-1.134 1.531-1.574-1.763 0.565-2.915 1.38-2.915 2.335 0 1.7 3.561 3.096 7.944 3.096zM15.505 5.624c0 0.001 0 0.002 0 0.003 0-0.001 0-0.002 0-0.003l-0 0zM15.688 23.007c2.78 0 5.186-2.144 6.45-5.289-0.4 0.434-0.792 0.687-1.13 0.713-1.016 0.079-1.426-1.868-1.239-4.903-0.412 0.861-0.887 1.397-1.385 1.397-1.425 0-2.603-3.993-2.879-9.297-0.276 5.304-1.453 9.297-2.879 9.297-0.354 0-0.706-0.263-1.020-0.713 0.081 2.619-0.306 4.292-1.239 4.219-0.338-0.026-0.73-0.279-1.13-0.713 1.264 3.145 3.67 5.289 6.45 5.289zM16.968 2.756c0 0.84-0.681 1.52-1.52 1.52s-1.52-0.681-1.52-1.52c0-0.84 0.681-1.52 1.52-1.52s1.52 0.681 1.52 1.52z"></path> </g></svg>
+      <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+          id="SVGRepo_tracerCarrier"
+          stroke-linecap="round"
+          stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+          <title>droplet-splash</title>
+          <path
+            d="M25.163 19.626c1.694 0.806 2.733 1.824 2.733 2.944 0 2.584-5.398 4.67-12.062 4.67s-12.062-2.085-12.062-4.67c0-1.12 1.039-2.138 2.733-2.944-3.211 1.041-5.284 2.617-5.284 4.365 0 3.13 6.54 5.685 14.613 5.685s14.613-2.555 14.613-5.685c0-1.748-2.073-3.325-5.284-4.365zM15.833 25.92c4.383 0 7.944-1.396 7.944-3.096 0-0.955-1.152-1.77-2.915-2.335 0.932 0.439 1.531 0.961 1.531 1.573 0 1.403-2.941 2.538-6.559 2.538s-6.559-1.135-6.559-2.538c0-0.613 0.598-1.134 1.531-1.574-1.763 0.565-2.915 1.38-2.915 2.335 0 1.7 3.561 3.096 7.944 3.096zM15.505 5.624c0 0.001 0 0.002 0 0.003 0-0.001 0-0.002 0-0.003l-0 0zM15.688 23.007c2.78 0 5.186-2.144 6.45-5.289-0.4 0.434-0.792 0.687-1.13 0.713-1.016 0.079-1.426-1.868-1.239-4.903-0.412 0.861-0.887 1.397-1.385 1.397-1.425 0-2.603-3.993-2.879-9.297-0.276 5.304-1.453 9.297-2.879 9.297-0.354 0-0.706-0.263-1.020-0.713 0.081 2.619-0.306 4.292-1.239 4.219-0.338-0.026-0.73-0.279-1.13-0.713 1.264 3.145 3.67 5.289 6.45 5.289zM16.968 2.756c0 0.84-0.681 1.52-1.52 1.52s-1.52-0.681-1.52-1.52c0-0.84 0.681-1.52 1.52-1.52s1.52 0.681 1.52 1.52z"
+          ></path>
+        </g></svg
+      >
     </div>
     <div>
       <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
@@ -3870,19 +3770,27 @@ const totalRaiders = rosterData.members.filter(
           >Roster</span
         >
       </span>
-      <span class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1">
-        <span class="self-end">
-          Composición de la hermandad 
-        </span>
+      <span
+        class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+      >
+        <span class="self-end"> Composición de la hermandad </span>
       </span>
     </div>
   </div>
 </div>
 
 <!-- Estadísticas del Roster Superiores -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-20 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10" x-data>
+<div
+  class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-20 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+  x-data
+>
   <!-- Total de Miembros y Mains/Alts -->
-  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
+  <div
+    x-data="{ expanded: false }"
+    class="relative group"
+    :class="{ 'z-50': expanded, 'z-0': !expanded }"
+    x-cloak
+  >
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/50 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-2 hover:border-amber-500/60 transition-all duration-200"
@@ -3900,7 +3808,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-amber-300/90 uppercase tracking-wide">Miembros</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-amber-300/90 uppercase tracking-wide"
+            >
+              Miembros
+            </div>
             <span class="text-xl font-bold text-amber-200 italic">{stats.totalMembers || 0}</span>
           </div>
         </div>
@@ -3945,7 +3857,12 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Distribución de Roles -->
-  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
+  <div
+    x-data="{ expanded: false }"
+    class="relative group"
+    :class="{ 'z-50': expanded, 'z-0': !expanded }"
+    x-cloak
+  >
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md p-2 hover:border-blue-500/60 transition-all duration-200"
@@ -3963,7 +3880,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-blue-300/90 uppercase tracking-wide">Roles</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-blue-300/90 uppercase tracking-wide"
+            >
+              Roles
+            </div>
             <span class="text-xl font-bold text-blue-200 italic">
               {Object.values(roleStats).reduce((a, b) => a + b, 0) || 0}
             </span>
@@ -4014,7 +3935,12 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Roles Duales -->
-  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
+  <div
+    x-data="{ expanded: false }"
+    class="relative group"
+    :class="{ 'z-50': expanded, 'z-0': !expanded }"
+    x-cloak
+  >
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md p-2 hover:border-purple-500/60 transition-all duration-200"
@@ -4036,7 +3962,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-purple-300/90 uppercase tracking-wide">Duales</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-purple-300/90 uppercase tracking-wide"
+            >
+              Duales
+            </div>
             <span class="text-xl font-bold text-purple-200 italic">
               {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
             </span>
@@ -4093,7 +4023,12 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Gear Score -->
-  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
+  <div
+    x-data="{ expanded: false }"
+    class="relative group"
+    :class="{ 'z-50': expanded, 'z-0': !expanded }"
+    x-cloak
+  >
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-green-600/40 rounded-md p-2 hover:border-green-500/60 transition-all duration-200"
@@ -4111,7 +4046,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-green-300/90 uppercase tracking-wide">GearScore</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-green-300/90 uppercase tracking-wide"
+            >
+              GearScore
+            </div>
             <span class="text-xl font-bold text-green-200 italic">
               {averageGearScore !== 'N/A' ? averageGearScore : 'N/A'}
             </span>
@@ -4161,7 +4100,12 @@ const totalRaiders = rosterData.members.filter(
     </div>
   </div>
   <!-- Distribución de Clases -->
-  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
+  <div
+    x-data="{ expanded: false }"
+    class="relative group"
+    :class="{ 'z-50': expanded, 'z-0': !expanded }"
+    x-cloak
+  >
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-cyan-600/40 rounded-md p-2 hover:border-cyan-500/60 transition-all duration-200"
@@ -4179,7 +4123,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-cyan-300/90 uppercase tracking-wide">Clases</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-cyan-300/90 uppercase tracking-wide"
+            >
+              Clases
+            </div>
             <span class="text-xl font-bold text-cyan-200 italic">{classDistribution.length}</span>
           </div>
         </div>
@@ -4243,7 +4191,12 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Distribución de Rangos -->
-  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
+  <div
+    x-data="{ expanded: false }"
+    class="relative group"
+    :class="{ 'z-50': expanded, 'z-0': !expanded }"
+    x-cloak
+  >
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-indigo-600/40 rounded-md p-2 hover:border-indigo-500/60 transition-all duration-200"
@@ -4266,7 +4219,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-indigo-300/90 uppercase tracking-wide">Rangos</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-indigo-300/90 uppercase tracking-wide"
+            >
+              Rangos
+            </div>
             <span class="text-xl font-bold text-indigo-200 italic">{rankDistribution.length}</span>
           </div>
         </div>
@@ -4342,7 +4299,9 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-emerald-300/90 uppercase tracking-wide">
+            <div
+              class="text-[10px] md:text-xs font-medium text-emerald-300/90 uppercase tracking-wide"
+            >
               Profesiones
             </div>
             <span class="text-xl font-bold text-emerald-200 italic">
@@ -4422,7 +4381,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-orange-300/90 uppercase tracking-wide">Razas</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-orange-300/90 uppercase tracking-wide"
+            >
+              Razas
+            </div>
             <span class="text-xl font-bold text-orange-200 italic">
               {raceDistribution.filter((i) => i.name !== 'No Censada').length}
             </span>
@@ -4477,7 +4440,12 @@ const totalRaiders = rosterData.members.filter(
   </div>
 
   <!-- Distribución por Facción -->
-  <div x-data="{ expanded: false }" class="relative group" :class="{ 'z-50': expanded, 'z-0': !expanded }" x-cloak>
+  <div
+    x-data="{ expanded: false }"
+    class="relative group"
+    :class="{ 'z-50': expanded, 'z-0': !expanded }"
+    x-cloak
+  >
     <div
       @click="expanded = !expanded"
       class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-rose-600/40 rounded-md p-2 hover:border-rose-500/60 transition-all duration-200"
@@ -4495,7 +4463,11 @@ const totalRaiders = rosterData.members.filter(
         </div>
         <div class="flex items-center space-x-2">
           <div class="text-center">
-            <div class="text-[10px] md:text-xs font-medium text-rose-300/90 uppercase tracking-wide">Facciones</div>
+            <div
+              class="text-[10px] md:text-xs font-medium text-rose-300/90 uppercase tracking-wide"
+            >
+              Facciones
+            </div>
             <span class="text-xl font-bold text-rose-200 italic">
               {factionDistribution.filter((i) => i.name !== 'No Censada').length}
             </span>

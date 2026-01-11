@@ -182,13 +182,7 @@ const initialPlayers = featuredPlayers.slice(
         };
         const playerString = JSON.stringify(playerDataForModal);
 
-        // Calculate raid stats for this member
-        const leaderData = playerData.leaderData || {};
-        let totalRaids = 0;
-        Object.values(leaderData).forEach((data: any) => {
-          const stats = data.raidStats || {};
-          totalRaids += stats.total || 0;
-        });
+
 
         // Use the total historical recognition count for the badge
         const recognitionCount = playerRecognitions.length;
@@ -216,14 +210,7 @@ const initialPlayers = featuredPlayers.slice(
                   <span>{recognitionCount}</span>
                 </div>
               )}
-              {totalRaids > 0 && (
-                <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1" title={`${totalRaids} raids`}>
-                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                  </svg>
-                  <span>{totalRaids}</span>
-                </div>
-              )}
+
               
               <!-- Expand Button -->
               <button 
@@ -429,13 +416,7 @@ const initialPlayers = featuredPlayers.slice(
     };
     const playerString = JSON.stringify(playerDataForModal);
 
-    // Calculate raid stats for this member
-    const leaderData = playerData.leaderData || {};
-    let totalRaids = 0;
-    Object.values(leaderData).forEach((data) => {
-      const stats = data.raidStats || {};
-      totalRaids += stats.total || 0;
-    });
+
 
     const recognitionCount = featuredRecognitions.length;
 
@@ -480,14 +461,7 @@ const initialPlayers = featuredPlayers.slice(
               <span>${recognitionCount}</span>
             </div>
           ` : ''}
-          ${totalRaids > 0 ? `
-            <div class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1" title="${totalRaids} raids">
-              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-              </svg>
-              <span>${totalRaids}</span>
-            </div>
-          ` : ''}
+
           <button 
             @click.stop="expanded = !expanded"
             class="expand-button p-1 rounded bg-gray-800/50 border border-amber-600/30 text-amber-400 hover:text-amber-200 hover:border-amber-500/50 transition-all"
