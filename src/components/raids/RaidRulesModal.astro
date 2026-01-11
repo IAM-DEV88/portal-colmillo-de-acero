@@ -8,78 +8,86 @@ interface Props {
 const { raidName, rules, minGS } = Astro.props;
 ---
 
+<div
+  id="raid-rules-modal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-300"
+  aria-hidden="true"
+  aria-modal="true"
+  role="dialog"
+  onclick="if(event.target === this) window.closeRaidRulesModal()"
+>
   <div
-    id="raid-rules-modal"
-    class="fixed inset-0 z-[12] hidden items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-300"
-    aria-hidden="true"
-    aria-modal="true"
-    role="dialog"
+    class="relative w-full max-w-2xl mx-4 bg-gray-900 border border-amber-600/20 rounded-xl shadow-2xl shadow-amber-900/20 transform transition-all duration-300 scale-95 overflow-hidden"
   >
+    <!-- Header con gradiente -->
     <div
-      class="relative w-full max-w-2xl mx-4 bg-gray-900 border border-amber-600/20 rounded-xl shadow-2xl shadow-amber-900/20 transform transition-all duration-300 scale-95 overflow-hidden"
+      class="bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-4 flex justify-between items-center border-b border-amber-600/30"
     >
-      <!-- Header con gradiente -->
-      <div class="bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-4 flex justify-between items-center border-b border-amber-600/30">
-        <h2 class="text-xl md:text-2xl font-bold text-white flex items-center">
-          <span data-js-id="modal-raid-name" class="mr-2"></span>
-          <span data-js-id="modal-raid-gs" class="text-amber-500 text-base md:text-lg font-mono not-italic"></span>
-        </h2>
-        <button
-          class="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-          aria-label="Cerrar modal"
-          onclick="window.closeRaidRulesModal()"
+      <h2 class="text-xl md:text-2xl font-bold text-white flex items-center">
+        <span data-js-id="modal-raid-name" class="mr-2"></span>
+        <span
+          data-js-id="modal-raid-gs"
+          class="text-amber-500 text-base md:text-lg font-mono not-italic"></span>
+      </h2>
+      <button
+        class="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+        aria-label="Cerrar modal"
+        onclick="window.closeRaidRulesModal()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 md:h-6 md:w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 md:h-6 md:w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2.5"
-              d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.5"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
 
-      <!-- Contenido de las reglas -->
-      <div class="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar bg-gray-900/50">
-        <div class="prose prose-invert max-w-none md:columns-2 md:gap-6">
-          <span data-js-id="modal-raid-rules" class="text-gray-300 text-sm md:text-base leading-relaxed whitespace-pre-line font-medium selection:bg-amber-500/30">
-          </span>
+    <!-- Contenido de las reglas -->
+    <div class="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar bg-gray-900/50">
+      <div class="prose prose-invert max-w-none md:columns-2 md:gap-6">
+        <div
+          data-js-id="modal-raid-rules"
+          class="text-gray-300 text-sm md:text-base leading-relaxed font-medium selection:bg-amber-500/30 space-y-2"
+        >
         </div>
       </div>
+    </div>
 
-      <!-- Footer decorativo -->
-      <div class="bg-gray-800/30 px-6 py-3 border-t border-white/5 flex justify-end">
-        <button
-          onclick="window.closeRaidRulesModal()"
-          class="px-4 py-1.5 bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold rounded-lg transition-colors"
-        >
-          Cerrar
-        </button>
-      </div>
+    <!-- Footer decorativo -->
+    <div class="bg-gray-800/30 px-6 py-3 border-t border-white/5 flex justify-end">
+      <button
+        onclick="window.closeRaidRulesModal()"
+        class="px-4 py-1.5 bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold rounded-lg transition-colors"
+      >
+        Cerrar
+      </button>
     </div>
   </div>
+</div>
 
-  <style>
-    .prose.md\:columns-2 {
-      column-rule: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria sutil */
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(31, 41, 55, 0.5);
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(180, 83, 9, 0.5);
-      border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(180, 83, 9, 0.8);
-    }
-  </style>
+<style>
+  .prose.md\:columns-2 {
+    column-rule: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria sutil */
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.5);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(180, 83, 9, 0.5);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(180, 83, 9, 0.8);
+  }
+</style>

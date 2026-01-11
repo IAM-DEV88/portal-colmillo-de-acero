@@ -555,7 +555,7 @@ try {
       
       // Look for the player in the roster data to get additional info
       const rosterPlayer = Object.values(rosterData.players).find(
-        (p: any) => p.name.toLowerCase() === reg.player_name.toLowerCase()
+        (p: any) => p.name.trim().toLowerCase() === reg.player_name.trim().toLowerCase()
       ) as any;
       
       schedule.players.push({
@@ -656,15 +656,32 @@ try {
         
         // Procesar y formatear las reglas
         if (rulesEl && rules) {
-          const formattedRules = rules.split('\n').map((rule, index) => {
-            const colonIndex = rule.indexOf(':');
-            if (colonIndex !== -1) {
-              const beforeColon = rule.substring(0, colonIndex);
-              const afterColon = rule.substring(colonIndex);
-              return `<span class="block">${index + 1}. <span class="font-bold text-amber-400">${beforeColon}</span>${afterColon}</span>`;
-            }
-            return `<span class="block">${index + 1}. ${rule}</span>`;
-          }).join(''); // Unir sin <br> ya que cada span es block
+          const formattedRules = rules.split('\n')
+            .filter(line => line.trim() !== '')
+            .map((rule, index) => {
+              // Clean up any existing numbering at the start
+              const cleanRule = rule.replace(/^\d+[\.\-]\s*/, '').trim();
+              
+              const colonIndex = cleanRule.indexOf(':');
+              let content = '';
+              
+              if (colonIndex !== -1) {
+                const beforeColon = cleanRule.substring(0, colonIndex);
+                const afterColon = cleanRule.substring(colonIndex + 1);
+                content = `<span class="font-bold text-amber-400">${beforeColon}:</span>${afterColon}`;
+              } else {
+                content = cleanRule;
+              }
+
+              return `
+                <div class="flex gap-3 mb-3 p-2 rounded hover:bg-white/5 transition-colors">
+                  <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold font-mono">
+                    ${index + 1}
+                  </span>
+                  <span class="text-gray-300">${content}</span>
+                </div>
+              `;
+            }).join('');
           rulesEl.innerHTML = formattedRules;
         }
         
@@ -1846,8 +1863,8 @@ try {
     </div>
   </div>
 
-  <RaidRulesModal />
-</Layout>
+  <Fragment slot="modals">
+    <RaidRulesModal />
 
 <!-- Raid Leaders Modal -->
 <div
@@ -1974,7 +1991,8 @@ try {
     </div>
   </div>
 </div>
-
+  </Fragment>
+</Layout>
 <script is:inline>
   // Raid Leaders and Regular Players Modal Functions
   document.addEventListener('DOMContentLoaded', function () {
