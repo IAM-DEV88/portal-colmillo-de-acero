@@ -1193,6 +1193,18 @@ try {
                                                       </button>
                                                     </div>
                                                   </div>
+                                                  
+                                                  {/* Warning for raids without leaders */}
+                                                  {!schedulePlayers.some(p => ['raid_leader', 'lider_raid'].includes(p.raid_role)) && (
+                                                    <div class="bg-yellow-900/30 border border-yellow-500/50 p-2 rounded-md mt-2">
+                                                      <p class="text-yellow-300 text-xs font-medium">⚠️ ADVERTENCIA</p>
+                                                      <p class="text-yellow-200 text-xs">Esta raid no tiene líderes asignados.</p>
+                                                      <p class="text-yellow-100 text-xs mt-1">
+                                                        <span class="font-medium">¿Quieres liderarla?</span> Inscríbete como <span class="font-bold text-amber-400">Raid Leader</span> en el formulario de registro.
+                                                      </p>
+                                                    </div>
+                                                  )}
+                                                  
                                                   {/* Role Selection Buttons */}
                                                   <div class="mt-3 pt-3 border-t border-gray-700/50">
                                                     <div class="grid grid-cols-4 gap-2">
@@ -1526,6 +1538,10 @@ try {
                       <option value="asistente" selected>Asistente</option>
                       <option value="raid_leader">Raid Leader</option>
                     </select>
+                    <div class="text-xs text-gray-400 mt-1">
+                      <p>La opción Raid Leader te convierte en responsable de la organización de la raid. Requiere experiencia previa en raids y conocimiento de las mecánicas.</p>
+                      <p class="mt-1 text-amber-400">¡Únete como Raid Leader si quieres liderar las raids de tu comunidad!</p>
+                    </div>
                   </div>
 
                   <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
