@@ -1615,6 +1615,9 @@ try {
                 return timeA.localeCompare(timeB);
               });
 
+            // Only show the day if there are schedules for it
+            if (daySchedules.length === 0) return null;
+
             return (
               <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
                 <div class="bg-gray-800/80 p-2 text-center border-b border-gray-700/50">
@@ -2418,7 +2421,8 @@ try {
     const legendEl = document.getElementById('raid-leaders-legend');
     if (legendEl) {
       legendEl.innerHTML = `
-        <div class="flex items-center gap-2 group cursor-help" title="Líderes de Banda">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-3">
+          <div class="flex items-center gap-2 group cursor-help" title="Líderes de Banda">
           <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-amber-500/10 rounded-full border border-amber-500/30 shadow-[0_0_10px_rgba(251,191,36,0.2)]">
             <svg class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.8)]" fill="currentColor" viewBox="0 0 32 32">
               <path d="M29.273 22.896l1.593 0.252-0.945-1.164 0.012-0.017h-0.026l-13.872-17.076-4.264 3.134-11.224-6.487v2.104l11.552 6.678 3.535-2.587 10.094 12.463-15.852-2.514 0.51-4.446-9.839-5.694v2.196l3.626 2.097 1.388 6.633 1.083-5.204 1.592 0.92-0.62 5.284 0.019 0.003 1.425 7.753 0.667-3.645 1.245 7.298 1.773-10.45 1.347 7.328 1.269-6.937 1.105 2.248 0.998-2.040 1.175 0.186 1.376 8.297 1.3-7.874 0.799 0.126 1.531 3.931 0.922-2.379 1.129 6.14 1.099-6.008 1.047 1.466z"></path>
@@ -2429,8 +2433,7 @@ try {
             <span class="text-[8px] font-black text-amber-200/50 uppercase tracking-tighter">Líderes</span>
           </div>
         </div>
-        <div class="w-[1px] h-4 bg-gray-700/50 self-center"></div>
-        <div class="flex items-center gap-2 group cursor-help" title="Miembros de Hermandad">
+          <div class="flex items-center gap-2 group cursor-help" title="Miembros de Hermandad">
           <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-purple-500/10 rounded-full border border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]">
             <svg class="w-3.5 h-3.5 text-purple-400 drop-shadow-[0_0_5px_rgba(168,85,247,0.8)]" fill="currentColor" viewBox="0 0 32 32">
               <path d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"></path>
@@ -2441,8 +2444,7 @@ try {
             <span class="text-[8px] font-black text-purple-200/50 uppercase tracking-tighter">Hermandad</span>
           </div>
         </div>
-        <div class="w-[1px] h-4 bg-gray-700/50 self-center"></div>
-        <div class="flex items-center gap-2 group cursor-help" title="Sancionados">
+          <div class="flex items-center gap-2 group cursor-help" title="Sancionados">
           <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-red-500/10 rounded-full border border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
             <svg class="w-3.5 h-3.5 text-red-400 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]" fill="currentColor" viewBox="0 0 32 32">
               <path d="M31.155 18.938c0-6.615-2.188-14.287-7.774-17.897l-0-0-1.472 2.277c1.418 0.873 2.163 1.681 2.882 3.109-0.497 0.689-0.87 1.521-1.182 2.46 0.254 0.566 0.438 1.576 0.439 2.245l-2.24-0.366-1.934 2.123-1.555-3.185c-2.045 2.515-2.658 3.571-5.821 3.356l-0.894-2.757-3.188 0.618c0 0-0.581-3.176-1.557-3.887 0.274-1.145 1.090-2.159 2.579-3.071l-1.414-2.619c-5.176 3.629-7.281 10.84-7.281 17.594 5.797 2.916 7.527 6.229 7.205 9.745 0.864 0.487 1.758 0.97 2.806 1.251 1.433 0.384 2.97 0.569 4.55 0.569s3.199-0.184 4.702-0.569c1.361-0.348 2.595-0.892 3.716-1.555-0.050-3.421 1.814-6.8 7.432-9.441zM11.72 20.697c-1.763 1.018-3.823 0.757-4.585-0.563-0.435-0.754-0.341-1.688 0.134-2.547l-0-0c0.801-0.014 1.745-0.175 2.762-0.563 0.969-0.37 1.876-0.877 2.601-1.421 0.374 0.197 0.701 0.493 0.912 0.858 0.762 1.32-0.060 3.218-1.823 4.236zM13.42 27.085c0.616-2.254 1.356-4.509 2.529-6.763 0-0-0-0-0-0h0c0 0-0 0-0 0 1.156 2.254 2.074 4.509 2.529 6.763-1.686-0.514-3.372-0.583-5.058 0zM24.757 20.134c-0.762 1.32-2.822 1.581-4.585 0.563s-2.586-2.916-1.823-4.236c0.211-0.365 0.537-0.661 0.912-0.858 0.724 0.544 1.632 1.051 2.601 1.421 1.017 0.389 1.961 0.549 2.762 0.563l-0 0c0.475 0.859 0.569 1.793 0.134 2.547zM6.584 7.391c0.33-0.871 0.554-1.926 1.621-2.612zM25.137 6.748c-0.363-0.688-0.965-1.891-1.689-2.431z"></path>
@@ -2453,8 +2455,7 @@ try {
             <span class="text-[8px] font-black text-red-200/50 uppercase tracking-tighter">Sancionados</span>
           </div>
         </div>
-        <div class="w-[1px] h-4 bg-gray-700/50 self-center"></div>
-        <div class="flex items-center gap-2 group cursor-help" title="Posada">
+          <div class="flex items-center gap-2 group cursor-help" title="Posada">
           <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-blue-500/10 rounded-full border border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
             <svg class="w-3.5 h-3.5 text-blue-400 drop-shadow-[0_0_5px_rgba(59,130,246,0.8)]" fill="currentColor" viewBox="0 0 32 32">
               <path d="M15.474 1.384c-1.851 0.24-3.295 2.252-3.295 4.679 0 1.344 0.461 2.545 1.171 3.401-3.849 0.723-4.14 7.203-4.14 11.753h2.669l0.708 9.494h6.781l0.626-9.494h2.533c0-4.562 0.092-11.156-4.112-11.807 0.68-0.852 1.117-2.035 1.117-3.346 0-2.589-1.65-4.679-3.677-4.679-0.127 0-0.258-0.016-0.381 0l0-0zM21.163 1.355c2.027 0 3.681 2.075 3.681 4.665 0 1.311-0.45 2.501-1.13 3.353 4.204 0.651 4.118 7.245 4.118 11.807h-2.514l-0.656 9.511h-3.936l0.619-9.511h2.551c0-4.562 0.086-11.156-4.118-11.807 0.68-0.851 1.13-2.041 1.13-3.353 0-1.662-0.69-3.106-1.713-3.936 0.472-0.389 0.98-0.653 1.567-0.729 0.123-0.016 0.274 0 0.401 0zM12.542 2.084c-1.017 0.838-1.713 2.278-1.713 3.936 0 1.345 0.456 2.57 1.166 3.426-3.849 0.723-4.118 7.185-4.118 11.734h2.66l0.692 9.511h-3.936l-0.692-9.511h-2.697c0-4.549 0.306-11.011 4.154-11.734-0.71-0.856-1.166-2.081-1.166-3.426 0-2.427 1.429-4.424 3.28-4.665 0.123-0.016 0.274 0 0.401 0 0.726 0 1.397 0.266 1.968 0.729z"></path>
