@@ -50,15 +50,26 @@
         },
         {
           "playerName": "mivase",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
+        },{
+          "playerName": "Nivalor",
+          "recognitionIndices": [4]
         },
         {
           "playerName": "angelesm",
           "recognitionIndices": [3, 4]
         },
         {
+          "playerName": "Laurisbel",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Semevaelagro",
+          "recognitionIndices": [4]
+        },
+        {
           "playerName": "durotedark",
-          "recognitionIndices": [3]
+          "recognitionIndices": [4]
         }
       ]
     }
