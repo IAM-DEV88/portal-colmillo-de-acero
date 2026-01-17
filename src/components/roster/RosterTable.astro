@@ -9,16 +9,28 @@ const { initialRosterData: rosterDataFromProps = [] } = Astro.props;
 
 // Define default class info with TypeScript type
 const defaultClassInfo: Record<string, { name: string; color: string }> = {
-  Guerrero: { color: 'C79C6E', name: 'Guerrero' },
-  Paladín: { color: 'F58CBA', name: 'Paladín' },
-  Cazador: { color: 'ABD473', name: 'Cazador' },
-  Pícaro: { color: 'FFF569', name: 'Pícaro' },
-  Sacerdote: { color: 'FFFFFF', name: 'Sacerdote' },
+  // English class names
+  'Warrior': { color: 'C79C6E', name: 'Guerrero' },
+  'Paladin': { color: 'F58CBA', name: 'Paladín' },
+  'Hunter': { color: 'ABD473', name: 'Cazador' },
+  'Rogue': { color: 'FFF569', name: 'Pícaro' },
+  'Priest': { color: 'FFFFFF', name: 'Sacerdote' },
+  'Death Knight': { color: 'C41F3B', name: 'Caballero de la Muerte' },
+  'Shaman': { color: '0070DE', name: 'Chamán' },
+  'Mage': { color: '69CCF0', name: 'Mago' },
+  'Warlock': { color: '9482C9', name: 'Brujo' },
+  'Druid': { color: 'FF7D0A', name: 'Druida' },
+  // Keep Spanish class names for backward compatibility
+  'Guerrero': { color: 'C79C6E', name: 'Guerrero' },
+  'Paladín': { color: 'F58CBA', name: 'Paladín' },
+  'Cazador': { color: 'ABD473', name: 'Cazador' },
+  'Pícaro': { color: 'FFF569', name: 'Pícaro' },
+  'Sacerdote': { color: 'FFFFFF', name: 'Sacerdote' },
   'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
-  Chamán: { color: '0070DE', name: 'Chamán' },
-  Mago: { color: '69CCF0', name: 'Mago' },
-  Brujo: { color: '9482C9', name: 'Brujo' },
-  Druida: { color: 'FF7D0A', name: 'Druida' },
+  'Chamán': { color: '0070DE', name: 'Chamán' },
+  'Mago': { color: '69CCF0', name: 'Mago' },
+  'Brujo': { color: '9482C9', name: 'Brujo' },
+  'Druida': { color: 'FF7D0A', name: 'Druida' },
 };
 
 // Import types and constants from roster types
@@ -194,7 +206,7 @@ const processRosterMember = (member: any): RosterMemberType => {
           member.rank &&
           (member.rank.toLowerCase().includes('guild master') ||
             member.rank.toLowerCase().includes('alter'))
-            ? 'General Admin'
+            ? 'Administrador'
             : member.rank || 'Miembro',
         publicNote: member.publicNote || '',
         officerNote: member.officerNote || '',
@@ -209,15 +221,47 @@ const processRosterMember = (member: any): RosterMemberType => {
           member.rank &&
           (member.rank.toLowerCase().includes('guild master') ||
             member.rank.toLowerCase().includes('alter'))
-            ? 'General Admin'
+            ? 'Administrador'
             : member.rank || 'Miembro',
       };
 
-  const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).includes(
-    memberData.class
-  )
-    ? (memberData.class as keyof typeof defaultClassInfo)
-    : ('Desconocido' as const);
+  // Normalize class name - handle both uppercase and mixed case
+  const normalizeClassName = (name: string): string => {
+    if (!name) return '';
+    
+    // First, try to find a direct match in defaultClassInfo (case insensitive)
+    const directMatch = Object.keys(defaultClassInfo).find(
+      key => key.toLowerCase() === name.trim().toLowerCase()
+    );
+    
+    if (directMatch) return directMatch;
+    
+    // If no direct match, try to normalize the name
+    const lowerName = name.trim().toLowerCase();
+    
+    // Special case for 'deathknight' (sometimes comes as one word)
+    if (lowerName === 'deathknight' || lowerName === 'death knight') {
+      return 'Death Knight';
+    }
+    
+    // For other cases, capitalize first letter of each word
+    return lowerName
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  const normalizedClassName = normalizeClassName(memberData.class || '');
+  
+  // Find the class in defaultClassInfo (case insensitive)
+  const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).find(
+    key => key.toLowerCase() === normalizedClassName.toLowerCase()
+  ) || 'Desconocido';
+  
+  // Debug log for troubleshooting
+  if (memberData.class && className === 'Desconocido') {
+    console.log('Unknown class:', memberData.class, 'Normalized:', normalizedClassName);
+  }
 
   // Ensure mainAlt is either 'M' or 'A'
   const mainAlt =
@@ -3209,7 +3253,7 @@ const totalRaiders = rosterData.members.filter(
               const getRankPriority = (rank) => {
                 const rankLower = rank?.toLowerCase() || '';
                 if (rankLower.includes('oficial')) return 0;
-                if (rankLower.includes('general admin')) return 1;
+                if (rankLower.includes('administrador')) return 1;
                 if (rankLower.includes('explorador')) return 2;
                 if (rankLower.includes('iniciado')) return 3;
                 if (rankLower.includes('aspirante')) return 4;

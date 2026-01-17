@@ -11,74 +11,31 @@ def get_val(key, text):
     if m: return int(m.group(1))
     return None
 
-def extract_lua_table(text, start_pattern):
-    match = re.search(start_pattern, text)
-    if not match:
-        return None
-    
-    start_index = match.end() - 1 # Position of '{'
-    balance = 1
-    current_index = start_index
-    while current_index < len(text) - 1 and balance > 0:
-        current_index += 1
-        if text[current_index] == '{':
-            balance += 1
-        elif text[current_index] == '}':
-            balance -= 1
-    
-    if balance == 0:
-        return text[start_index : current_index + 1]
-    return None
-
-def get_boss_kills_stats(text):
-    """Parses the bossKills section of raidStats."""
-    if not text:
-        return {}
-    
-    boss_kills = {}
-    # Find all boss entries: ["Boss Name"] = { ... }
-    boss_blocks = re.findall(r'\["([^"]+)"\]\s*=\s*\{([^}]+)\}', text, re.DOTALL)
-    
-    for boss_name, block_content in boss_blocks:
-        boss_kills[boss_name] = {}
-        # Match different Lua formats for counts:
-        # 1. 10, -- [1] (Index-based, usually difficulty IDs)
-        # 2. [2] = 5 (Explicit index-based)
-        # 3. ["Normal"] = 2 (Explicit name-based)
-        diff_matches = re.findall(r'(?:(\d+),\s*--\s*\[(\d+)\]|\s*\[(\d+)\]\s*=\s*(\d+)|\s*\["([^"]+)"\]\s*=\s*(\d+))', block_content)
-        
-        for m in diff_matches:
-            val1, idx1, idx2, val2, name3, val3 = m
-            if val1 and idx1:
-                boss_kills[boss_name][idx1] = int(val1)
-            elif idx2 and val2:
-                boss_kills[boss_name][idx2] = int(val2)
-            elif name3 and val3:
-                boss_kills[boss_name][name3] = int(val3)
-                
-    return boss_kills
-
 def get_raid_stats(text):
-    stats = {"byZone": {}, "total": 0, "bossKills": {}}
+    stats = {"byZone": {}, "total": 0}
     
-    if not text:
-        return stats
+    print(f"DEBUG: get_raid_stats input text (first 200 chars): {text[:200]}")
 
     # Total
-    total_match = re.search(r'\["total"\]\s*=\s*(-?\d+)', text)
+    print(f"DEBUG: Attempting to find 'total' in text (first 200 chars): {text[:200]}")
+    total_match = re.search(r'\s*\["total"\]\s*=\s*(-?\d+)', text)
     if total_match:
-        stats["total"] = int(total_match.group(1))
+        total = int(total_match.group(1))
+        stats["total"] = total
+        print(f"DEBUG: Total found: {total}")
+    else:
+        print(f"DEBUG: No total match found for pattern: {'\\s*\\["total"\\]\\s*=\\s*(-?\\d+)'}")
         
     # byZone
-    bz_block = extract_lua_table(text, r'\["byZone"\]\s*=\s*\{')
-    if bz_block:
-        zones = re.findall(r'\["([^"]+)"\]\s*=\s*(\d+)', bz_block)
+    print(f"DEBUG: Attempting to find 'byZone' in text (first 200 chars): {text[:200]}")
+    bz_match = re.search(r'\s*\["byZone"\]\s*=\s*\{(.*?)\}', text, re.DOTALL)
+    if bz_match:
+        print(f"DEBUG: byZone match found. Group 1 (first 100 chars): {bz_match.group(1)[:100]}")
+        zones = re.findall(r'\["([^"]+)"\]\s*=\s*(\d+)', bz_match.group(1))
         for z, v in zones: stats["byZone"][z] = int(v)
-
-    # bossKills
-    bk_block = extract_lua_table(text, r'\["bossKills"\]\s*=\s*\{')
-    if bk_block:
-        stats["bossKills"] = get_boss_kills_stats(bk_block)
+        print(f"DEBUG: byZone stats: {stats['byZone']}")
+    else:
+        print(f"DEBUG: No byZone match found for pattern: {'\\s*\\["byZone"\\]\\s*=\\s*\\{(.*?)\\}'}")
 
     return stats
             
@@ -91,27 +48,28 @@ def lua_to_json(lua_file, json_file):
         return
 
     # 1. Extract Guild Header Info
-    guild_block = extract_lua_table(content, r'\["Guild"\]\s*=\s*\{')
-    if not guild_block:
+    guild_match = re.search(r'\["Guild"\]\s*=\s*\{(.*?)\s*\["memberList"\]', content, re.DOTALL)
+    if not guild_match:
         print("❌ No se encontró la sección Guild")
         return
     
-    current_last_update = get_val("lastUpdate", guild_block)
-    generated_by = get_val("generatedBy", guild_block)
+    guild_header = guild_match.group(1)
+    current_last_update = get_val("lastUpdate", guild_header)
+    generated_by = get_val("generatedBy", guild_header)
     
     if current_last_update is None or generated_by is None:
         print("❌ No se pudo extraer lastUpdate o generatedBy")
         return
 
     # 2. Extract Members
-    member_list_block = extract_lua_table(guild_block, r'\["memberList"\]\s*=\s*\{')
-    if not member_list_block:
+    start_match = re.search(r'\["memberList"\]\s*=\s*\{', content)
+    if not start_match:
         print("❌ No se encontró memberList")
         return
     
+    start_pos = start_match.end()
     # Find all member blocks ending with }, -- [index]
-    # We search within member_list_block to avoid picking up members from other sections like ["Core"]
-    member_blocks = re.findall(r'\{.*?\n\s*\}, -- \[\d+\]', member_list_block, re.DOTALL)
+    member_blocks = re.findall(r'\{.*?\n\s*\}, -- \[\d+\]', content[start_pos:], re.DOTALL)
     
     if not member_blocks:
         print("❌ No se encontraron bloques de miembros")
@@ -123,8 +81,25 @@ def lua_to_json(lua_file, json_file):
     for block in member_blocks:
         name = get_val("name", block)
         if not name: continue
+        print(f"DEBUG: Processing member: {name}")
+        print(f"DEBUG: Full member block for {name} (first 500 chars): {block[:500]}")
         
-        raid_stats_block = extract_lua_table(block, r'\["raidStats"\]\s*=\s*\{') or ""
+        # Regex to capture the entire raidStats block, handling nested curly braces
+        raid_stats_start_match = re.search(r'\["raidStats"\]\s*=\s*\{', block)
+        if raid_stats_start_match:
+            start_index = raid_stats_start_match.end() - 1 # Adjust to include the opening brace
+            balance = 1
+            current_index = start_index
+            while current_index < len(block) and balance > 0:
+                current_index += 1
+                if block[current_index] == '{':
+                    balance += 1
+                elif block[current_index] == '}':
+                    balance -= 1
+            raid_stats_block = block[start_index:current_index+1]
+        else:
+            raid_stats_block = ""
+        print(f"DEBUG: raid_stats_block for {name} (first 200 chars): {raid_stats_block[:200]}")
         
         member = {
             "name": name,

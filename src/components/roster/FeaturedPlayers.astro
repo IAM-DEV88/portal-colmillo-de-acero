@@ -45,16 +45,54 @@ const {
 
 // Definir la información de clases por defecto
 const defaultClassInfo: Record<string, ClassInfo> = {
-  Guerrero: { color: 'C79C6E', name: 'Guerrero' },
-  Paladín: { color: 'F58CBA', name: 'Paladín' },
-  Cazador: { color: 'ABD473', name: 'Cazador' },
-  Pícaro: { color: 'FFF569', name: 'Pícaro' },
-  Sacerdote: { color: 'FFFFFF', name: 'Sacerdote' },
+  // English class names
+  'Warrior': { color: 'C79C6E', name: 'Guerrero' },
+  'Paladin': { color: 'F58CBA', name: 'Paladín' },
+  'Hunter': { color: 'ABD473', name: 'Cazador' },
+  'Rogue': { color: 'FFF569', name: 'Pícaro' },
+  'Priest': { color: 'FFFFFF', name: 'Sacerdote' },
+  'Death Knight': { color: 'C41F3B', name: 'Caballero de la Muerte' },
+  'Shaman': { color: '0070DE', name: 'Chamán' },
+  'Mage': { color: '69CCF0', name: 'Mago' },
+  'Warlock': { color: '9482C9', name: 'Brujo' },
+  'Druid': { color: 'FF7D0A', name: 'Druida' },
+  // Keep Spanish class names for backward compatibility
+  'Guerrero': { color: 'C79C6E', name: 'Guerrero' },
+  'Paladín': { color: 'F58CBA', name: 'Paladín' },
+  'Cazador': { color: 'ABD473', name: 'Cazador' },
+  'Pícaro': { color: 'FFF569', name: 'Pícaro' },
+  'Sacerdote': { color: 'FFFFFF', name: 'Sacerdote' },
   'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
-  Chamán: { color: '0070DE', name: 'Chamán' },
-  Mago: { color: '69CCF0', name: 'Mago' },
-  Brujo: { color: '9482C9', name: 'Brujo' },
-  Druida: { color: 'FF7D0A', name: 'Druida' },
+  'Chamán': { color: '0070DE', name: 'Chamán' },
+  'Mago': { color: '69CCF0', name: 'Mago' },
+  'Brujo': { color: '9482C9', name: 'Brujo' },
+  'Druida': { color: 'FF7D0A', name: 'Druida' },
+};
+
+// Función para normalizar los nombres de clase
+const normalizeClassName = (name: string): string => {
+  if (!name) return '';
+  
+  // Primero intentar hacer coincidir directamente (insensible a mayúsculas/minúsculas)
+  const directMatch = Object.keys(defaultClassInfo).find(
+    key => key.toLowerCase() === name.trim().toLowerCase()
+  );
+  
+  if (directMatch) return directMatch;
+  
+  // Si no hay coincidencia directa, normalizar el nombre
+  const lowerName = name.trim().toLowerCase();
+  
+  // Caso especial para 'deathknight' (a veces viene como una sola palabra)
+  if (lowerName === 'deathknight' || lowerName === 'death knight') {
+    return 'Death Knight';
+  }
+  
+  // Para otros casos, capitalizar la primera letra de cada palabra
+  return lowerName
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 };
 
 // Configuración de paginación
@@ -87,7 +125,15 @@ if (endPage < totalPagesValue) {
 
 // Función para obtener los datos del jugador del roster
 const getPlayerData = (playerName: string): RosterMember | undefined => {
-  return rosterData.find((member) => member.name.toLowerCase() === playerName.toLowerCase());
+  const player = rosterData.find((member) => member.name.toLowerCase() === playerName.toLowerCase());
+  if (player && player.class) {
+    // Normalizar el nombre de la clase al obtener los datos del jugador
+    return {
+      ...player,
+      class: normalizeClassName(player.class)
+    };
+  }
+  return player;
 };
 
 // Función para obtener el nombre del jugador
@@ -161,11 +207,14 @@ const initialPlayers = featuredPlayers.slice(
         const playerData = getPlayerData(playerName);
         if (!playerData) return null;
 
+        // Normalizar el nombre de la clase
+        const normalizedClassName = normalizeClassName(playerData.class || '');
+        const classInfo = defaultClassInfo[normalizedClassName] || { color: 'FFFFFF', name: 'Desconocido' };
+        
         const classData = {
-          color: playerData.class
-            ? defaultClassInfo[playerData.class]?.color || 'FFFFFF'
-            : 'FFFFFF',
-          name: playerData.class || 'Desconocido',
+          color: classInfo.color,
+          name: classInfo.name,
+          originalName: normalizedClassName || 'Desconocido'
         };
 
         const playerRecognitions = playerData.recognitions || [];
@@ -229,8 +278,8 @@ const initialPlayers = featuredPlayers.slice(
                 <!-- Avatar -->
                 <div class="relative flex-shrink-0">
                   <img
-                    src={`/images/avatars/class_${playerData.class || 'default'}.jpg`}
-                    alt={playerData.class || 'Clase'}
+                    src={`/images/avatars/class_${classData.name}.jpg`}
+                    alt={classData.name}
                     class={`w-12 h-12 rounded-md shadow-lg border border-gray-700/50 group-hover:border-[#${classData.color}]/50 transition-colors object-cover`}
                     onerror="this.src='/images/avatars/default.png'"
                   />
@@ -245,7 +294,7 @@ const initialPlayers = featuredPlayers.slice(
                   <div class="flex flex-wrap items-center gap-2">
                     {playerData.rank && (
                       <span class={`text-[10px] px-2 py-0.5 rounded-md font-medium border transition-all duration-200 ${
-                        playerData.rank.toLowerCase().includes('general admin')
+                        playerData.rank.toLowerCase().includes('administrador')
                           ? 'bg-gradient-to-r from-amber-500/10 to-purple-600/10 border-amber-500/40 text-amber-300 hover:bg-amber-500/20 hover:border-amber-400/60'
                           : playerData.rank.toLowerCase().includes('oficial')
                               ? 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/60'

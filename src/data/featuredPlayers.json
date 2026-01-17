@@ -61,7 +61,7 @@
         },
         {
           "playerName": "Laurisbel",
-          "recognitionIndices": [4]
+          "recognitionIndices": [4,4]
         },
         {
           "playerName": "Semevaelagro",
@@ -77,6 +77,14 @@
         },
         {
           "playerName": "Noxblack",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Nanitas",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Zaraleri",
           "recognitionIndices": [4]
         }
       ]

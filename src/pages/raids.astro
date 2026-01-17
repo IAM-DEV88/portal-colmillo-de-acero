@@ -214,16 +214,9 @@ function getSortedSchedules(schedules) {
 try {
   // Handle form submission
   if (Astro.request.method === 'POST') {
-    console.log('POST request received');
     try {
       const formData = await Astro.request.formData();
-      console.log('Raw form data entries:');
-      for (const [key, value] of formData.entries()) {
-        console.log(`- ${key}:`, value);
-      }
-
       const formDataObj = Object.fromEntries(formData.entries());
-      console.log('Processed form data:', formDataObj);
 
       // Define registration data with index signature
       const registrationData: {
@@ -359,20 +352,17 @@ try {
           }
         );
       } catch (dbError) {
-        console.error('Database error details:', {
-          name: dbError.name,
+        console.error('Database error:', {
           message: dbError.message,
-          code: dbError.code,
           details: dbError.details,
           hint: dbError.hint,
-          stack: dbError.stack,
+          stack: dbError.stack
         });
         throw dbError;
       }
 
       // El retorno de éxito ahora está dentro del bloque try
     } catch (error) {
-      console.error('Error processing form submission:', error);
       return new Response(
         JSON.stringify({
           error: 'Error al procesar la solicitud',
@@ -627,10 +617,8 @@ try {
     return timeA.localeCompare(timeB);
   });
 
-  // Log the data for debugging
-  console.log('Fetched raid schedules:', raidSchedules);
+  // Raid schedules loaded successfully
 } catch (err) {
-  console.error('Error fetching raid schedules:', err);
   error = 'Error al cargar los horarios de raid. Por favor, inténtalo de nuevo más tarde.';
 }
 ---

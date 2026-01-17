@@ -17,16 +17,15 @@ const { title = 'Colmillo de Acero' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Colmillo de Acero - Hermandad de World of Warcraft enfocada en el contenido PvE de alta dificultad" />
     
-    <!-- Alpine.js Core -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- Alpine Collapse Plugin -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <!-- Alpine.js Initialization -->
+    <!-- Alpine.js Core and Plugins -->
     <script>
+      // Initialize Alpine.js
       document.addEventListener('alpine:init', () => {
-        // Any initialization code here
+        // Initialize any Alpine.js components here
       });
     </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <style>
       [x-cloak] { display: none !important; }
@@ -41,7 +40,6 @@ const { title = 'Colmillo de Acero' } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <script is:inline src="/js/animations.js"></script>
     <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script is:inline>
       // @ts-ignore - AOS is loaded from CDN
