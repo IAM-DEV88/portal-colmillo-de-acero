@@ -81,10 +81,22 @@
         },
         {
           "playerName": "Nanitas",
-          "recognitionIndices": [4]
+          "recognitionIndices": [3,4,4]
         },
         {
           "playerName": "Zaraleri",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Mycurse",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Milus",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Gliia",
           "recognitionIndices": [4]
         }
       ]
