@@ -19,11 +19,29 @@ interface RosterCharacter {
   officerNote: string;
 }
 
+// Extraer los personajes del roster desde la estructura real del JSON
+// El archivo `roster.json` tiene la forma:
+// { "globalLastUpdate": number, "players": { "<name>": { ...RosterCharacter } } }
+function getRosterCharacters(): RosterCharacter[] {
+  const anyRoster = rosterData as any;
+  const players = anyRoster && anyRoster.players ? anyRoster.players : {};
+  return Object.values(players) as RosterCharacter[];
+}
+
 interface VoteData {
   id: string;
   character_name: string;
   ip_address: string;
   voted_at: string;
+}
+
+interface MonthlyVoteStats {
+  monthKey: string;
+  monthLabel: string;
+  stats: Array<{
+    character: string;
+    count: number;
+  }>;
 }
 
 // Get client IP address (works in both development and production)
@@ -80,7 +98,8 @@ function getClientIp(request: Request): string | null {
 
 // Check if a character exists in the roster
 export function isCharacterInRoster(characterName: string): boolean {
-  return rosterData.some(
+  const characters = getRosterCharacters();
+  return characters.some(
     (char: RosterCharacter) => char.name.toLowerCase() === characterName.toLowerCase()
   );
 }
@@ -204,7 +223,7 @@ export async function recordVote(
 // Get vote statistics
 export async function getVoteStats(): Promise<{
   success: boolean;
-  data?: Array<{ character: string; count: number }>;
+  data?: MonthlyVoteStats[];
   error?: string;
 }> {
   try {
@@ -238,34 +257,91 @@ export async function getVoteStats(): Promise<{
       return { success: true, data: [] };
     }
 
-    // Group votes by character
-    const votesByCharacter = data.reduce(
+    // Función auxiliar para normalizar y canonizar nombres de personajes
+    const getCanonicalCharacterName = (rawName: string): string => {
+      const cleaned = rawName.trim();
+
+      // Intentar encontrar el nombre exacto en el roster (respetando mayúsculas reales)
+      const fromRoster = getRosterCharacters().find(
+        (char) => char.name.toLowerCase() === cleaned.toLowerCase()
+      );
+
+      if (fromRoster) {
+        return fromRoster.name;
+      }
+
+      // Fallback: capitalizar de forma básica
+      if (!cleaned) return cleaned;
+      return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
+    };
+
+    // Agrupar votos por mes y por personaje (normalizando nombres)
+    const monthlyAggregation = data.reduce(
       (acc, vote) => {
-        if (vote.character_name) {
-          // Asegurarse de que character_name no sea nulo
-          if (!acc[vote.character_name]) {
-            acc[vote.character_name] = 0;
-          }
-          acc[vote.character_name]++;
+        if (!vote.character_name || !vote.voted_at) return acc;
+
+        const voteDate = new Date(vote.voted_at);
+        if (isNaN(voteDate.getTime())) return acc;
+
+        const year = voteDate.getFullYear();
+        const month = voteDate.getMonth() + 1; // 0-indexed
+        const monthKey = `${year}-${String(month).padStart(2, '0')}`;
+
+        if (!acc[monthKey]) {
+          const monthLabel = new Intl.DateTimeFormat('es-ES', {
+            month: 'long',
+            year: 'numeric',
+          }).format(voteDate);
+
+          acc[monthKey] = {
+            monthKey,
+            monthLabel,
+            characters: {} as Record<string, { character: string; count: number }>,
+          };
         }
+
+        const canonicalName = getCanonicalCharacterName(vote.character_name);
+        const charKey = canonicalName.toLowerCase();
+
+        if (!acc[monthKey].characters[charKey]) {
+          acc[monthKey].characters[charKey] = {
+            character: canonicalName,
+            count: 0,
+          };
+        }
+
+        acc[monthKey].characters[charKey].count += 1;
+
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<
+        string,
+        {
+          monthKey: string;
+          monthLabel: string;
+          characters: Record<string, { character: string; count: number }>;
+        }
+      >
     );
 
-    // Convert to array of objects
-    const result = Object.entries(votesByCharacter).map(([character, count]) => ({
-      character,
-      count: Number(count) || 0,
-    }));
+    // Convertir a array ordenado por mes (más reciente primero) y personajes por votos
+    const result: MonthlyVoteStats[] = Object.values(monthlyAggregation)
+      .sort((a, b) => (a.monthKey < b.monthKey ? 1 : a.monthKey > b.monthKey ? -1 : 0))
+      .map(({ monthKey, monthLabel, characters }) => ({
+        monthKey,
+        monthLabel,
+        stats: Object.values(characters).sort((a, b) => b.count - a.count),
+      }));
 
-    console.log('Estadísticas procesadas correctamente:', result);
+    console.log('Estadísticas procesadas correctamente (por mes):', result);
     return { success: true, data: result };
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
     console.error('Error inesperado en getVoteStats:', err);
+    // No lanzar excepción hacia arriba: devolvemos un estado seguro
     return {
       success: false,
+      data: [],
       error: `Error inesperado: ${errorMessage}`,
     };
   }

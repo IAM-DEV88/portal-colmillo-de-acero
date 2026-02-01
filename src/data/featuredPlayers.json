@@ -93,10 +93,18 @@
         },
         {
           "playerName": "Milus",
-          "recognitionIndices": [4]
+          "recognitionIndices": [4,4]
         },
         {
           "playerName": "Gliia",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Driadg",
+          "recognitionIndices": [4]
+        },
+        {
+          "playerName": "Buraan",
           "recognitionIndices": [4]
         }
       ]
