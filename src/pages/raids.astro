@@ -53,29 +53,31 @@ function countPlayersByRole(players) {
 
 // Define types
 interface Raid {
-  id: number;
+  id: string; // Cambiado de number a string (Nombre de la raid)
   name: string;
   image: string;
   description: string;
   minGearScore: number;
+  rules?: string;
 }
 
 interface Player {
   name: string;
   class: string;
   role: string;
-  status?: string; // Optional status field
-  raid_status?: string; // Optional raid_status field
+  status?: string; 
+  raid_status?: string; 
 }
 
 interface RaidSchedule {
-  id: number;
-  raid_id: number;
+  id: string; // Cambiado de number a string
+  raid_id: string; // Cambiado de number a string
   raid_name: string;
   difficulty: string;
   day_of_week: string;
   start_time: string;
   players: Player[];
+  is_official_core?: boolean;
 }
 
 // WotLK Raid Information
@@ -87,12 +89,50 @@ let error: string | null = null;
 // Import roster data and utils
 import rosterData from '../data/roster.json';
 import { validatePublicNote } from '../utils/rosterUtils';
-import { wotlkRaids } from '../config/raids';
+
+// Define a default raid structure for when we only have a name
+const createRaidFromName = (name: string, gs: number = 5000): Raid => {
+  const nameLower = name.toLowerCase();
+  let image = '/images/raids/iccfarm.jpg';
+  if (nameLower.includes('toc')) image = '/images/raids/tocfarm.jpg';
+  else if (nameLower.includes('sr') || nameLower.includes('sagrario')) image = '/images/raids/sr.jpg';
+  else if (nameLower.includes('lk')) image = '/images/raids/icclk.jpg';
+
+  return {
+    id: name, // El ID es ahora el nombre
+    name,
+    image,
+    description: 'Raid oficial de la hermandad.',
+    minGearScore: gs,
+    rules: ''
+  };
+};
+
+// Create a list of all possible raids exclusively from roster.json leaderData
+const allAvailableRaids: Raid[] = [];
+const seenRaids = new Set<string>();
+
+if (rosterData && rosterData.players) {
+  Object.values(rosterData.players).forEach((member: any) => {
+    const leaderData = member.leaderData;
+    if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
+
+    leaderData.cores.forEach((core) => {
+      if (!core.raid) return;
+
+      const coreRaidKey = core.raid; // Usar el nombre original para evitar filtrado excesivo
+      if (!seenRaids.has(coreRaidKey)) {
+        seenRaids.add(coreRaidKey);
+        allAvailableRaids.push(createRaidFromName(core.raid, core.gs || 5000));
+      }
+    });
+  });
+}
 
 // Process roster data to get parsed members
-const parsedMembers = Object.values(rosterData.players).map((member) => {
+const parsedMembers = Object.entries(rosterData.players).map(([playerName, member]: [string, any]) => {
   const publicNote = member.publicNote || '';
-  const validation = validatePublicNote(publicNote, member.name);
+  const validation = validatePublicNote(publicNote, playerName);
 
   // Find character block
   const charBlock = validation.blocks?.find((b) => b.type === 'character')?.parsedData;
@@ -124,7 +164,7 @@ const parsedMembers = Object.values(rosterData.players).map((member) => {
   }
 
   return {
-    name: member.name,
+    name: playerName,
     class: member.class, // Mantener original para visualización
     normalizedClass: (member.class || '').toLowerCase().trim().replace(/ /g, '').replace(/-/g, ''), // Clase normalizada para lógica
     role: role,
@@ -133,6 +173,9 @@ const parsedMembers = Object.values(rosterData.players).map((member) => {
     dualGearScore: dualGs,
     publicNote: publicNote,
     noteValidation: validation, // Add the full validation object
+    guild_leave: member.guildLeave === true,
+    is_sanctioned: member.isSanctioned === 1 || member.isSanctioned === true || member.guildLeave === true,
+    is_guild_member: member.guildLeave === false,
   };
 });
 
@@ -142,23 +185,30 @@ const raidEligibleMembers = {};
 // 2. Range filtered members (Min GS <= GS < Next Raid Min GS) - For general raid view
 const raidEligibleMembersRange = {};
 
-wotlkRaids.forEach((raid, index) => {
+allAvailableRaids.forEach((raid, index) => {
   // All eligible (Min GS) - Check both main and dual GS
   raidEligibleMembers[raid.id] = parsedMembers.filter(
     (m) =>
-      m.gearScore >= raid.minGearScore || (m.dualGearScore && m.dualGearScore >= raid.minGearScore)
+      (m.gearScore >= raid.minGearScore || (m.dualGearScore && m.dualGearScore >= raid.minGearScore)) &&
+      !m.guild_leave &&
+      m.is_guild_member
   );
 
   // Range filtered
   const minGs = raid.minGearScore;
   // Find the next raid that has a strictly higher GS requirement
-  const nextTierRaid = wotlkRaids.slice(index + 1).find((r) => r.minGearScore > minGs);
+  const nextTierRaid = allAvailableRaids
+    .slice()
+    .sort((a, b) => a.minGearScore - b.minGearScore)
+    .find((r) => r.minGearScore > minGs);
   const maxGs = nextTierRaid ? nextTierRaid.minGearScore : Infinity;
 
   raidEligibleMembersRange[raid.id] = parsedMembers.filter(
     (m) =>
-      (m.gearScore >= minGs && m.gearScore < maxGs) ||
-      (m.dualGearScore && m.dualGearScore >= minGs && m.dualGearScore < maxGs)
+      ((m.gearScore >= minGs && m.gearScore < maxGs) ||
+      (m.dualGearScore && m.dualGearScore >= minGs && m.dualGearScore < maxGs)) &&
+      !m.guild_leave &&
+      m.is_guild_member
   );
 });
 
@@ -177,10 +227,18 @@ function getSortedSchedules(schedules) {
     sabado: 6,
     sábado: 6,
     domingo: 7,
+    'sin dia': 8,
+    'sin día': 8,
+    'hora-definida-sin-dia': 9,
+    'sin-dia-ni-hora': 10,
   };
 
   return schedules
     .filter((schedule) => {
+      // Show all schedules that come from roster.json (official cores)
+      // or those that have accepted players
+      if (schedule.is_official_core) return true;
+      
       if (!schedule.players || schedule.players.length === 0) return false;
       return schedule.players.some(
         (player) =>
@@ -223,7 +281,6 @@ try {
         player_name: string;
         player_class: string;
         player_role: string;
-        raid_role: string;
         day_of_week: string;
         start_time: string;
         raid_id: string;
@@ -232,10 +289,9 @@ try {
         player_name: formDataObj.player_name?.toString() || '',
         player_class: formDataObj.player_class?.toString() || '',
         player_role: formDataObj.player_role?.toString() || '',
-        raid_role: formDataObj.raid_role?.toString() || '',
         day_of_week: formDataObj.day_of_week?.toString() || '',
         start_time: formDataObj.start_time?.toString() || '',
-        raid_id: formDataObj.raid_id?.toString() || '',
+        raid_id: formDataObj.raid_id?.toString().toUpperCase() || '',
       };
 
       console.log('Processed registration data:', registrationData);
@@ -245,7 +301,6 @@ try {
         'player_name',
         'player_class',
         'player_role',
-        'raid_role',
         'day_of_week',
         'start_time',
         'raid_id',
@@ -312,10 +367,9 @@ try {
         player_name: registrationData.player_name,
         player_class: registrationData.player_class,
         player_role: registrationData.player_role,
-        raid_role: registrationData.raid_role,
         day_of_week: registrationData.day_of_week,
         start_time: registrationData.start_time,
-        raid_id: parseInt(registrationData.raid_id) || 0,
+        raid_id: registrationData.raid_id,
         status: 'en_revision',
       };
 
@@ -440,6 +494,10 @@ try {
     viernes: 5,
     sabado: 6,
     domingo: 7,
+    'sin dia': 8,
+    'sin día': 8,
+    'hora-definida-sin-dia': 9,
+    'sin-dia-ni-hora': 10,
   };
 
   // Obtener el día actual en español
@@ -457,7 +515,6 @@ try {
       player_name,
       player_class,
       player_role,
-      raid_role,
       day_of_week,
       start_time,
       status
@@ -470,9 +527,16 @@ try {
   // Ordenar los horarios para que el próximo sea el primero
   if (raidSchedulesData) {
     raidSchedulesData.sort((a, b) => {
+      const normalizedDayA = a.day_of_week?.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+      const normalizedDayB = b.day_of_week?.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
       // Primero por día de la semana (empezando por hoy)
-      const dayDiffA = (dayOrder[a.day_of_week] + 7 - dayOrder[today]) % 7;
-      const dayDiffB = (dayOrder[b.day_of_week] + 7 - dayOrder[today]) % 7;
+      const dayDiffA = (dayOrder[normalizedDayA] + 7 - dayOrder[today]) % 7;
+      const dayDiffB = (dayOrder[normalizedDayB] + 7 - dayOrder[today]) % 7;
 
       if (dayDiffA !== dayDiffB) {
         return dayDiffA - dayDiffB;
@@ -496,7 +560,7 @@ try {
 
   raidSchedulesData?.forEach((schedule) => {
     if (schedule.status === 'aceptado') {
-      const slotKey = `${schedule.raid_id}-${schedule.day_of_week}-${schedule.start_time}`;
+      const slotKey = `${schedule.raid_id.toUpperCase()}-${schedule.day_of_week}-${schedule.start_time}`;
       acceptedScheduleSlots.add(slotKey);
     }
   });
@@ -508,69 +572,191 @@ try {
   // Create a map to group schedules by their unique key (raid_id-day_of_week-start_time)
   const schedulesMap = new Map();
 
-  // First, normalize and process all schedules
+  // 1. First, process data from roster.json (Primary source for cores)
+  if (rosterData && rosterData.players) {
+    Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
+      const leaderData = member.leaderData;
+      if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
+
+      leaderData.cores.forEach((core) => {
+        if (!core.raid || !core.schedule) return;
+
+        // Buscar coincidencia exacta por nombre original
+        const raid = allAvailableRaids.find((r) => r.name === core.raid);
+
+        if (!raid) return;
+
+        // Normalize schedule: try to extract time and day
+        let normalizedTime = "Sin hora";
+        let normalizedDay = "Sin día"; // Default if not found
+
+        const timeMatch = String(core.schedule).match(/(\d{1,2}:\d{2})/);
+        if (timeMatch) normalizedTime = timeMatch[1].padStart(5, '0');
+
+        const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
+        if (dayMatch) {
+          normalizedDay = dayMatch[1]
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace('miércoles', 'miercoles')
+            .replace('sábado', 'sabado');
+        }
+
+        const key = `${raid.id.toUpperCase()}-${normalizedDay}-${normalizedTime}`;
+
+        if (!schedulesMap.has(key)) {
+          schedulesMap.set(key, {
+            id: raid.id.toUpperCase(),
+            raid_id: raid.id.toUpperCase(),
+            raid_name: raid.name,
+            difficulty: raid.name.includes('10') ? '10' : '25',
+            day_of_week: normalizedDay,
+            start_time: normalizedTime,
+            players: [],
+            is_official_core: true, // Mark as official core from roster
+          });
+        }
+
+        const schedule = schedulesMap.get(key);
+        schedule.is_official_core = true; // Ensure it's marked if combined with others
+
+        // Add the leader themselves to the players array
+        if (!schedule.players.some(p => p.name.toLowerCase() === playerName.toLowerCase())) {
+          schedule.players.push({
+          name: playerName,
+          class: member.class || 'Desconocida',
+          role: 'DPS', // Default, will be updated if in members
+          raid_role: 'lider',
+          status: 'aceptado',
+          raid_status: 'aceptado',
+          registration_status: 'aceptado',
+          note: member.publicNote || '',
+          achievements: member.reconocimientos || 0,
+          raids_count: member.raidsCompletadas || 0,
+          is_guild_member: member.guildLeave === false,
+          guild_leave: member.guildLeave === true,
+          is_sanctioned: member.isSanctioned === 1 || member.isSanctioned === true || member.guildLeave === true,
+        });
+        } else {
+          // If already there, ensure raid_role is 'lider'
+          const existingPlayer = schedule.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+          if (existingPlayer) existingPlayer.raid_role = 'lider';
+        }
+
+        // Add members from the core to this schedule
+        if (core.members && Array.isArray(core.members)) {
+          core.members.forEach((m) => {
+            if (!m.name) return;
+            
+            // Look for full member info in roster
+            const rosterPlayerKey = Object.keys(rosterData.players).find(
+              (key) => key.toLowerCase() === m.name.trim().toLowerCase()
+            );
+            const rosterPlayer = rosterPlayerKey ? rosterData.players[rosterPlayerKey] : null;
+
+            const existingPlayerIndex = schedule.players.findIndex(p => p.name.toLowerCase() === m.name.toLowerCase());
+            
+            if (existingPlayerIndex !== -1) {
+              // Update existing player info if they were already added as leader
+              const existingPlayer = schedule.players[existingPlayerIndex];
+              existingPlayer.role = m.role || existingPlayer.role;
+              // Don't overwrite raid_role: 'lider' if they are already leader
+              if (existingPlayer.raid_role !== 'lider') {
+                existingPlayer.raid_role = m.isLeader ? 'lider' : 'asistente';
+              }
+            } else {
+              schedule.players.push({
+                name: m.name,
+                class: m.class || rosterPlayer?.class || 'Desconocida',
+                role: m.role || 'DPS',
+                raid_role: m.isLeader ? 'lider' : 'asistente',
+                status: 'aceptado',
+                raid_status: 'aceptado',
+                registration_status: 'aceptado',
+                note: rosterPlayer?.publicNote || '',
+                achievements: rosterPlayer?.reconocimientos || 0,
+                raids_count: rosterPlayer?.raidsCompletadas || 0,
+                is_guild_member: rosterPlayer ? rosterPlayer.guildLeave === false : false,
+                guild_leave: rosterPlayer?.guildLeave === true,
+                is_sanctioned: m.isSanctioned === 1 || m.isSanctioned === true || rosterPlayer?.isSanctioned === 1 || rosterPlayer?.isSanctioned === true || rosterPlayer?.guildLeave === true,
+              });
+            }
+          });
+        }
+      });
+    });
+  }
+
+  // 2. Then, integrate data from Supabase (External registrations)
   raidSchedulesData?.forEach((reg) => {
+    if (!reg.day_of_week || !reg.start_time || !reg.player_name) return;
+
     // Normalize day of week (remove accents, convert to lowercase)
     const normalizedDay =
       reg.day_of_week
-        ?.toLowerCase()
+        .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .replace('miércoles', 'miercoles')
-        .replace('sábado', 'sabado') || '';
+        .replace('sábado', 'sabado');
 
     // Normalize time (ensure consistent format)
-    const normalizedTime = reg.start_time?.toString().padStart(5, '0') || '00:00';
+    const normalizedTime = reg.start_time.toString().padStart(5, '0');
 
-    const raid = wotlkRaids.find((r) => r.id === reg.raid_id);
+    // Ahora buscamos la raid por su ID que es su nombre (normalizado a mayúsculas)
+    const raid = allAvailableRaids.find((r) => r.id.toUpperCase() === reg.raid_id.toUpperCase());
     if (!raid) return;
 
     // Create a consistent key with normalized values
-    const key = `${reg.raid_id}-${normalizedDay}-${normalizedTime}`;
+    const key = `${reg.raid_id.toUpperCase()}-${normalizedDay}-${normalizedTime}`;
 
     if (!schedulesMap.has(key)) {
       schedulesMap.set(key, {
         id: reg.id,
-        raid_id: reg.raid_id,
+        raid_id: reg.raid_id.toUpperCase(),
         raid_name: raid.name,
-        difficulty: reg.difficulty || '10',
-        day_of_week: normalizedDay, // Usar el día normalizado aquí
+        difficulty: reg.difficulty || (raid.name.includes('10') ? '10' : '25'),
+        day_of_week: normalizedDay,
         start_time: normalizedTime,
         players: [],
       });
     }
 
-    // Only add to players list if status is 'aceptado'
+    // Only add to players list if status is 'aceptado' and NOT already added from roster
     if (reg.status === 'aceptado') {
       const schedule = schedulesMap.get(key);
       
-      // Look for the player in the roster data to get additional info
-      const rosterPlayer = Object.values(rosterData.players).find(
-        (p: any) => p.name.trim().toLowerCase() === reg.player_name.trim().toLowerCase()
-      ) as any;
-      
-      schedule.players.push({
-        name: reg.player_name,
-        class: reg.player_class || 'Desconocida',
-        role: reg.player_role || 'DPS',
-        raid_role: reg.raid_role || 'asistente',
-        status: reg.status,
-        raid_status: reg.status,
-        registration_status: reg.status,
-        note: rosterPlayer?.publicNote || '',
-        achievements: rosterPlayer?.reconocimientos || 0,
-        raids_count: rosterPlayer?.raidsCompletadas || 0,
-        is_guild_member: !!rosterPlayer, // Indica si está en el roster.json
-        guild_leave: rosterPlayer?.guildLeave || false,
-      });
+      if (!schedule.players.some(p => p.name.toLowerCase() === reg.player_name.toLowerCase())) {
+        // Look for the player in the roster data to get additional info
+        const rosterPlayerKey = Object.keys(rosterData.players).find(
+          (key) => key.toLowerCase() === reg.player_name.trim().toLowerCase()
+        );
+        const rosterPlayer = rosterPlayerKey ? rosterData.players[rosterPlayerKey] : null;
+        
+        schedule.players.push({
+          name: reg.player_name,
+          class: reg.player_class || 'Desconocida',
+          role: reg.player_role || 'DPS',
+          raid_role: reg.raid_role || 'asistente',
+          status: reg.status,
+          raid_status: reg.status,
+          registration_status: reg.status,
+          note: rosterPlayer?.publicNote || '',
+          achievements: rosterPlayer?.reconocimientos || 0,
+          raids_count: rosterPlayer?.raidsCompletadas || 0,
+          is_guild_member: rosterPlayer ? rosterPlayer.guildLeave === false : false,
+          guild_leave: rosterPlayer?.guildLeave === true,
+          is_sanctioned: rosterPlayer?.isSanctioned === 1 || rosterPlayer?.isSanctioned === true || rosterPlayer?.guildLeave === true,
+        });
+      }
     }
   });
 
   // Convert the map values to an array and sort
   raidSchedules = Array.from(schedulesMap.values()).sort((a, b) => {
-    // Sort by raid_id first
+    // Sort by raid_id first (localeCompare since it's a string name now)
     if (a.raid_id !== b.raid_id) {
-      return a.raid_id - b.raid_id;
+      return a.raid_id.localeCompare(b.raid_id);
     }
 
     // Then by day of week
@@ -582,6 +768,10 @@ try {
       viernes: 5,
       sabado: 6,
       domingo: 7,
+      'sin dia': 8,
+      'sin día': 8,
+      'hora-definida-sin-dia': 9,
+      'sin-dia-ni-hora': 10,
     };
 
     const dayA =
@@ -762,7 +952,7 @@ try {
                 id="slider-pagination"
               >
                 {
-                  wotlkRaids
+                  allAvailableRaids
                     .filter((raid) =>
                       raidSchedules.some((schedule) => schedule.raid_id === raid.id)
                     )
@@ -771,6 +961,9 @@ try {
                         (schedule) => schedule.raid_id === raid.id
                       );
                       const approvedSchedulesCount = raidSchedulesForRaid.filter((schedule) => {
+                        // Include official cores even if empty
+                        if (schedule.is_official_core) return true;
+                        
                         if (!schedule.players) return false;
                         return schedule.players.some(
                           (player) =>
@@ -809,7 +1002,7 @@ try {
               </div>
               <div class="slider-track" id="slider-track">
                 {
-                  wotlkRaids
+                  allAvailableRaids
                     .filter((raid) => {
                       // Only include raids that have at least one schedule
                       return raidSchedules.some((schedule) => schedule.raid_id === raid.id);
@@ -879,6 +1072,9 @@ try {
                                         </svg>
                                         {
                                           raidSchedulesForRaid.filter((schedule) => {
+                                            // Include official cores even if empty
+                                            if (schedule.is_official_core) return true;
+                                            
                                             if (!schedule.players) return false;
                                             return schedule.players.some(
                                               (player) =>
@@ -914,7 +1110,7 @@ try {
                                 {/* Eligible Roster Members Button */}
                                 <div class="mb-4">
                                   <button
-                                    onclick={`openRosterModal(${raid.id})`}
+                                    onclick={`openRosterModal('${raid.id}')`}
                                     class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-md px-3 py-2 text-sm font-medium transition-colors flex items-center justify-between group"
                                   >
                                     <div class="flex items-center">
@@ -956,22 +1152,38 @@ try {
 
                                     // Agrupar horarios por día (asegurando normalización)
                                     const groupedSchedules = sortedSchedules.reduce((acc: any, schedule: any) => {
-                                      const day = (schedule.day_of_week || '').toLowerCase();
+                                      let day = (schedule.day_of_week || '').toLowerCase();
+                                      if (day === 'sin dia' || day === 'sin día') {
+                                        if (schedule.start_time !== 'Sin hora') {
+                                          day = 'hora-definida-sin-dia';
+                                        } else {
+                                          day = 'sin-dia-ni-hora';
+                                        }
+                                      }
                                       if (!acc[day]) acc[day] = [];
                                       acc[day].push(schedule);
                                       return acc;
                                     }, {});
 
                                     return Object.entries(groupedSchedules).map(([day, schedules]: [string, any], dayIdx) => {
-                                      // Formatear el día para mostrar (Primera letra mayúscula)
-                                      const displayDay = day.charAt(0).toUpperCase() + day.slice(1);
+                                      // Formatear el día para mostrar
+                                      let displayDay = day.charAt(0).toUpperCase() + day.slice(1);
+                                      if (day === 'hora-definida-sin-dia') {
+                                        displayDay = 'Hora definida (Día sin definir)';
+                                      } else if (day === 'sin-dia-ni-hora') {
+                                        displayDay = 'Día y hora sin definir';
+                                      } else if (day === 'sin dia' || day === 'sin día') {
+                                        displayDay = 'Día sin definir';
+                                      }
                                       
                                       // Calcular total de jugadores para este día
                                       const totalDayPlayers = schedules.reduce((sum: number, s: any) => {
+                                        // Include members from roster for official cores
                                         const count = s.players?.filter((p: any) =>
                                           ['aceptado', 'accepted', 'confirmed'].includes(p.status) ||
                                           ['aceptado', 'accepted', 'confirmed'].includes(p.raid_status) ||
-                                          ['aceptado', 'accepted', 'confirmed'].includes(p.registration_status)
+                                          ['aceptado', 'accepted', 'confirmed'].includes(p.registration_status) ||
+                                          s.is_official_core // If official core, assume players listed are accepted
                                         ).length || 0;
                                         return sum + count;
                                       }, 0);
@@ -1021,7 +1233,7 @@ try {
                                               const schedulePlayers =
                                                 schedule.players?.filter(
                                                   (player: any) =>
-                                                    ['aceptado', 'accepted', 'confirmed'].includes(
+                                                    (['aceptado', 'accepted', 'confirmed'].includes(
                                                       player.status
                                                     ) ||
                                                     ['aceptado', 'accepted', 'confirmed'].includes(
@@ -1029,10 +1241,11 @@ try {
                                                     ) ||
                                                     ['aceptado', 'accepted', 'confirmed'].includes(
                                                       player.registration_status
-                                                    )
+                                                    ) ||
+                                                    schedule.is_official_core)
                                                 ) || [];
 
-                                              const roleCounts = countPlayersByRole(schedulePlayers);
+                                              const roleCounts = countPlayersByRole(schedulePlayers.filter(p => !p.is_sanctioned));
 
                                               return (
                                                 <div
@@ -1062,9 +1275,10 @@ try {
                                                               note: p.note || p.public_note || '',
                                                               achievements: p.achievements || 0,
                                                               raids_count: p.raids_count || 0,
-                                                              is_leader: ['raid_leader', 'lider_raid'].includes(p.raid_role),
+                                                              is_leader: p.raid_role === 'lider',
                                                               is_guild_member: p.is_guild_member === true,
-                                                              guild_leave: p.guild_leave === true
+                                                              guild_leave: p.guild_leave === true,
+                                                              is_sanctioned: p.is_sanctioned === true
                                                             })),
                                                         })}
                                                         onclick={`(function(btn) {
@@ -1102,10 +1316,7 @@ try {
                                                           leaders: (schedulePlayers || [])
                                                             .filter(
                                                               (p: any) =>
-                                                                p &&
-                                                                ['raid_leader', 'lider_raid'].includes(
-                                                                  p.raid_role
-                                                                )
+                                                                p && p.raid_role === 'lider'
                                                             )
                                                             .map((p: any) => ({
                                                               name: String(p.name || ''),
@@ -1118,8 +1329,9 @@ try {
                                                               achievements: p.achievements || 0,
                                                               raids_count: p.raids_count || 0,
                                                               is_leader: true,
-                                                              is_guild_member: p.is_guild_member || false,
+                                                              is_guild_member: p.is_guild_member === true,
                                                               guild_leave: p.guild_leave || false,
+                                                              is_sanctioned: p.is_sanctioned === true
                                                             })),
                                                         })}
                                                         onclick={`(function(btn) {
@@ -1151,16 +1363,14 @@ try {
                                                         </svg>
                                                         {
                                                           schedulePlayers.filter((p: any) =>
-                                                            ['raid_leader', 'lider_raid'].includes(
-                                                              p.raid_role
-                                                            )
+                                                            p.raid_role === 'lider'
                                                           ).length
                                                         }
                                                       </button>
 
                                                       {/* Eligible Roster Button for Schedule */}
                                                       <button
-                                                        onclick={`openRosterModal(${raid.id}, '${schedule.day_of_week}', '${schedule.start_time}')`}
+                                                        onclick={`openRosterModal('${raid.id}', '${schedule.day_of_week}', '${schedule.start_time}')`}
                                                         class="text-xs bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 px-1.5 py-0.5 rounded flex items-center transition-colors ml-2"
                                                         title="Invitar miembros del roster"
                                                       >
@@ -1183,13 +1393,10 @@ try {
                                                   </div>
                                                   
                                                   {/* Warning for raids without leaders */}
-                                                  {!schedulePlayers.some(p => ['raid_leader', 'lider_raid'].includes(p.raid_role)) && (
+                                                  {!schedulePlayers.some(p => p.raid_role === 'lider') && (
                                                     <div class="bg-yellow-900/30 border border-yellow-500/50 p-2 rounded-md mt-2">
                                                       <p class="text-yellow-300 text-xs font-medium">⚠️ ADVERTENCIA</p>
-                                                      <p class="text-yellow-200 text-xs">Esta raid no tiene líderes asignados.</p>
-                                                      <p class="text-yellow-100 text-xs mt-1">
-                                                        <span class="font-medium">¿Quieres liderarla?</span> Inscríbete como <span class="font-bold text-amber-400">Raid Leader</span> en el formulario de registro.
-                                                      </p>
+                                                      <p class="text-yellow-200 text-xs">Esta raid no tiene líderes asignados en roster.json.</p>
                                                     </div>
                                                   )}
                                                   
@@ -1513,25 +1720,6 @@ try {
                     </select>
                   </div>
 
-                  <div>
-                    <label for="raid-role" class="block text-sm font-medium text-gray-300 mb-1">
-                      Rol en Raid
-                    </label>
-                    <select
-                      id="raid-role"
-                      name="raid_role"
-                      required
-                      class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                    >
-                      <option value="asistente" selected>Asistente</option>
-                      <option value="raid_leader">Raid Leader</option>
-                    </select>
-                    <div class="text-xs text-gray-400 mt-1">
-                      <p>La opción Raid Leader te convierte en responsable de la organización de la raid. Requiere experiencia previa en raids y conocimiento de las mecánicas.</p>
-                      <p class="mt-1 text-amber-400">¡Únete como Raid Leader si quieres liderar las raids de tu comunidad!</p>
-                    </div>
-                  </div>
-
                   <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                     <button
                       type="submit"
@@ -1604,7 +1792,7 @@ try {
               .filter((s) => normalizeDay(s.day_of_week) === targetDay)
               .filter((s) => {
                 // Only show schedules that have at least one raid leader
-                return s.players.some(p => ['raid_leader', 'lider_raid'].includes(p.raid_role));
+                return s.players.some(p => p.raid_role === 'lider');
               })
               .sort((a, b) => {
                 // Extract time part (remove 'ST' if present)
@@ -1632,7 +1820,7 @@ try {
                     daySchedules.map((schedule) => {
                       // Get raid leaders from roster only
                       const raidLeadersFromRoster = schedule.players.filter(p => 
-                        ['raid_leader', 'lider_raid'].includes(p.raid_role) && p.is_guild_member
+                        p.raid_role === 'lider' && p.is_guild_member
                       );
                       
                       return (
@@ -1645,7 +1833,7 @@ try {
                             {schedule.start_time} hora server
                           </span>
                           <span class="text-xs text-red-400 font-bold whitespace-nowrap bg-red-900/20 px-2 py-0.5 rounded-full">
-                            {wotlkRaids.find((r) => r.id === schedule.raid_id)?.minGearScore} GS
+                            {allAvailableRaids.find((r) => r.id === schedule.raid_id)?.minGearScore} GS
                           </span>
                         </div>
                         <div class="mb-2">
@@ -2234,6 +2422,8 @@ try {
 
     // Iconos de indicadores - combina el parámetro isLeader con la propiedad player.is_leader
     const isLeaderDisplay = isLeader || player.is_leader;
+    const isSanctioned = player.is_sanctioned === true || player.guild_leave === true;
+    
     const leaderIcon = isLeaderDisplay ? `
       <div class="flex-shrink-0 flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-amber-500/10 rounded-full border border-amber-500/30 shadow-[0_0_10px_rgba(251,191,36,0.2)] animate-pulse-slow" title="Líder de Banda">
         <svg class="w-3 h-3 md:w-4 md:h-4 text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.8)]" fill="currentColor" viewBox="0 0 32 32">
@@ -2242,7 +2432,7 @@ try {
       </div>
     ` : '';
 
-    const guildIcon = player.is_guild_member && !player.guild_leave ? `
+    const guildIcon = player.is_guild_member && !isSanctioned ? `
       <div class="flex-shrink-0 flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-purple-500/10 rounded-full border border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]" title="Miembro de Hermandad">
         <svg class="w-3 h-3 md:w-4 md:h-4 text-purple-400 drop-shadow-[0_0_5px_rgba(168,85,247,0.8)]" fill="currentColor" viewBox="0 0 32 32">
           <path d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"></path>
@@ -2261,7 +2451,7 @@ try {
             </svg>
           </div>
         ` : ''}
-        ${player.guild_leave ? `
+        ${isSanctioned ? `
           <div class="flex-shrink-0 flex items-center justify-center w-5 h-5 md:w-6 md:h-6 bg-red-500/10 rounded-full border border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]" title="Sancionado">
             <svg class="w-3 h-3 md:w-4 md:h-4 text-red-400 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]" fill="currentColor" viewBox="0 0 32 32">
               <path d="M31.155 18.938c0-6.615-2.188-14.287-7.774-17.897l-0-0-1.472 2.277c1.418 0.873 2.163 1.681 2.882 3.109-0.497 0.689-0.87 1.521-1.182 2.46 0.254 0.566 0.438 1.576 0.439 2.245l-2.24-0.366-1.934 2.123-1.555-3.185c-2.045 2.515-2.658 3.571-5.821 3.356l-0.894-2.757-3.188 0.618c0 0-0.581-3.176-1.557-3.887 0.274-1.145 1.090-2.159 2.579-3.071l-1.414-2.619c-5.176 3.629-7.281 10.84-7.281 17.594 5.797 2.916 7.527 6.229 7.205 9.745 0.864 0.487 1.758 0.97 2.806 1.251 1.433 0.384 2.97 0.569 4.55 0.569s3.199-0.184 4.702-0.569c1.361-0.348 2.595-0.892 3.716-1.555-0.050-3.421 1.814-6.8 7.432-9.441zM11.72 20.697c-1.763 1.018-3.823 0.757-4.585-0.563-0.435-0.754-0.341-1.688 0.134-2.547l-0-0c0.801-0.014 1.745-0.175 2.762-0.563 0.969-0.37 1.876-0.877 2.601-1.421 0.374 0.197 0.701 0.493 0.912 0.858 0.762 1.32-0.060 3.218-1.823 4.236zM13.42 27.085c0.616-2.254 1.356-4.509 2.529-6.763 0-0-0-0-0-0h0c0 0-0 0-0 0 1.156 2.254 2.074 4.509 2.529 6.763-1.686-0.514-3.372-0.583-5.058 0zM24.757 20.134c-0.762 1.32-2.822 1.581-4.585 0.563s-2.586-2.916-1.823-4.236c0.211-0.365 0.537-0.661 0.912-0.858 0.724 0.544 1.632 1.051 2.601 1.421 1.017 0.389 1.961 0.549 2.762 0.563l-0 0c0.475 0.859 0.569 1.793 0.134 2.547zM6.584 7.391c0.33-0.871 0.554-1.926 1.621-2.612zM25.137 6.748c-0.363-0.688-0.965-1.891-1.689-2.431z"></path>
@@ -2418,9 +2608,9 @@ try {
 
     // Calculate legend counts - para líderes, todos son líderes
     const leaderCount = leaderList.length;
-    const guildCount = leaderList.filter(p => p.is_guild_member && !p.guild_leave).length;
-    const posadaCount = leaderList.filter(p => !p.is_guild_member).length;
-    const sancionadoCount = leaderList.filter(p => p.guild_leave).length;
+    const guildCount = leaderList.filter(p => p.is_guild_member && !p.is_sanctioned).length;
+    const posadaCount = leaderList.filter(p => p.is_guild_member === false).length;
+    const sancionadoCount = leaderList.filter(p => p.is_sanctioned).length;
     
     const legendEl = document.getElementById('raid-leaders-legend');
     if (legendEl) {
@@ -2487,6 +2677,7 @@ try {
       healer: { label: 'SANADORES', color: 'text-green-400', border: 'border-green-500/30', icon: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>' },
       melee: { label: 'CUERPO A CUERPO', color: 'text-red-400', border: 'border-blue-500/30', icon: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.37 15.83L11.5 8 10 9.5l7.83 7.87-1.42 1.42L8.54 11 7.13 12.41 15 20.28l-1.41 1.41L5.72 13.83l-1.41 1.41L2.89 13.83l1.41-1.41L2.89 11l1.41-1.41L5.72 8.17l1.41 1.41L15 1.72l1.41 1.41-7.87 7.87 1.42 1.42 7.83-7.83 1.42 1.42-7.83 7.83 1.41 1.41 1.41-1.41z"/></svg>' },
       ranged: { label: 'DISTANCIA', color: 'text-purple-400', border: 'border-green-500/30', icon: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.47 4.11L19.89 3.53a1.5 1.5 0 0 0-2.12 0L13 8.3L11.59 6.88L13 5.47L11.59 4.05L10.17 5.47L8.76 4.05L4.5 8.31L5.93 9.73L7.34 8.31L8.76 9.73L7.34 11.14L8.76 12.56L13.72 7.59L15.14 9L10.3 13.84a1.5 1.5 0 0 0 0 2.12l.58.58a1.5 1.5 0 0 0 2.12 0L20.47 6.23a1.5 1.5 0 0 0 0-2.12zM5.5 18.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>' },
+      sanctioned: { label: 'SANCIONADOS', color: 'text-red-500', border: 'border-red-500/30', icon: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 32 32"><path d="M31.155 18.938c0-6.615-2.188-14.287-7.774-17.897l-0-0-1.472 2.277c1.418 0.873 2.163 1.681 2.882 3.109-0.497 0.689-0.87 1.521-1.182 2.46 0.254 0.566 0.438 1.576 0.439 2.245l-2.24-0.366-1.934 2.123-1.555-3.185c-2.045 2.515-2.658 3.571-5.821 3.356l-0.894-2.757-3.188 0.618c0 0-0.581-3.176-1.557-3.887 0.274-1.145 1.090-2.159 2.579-3.071l-1.414-2.619c-5.176 3.629-7.281 10.84-7.281 17.594 5.797 2.916 7.527 6.229 7.205 9.745 0.864 0.487 1.758 0.97 2.806 1.251 1.433 0.384 2.97 0.569 4.55 0.569s3.199-0.184 4.702-0.569c1.361-0.348 2.595-0.892 3.716-1.555-0.050-3.421 1.814-6.8 7.432-9.441zM11.72 20.697c-1.763 1.018-3.823 0.757-4.585-0.563-0.435-0.754-0.341-1.688 0.134-2.547l-0-0c0.801-0.014 1.745-0.175 2.762-0.563 0.969-0.37 1.876-0.877 2.601-1.421 0.374 0.197 0.701 0.493 0.912 0.858 0.762 1.32-0.060 3.218-1.823 4.236zM13.42 27.085c0.616-2.254 1.356-4.509 2.529-6.763 0-0-0-0-0-0h0c0 0-0 0-0 0 1.156 2.254 2.074 4.509 2.529 6.763-1.686-0.514-3.372-0.583-5.058 0zM24.757 20.134c-0.762 1.32-2.822 1.581-4.585 0.563s-2.586-2.916-1.823-4.236c0.211-0.365 0.537-0.661 0.912-0.858 0.724 0.544 1.632 1.051 2.601 1.421 1.017 0.389 1.961 0.549 2.762 0.563l-0 0c0.475 0.859 0.569 1.793 0.134 2.547zM6.584 7.391c0.33-0.871 0.554-1.926 1.621-2.612zM25.137 6.748c-0.363-0.688-0.965-1.891-1.689-2.431z"/></svg>' },
       default: { label: 'OTROS', color: 'text-gray-400', border: 'border-gray-500/30', icon: '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' }
     };
     
@@ -2562,10 +2753,17 @@ try {
         healer: [],
         melee: [],
         ranged: [],
-        default: []
+        default: [],
+        sanctioned: []
       };
 
       playerList.forEach((player) => {
+        // If player is sanctioned, put in sanctioned group regardless of role
+        if (player.is_sanctioned) {
+          groups.sanctioned.push(player);
+          return;
+        }
+
         const role = (player.player_role || player.role || 'default').toLowerCase();
         
         if (role.includes('tank') || role.includes('tanque')) {
@@ -2595,7 +2793,7 @@ try {
     });
 
     // Create sections in order
-    ['tank', 'healer', 'melee', 'ranged', 'default'].forEach(role => {
+    ['tank', 'healer', 'melee', 'ranged', 'default', 'sanctioned'].forEach(role => {
       const section = createRoleSection(role, groups[role]);
       if (section) list.appendChild(section);
     });
@@ -2609,9 +2807,9 @@ try {
 
     // Calculate legend counts
     const leaderCount = playerList.filter(p => p.is_leader).length;
-    const guildCount = playerList.filter(p => p.is_guild_member && !p.guild_leave).length;
-    const posadaCount = playerList.filter(p => !p.is_guild_member).length;
-    const sancionadoCount = playerList.filter(p => p.guild_leave).length;
+    const guildCount = playerList.filter(p => p.is_guild_member && !p.is_sanctioned).length;
+    const posadaCount = playerList.filter(p => p.is_guild_member === false).length;
+    const sancionadoCount = playerList.filter(p => p.is_sanctioned).length;
     
     const legendEl = document.getElementById('regular-players-legend');
     if (legendEl) {
@@ -2771,7 +2969,7 @@ try {
         // Agregar el ID de la raid al formulario si no está presente
         if (!formData.get('raid_id')) {
           if (window.currentRaidId) {
-            formData.append('raid_id', window.currentRaidId.toString());
+            formData.append('raid_id', window.currentRaidId);
           } else {
             throw new Error('No se ha seleccionado ninguna raid. Por favor, inténtalo de nuevo.');
           }
@@ -2871,11 +3069,15 @@ try {
 
     // Update modal UI
     document.getElementById('modal-raid-name').textContent = raidName || 'Raid';
-    document.getElementById('modal-schedule-info').textContent = `${day} - ${time} hora server`;
+    let scheduleText = `${day} - ${time} hora server`;
+    if (day === 'Sin día' || time === 'Sin hora') {
+      scheduleText = 'Sin día y/o hora definida';
+    }
+    document.getElementById('modal-schedule-info').textContent = scheduleText;
     document.getElementById('modal-role-display').textContent = role;
 
     // Set hidden form fields
-    document.getElementById('modal-raid-id').value = raidId;
+    document.getElementById('modal-raid-id').value = raidId?.toUpperCase();
     document.getElementById('modal-day').value = day;
     document.getElementById('modal-time').value = time;
     document.getElementById('modal-player-role').value = role;
@@ -2999,21 +3201,24 @@ try {
 </script>
 
 <script
-  define:vars={{ raidEligibleMembers, raidEligibleMembersRange, raids: JSON.stringify(wotlkRaids) }}
+  define:vars={{ raidEligibleMembers, raidEligibleMembersRange, raids: JSON.stringify(allAvailableRaids) }}
 >
   // Pass server-side data to client
   window.raidEligibleMembers = raidEligibleMembers;
   window.raidEligibleMembersRange = raidEligibleMembersRange;
-  window.wotlkRaids = JSON.parse(raids);
+  const wotlkRaids = JSON.parse(raids);
+  window.wotlkRaids = wotlkRaids;
 
   window.openRosterModal = function (raidId, day = null, time = null, raidName = null) {
+    // Normalizar raidId para que coincida con las claves de los objetos de miembros elegibles
+    // No usamos toUpperCase() aquí porque las claves se generan a partir de raid.id, que es core.raid original
     const modal = document.getElementById('roster-modal');
     const content = document.getElementById('roster-modal-content');
     const raidNameEl = document.getElementById('roster-modal-raid-name');
 
     // If raidName is not provided, try to get it from the raid data
     if (!raidName) {
-      const raid = wotlkRaids.find((r) => r.id === parseInt(raidId));
+      const raid = wotlkRaids.find((r) => r.id === raidId);
       raidName = raid ? raid.name : `Raid ${raidId}`;
     }
 
@@ -3036,7 +3241,7 @@ try {
     });
 
     // Group by role with dual role support and GS validation
-    const raid = wotlkRaids.find((r) => r.id === parseInt(raidId));
+    const raid = wotlkRaids.find((r) => r.id === raidId);
     const minGS = raid ? raid.minGearScore : 0;
 
     // Helper to check if a member is eligible for a specific role

@@ -30,58 +30,6 @@ def extract_lua_table(text, start_pattern):
         return text[start_index : current_index + 1]
     return None
 
-def get_boss_kills_stats(text):
-    """Parses the bossKills section of raidStats."""
-    if not text:
-        return {}
-    
-    boss_kills = {}
-    # Find all boss entries: ["Boss Name"] = { ... }
-    boss_blocks = re.findall(r'\["([^"]+)"\]\s*=\s*\{([^}]+)\}', text, re.DOTALL)
-    
-    for boss_name, block_content in boss_blocks:
-        boss_kills[boss_name] = {}
-        # Match different Lua formats for counts:
-        # 1. 10, -- [1] (Index-based, usually difficulty IDs)
-        # 2. [2] = 5 (Explicit index-based)
-        # 3. ["Normal"] = 2 (Explicit name-based)
-        diff_matches = re.findall(r'(?:(\d+),\s*--\s*\[(\d+)\]|\s*\[(\d+)\]\s*=\s*(\d+)|\s*\["([^"]+)"\]\s*=\s*(\d+))', block_content)
-        
-        for m in diff_matches:
-            val1, idx1, idx2, val2, name3, val3 = m
-            if val1 and idx1:
-                boss_kills[boss_name][idx1] = int(val1)
-            elif idx2 and val2:
-                boss_kills[boss_name][idx2] = int(val2)
-            elif name3 and val3:
-                boss_kills[boss_name][name3] = int(val3)
-                
-    return boss_kills
-
-def get_raid_stats(text):
-    stats = {"byZone": {}, "total": 0, "bossKills": {}}
-    
-    if not text:
-        return stats
-
-    # Total
-    total_match = re.search(r'\["total"\]\s*=\s*(-?\d+)', text)
-    if total_match:
-        stats["total"] = int(total_match.group(1))
-        
-    # byZone
-    bz_block = extract_lua_table(text, r'\["byZone"\]\s*=\s*\{')
-    if bz_block:
-        zones = re.findall(r'\["([^"]+)"\]\s*=\s*(\d+)', bz_block)
-        for z, v in zones: stats["byZone"][z] = int(v)
-
-    # bossKills
-    bk_block = extract_lua_table(text, r'\["bossKills"\]\s*=\s*\{')
-    if bk_block:
-        stats["bossKills"] = get_boss_kills_stats(bk_block)
-
-    return stats
-            
 def lua_to_json(lua_file, json_file):
     try:
         with open(lua_file, "r", encoding="utf-8") as f:
@@ -90,7 +38,7 @@ def lua_to_json(lua_file, json_file):
         print(f"⚠ No se encontró el archivo {lua_file}")
         return
 
-    # 1. Extract Guild Header Info
+    # 1. Extract Guild Header Info (Still used for lastUpdate and generatedBy)
     guild_block = extract_lua_table(content, r'\["Guild"\]\s*=\s*\{')
     if not guild_block:
         print("❌ No se encontró la sección Guild")
@@ -103,41 +51,92 @@ def lua_to_json(lua_file, json_file):
         print("❌ No se pudo extraer lastUpdate o generatedBy")
         return
 
-    # 2. Extract Members
+    # 2. Extract Members from Guild section (Base Roster)
     member_list_block = extract_lua_table(guild_block, r'\["memberList"\]\s*=\s*\{')
     if not member_list_block:
-        print("❌ No se encontró memberList")
+        print("❌ No se encontró memberList en la sección Guild")
         return
     
-    # Find all member blocks ending with }, -- [index]
-    # We search within member_list_block to avoid picking up members from other sections like ["Core"]
-    member_blocks = re.findall(r'\{.*?\n\s*\}, -- \[\d+\]', member_list_block, re.DOTALL)
-    
-    if not member_blocks:
-        print("❌ No se encontraron bloques de miembros")
-        return
+    # Find all member blocks within memberList
+    guild_member_blocks = re.findall(r'\{.*?\n\s*\}, -- \[\d+\]', member_list_block, re.DOTALL)
+    print(f"--- Miembros encontrados en Guild ({len(guild_member_blocks)}) ---")
 
-    print(f"--- Miembros encontrados ({len(member_blocks)}) ---")
-    
-    new_members = []
-    for block in member_blocks:
+    guild_members = []
+    guild_member_names = set()
+    for block in guild_member_blocks:
         name = get_val("name", block)
         if not name: continue
-        
-        raid_stats_block = extract_lua_table(block, r'\["raidStats"\]\s*=\s*\{') or ""
-        
-        member = {
+        guild_member_names.add(name)
+        guild_members.append({
             "name": name,
             "class": get_val("class", block),
             "rank": get_val("rank", block),
             "publicNote": get_val("publicNote", block),
             "officerNote": get_val("officerNote", block),
-            "race": get_val("race", block),
-            "raidStats": get_raid_stats(raid_stats_block)
-        }
-        new_members.append(member)
+            "race": get_val("race", block)
+        })
 
-    # 3. Consolidate
+    # 3. Extract Core mentions (Additional info for leaderData)
+    core_block = extract_lua_table(content, r'\["Core"\]\s*=\s*\{')
+    all_cores = [] # List of all cores found
+    if core_block:
+        # Find all event matches
+        event_matches = re.finditer(r'\{\s*\["schedule"\]\s*=\s*"([^"]*)",\s*\["minGS"\]\s*=\s*(\d+),\s*\["name"\]\s*=\s*"([^"]*)",\s*\["members"\]\s*=\s*\{', core_block)
+        
+        for match in event_matches:
+            schedule = match.group(1)
+            min_gs = int(match.group(2))
+            raid_name = match.group(3)
+            
+            # Skip specific raids requested by user
+            if raid_name in ["Evento de Fin de Mes", "Temporal"]:
+                continue
+            
+            # Find the members for THIS specific event block
+            start_pos = match.end() - 1 # Position of '{' for members
+            balance = 1
+            curr = start_pos
+            while curr < len(core_block) - 1 and balance > 0:
+                curr += 1
+                if core_block[curr] == '{': balance += 1
+                elif core_block[curr] == '}': balance -= 1
+            
+            members_content = core_block[start_pos : curr + 1]
+            
+            # Filter members by role (only tank, healer, dps; exclude "nuevo")
+            member_blocks = re.findall(r'\{[^{}]*\}', members_content)
+            valid_roles = ["tank", "healer", "dps"]
+            filtered_members = []
+            
+            for m_block in member_blocks:
+                m_name = get_val("name", m_block)
+                m_role = get_val("role", m_block)
+                if m_name and m_role and m_role.lower() in valid_roles:
+                    # New detailed member object
+                    m_obj = {
+                        "name": m_name,
+                        "role": m_role,
+                        "isLeader": get_val("isLeader", m_block) or 0,
+                        "isSanctioned": get_val("isSanctioned", m_block) or 0
+                    }
+                    # Include class only if NOT in roster
+                    if m_name not in guild_member_names:
+                        m_obj["class"] = get_val("class", m_block)
+                        
+                    filtered_members.append(m_obj)
+            
+            all_cores.append({
+                "raid": raid_name,
+                "gs": min_gs,
+                "schedule": schedule,
+                "members": filtered_members
+            })
+
+        print(f"--- Cores encontrados ({len(all_cores)}) ---")
+    else:
+        print("⚠ No se encontró la sección Core")
+
+    # 4. Consolidate
     if os.path.exists(json_file):
         with open(json_file, "r", encoding="utf-8") as f:
             try:
@@ -147,66 +146,71 @@ def lua_to_json(lua_file, json_file):
     else:
         consolidated = {"globalLastUpdate": 0, "players": {}}
 
-    # Ensure structure
-    if "players" not in consolidated: consolidated["players"] = {}
-    if "globalLastUpdate" not in consolidated: consolidated["globalLastUpdate"] = 0
+    # We will keep players who are in the CURRENT memberList 
+    # AND players who have "guildLeave": True (previously departed)
+    existing_players = consolidated.get("players", {})
+    new_players = {}
 
     # Update globalLastUpdate
     if current_last_update > consolidated["globalLastUpdate"]:
         consolidated["globalLastUpdate"] = current_last_update
 
-    # Track names in this update to detect who left
-    names_in_update = {m["name"] for m in new_members}
-
-    # Update existing players and add new ones
-    for m in new_members:
+    # 1. Process players from current Guild memberList
+    for m in guild_members:
         name = m["name"]
-        if name not in consolidated["players"]:
-            consolidated["players"][name] = {
-                "name": name,
-                "class": m["class"],
-                "rank": m["rank"],
-                "publicNote": m["publicNote"],
-                "officerNote": m["officerNote"],
-                "race": m["race"],
-                "guildLeave": False,
-                "leaderData": {}
+        
+        # If player existed before, we might want to preserve their leaderData from other leaders
+        old_player_data = existing_players.get(name, {})
+        old_leader_data = old_player_data.get("leaderData", {})
+        
+        # Ensure old_leader_data is a dictionary
+        if not isinstance(old_leader_data, dict):
+            old_leader_data = {}
+
+        player_record = {
+            "class": m["class"],
+            "rank": m["rank"],
+            "publicNote": m["publicNote"],
+            "officerNote": m["officerNote"],
+            "race": m["race"],
+            "guildLeave": False,
+            "leaderData": old_leader_data
+        }
+        
+        # Update leaderData for the current generator
+        if name == generated_by:
+            # Flattened structure: no leader name key, just the data
+            player_record["leaderData"] = {
+                "lastUpdate": current_last_update,
+                "cores": all_cores
             }
         
-        p = consolidated["players"][name]
-        # Update basic info (always take latest from current file)
-        p["class"] = m["class"] or p.get("class", "")
-        p["rank"] = m["rank"] or p.get("rank", "")
-        p["publicNote"] = m["publicNote"] or p.get("publicNote", "")
-        p["officerNote"] = m["officerNote"] or p.get("officerNote", "")
-        if m["race"]: p["race"] = m["race"]
-        
-        # Player is present in this update
-        p["guildLeave"] = False
-        
-        # Update leader-specific data
-        if "leaderData" not in p: p["leaderData"] = {}
-        
-        p["leaderData"][generated_by] = {
-            "lastUpdate": current_last_update,
-            "raidStats": m["raidStats"]
-        }
+        new_players[name] = player_record
 
-    # Mark players not in this update as guildLeave
-    # Only do this if the current update is actually the latest one we've seen
-    if current_last_update >= consolidated["globalLastUpdate"]:
-        for name, p in consolidated["players"].items():
-            if name not in names_in_update:
-                p["guildLeave"] = True
+    # 2. Preserve players with guildLeave: True
+    for name, data in existing_players.items():
+        if data.get("guildLeave") is True and name not in new_players:
+            # Point 3: Clear leaderData for recovered players who left the guild
+            data["leaderData"] = {}
+            new_players[name] = data
 
-    # 4. Save
+    # Replace old players with the new consolidated list
+    consolidated["players"] = new_players
+
+    # 5. Save
     with open(json_file, "w", encoding="utf-8") as f:
         json.dump(consolidated, f, indent=4, ensure_ascii=False)
     
     print(f"✅ Consolidación completada. Se actualizó {json_file}")
     print(f"   Líder: {generated_by}, Update: {current_last_update}")
 
+
 if __name__ == "__main__":
-    lua_file = "RaidDominion2.lua"
+    # Try RaidDominion-main.lua first, then RaidDominion2.lua
+    lua_file = "RaidDominion-main.lua"
+    if not os.path.exists(lua_file):
+        lua_file = "RaidDominion2.lua"
+    
     json_file = "output.json"
+    print(f"--- Procesando {lua_file} ---")
     lua_to_json(lua_file, json_file)

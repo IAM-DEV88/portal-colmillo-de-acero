@@ -2,12 +2,62 @@
 // src/pages/admin.astro
 import Layout from '../components/layout/Layout.astro';
 import { supabase } from '../lib/supabase';
-import { getRaidName } from '../lib/raids';
+import { getRaidName, normalizeRaidName } from '../lib/raids';
 
 // Import roster data and utils
 import rosterData from '../data/roster.json';
 import { validatePublicNote } from '../utils/rosterUtils';
-import { wotlkRaids } from '../config/raids';
+
+// Define a default raid structure for when we only have a name
+const createRaidFromName = (name: string, id: string = '', gs: number = 5000): any => {
+  const nameLower = name.toLowerCase();
+  let image = '/images/raids/iccfarm.jpg';
+  if (nameLower.includes('toc')) image = '/images/raids/tocfarm.jpg';
+  else if (nameLower.includes('sr') || nameLower.includes('sagrario')) image = '/images/raids/sr.jpg';
+  else if (nameLower.includes('lk')) image = '/images/raids/icclk.jpg';
+
+  return {
+    id: id || name, // El ID técnico (normalizado si se provee)
+    name,           // El nombre original para mostrar
+    image,
+    description: 'Raid oficial de la hermandad.',
+    minGearScore: gs,
+    rules: ''
+  };
+};
+
+// Initialize messages
+let errorMessage = '';
+let successMessage = '';
+let registrations = [];
+let isLoading = true;
+
+// Create a list of all possible raids
+const wotlkRaids: any[] = [];
+const seenRaids = new Set<string>();
+
+// 1. First populate from roster.json leaderData
+if (rosterData && rosterData.players) {
+  Object.values(rosterData.players).forEach((member: any) => {
+    const leaderData = member.leaderData;
+    if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
+
+    leaderData.cores.forEach((core) => {
+      if (!core.raid) return;
+
+      const coreRaidKey = core.raid.toUpperCase().trim(); // Usar versión en mayúsculas para deduplicar
+      
+      if (!seenRaids.has(coreRaidKey)) {
+        seenRaids.add(coreRaidKey);
+        // Usamos el nombre original tanto para mostrar como para ID técnico para evitar filtrado excesivo
+        wotlkRaids.push(createRaidFromName(core.raid, core.raid, core.gs || 5000));
+      }
+    });
+  });
+}
+
+// Check if we still need more raids from wotlkRaids global (if any predefined)
+// wotlkRaids.length logic...
 
 // Check for admin password
 const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD || import.meta.env.VITE_ADMIN_PASSWORD;
@@ -23,63 +73,6 @@ const devPassword = 'dev123'; // Change this to your preferred default dev passw
 const isDev = import.meta.env.DEV;
 
 const session = Astro.cookies.get('admin_session')?.value;
-
-// Initialize messages
-let errorMessage = '';
-let successMessage = '';
-let registrations = [];
-let isLoading = true;
-
-// Process roster data to get eligible members per raid (available for all contexts)
-// Convert rosterData.players object to array if needed
-const rosterMembers = Array.isArray(rosterData) 
-  ? rosterData 
-  : rosterData.players ? Object.values(rosterData.players) : [];
-
-const parsedMembers = rosterMembers.map((member) => {
-  const publicNote = member.publicNote || '';
-  const validation = validatePublicNote(publicNote, member.name);
-
-  const charBlock = validation.blocks?.find((b) => b.type === 'character')?.parsedData;
-
-  let gs = 0;
-  let role = 'D';
-
-  if (charBlock) {
-    let rawGs = charBlock.mainGearScore || 0;
-    if (rawGs > 0 && rawGs < 100) {
-      gs = rawGs * 1000;
-    } else {
-      gs = rawGs;
-    }
-    role = charBlock.mainRole || 'D';
-  }
-
-  return {
-    name: member.name,
-    class: member.class,
-    role: role,
-    gearScore: gs,
-    publicNote: publicNote,
-  };
-});
-
-// Calculate eligible members for each raid with GS range filtering
-// Players should only appear in raids where their GS is useful (not overgeared)
-const raidEligibleMembers: Record<number, typeof parsedMembers> = {};
-wotlkRaids.forEach((raid, index) => {
-  const minGs = raid.minGearScore;
-  // Max GS is the minimum of the next raid (or unlimited for the highest raid)
-  const nextRaid = wotlkRaids[index + 1];
-  const maxGs = nextRaid ? nextRaid.minGearScore : Infinity;
-  
-  raidEligibleMembers[raid.id] = parsedMembers.filter((m) => 
-    m.gearScore >= minGs && m.gearScore < maxGs
-  );
-});
-
-// Debug: Log environment variables (remove in production)
-console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not set');
 
 if (!session) {
   // If form was submitted
@@ -109,26 +102,93 @@ if (!session) {
   isLoading = false;
 } else {
   try {
-    console.log('Fetching registrations...');
     const { data, error } = await supabase
       .from('raid_registrations')
       .select('*')
       .order('id', { ascending: false });
 
     if (error) {
-      console.error('Error fetching registrations:', error);
       errorMessage = `Error al cargar las solicitudes: ${error.message}`;
     } else {
-      console.log('Registrations loaded:', data?.length || 0);
       registrations = data || [];
+      
+      // 2. Second populate from supabase registrations
+      registrations.forEach((reg) => {
+        if (!reg.raid_id) return;
+        
+        const raidName = getRaidName(reg.raid_id);
+        const raidKey = raidName.toUpperCase().trim(); // Usar versión en mayúsculas para deduplicar
+        
+        if (!seenRaids.has(raidKey)) {
+          seenRaids.add(raidKey);
+          wotlkRaids.push(createRaidFromName(raidName, raidName, 5000));
+        }
+      });
     }
   } catch (err) {
-    console.error('Unexpected error:', err);
     errorMessage = 'Error inesperado al cargar los datos';
   } finally {
     isLoading = false;
   }
 }
+
+// Add logs to debug in server console
+console.log('Final wotlkRaids count:', wotlkRaids.length);
+console.log('Raids detected:', wotlkRaids.map(r => r.name));
+
+// If still empty after both sources, add a default
+if (wotlkRaids.length === 0) {
+  wotlkRaids.push(createRaidFromName('ICC25N', 5000));
+}
+
+// Process roster data to get eligible members per raid (available for all contexts)
+const parsedMembers = Object.entries(rosterData.players || {}).map(([playerName, member]: [string, any]) => {
+  const publicNote = member.publicNote || '';
+  const validation = validatePublicNote(publicNote, playerName);
+
+  const charBlock = validation.blocks?.find((b) => b.type === 'character')?.parsedData;
+
+  let gs = 0;
+  let role = 'D';
+
+  if (charBlock) {
+    let rawGs = charBlock.mainGearScore || 0;
+    if (rawGs > 0 && rawGs < 100) {
+      gs = rawGs * 1000;
+    } else {
+      gs = rawGs;
+    }
+    role = charBlock.mainRole || 'D';
+  }
+
+  return {
+    name: playerName,
+    class: member.class,
+    role: role,
+    gearScore: gs,
+    publicNote: publicNote,
+  };
+});
+
+// Calculate eligible members for each raid with GS range filtering
+const raidEligibleMembers: Record<string, typeof parsedMembers> = {};
+wotlkRaids.forEach((raid) => {
+  const minGs = raid.minGearScore;
+  // Find the next raid that has a strictly higher GS requirement
+  const nextTierRaid = wotlkRaids
+    .slice()
+    .sort((a, b) => a.minGearScore - b.minGearScore)
+    .find((r) => r.minGearScore > minGs);
+  const maxGs = nextTierRaid ? nextTierRaid.minGearScore : Infinity;
+  
+  // Usamos el ID original para el mapeo
+  raidEligibleMembers[raid.id] = parsedMembers.filter((m) => 
+    m.gearScore >= minGs && m.gearScore < maxGs
+  );
+});
+
+// Debug: Log environment variables (remove in production)
+console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not set');
 ---
 
 {/* If not authenticated, show login form */}
@@ -275,7 +335,7 @@ if (!session) {
 
               {/* Raid Groups */}
               <div class="space-y-6">
-                {registrations.length === 0 ? (
+                {wotlkRaids.length === 0 ? (
                   <div class="text-center py-12 bg-gray-800/30 rounded-md border border-gray-700/50">
                     <svg
                       class="mx-auto h-12 w-12 text-gray-500"
@@ -294,19 +354,94 @@ if (!session) {
                   </div>
                 ) : (
                   (() => {
-                    // First group by raid_id
+                    // First group by normalized raid name
                     const raidGroups = new Map();
                     
+                    // Initialize raidGroups with all raids from wotlkRaids
+                    wotlkRaids.forEach(raid => {
+                      if (!raidGroups.has(raid.id)) {
+                        raidGroups.set(raid.id, {
+                          raid_id: raid.id,
+                          raid_name: raid.name,
+                          schedules: new Map(),
+                        });
+                      }
+                    });
+
+                    // Add information from roster.json cores
+                    if (rosterData && rosterData.players) {
+                      Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
+                        const leaderData = member.leaderData;
+                        if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
+
+                        leaderData.cores.forEach((core) => {
+                          if (!core.raid) return;
+
+                          const raidGroup = raidGroups.get(core.raid);
+                          if (!raidGroup) return;
+
+                          // Parse schedule string (e.g., "Viernes 19:30")
+                          const scheduleParts = core.schedule ? core.schedule.split(' ') : [];
+                          const day = scheduleParts[0] || 'Desconocido';
+                          const time = scheduleParts[1] || '--:--';
+                          const scheduleKey = `${day.toLowerCase()}-${time}`;
+
+                          if (!raidGroup.schedules.has(scheduleKey)) {
+                            raidGroup.schedules.set(scheduleKey, {
+                              day_of_week: day,
+                              start_time: time,
+                              registrations: [],
+                              core_members: [],
+                              is_core: true
+                            });
+                          }
+
+                          const schedule = raidGroup.schedules.get(scheduleKey);
+
+                          // Add the leader themselves first
+                          if (!schedule.core_members.some(cm => cm.name === playerName)) {
+                            schedule.core_members.push({
+                              name: playerName,
+                              class: member.class || 'Desconocido',
+                              role: 'Líder de Raid',
+                              isLeader: 1,
+                              source: 'roster'
+                            });
+                          } else {
+                            // If leader is already in list, make sure isLeader is 1
+                            const leaderIdx = schedule.core_members.findIndex(cm => cm.name === playerName);
+                            if (leaderIdx !== -1) {
+                              schedule.core_members[leaderIdx].isLeader = 1;
+                            }
+                          }
+
+                          if (core.members && Array.isArray(core.members)) {
+                            // Avoid duplicates in core_members
+                            core.members.forEach(m => {
+                              if (!schedule.core_members.some(cm => cm.name === m.name)) {
+                                schedule.core_members.push({
+                                  ...m,
+                                  source: 'roster'
+                                });
+                              }
+                            });
+                          }
+                        });
+                      });
+                    }
+                    
                     registrations.forEach((reg) => {
-                      if (!raidGroups.has(reg.raid_id)) {
-                        raidGroups.set(reg.raid_id, {
-                          raid_id: reg.raid_id,
-                          raid_name: getRaidName(reg.raid_id),
+                      const raidName = getRaidName(reg.raid_id);
+                      
+                      if (!raidGroups.has(raidName)) {
+                        raidGroups.set(raidName, {
+                          raid_id: raidName,
+                          raid_name: raidName,
                           schedules: new Map(),
                         });
                       }
                       
-                      const raidGroup = raidGroups.get(reg.raid_id);
+                      const raidGroup = raidGroups.get(raidName);
                       const normalizedDay = reg.day_of_week?.toLowerCase() || '';
                       const scheduleKey = `${normalizedDay}-${reg.start_time}`;
                       
@@ -315,6 +450,7 @@ if (!session) {
                           day_of_week: reg.day_of_week,
                           start_time: reg.start_time,
                           registrations: [],
+                          core_members: [],
                         });
                       }
                       
@@ -323,7 +459,7 @@ if (!session) {
 
                     // Convert to arrays and sort
                     const sortedRaids = Array.from(raidGroups.values())
-                      .sort((a, b) => a.raid_id - b.raid_id)
+                      .sort((a, b) => a.raid_name.localeCompare(b.raid_name))
                       .map(raid => {
                         const dayOrder = { lunes: 1, martes: 2, miercoles: 3, jueves: 4, viernes: 5, sabado: 6, domingo: 7 };
                         
@@ -339,10 +475,14 @@ if (!session) {
                       });
 
                     return sortedRaids.map((raid) => {
-                      const totalRegistrations = raid.schedules.reduce((sum, s) => sum + s.registrations.length, 0);
+                      const totalPlayers = raid.schedules.reduce((sum, s) => sum + s.registrations.length + s.core_members.length, 0);
                       const totalPending = raid.schedules.reduce((sum, s) => 
                         sum + s.registrations.filter(r => r.status === 'en_revision').length, 0
                       );
+                      const totalAccepted = raid.schedules.reduce((sum, s) => 
+                        sum + s.core_members.length + s.registrations.filter(r => r.status === 'aceptado').length, 0
+                      );
+                      // Usar raid_id (que es el nombre normalizado) para buscar miembros elegibles
                       const eligibleCount = raidEligibleMembers[raid.raid_id]?.length || 0;
 
                       return (
@@ -372,7 +512,7 @@ if (!session) {
                                   <div class="flex items-center space-x-2">
                                     <button
                                       type="button"
-                                      onclick={`openRosterModal(${raid.raid_id})`}
+                                      onclick={`openRosterModal('${raid.raid_id}')`}
                                       class="inline-flex items-center px-2 py-1 border border-indigo-500/30 text-xs font-medium rounded-full shadow-sm text-indigo-300 bg-indigo-600/20 hover:bg-indigo-600/30 focus:outline-none transition-colors"
                                       title="Ver miembros elegibles del roster"
                                     >
@@ -396,7 +536,7 @@ if (!session) {
                                 <div class="flex items-center space-x-3 text-sm text-gray-400 mt-1">
                                   <span>{raid.schedules.length} horarios</span>
                                   <span>•</span>
-                                  <span>{totalRegistrations} solicitudes</span>
+                                  <span>{totalPlayers} jugadores</span>
                                   {totalPending > 0 && (
                                     <span class="status-count-en_revision text-blue-400 font-medium">
                                       • {totalPending} pendientes
@@ -410,7 +550,7 @@ if (!session) {
                               <div class="h-2 w-24 bg-gray-700 rounded-full overflow-hidden hidden sm:block">
                                 <div
                                   class="progress-bar-fill h-full bg-gradient-to-r from-green-500 to-emerald-400"
-                                  style={`width: ${totalRegistrations > 0 ? (raid.schedules.reduce((sum, s) => sum + s.registrations.filter(r => r.status === 'aceptado').length, 0) / totalRegistrations) * 100 : 0}%`}
+                                  style={`width: ${totalPlayers > 0 ? (totalAccepted / totalPlayers) * 100 : 0}%`}
                                 />
                               </div>
                             </div>
@@ -433,7 +573,7 @@ if (!session) {
                                         <span class="text-gray-500">•</span>
                                         <span class="text-amber-400">{schedule.start_time} ST</span>
                                         <span class="text-gray-500">•</span>
-                                        <span class="text-gray-400">{schedule.registrations.length} jugadores</span>
+                                        <span class="text-gray-400">{schedule.core_members.length + schedule.registrations.length} jugadores</span>
                                         {pendingCount > 0 && (
                                           <>
                                             <span class="text-gray-500">•</span>
@@ -457,7 +597,7 @@ if (!session) {
                                       <div class="h-2 w-16 bg-gray-700 rounded-full overflow-hidden">
                                         <div
                                           class="h-full bg-gradient-to-r from-green-500 to-emerald-400"
-                                          style={`width: ${(schedule.registrations.filter(r => r.status === 'aceptado').length / Math.max(1, schedule.registrations.length)) * 100}%`}
+                                          style={`width: ${((schedule.core_members.length + schedule.registrations.filter(r => r.status === 'aceptado').length) / Math.max(1, schedule.core_members.length + schedule.registrations.length)) * 100}%`}
                                         />
                                       </div>
                                     </div>
@@ -484,7 +624,7 @@ if (!session) {
                                               scope="col"
                                               class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
                                             >
-                                              Estado
+                                              Estado / Origen
                                             </th>
                                             <th
                                               scope="col"
@@ -495,189 +635,243 @@ if (!session) {
                                           </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-700/30 bg-gray-800/20">
-                                          {schedule.registrations.map((reg) => (
-                                            <tr class="registration-card hover:bg-gray-700/20 transition-colors">
-                                              <td class="px-6 py-4 whitespace-nowrap">
-                                                <button
-                                                  type="button"
-                                                  onclick={`openEditModal(${JSON.stringify(reg)})`}
-                                                  class="text-left hover:text-amber-400 transition-colors cursor-pointer"
-                                                >
-                                                  <div class="text-sm font-medium text-white hover:underline">
-                                                    {reg.player_name}
-                                                  </div>
-                                                </button>
-                                                {reg.raid_role && reg.raid_role !== 'asistente' && (
-                                                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-900/30 text-amber-400 mt-1">
-                                                    {reg.raid_role}
-                                                  </span>
-                                                )}
-                                              </td>
-                                              <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex flex-col">
-                                                  <span class="text-sm text-gray-300 capitalize">
-                                                    {reg.player_class}
-                                                  </span>
-                                                  <span class="text-xs text-gray-500 capitalize">
-                                                    {reg.player_role}
-                                                  </span>
-                                                </div>
-                                              </td>
-                                              <td class="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                  class={`status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                                                    reg.status === 'aceptado'
-                                                      ? 'bg-green-900/20 text-green-400 border-green-700/30'
-                                                      : reg.status === 'en_espera'
-                                                        ? 'bg-amber-900/20 text-amber-400 border-amber-700/30'
-                                                        : 'bg-blue-900/20 text-blue-400 border-blue-700/30'
-                                                  }`}
-                                                >
-                                                  {reg.status === 'en_revision'
-                                                    ? 'Revisión'
-                                                    : reg.status === 'aceptado'
-                                                      ? 'Aceptado'
-                                                      : reg.status === 'en_espera'
-                                                        ? 'En Espera'
-                                                        : reg.status}
-                                                </span>
-                                              </td>
-                                              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <div class="flex justify-end space-x-2">
-                                                  <form
-                                                    method="post"
-                                                    action="/api/admin/update-status"
-                                                    class="inline"
-                                                  >
-                                                    <input type="hidden" name="id" value={reg.id} />
-                                                    <input type="hidden" name="status" value="aceptado" />
-                                                    <button
-                                                      type="submit"
-                                                      data-status="aceptado"
-                                                      disabled={reg.status === 'aceptado'}
-                                                      class={`p-1.5 rounded-md transition-colors ${
-                                                        reg.status === 'aceptado'
-                                                          ? 'text-gray-600 cursor-not-allowed'
-                                                          : 'text-green-400 hover:bg-green-900/30 hover:text-green-300'
-                                                      }`}
-                                                      title="Aprobar"
-                                                    >
-                                                      <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                      >
-                                                        <path
-                                                          fill-rule="evenodd"
-                                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                          clip-rule="evenodd"
-                                                        />
-                                                      </svg>
-                                                    </button>
-                                                  </form>
+                                          {/* Core Members first */}
+                                          {schedule.core_members && schedule.core_members.length > 0 && (
+                                            <>
+                                              <tr class="bg-indigo-900/10">
+                                                <td colspan="4" class="px-6 py-1.5 text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
+                                                  Miembros del Core (Confirmados en roster.json)
+                                                </td>
+                                              </tr>
+                                              {schedule.core_members.map((member) => (
+                                                <tr class="hover:bg-indigo-900/20 transition-colors border-l-2 border-indigo-500">
+                                                  <td class="px-6 py-3 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                      <div class="text-sm font-medium text-white">
+                                                        {member.name}
+                                                      </div>
+                                                      {member.isLeader === 1 && (
+                                                        <span class="ml-2 px-1.5 py-0.5 text-[10px] bg-amber-500/20 text-amber-400 rounded border border-amber-500/30">LÍDER</span>
+                                                      )}
+                                                    </div>
+                                                  </td>
+                                                  <td class="px-6 py-3 whitespace-nowrap">
+                                                    <div class="flex flex-col">
+                                                      <span class="text-sm text-indigo-300 capitalize">
+                                                        {member.class || '---'}
+                                                      </span>
+                                                      <span class="text-xs text-gray-500 capitalize">
+                                                        {member.role || '---'}
+                                                      </span>
+                                                    </div>
+                                                  </td>
+                                                  <td class="px-6 py-3 whitespace-nowrap">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-900/30 text-indigo-300 border border-indigo-500/30">
+                                                      Confirmado (Core)
+                                                    </span>
+                                                  </td>
+                                                  <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                                    <span class="text-gray-600 text-xs italic">Sincronizado</span>
+                                                  </td>
+                                                </tr>
+                                              ))}
+                                              {schedule.registrations.length > 0 && (
+                                                <tr class="bg-gray-900/30">
+                                                  <td colspan="4" class="px-6 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                                    Solicitudes Externas (Supabase)
+                                                  </td>
+                                                </tr>
+                                              )}
+                                            </>
+                                          )}
 
-                                                  <form
-                                                    method="post"
-                                                    action="/api/admin/update-status"
-                                                    class="inline"
-                                                  >
-                                                    <input type="hidden" name="id" value={reg.id} />
-                                                    <input
-                                                      type="hidden"
-                                                      name="status"
-                                                      value="en_revision"
-                                                    />
-                                                    <button
-                                                      type="submit"
-                                                      data-status="en_revision"
-                                                      disabled={reg.status === 'en_revision'}
-                                                      class={`p-1.5 rounded-md transition-colors ${
-                                                        reg.status === 'en_revision'
-                                                          ? 'text-gray-600 cursor-not-allowed'
-                                                          : 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
-                                                      }`}
-                                                      title="Poner en revisión"
-                                                    >
-                                                      <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                      >
-                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                                                        <path
-                                                          fill-rule="evenodd"
-                                                          d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                                                          clip-rule="evenodd"
-                                                        />
-                                                      </svg>
-                                                    </button>
-                                                  </form>
-
-                                                  <form
-                                                    method="post"
-                                                    action="/api/admin/update-status"
-                                                    class="inline"
-                                                  >
-                                                    <input type="hidden" name="id" value={reg.id} />
-                                                    <input type="hidden" name="status" value="en_espera" />
-                                                    <button
-                                                      type="submit"
-                                                      data-status="en_espera"
-                                                      disabled={reg.status === 'en_espera'}
-                                                      class={`p-1.5 rounded-md transition-colors ${
-                                                        reg.status === 'en_espera'
-                                                          ? 'text-gray-600 cursor-not-allowed'
-                                                          : 'text-amber-400 hover:bg-amber-900/30 hover:text-amber-300'
-                                                      }`}
-                                                      title="Poner en espera"
-                                                    >
-                                                      <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                      >
-                                                        <path
-                                                          fill-rule="evenodd"
-                                                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                                                          clip-rule="evenodd"
-                                                        />
-                                                      </svg>
-                                                    </button>
-                                                  </form>
-
-                                                  <form
-                                                    method="post"
-                                                    action="/api/admin/delete"
-                                                    class="inline"
-                                                    onsubmit="return confirm('¿Estás seguro de eliminar esta solicitud?');"
-                                                  >
-                                                    <input type="hidden" name="id" value={reg.id} />
-                                                    <button
-                                                      type="submit"
-                                                      class="p-1.5 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
-                                                      title="Eliminar"
-                                                    >
-                                                      <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                      >
-                                                        <path
-                                                          fill-rule="evenodd"
-                                                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                          clip-rule="evenodd"
-                                                        />
-                                                      </svg>
-                                                    </button>
-                                                  </form>
-                                                </div>
+                                          {/* Supabase Registrations */}
+                                          {schedule.registrations.length === 0 && (!schedule.core_members || schedule.core_members.length === 0) ? (
+                                            <tr>
+                                              <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500 italic">
+                                                No hay jugadores en este horario
                                               </td>
                                             </tr>
-                                          ))}
+                                          ) : (
+                                            schedule.registrations.map((reg) => (
+                                              <tr class="registration-card hover:bg-gray-700/20 transition-colors">
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                  <button
+                                                    type="button"
+                                                    onclick={`openEditModal(${JSON.stringify(reg)})`}
+                                                    class="text-left hover:text-amber-400 transition-colors cursor-pointer"
+                                                  >
+                                                    <div class="text-sm font-medium text-white hover:underline">
+                                                      {reg.player_name}
+                                                    </div>
+                                                  </button>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                  <div class="flex flex-col">
+                                                    <span class="text-sm text-gray-300 capitalize">
+                                                      {reg.player_class}
+                                                    </span>
+                                                    <span class="text-xs text-gray-500 capitalize">
+                                                      {reg.player_role}
+                                                    </span>
+                                                  </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                  <span
+                                                    class={`status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                                                      reg.status === 'aceptado'
+                                                        ? 'bg-green-900/20 text-green-400 border-green-700/30'
+                                                        : reg.status === 'en_espera'
+                                                          ? 'bg-amber-900/20 text-amber-400 border-amber-700/30'
+                                                          : 'bg-blue-900/20 text-blue-400 border-blue-700/30'
+                                                    }`}
+                                                  >
+                                                    {reg.status === 'en_revision'
+                                                      ? 'Revisión'
+                                                      : reg.status === 'aceptado'
+                                                        ? 'Aceptado'
+                                                        : reg.status === 'en_espera'
+                                                          ? 'En Espera'
+                                                          : reg.status}
+                                                  </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                  <div class="flex justify-end space-x-2">
+                                                    <form
+                                                      method="post"
+                                                      action="/api/admin/update-status"
+                                                      class="inline"
+                                                    >
+                                                      <input type="hidden" name="id" value={reg.id} />
+                                                      <input type="hidden" name="status" value="aceptado" />
+                                                      <button
+                                                        type="submit"
+                                                        data-status="aceptado"
+                                                        disabled={reg.status === 'aceptado'}
+                                                        class={`p-1.5 rounded-md transition-colors ${
+                                                          reg.status === 'aceptado'
+                                                            ? 'text-gray-600 cursor-not-allowed'
+                                                            : 'text-green-400 hover:bg-green-900/30 hover:text-green-300'
+                                                        }`}
+                                                        title="Aprobar"
+                                                      >
+                                                        <svg
+                                                          xmlns="http://www.w3.org/2000/svg"
+                                                          class="h-5 w-5"
+                                                          viewBox="0 0 20 20"
+                                                          fill="currentColor"
+                                                        >
+                                                          <path
+                                                            fill-rule="evenodd"
+                                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                            clip-rule="evenodd"
+                                                          />
+                                                        </svg>
+                                                      </button>
+                                                    </form>
+
+                                                    <form
+                                                      method="post"
+                                                      action="/api/admin/update-status"
+                                                      class="inline"
+                                                    >
+                                                      <input type="hidden" name="id" value={reg.id} />
+                                                      <input
+                                                        type="hidden"
+                                                        name="status"
+                                                        value="en_revision"
+                                                      />
+                                                      <button
+                                                        type="submit"
+                                                        data-status="en_revision"
+                                                        disabled={reg.status === 'en_revision'}
+                                                        class={`p-1.5 rounded-md transition-colors ${
+                                                          reg.status === 'en_revision'
+                                                            ? 'text-gray-600 cursor-not-allowed'
+                                                            : 'text-blue-400 hover:bg-blue-900/30 hover:text-blue-300'
+                                                        }`}
+                                                        title="Poner en revisión"
+                                                      >
+                                                        <svg
+                                                          xmlns="http://www.w3.org/2000/svg"
+                                                          class="h-5 w-5"
+                                                          viewBox="0 0 20 20"
+                                                          fill="currentColor"
+                                                        >
+                                                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                          <path
+                                                            fill-rule="evenodd"
+                                                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                            clip-rule="evenodd"
+                                                          />
+                                                        </svg>
+                                                      </button>
+                                                    </form>
+
+                                                    <form
+                                                      method="post"
+                                                      action="/api/admin/update-status"
+                                                      class="inline"
+                                                    >
+                                                      <input type="hidden" name="id" value={reg.id} />
+                                                      <input type="hidden" name="status" value="en_espera" />
+                                                      <button
+                                                        type="submit"
+                                                        data-status="en_espera"
+                                                        disabled={reg.status === 'en_espera'}
+                                                        class={`p-1.5 rounded-md transition-colors ${
+                                                          reg.status === 'en_espera'
+                                                            ? 'text-gray-600 cursor-not-allowed'
+                                                            : 'text-amber-400 hover:bg-amber-900/30 hover:text-amber-300'
+                                                        }`}
+                                                        title="Poner en espera"
+                                                      >
+                                                        <svg
+                                                          xmlns="http://www.w3.org/2000/svg"
+                                                          class="h-5 w-5"
+                                                          viewBox="0 0 20 20"
+                                                          fill="currentColor"
+                                                        >
+                                                          <path
+                                                            fill-rule="evenodd"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                                            clip-rule="evenodd"
+                                                          />
+                                                        </svg>
+                                                      </button>
+                                                    </form>
+
+                                                    <form
+                                                      method="post"
+                                                      action="/api/admin/delete"
+                                                      class="inline"
+                                                      onsubmit="return confirm('¿Estás seguro de eliminar esta solicitud?');"
+                                                    >
+                                                      <input type="hidden" name="id" value={reg.id} />
+                                                      <button
+                                                        type="submit"
+                                                        class="p-1.5 rounded-md text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
+                                                        title="Eliminar"
+                                                      >
+                                                        <svg
+                                                          xmlns="http://www.w3.org/2000/svg"
+                                                          class="h-5 w-5"
+                                                          viewBox="0 0 20 20"
+                                                          fill="currentColor"
+                                                        >
+                                                          <path
+                                                            fill-rule="evenodd"
+                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                            clip-rule="evenodd"
+                                                          />
+                                                        </svg>
+                                                      </button>
+                                                    </form>
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            ))
+                                          )}
                                         </tbody>
                                       </table>
                                     </div>
@@ -826,19 +1020,6 @@ if (!session) {
                 </div>
               </div>
 
-              <div>
-                <label class="block text-xs font-medium text-gray-400 mb-1">Rol en Raid</label>
-                <select
-                  name="raid_role"
-                  id="edit-raid-role"
-                  required
-                  class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                >
-                  <option value="asistente">Asistente</option>
-                  <option value="raid_leader">Raid Leader</option>
-                </select>
-              </div>
-
               <div class="flex justify-end space-x-2 pt-2">
                 <button
                   type="button"
@@ -925,18 +1106,6 @@ if (!session) {
                               <option value="healer">Sanador</option>
                               <option value="melee">Melee</option>
                               <option value="ranged">Rango</option>
-                            </select>
-                          </div>
-                          
-                          <div>
-                            <label class="block text-xs font-medium text-gray-400 mb-1">Rol en Raid</label>
-                            <select
-                              name="raid_role"
-                              required
-                              class="w-full px-2 py-1.5 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-1 focus:ring-amber-500 focus:border-transparent"
-                            >
-                              <option value="asistente" selected>Asistente</option>
-                              <option value="raid_leader">Raid Leader</option>
                             </select>
                           </div>
                         </div>
@@ -1141,7 +1310,6 @@ if (!session) {
         document.getElementById('edit-player-role').value = registration.player_role || '';
         document.getElementById('edit-day').value = registration.day_of_week || '';
         document.getElementById('edit-time').value = registration.start_time || '';
-        document.getElementById('edit-raid-role').value = registration.raid_role || 'asistente';
         document.getElementById('edit-status').value = registration.status || 'aceptado';
         
         // Set the selected raid
@@ -1322,75 +1490,85 @@ if (!session) {
         const dps = members.filter(m => m.role === 'D');
 
         // Get raid name
-        const raidNames = {
-          1: 'TOC 10N FARM',
-          2: 'ICC 10N FARM',
-          3: 'ICC 25N FARM',
-          4: 'ICC 10N POR LK',
-          5: 'SAGRARIO RUBY',
-          6: 'ICC 25N POR LK',
-          7: 'ICC 10H FARM',
-          8: 'ICC 25H FARM'
-        };
-        const raidName = raidNames[raidId] || 'Raid';
+        const raidData = window.wotlkRaids.find(r => r.id === String(raidId));
+        const raidName = raidData ? raidData.name : 'Raid';
 
         // Helper to render member list
         const renderList = (list, title, colorClass, iconPath, id, roleSpanish) => {
           if (list.length === 0) return '';
 
-          const playerNames = list.map(m => m.name);
+        const playerNames = list.map(m => m.name);
 
-          return `
-            <div class="mb-4 last:mb-0 border border-gray-700/50 rounded-md overflow-hidden bg-gray-800/20">
-              <div class="flex items-center justify-between p-3 bg-gray-800/50">
-                <button 
-                  type="button"
-                  class="flex items-center flex-1 hover:bg-gray-800/50 transition-colors -m-3 p-3 rounded-l-lg"
-                  onclick="document.getElementById('${id}-content').classList.toggle('hidden'); document.getElementById('${id}-chevron').classList.toggle('rotate-180');"
-                >
-                  <div class="flex items-center">
-                    <div class="p-1.5 rounded-md ${colorClass} bg-opacity-20 mr-3">
-                      <svg class="w-4 h-4 ${colorClass.replace('bg-', 'text-')}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        ${iconPath}
-                      </svg>
-                    </div>
-                    <h4 class="text-sm font-bold text-gray-200 uppercase tracking-wide">${title} <span class="text-xs text-gray-500 ml-1">(${list.length})</span></h4>
+        // Mapeo de avatares de clase (consistente con raids.astro)
+        const classAvatars = {
+          'death-knight': 'class_deathknight.jpg',
+          'druid': 'class_druid.jpg',
+          'hunter': 'class_hunter.jpg',
+          'mage': 'class_mage.jpg',
+          'paladin': 'class_paladin.jpg',
+          'priest': 'class_priest.jpg',
+          'rogue': 'class_rogue.jpg',
+          'shaman': 'class_shaman.jpg',
+          'warlock': 'class_warlock.jpg',
+          'warrior': 'class_warrior.jpg'
+        };
+
+        const getAvatar = (className) => {
+          const file = classAvatars[className.toLowerCase().replace(/\s+/g, '-')] || `class_${className.toLowerCase().replace(/\s+/g, '')}.jpg`;
+          return `/images/avatars/${file}`;
+        };
+
+        return `
+          <div class="mb-4 last:mb-0 border border-gray-700/50 rounded-md overflow-hidden bg-gray-800/20">
+            <div class="flex items-center justify-between p-3 bg-gray-800/50">
+              <button 
+                type="button"
+                class="flex items-center flex-1 hover:bg-gray-800/50 transition-colors -m-3 p-3 rounded-l-lg"
+                onclick="document.getElementById('${id}-content').classList.toggle('hidden'); document.getElementById('${id}-chevron').classList.toggle('rotate-180');"
+              >
+                <div class="flex items-center">
+                  <div class="p-1.5 rounded-md ${colorClass} bg-opacity-20 mr-3">
+                    <svg class="w-4 h-4 ${colorClass.replace('bg-', 'text-')}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      ${iconPath}
+                    </svg>
                   </div>
-                  <svg id="${id}-chevron" class="w-5 h-5 text-gray-500 transform transition-transform duration-200 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                
-                <button
-                  type="button"
-                  onclick="window.copyRosterInvite(['${playerNames.join("','")}'], '${raidName}', '${roleSpanish}');"
-                  class="ml-2 px-2 py-1 text-xs bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded transition-colors flex items-center space-x-1 flex-shrink-0"
-                  title="Copiar invitación para ${roleSpanish}"
-                >
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  <span>Copiar</span>
-                </button>
-              </div>
-              
-              <div id="${id}-content" class="hidden p-3 border-t border-gray-700/50 bg-gray-900/20">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  ${list.map(m => `
-                    <div class="flex items-center justify-between bg-gray-800/40 p-2 rounded border border-gray-700/30">
-                      <div class="flex items-center overflow-hidden">
-                        <img src="/images/avatars/class_${m.class}.jpg" class="w-6 h-6 rounded-full mr-2 object-cover" onerror="this.src='/images/avatars/default.png'" />
-                        <span class="text-sm font-medium text-gray-200 truncate">${m.name}</span>
-                      </div>
-                      <span class="text-xs font-mono text-amber-400 bg-amber-900/20 px-1.5 py-0.5 rounded border border-amber-700/30">
-                        ${(m.gearScore / 1000).toFixed(1)}k
-                      </span>
-                    </div>
-                  `).join('')}
+                  <h4 class="text-sm font-bold text-gray-200 uppercase tracking-wide">${title} <span class="text-xs text-gray-500 ml-1">(${list.length})</span></h4>
                 </div>
+                <svg id="${id}-chevron" class="w-5 h-5 text-gray-500 transform transition-transform duration-200 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <button
+                type="button"
+                onclick="window.copyRosterInvite(['${playerNames.join("','")}'], '${raidName}', '${roleSpanish}');"
+                class="ml-2 px-2 py-1 text-xs bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded transition-colors flex items-center space-x-1 flex-shrink-0"
+                title="Copiar invitación para ${roleSpanish}"
+              >
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>Copiar</span>
+              </button>
+            </div>
+            
+            <div id="${id}-content" class="hidden p-3 border-t border-gray-700/50 bg-gray-900/20">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                ${list.map(m => `
+                  <div class="flex items-center justify-between bg-gray-800/40 p-2 rounded border border-gray-700/30">
+                    <div class="flex items-center overflow-hidden">
+                      <img src="${getAvatar(m.class)}" class="w-6 h-6 rounded-full mr-2 object-cover" onerror="this.src='/images/avatars/default.png'" />
+                      <span class="text-sm font-medium text-gray-200 truncate">${m.name}</span>
+                    </div>
+                    <span class="text-xs font-mono text-amber-400 bg-amber-900/20 px-1.5 py-0.5 rounded border border-amber-700/30">
+                      ${(m.gearScore / 1000).toFixed(1)}k
+                    </span>
+                  </div>
+                `).join('')}
               </div>
             </div>
-          `;
+          </div>
+        `;
         };
 
         const tankIcon = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />';

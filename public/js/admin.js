@@ -496,7 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       document.getElementById('edit-time').value = registration.start_time || '';
-      document.getElementById('edit-raid-role').value = registration.raid_role || 'asistente';
 
       // Show modal
       modal.classList.remove('hidden');

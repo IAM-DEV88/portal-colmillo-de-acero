@@ -2573,20 +2573,6 @@ const totalRaiders = rosterData.members.filter(
         opacity 0.2s ease-in-out,
         visibility 0.2s ease-in-out;
     }
-    </p>
-      </div>
-    </div>
-  </div>
-
-  <style>
-    /* Estilos para el modal */
-    #member-modal {
-      opacity: 0;
-      visibility: hidden;
-      transition:
-        opacity 0.2s ease-in-out,
-        visibility 0.2s ease-in-out;
-    }
 
     #member-modal.show {
       opacity: 1;
@@ -2892,7 +2878,99 @@ const totalRaiders = rosterData.members.filter(
         if (tabId === 'recognitions' && currentMember) {
           updateRecognitionsDisplay(currentMember);
         }
+
+        // If switching to raids tab, update the display
+        if (tabId === 'raids' && currentMember) {
+          updateRaidsDisplay(currentMember);
+        }
       };
+
+      // Function to update raids display
+      function updateRaidsDisplay(member) {
+        const container = document.getElementById('raids-container');
+        const badge = document.getElementById('badge-raids');
+        if (!container) return;
+
+        let html = '';
+        let totalRaids = 0;
+
+        // Collect all cores from all leaders
+        const allCores = [];
+        if (member.leaderData) {
+          Object.entries(member.leaderData).forEach(([leaderName, data]) => {
+            if (data.cores && Array.isArray(data.cores)) {
+              data.cores.forEach((core) => {
+                allCores.push({
+                  ...core,
+                  leader: leaderName,
+                  lastUpdate: data.lastUpdate,
+                });
+              });
+            }
+          });
+        }
+
+        totalRaids = allCores.length;
+        if (badge) {
+          badge.textContent = totalRaids.toString();
+          badge.classList.toggle('hidden', totalRaids === 0);
+        }
+
+        if (totalRaids > 0) {
+          // Sort by last update (most recent first)
+          allCores.sort((a, b) => b.lastUpdate - a.lastUpdate);
+
+          html += '<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">';
+          allCores.forEach((core) => {
+            // Determine difficulty color if possible (e.g., from raid name like "ICC10H")
+            let diffColorClass = 'bg-gray-700/50 text-gray-300 border-gray-600/30';
+            const raidUpper = core.raid.toUpperCase();
+
+            if (raidUpper.includes('10H'))
+              diffColorClass = 'bg-blue-900/30 text-blue-300 border-blue-700/40';
+            else if (raidUpper.includes('25H'))
+              diffColorClass = 'bg-red-900/30 text-red-300 border-red-700/40';
+            else if (raidUpper.includes('10N'))
+              diffColorClass = 'bg-cyan-900/30 text-cyan-300 border-cyan-700/40';
+            else if (raidUpper.includes('25N'))
+              diffColorClass = 'bg-purple-900/30 text-purple-300 border-purple-700/40';
+
+            html += `
+              <div class="bg-gray-800/40 p-3 rounded-md border border-amber-600/20 hover:border-amber-500/40 transition-all duration-200">
+                <div class="flex justify-between items-start mb-2">
+                  <div class="flex flex-col">
+                    <span class="font-bold text-amber-300 text-sm">${core.raid}</span>
+                    <span class="text-[10px] text-gray-400">Actualizado por: ${core.leader}</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${diffColorClass}">
+                    ${core.gs > 0 ? `GS ${core.gs}+` : 'Sin GS'}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2 mt-1 text-xs text-gray-300">
+                  <svg class="w-3.5 h-3.5 text-amber-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span>${core.schedule}</span>
+                </div>
+              </div>
+            `;
+          });
+          html += '</div>';
+        } else {
+          html = `
+            <div class="text-center py-6">
+              <div class="w-12 h-12 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-2 border border-gray-700/30">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <p class="text-sm text-gray-500 italic">No hay registros de participación en raids</p>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+      }
 
       // Store current member for tab switching
       let currentMember = null;
@@ -3745,6 +3823,19 @@ const totalRaiders = rosterData.members.filter(
               >0</span
             >
           </button>
+
+          <button
+            id="tab-raids"
+            class="modal-tab px-4 py-2 text-sm font-medium text-gray-400 border-b-2 border-transparent hover:text-amber-300 transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
+            onclick="window.switchModalTab('raids')"
+          >
+            Raids
+            <span
+              id="badge-raids"
+              class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30"
+              >0</span
+            >
+          </button>
         </div>
 
         <!-- Tab Panes -->
@@ -3781,6 +3872,28 @@ const totalRaiders = rosterData.members.filter(
             <div id="recognitions-container" class="space-y-3">
               <!-- Recognitions will be inserted here by JavaScript -->
               <p class="text-sm text-gray-400 text-center py-4">Cargando reconocimientos...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raids Tab Content -->
+        <div id="pane-raids" class="modal-pane hidden space-y-4">
+          <div class="bg-gray-900/50 p-4 rounded-md border border-amber-800/30">
+            <h4
+              class="text-sm font-semibold text-amber-300 mb-3 border-b border-amber-900/50 pb-1 flex items-center gap-2"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              Participación en Raids (Cores)
+            </h4>
+            <div id="raids-container" class="space-y-3">
+              <!-- Raids info will be inserted here by JavaScript -->
+              <p class="text-sm text-gray-400 text-center py-4">Cargando información de raids...</p>
             </div>
           </div>
         </div>

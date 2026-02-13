@@ -20,7 +20,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       player_role,
       day_of_week,
       start_time,
-      raid_role = 'asistente',
       raid_id,
       status = 'pendiente',
       action = 'update',
@@ -46,7 +45,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       player_role,
       day_of_week,
       start_time,
-      raid_role,
       status,
     };
 
