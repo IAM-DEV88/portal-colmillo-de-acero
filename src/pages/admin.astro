@@ -512,6 +512,36 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                   <div class="flex items-center space-x-2">
                                     <button
                                       type="button"
+                                      onclick={`copyInviteCommand(${JSON.stringify(
+                                        Array.from(new Set(
+                                          raid.schedules.flatMap(schedule => [
+                                            ...(schedule.core_members || []).map(m => {
+                                              const role = m.role?.toLowerCase() || '';
+                                              const className = m.class?.toLowerCase() || '';
+                                              const isRanged = className.includes('mage') || className.includes('warlock') || className.includes('hunter') || (className.includes('druid') && !role.includes('tank')) || (className.includes('priest') && !role.includes('heal')) || (className.includes('shaman') && !role.includes('heal'));
+                                              const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : (isRanged ? 'R' : 'M');
+                                              return prefix + m.name;
+                                            }),
+                                            ...schedule.registrations.map(r => {
+                                              const role = r.player_role?.toLowerCase() || '';
+                                              const className = r.player_class?.toLowerCase() || '';
+                                              const isRanged = className.includes('mage') || className.includes('warlock') || className.includes('hunter') || (className.includes('druid') && !role.includes('tank')) || (className.includes('priest') && !role.includes('heal')) || (className.includes('shaman') && !role.includes('heal'));
+                                              const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : (isRanged ? 'R' : 'M');
+                                              return prefix + r.player_name;
+                                            })
+                                          ])
+                                        ))
+                                      )}, '${raid.raid_name}', '', ''); event.stopPropagation();`}
+                                      class="inline-flex items-center px-2 py-1 border border-indigo-500/30 text-xs font-medium rounded-full shadow-sm text-indigo-300 bg-indigo-600/20 hover:bg-indigo-600/30 focus:outline-none transition-colors"
+                                      title="Copiar lista de nombres de TODOS los horarios"
+                                    >
+                                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                      </svg>
+                                      Copiar Todo
+                                    </button>
+                                    <button
+                                      type="button"
                                       onclick={`openRosterModal('${raid.raid_id}')`}
                                       class="inline-flex items-center px-2 py-1 border border-indigo-500/30 text-xs font-medium rounded-full shadow-sm text-indigo-300 bg-indigo-600/20 hover:bg-indigo-600/30 focus:outline-none transition-colors"
                                       title="Ver miembros elegibles del roster"
@@ -583,17 +613,6 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                       </div>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                      <button
-                                        type="button"
-                                        onclick={`copyInviteCommand(${JSON.stringify(schedule.registrations.map(r => r.player_name))}, '${raid.raid_name}', '${schedule.day_of_week}', '${schedule.start_time}'); event.stopPropagation();`}
-                                        class="px-2 py-1 text-xs bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded transition-colors flex items-center space-x-1"
-                                        title="Copiar comando de invitación WoW"
-                                      >
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                        <span>Copiar</span>
-                                      </button>
                                       <div class="h-2 w-16 bg-gray-700 rounded-full overflow-hidden">
                                         <div
                                           class="h-full bg-gradient-to-r from-green-500 to-emerald-400"
@@ -1268,11 +1287,11 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                 </div>
                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                   <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">
-                    Comandos de Invitación (Multi-parte)
+                    Listas de Invitación (Multi-parte)
                   </h3>
                   <div class="mt-2">
                     <p class="text-sm text-gray-400 mb-4">
-                      Debido al límite de caracteres de WoW (255), las invitaciones se han dividido en varias partes. Copia y ejecuta cada parte por separado.
+                      Debido al límite de caracteres de WoW (255), los nombres se han dividido en varias partes. Copia y pega cada lista en tu addon de invitación.
                     </p>
                     <div id="invite-parts-content" class="space-y-3">
                       {/* Buttons will be injected here */}
@@ -1497,7 +1516,13 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
         const renderList = (list, title, colorClass, iconPath, id, roleSpanish) => {
           if (list.length === 0) return '';
 
-        const playerNames = list.map(m => m.name);
+        const playerNames = list.map(m => {
+          const role = m.role?.toLowerCase() || '';
+          const className = m.class?.toLowerCase() || '';
+          const isRanged = className.includes('mage') || className.includes('warlock') || className.includes('hunter') || (className.includes('druid') && !role.includes('tank')) || (className.includes('priest') && !role.includes('heal')) || (className.includes('shaman') && !role.includes('heal'));
+          const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : (isRanged ? 'R' : 'M');
+          return prefix + m.name;
+        });
 
         // Mapeo de avatares de clase (consistente con raids.astro)
         const classAvatars = {
@@ -1543,7 +1568,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                 type="button"
                 onclick="window.copyRosterInvite(['${playerNames.join("','")}'], '${raidName}', '${roleSpanish}');"
                 class="ml-2 px-2 py-1 text-xs bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded transition-colors flex items-center space-x-1 flex-shrink-0"
-                title="Copiar invitación para ${roleSpanish}"
+                title="Copiar lista de ${roleSpanish}"
               >
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -1616,7 +1641,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
         content.innerHTML = chunks.map((chunk, index) => `
           <div class="flex items-center justify-between bg-gray-700/50 p-3 rounded border border-gray-600">
             <div class="mr-4">
-              <span class="text-sm font-bold text-white">Parte ${index + 1}</span>
+              <span class="text-sm font-bold text-white">Lista ${index + 1}</span>
               <span class="text-xs text-gray-400 ml-2">(${chunk.count} jugadores)</span>
             </div>
             <button
@@ -1627,7 +1652,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
               <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
-              Copiar
+              Copiar Lista
             </button>
           </div>
         `).join('');
@@ -1654,7 +1679,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
         navigator.clipboard.writeText(text).then(() => {
           const toast = document.createElement('div');
           toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in';
-          toast.textContent = 'Comando copiado al portapapeles';
+          toast.textContent = 'Lista de nombres copiada al portapapeles';
           document.body.appendChild(toast);
           setTimeout(() => toast.remove(), 2000);
         }).catch(err => {
@@ -1664,78 +1689,31 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
       };
 
       // Helper to generate command chunks
-      function generateInviteChunks(names, message) {
-        const MAX_LENGTH = 255;
-        // Base command structure: /run local msg="..." local t={...} for i,v in ipairs(t) do InviteUnit(v); SendChatMessage(msg,"WHISPER",nil,v) end
-        
-        // Escape double quotes in message just in case
-        const safeMessage = message.replace(/"/g, '\\"');
-        
-        const baseCommandStart = `/run local msg="${safeMessage}" local t={`;
-        const baseCommandEnd = `} for i,v in ipairs(t) do InviteUnit(v); SendChatMessage(msg,"WHISPER",nil,v) end`;
-        
-        const fixedLength = baseCommandStart.length + baseCommandEnd.length;
-        const availableSpace = MAX_LENGTH - fixedLength;
-        
-        console.log('Generating chunks:', { 
-          namesCount: names.length, 
-          messageLength: safeMessage.length, 
-          fixedLength, 
-          availableSpace 
-        });
-
-        if (availableSpace <= 0) {
-          console.error('Message is too long for WoW macro limit');
-          alert('El mensaje es demasiado largo para caber en una macro de WoW. Por favor acórtalo.');
-          return [];
-        }
-
+      function generateInviteChunks(names) {
+        const MAX_LENGTH = 5000;
         const chunks = [];
         let currentChunkNames = [];
         let currentLength = 0;
 
-        names.forEach((name, index) => {
-          // Format name: "Name"
-          // If not first name in chunk, add comma: ,"Name"
-          const nameStr = `"${name}"`;
-          // Separator is needed if it's not the very first item in the chunk
+        names.forEach((name) => {
+          const nameStr = name.replace(/\s+/g, '');
           const separator = currentChunkNames.length > 0 ? ',' : '';
           const itemLength = nameStr.length + separator.length;
 
-          // Check if adding this item would exceed the limit
-          if (currentLength + itemLength > availableSpace) {
-            // Finish current chunk if it has items
+          if (currentLength + itemLength > MAX_LENGTH) {
             if (currentChunkNames.length > 0) {
-              const command = `${baseCommandStart}${currentChunkNames.join(',')}${baseCommandEnd}`;
-              chunks.push({ command, count: currentChunkNames.length });
-              console.log(`Chunk created with ${currentChunkNames.length} names. Length: ${command.length}`);
+              chunks.push({ command: currentChunkNames.join(','), count: currentChunkNames.length });
             }
-            
-            // Start new chunk with current item
-            // Check if even a single item fits
-            if (itemLength > availableSpace) {
-               console.error(`Name "${name}" is too long to fit in any chunk!`);
-               // We have to skip it or it breaks the macro. 
-               // For now, let's add it and let it break or just warn.
-            }
-            
             currentChunkNames = [nameStr];
-            // For the first item in a new chunk, there is no leading comma separator in the string construction logic above
-            // But wait, my logic above `const separator = ...` depends on `currentChunkNames.length`.
-            // If I just reset `currentChunkNames = [nameStr]`, the next iteration will see length 1.
-            // The length of this new chunk so far is just `nameStr.length` (no comma).
             currentLength = nameStr.length;
           } else {
-            currentChunkNames.push(nameStr); // We store just the name, join with comma later
+            currentChunkNames.push(nameStr);
             currentLength += itemLength;
           }
         });
 
-        // Add last chunk
         if (currentChunkNames.length > 0) {
-          const command = `${baseCommandStart}${currentChunkNames.join(',')}${baseCommandEnd}`;
-          chunks.push({ command, count: currentChunkNames.length });
-          console.log(`Last chunk created with ${currentChunkNames.length} names. Length: ${command.length}`);
+          chunks.push({ command: currentChunkNames.join(','), count: currentChunkNames.length });
         }
 
         return chunks;
@@ -1747,10 +1725,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
         const names = playerNames.filter(name => name && name.trim());
         if (names.length === 0) return;
 
-        const schedule = `${dayOfWeek} ${startTime}`;
-        const message = `¡Hola! Te estoy invitando a la ${raidName} para el core ${schedule} de Colmillo de Acero.`;
-        
-        const chunks = generateInviteChunks(names, message);
+        const chunks = generateInviteChunks(names);
         console.log('Chunks generated:', chunks.length);
         
         if (chunks.length === 1) {
@@ -1766,9 +1741,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
         const names = playerNames.filter(name => name && name.trim());
         if (names.length === 0) return;
 
-        const message = `¡Hola! Estamos buscando ${roleSpanish} para completar la banda ${raidName} de Colmillo de Acero. ¿Te interesa unirte?`;
-        
-        const chunks = generateInviteChunks(names, message);
+        const chunks = generateInviteChunks(names);
         console.log('Chunks generated:', chunks.length);
         
         if (chunks.length === 1) {
