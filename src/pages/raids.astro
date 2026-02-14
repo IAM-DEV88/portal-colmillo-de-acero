@@ -1025,7 +1025,8 @@ try {
                             player.registration_status === 'accepted' ||
                             player.status === 'confirmed' ||
                             player.raid_status === 'confirmed' ||
-                            player.registration_status === 'confirmed'
+                            player.registration_status === 'confirmed' ||
+                            sched.is_official_core // Si es core oficial, todos sus jugadores cuentan
                         );
                         return sum + acceptedPlayers.length;
                       }, 0);
@@ -1078,15 +1079,9 @@ try {
                                             if (!schedule.players) return false;
                                             return schedule.players.some(
                                               (player) =>
-                                                player.status === 'aceptado' ||
-                                                player.raid_status === 'aceptado' ||
-                                                player.registration_status === 'aceptado' ||
-                                                player.status === 'accepted' ||
-                                                player.raid_status === 'accepted' ||
-                                                player.registration_status === 'accepted' ||
-                                                player.status === 'confirmed' ||
-                                                player.raid_status === 'confirmed' ||
-                                                player.registration_status === 'confirmed'
+                                                ['aceptado', 'accepted', 'confirmed'].includes(player.status) ||
+                                                ['aceptado', 'accepted', 'confirmed'].includes(player.raid_status) ||
+                                                ['aceptado', 'accepted', 'confirmed'].includes(player.registration_status)
                                             );
                                           }).length
                                         }{' '}
@@ -1151,7 +1146,7 @@ try {
                                     }
 
                                     // Agrupar horarios por día (asegurando normalización)
-                                    const groupedSchedules = sortedSchedules.reduce((acc: any, schedule: any) => {
+                                    const groupedSchedules = sortedSchedules.reduce((acc, schedule) => {
                                       let day = (schedule.day_of_week || '').toLowerCase();
                                       if (day === 'sin dia' || day === 'sin día') {
                                         if (schedule.start_time !== 'Sin hora') {
@@ -1165,7 +1160,7 @@ try {
                                       return acc;
                                     }, {});
 
-                                    return Object.entries(groupedSchedules).map(([day, schedules]: [string, any], dayIdx) => {
+                                    return Object.entries(groupedSchedules).map(([day, schedules], dayIdx) => {
                                       // Formatear el día para mostrar
                                       let displayDay = day.charAt(0).toUpperCase() + day.slice(1);
                                       if (day === 'hora-definida-sin-dia') {
@@ -1177,13 +1172,13 @@ try {
                                       }
                                       
                                       // Calcular total de jugadores para este día
-                                      const totalDayPlayers = schedules.reduce((sum: number, s: any) => {
+                                      const totalDayPlayers = schedules.reduce((sum, s) => {
                                         // Include members from roster for official cores
-                                        const count = s.players?.filter((p: any) =>
+                                        const count = s.players?.filter((p) =>
                                           ['aceptado', 'accepted', 'confirmed'].includes(p.status) ||
                                           ['aceptado', 'accepted', 'confirmed'].includes(p.raid_status) ||
                                           ['aceptado', 'accepted', 'confirmed'].includes(p.registration_status) ||
-                                          s.is_official_core // If official core, assume players listed are accepted
+                                          s.is_official_core // Si es core oficial, todos cuentan
                                         ).length || 0;
                                         return sum + count;
                                       }, 0);
@@ -1229,10 +1224,10 @@ try {
                                             x-transition:enter-end="opacity-100 transform scale-100"
                                             class="mt-2 space-y-2 pl-2 border-l-2 border-gray-700/30"
                                           >
-                                            {schedules.map((schedule: any, idx: number) => {
+                                            {schedules.map((schedule, idx) => {
                                               const schedulePlayers =
                                                 schedule.players?.filter(
-                                                  (player: any) =>
+                                                  (player) =>
                                                     (['aceptado', 'accepted', 'confirmed'].includes(
                                                       player.status
                                                     ) ||
@@ -1260,138 +1255,107 @@ try {
                                                       <span class="mx-2 text-gray-400">•</span>
                                                       <span class="text-xs text-gray-500">Server</span>
                                                     </div>
-                                                    <div class="flex items-center space-x-2">
-                                                      {/* Indicators for regulars/leaders */}
-                                                      <button
-                                                        data-regulars={JSON.stringify({
-                                                          regulars: (schedulePlayers || [])
-                                                            .map((p: any) => ({
-                                                              name: String(p.name || ''),
-                                                              class: String(p.class || ''),
-                                                              role: String(p.raid_role || 'asistente'),
-                                                              player_role: String(
-                                                                p.player_role || p.role || 'default'
-                                                              ),
-                                                              note: p.note || p.public_note || '',
-                                                              achievements: p.achievements || 0,
-                                                              raids_count: p.raids_count || 0,
-                                                              is_leader: p.raid_role === 'lider',
-                                                              is_guild_member: p.is_guild_member === true,
-                                                              guild_leave: p.guild_leave === true,
-                                                              is_sanctioned: p.is_sanctioned === true
-                                                            })),
-                                                        })}
-                                                        onclick={`(function(btn) {
-                                                        try {
-                                                          const data = JSON.parse(btn.getAttribute('data-regulars') || '{}');
-                                                          const regulars = data.regulars || [];
-                                                          openRegularPlayersModal(regulars, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
-                                                        } catch (e) {
-                                                          console.error('Error loading regular players:', e);
-                                                          openRegularPlayersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
-                                                        }
-                                                      })(this)`}
-                                                        class="text-xs bg-blue-600/30 hover:bg-blue-600/40 text-blue-300 px-1.5 py-0.5 rounded flex items-center transition-colors"
-                                                        title="Ver jugadores regulares"
-                                                      >
-                                                        <svg
-                                                          class="w-3 h-3 mr-1"
-                                                          fill="none"
-                                                          stroke="currentColor"
-                                                          viewBox="0 0 24 24"
-                                                        >
-                                                          <path
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                          />
-                                                        </svg>
-                                                        {
-                                                          schedulePlayers.length
-                                                        }
-                                                      </button>
-                                                      <button
-                                                        data-leaders={JSON.stringify({
-                                                          leaders: (schedulePlayers || [])
-                                                            .filter(
-                                                              (p: any) =>
-                                                                p && p.raid_role === 'lider'
-                                                            )
-                                                            .map((p: any) => ({
-                                                              name: String(p.name || ''),
-                                                              class: String(p.class || ''),
-                                                              role: String(p.raid_role || ''),
-                                                              player_role: String(
-                                                                p.player_role || p.role || 'default'
-                                                              ),
-                                                              note: p.note || p.public_note || '',
-                                                              achievements: p.achievements || 0,
-                                                              raids_count: p.raids_count || 0,
-                                                              is_leader: true,
-                                                              is_guild_member: p.is_guild_member === true,
-                                                              guild_leave: p.guild_leave || false,
-                                                              is_sanctioned: p.is_sanctioned === true
-                                                            })),
-                                                        })}
-                                                        onclick={`(function(btn) {
-                                                        try {
-                                                          const data = JSON.parse(btn.getAttribute('data-leaders') || '{}');
-                                                          const leaders = data.leaders || [];
-                                                          console.log('Leaders data:', leaders);
-                                                          openRaidLeadersModal(leaders, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}');
-                                                        } catch (e) {
-                                                          console.error('Error loading raid leaders:', e);
-                                                          openRaidLeadersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}');
-                                                        }
-                                                      })(this)`}
-                                                        class="text-xs bg-amber-600/30 hover:bg-amber-600/40 text-amber-300 px-1.5 py-0.5 rounded flex items-center transition-colors"
-                                                        title="Ver líderes de raid"
-                                                      >
-                                                        <svg
-                                                          class="w-3 h-3 mr-1"
-                                                          fill="none"
-                                                          stroke="currentColor"
-                                                          viewBox="0 0 24 24"
-                                                        >
-                                                          <path
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                                                          />
-                                                        </svg>
-                                                        {
-                                                          schedulePlayers.filter((p: any) =>
-                                                            p.raid_role === 'lider'
-                                                          ).length
-                                                        }
-                                                      </button>
+                                                  {/* Action Buttons for Players and Leaders */}
+                                                  <div class="flex items-center space-x-2 mt-2 bg-gray-900/40 p-1.5 rounded-md border border-gray-700/30">
+                                                    <button
+                                                      data-regulars={JSON.stringify({
+                                                        regulars: (schedulePlayers || [])
+                                                          .map((p) => ({
+                                                            name: String(p.name || ''),
+                                                            class: String(p.class || ''),
+                                                            role: String(p.raid_role || 'asistente'),
+                                                            player_role: String(
+                                                              p.player_role || p.role || 'default'
+                                                            ),
+                                                            note: p.note || p.public_note || '',
+                                                            achievements: p.achievements || 0,
+                                                            raids_count: p.raids_count || 0,
+                                                            is_leader: p.raid_role === 'lider',
+                                                            is_guild_member: p.is_guild_member === true,
+                                                            guild_leave: p.guild_leave === true,
+                                                            is_sanctioned: p.is_sanctioned === true
+                                                          })),
+                                                      })}
+                                                      onclick={`(function(btn) {
+                                                      try {
+                                                        const data = JSON.parse(btn.getAttribute('data-regulars') || '{}');
+                                                        const regulars = data.regulars || [];
+                                                        openRegularPlayersModal(regulars, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
+                                                      } catch (e) {
+                                                        console.error('Error loading regular players:', e);
+                                                        openRegularPlayersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
+                                                      }
+                                                    })(this)`}
+                                                      class="text-[10px] md:text-xs bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded flex items-center transition-colors border border-indigo-500/30 font-bold uppercase tracking-wider"
+                                                      title="Ver todos los jugadores confirmados"
+                                                    >
+                                                      <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                      </svg>
+                                                      Confirmados: <span class="ml-1.5 px-1.5 py-0.5 bg-indigo-500/20 rounded text-indigo-200">{schedulePlayers.length}</span>
+                                                    </button>
+                                                    
+                                                    <button
+                                                      data-leaders={JSON.stringify({
+                                                        leaders: (schedulePlayers || [])
+                                                          .filter((p) => p && p.raid_role === 'lider')
+                                                          .map((p) => ({
+                                                            name: String(p.name || ''),
+                                                            class: String(p.class || ''),
+                                                            role: String(p.raid_role || ''),
+                                                            player_role: String(p.player_role || p.role || 'default'),
+                                                            note: p.note || p.public_note || '',
+                                                            achievements: p.achievements || 0,
+                                                            raids_count: p.raids_count || 0,
+                                                            is_leader: true,
+                                                            is_guild_member: p.is_guild_member === true,
+                                                            guild_leave: p.guild_leave || false,
+                                                            is_sanctioned: p.is_sanctioned === true
+                                                          })),
+                                                      })}
+                                                      onclick={`(function(btn) {
+                                                      try {
+                                                        const data = JSON.parse(btn.getAttribute('data-leaders') || '{}');
+                                                        const leaders = data.leaders || [];
+                                                        openRaidLeadersModal(leaders, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}');
+                                                      } catch (e) {
+                                                        console.error('Error loading raid leaders:', e);
+                                                        openRaidLeadersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}');
+                                                      }
+                                                    })(this)`}
+                                                      class="text-[10px] md:text-xs bg-amber-600/30 hover:bg-amber-600/40 text-amber-300 px-2 py-1 rounded flex items-center transition-colors border border-amber-500/30 font-bold uppercase tracking-wider"
+                                                      title="Ver líderes de raid"
+                                                    >
+                                                      <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                                      </svg>
+                                                      Líderes: <span class="ml-1.5 px-1.5 py-0.5 bg-amber-500/20 rounded text-amber-200">{schedulePlayers.filter((p) => p.raid_role === 'lider').length}</span>
+                                                    </button>
 
-                                                      {/* Eligible Roster Button for Schedule */}
-                                                      <button
-                                                        onclick={`openRosterModal('${raid.id}', '${schedule.day_of_week}', '${schedule.start_time}')`}
-                                                        class="text-xs bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 px-1.5 py-0.5 rounded flex items-center transition-colors ml-2"
-                                                        title="Invitar miembros del roster"
+                                                    {/* Eligible Roster Button for Schedule */}
+                                                    <button
+                                                      onclick={`openRosterModal('${raid.id}', '${schedule.day_of_week}', '${schedule.start_time}')`}
+                                                      class="text-[10px] md:text-xs bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded flex items-center transition-colors border border-indigo-500/30 font-bold uppercase tracking-wider"
+                                                      title="Invitar miembros del roster"
+                                                    >
+                                                      <svg
+                                                        class="w-3.5 h-3.5 mr-1.5"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
                                                       >
-                                                        <svg
-                                                          class="w-3 h-3 mr-1"
-                                                          fill="none"
-                                                          stroke="currentColor"
-                                                          viewBox="0 0 24 24"
-                                                        >
-                                                          <path
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                                                          />
-                                                        </svg>
-                                                        {raidEligibleMembers[raid.id]?.length || 0}
-                                                      </button>
-                                                    </div>
+                                                        <path
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"
+                                                          stroke-width="2"
+                                                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                                                        />
+                                                      </svg>
+                                                      Roster: <span class="ml-1.5 px-1.5 py-0.5 bg-indigo-500/20 rounded text-indigo-200">{raidEligibleMembers[raid.id]?.length || 0}</span>
+                                                    </button>
                                                   </div>
-                                                  
+                                                </div>
+
                                                   {/* Warning for raids without leaders */}
                                                   {!schedulePlayers.some(p => p.raid_role === 'lider') && (
                                                     <div class="bg-yellow-900/30 border border-yellow-500/50 p-2 rounded-md mt-2">
