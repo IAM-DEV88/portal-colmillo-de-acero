@@ -1268,45 +1268,8 @@ try {
                                                       <span class="text-xs text-gray-500">Server</span>
                                                     </div>
                                                   {/* Action Buttons for Players and Leaders */}
-                                                  <div class="flex items-center space-x-2 mt-2 bg-gray-900/40 p-1.5 rounded-md border border-gray-700/30">
-                                                    <button
-                                                      data-regulars={JSON.stringify({
-                                                        regulars: (schedulePlayers || [])
-                                                          .map((p) => ({
-                                                            name: String(p.name || ''),
-                                                            class: String(p.class || ''),
-                                                            role: String(p.raid_role || 'asistente'),
-                                                            player_role: String(
-                                                              p.player_role || p.role || 'default'
-                                                            ),
-                                                            note: p.note || p.public_note || '',
-                                                            achievements: p.achievements || 0,
-                                                            raids_count: p.raids_count || 0,
-                                                            is_leader: p.raid_role === 'lider',
-                                                            is_guild_member: p.is_guild_member === true,
-                                                            guild_leave: p.guild_leave === true,
-                                                            is_sanctioned: p.is_sanctioned === true,
-                                                            from_supabase: p.from_supabase === true
-                                                          })),
-                                                      })}
-                                                      onclick={`(function(btn) {
-                                                      try {
-                                                        const data = JSON.parse(btn.getAttribute('data-regulars') || '{}');
-                                                        const regulars = data.regulars || [];
-                                                        openRegularPlayersModal(regulars, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
-                                                      } catch (e) {
-                                                        console.error('Error loading regular players:', e);
-                                                        openRegularPlayersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
-                                                      }
-                                                    })(this)`}
-                                                      class="text-[10px] md:text-xs bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded flex items-center transition-colors border border-indigo-500/30 font-bold uppercase tracking-wider"
-                                                      title="Ver todos los jugadores confirmados"
-                                                    >
-                                                      <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                      </svg>
-                                                      Confirmados: <span class="ml-1.5 px-1.5 py-0.5 bg-indigo-500/20 rounded text-indigo-200">{schedulePlayers.length}</span>
-                                                    </button>
+                                                  <div class="flex flex-col items-center md:flex-row space-y-2 md:space-y-0 space-x-2 mt-2 bg-gray-900/40 p-1.5 rounded-md border border-gray-700/30">
+                                            
                                                     
                                                     <button
                                                       data-leaders={JSON.stringify({
@@ -1367,6 +1330,47 @@ try {
                                                       </svg>
                                                       Roster: <span class="ml-1.5 px-1.5 py-0.5 bg-indigo-500/20 rounded text-indigo-200">{raidEligibleMembers[raid.id]?.length || 0}</span>
                                                     </button>
+
+                                                    <button
+                                                      data-regulars={JSON.stringify({
+                                                        regulars: (schedulePlayers || [])
+                                                          .map((p) => ({
+                                                            name: String(p.name || ''),
+                                                            class: String(p.class || ''),
+                                                            role: String(p.raid_role || 'asistente'),
+                                                            player_role: String(
+                                                              p.player_role || p.role || 'default'
+                                                            ),
+                                                            note: p.note || p.public_note || '',
+                                                            achievements: p.achievements || 0,
+                                                            raids_count: p.raids_count || 0,
+                                                            is_leader: p.raid_role === 'lider',
+                                                            is_guild_member: p.is_guild_member === true,
+                                                            guild_leave: p.guild_leave === true,
+                                                            is_sanctioned: p.is_sanctioned === true,
+                                                            from_supabase: p.from_supabase === true
+                                                          })),
+                                                      })}
+                                                      onclick={`(function(btn) {
+                                                      try {
+                                                        const data = JSON.parse(btn.getAttribute('data-regulars') || '{}');
+                                                        const regulars = data.regulars || [];
+                                                        openRegularPlayersModal(regulars, '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
+                                                      } catch (e) {
+                                                        console.error('Error loading regular players:', e);
+                                                        openRegularPlayersModal([], '${raid.name}', '${schedule.day_of_week} ${schedule.start_time}', ${raid.minGearScore});
+                                                      }
+                                                    })(this)`}
+                                                      class="text-[10px] md:text-xs bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded flex items-center transition-colors border border-indigo-500/30 font-bold uppercase tracking-wider"
+                                                      title="Ver todos los jugadores confirmados"
+                                                    >
+                                                      <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                      </svg>
+                                                      Confirmados: <span class="ml-1.5 px-1.5 py-0.5 bg-indigo-500/20 rounded text-indigo-200">{schedulePlayers.length}</span>
+                                                    </button>
+
+                                                    
                                                   </div>
                                                 </div>
 
