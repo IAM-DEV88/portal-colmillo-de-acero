@@ -242,9 +242,10 @@ function getSortedSchedules(schedules) {
       if (!schedule.players || schedule.players.length === 0) return false;
       return schedule.players.some(
         (player) =>
-          ['aceptado', 'accepted', 'confirmed'].includes(player.status) ||
+          (['aceptado', 'accepted', 'confirmed'].includes(player.status) ||
           ['aceptado', 'accepted', 'confirmed'].includes(player.raid_status) ||
-          ['aceptado', 'accepted', 'confirmed'].includes(player.registration_status)
+          ['aceptado', 'accepted', 'confirmed'].includes(player.registration_status)) &&
+          (player.is_guild_member || player.from_supabase)
       );
     })
     .sort((a, b) => {
@@ -726,7 +727,9 @@ try {
     if (reg.status === 'aceptado') {
       const schedule = schedulesMap.get(key);
       
-      if (!schedule.players.some(p => p.name.toLowerCase() === reg.player_name.toLowerCase())) {
+      const existingPlayer = schedule.players.find(p => p.name.toLowerCase() === reg.player_name.toLowerCase());
+      
+      if (!existingPlayer) {
         // Look for the player in the roster data to get additional info
         const rosterPlayerKey = Object.keys(rosterData.players).find(
           (key) => key.toLowerCase() === reg.player_name.trim().toLowerCase()
@@ -747,7 +750,11 @@ try {
           is_guild_member: rosterPlayer ? rosterPlayer.guildLeave === false : false,
           guild_leave: rosterPlayer?.guildLeave === true,
           is_sanctioned: rosterPlayer?.isSanctioned === 1 || rosterPlayer?.isSanctioned === true || rosterPlayer?.guildLeave === true,
+          from_supabase: true,
         });
+      } else {
+        // Si ya existe (fue agregado desde el roster), marcamos que también está en supabase
+        existingPlayer.from_supabase = true;
       }
     }
   });
@@ -967,7 +974,7 @@ try {
                         if (!schedule.players) return false;
                         return schedule.players.some(
                           (player) =>
-                            player.status === 'aceptado' ||
+                            (player.status === 'aceptado' ||
                             player.raid_status === 'aceptado' ||
                             (player as any).registration_status === 'aceptado' ||
                             player.status === 'accepted' ||
@@ -975,7 +982,8 @@ try {
                             (player as any).registration_status === 'accepted' ||
                             player.status === 'confirmed' ||
                             player.raid_status === 'confirmed' ||
-                            (player as any).registration_status === 'confirmed'
+                            (player as any).registration_status === 'confirmed') &&
+                            (player.is_guild_member || player.from_supabase)
                         );
                       }).length;
 
@@ -1017,7 +1025,7 @@ try {
                         if (!sched.players) return sum;
                         const acceptedPlayers = sched.players.filter(
                           (player) =>
-                            player.status === 'aceptado' ||
+                            (player.status === 'aceptado' ||
                             player.raid_status === 'aceptado' ||
                             player.registration_status === 'aceptado' ||
                             player.status === 'accepted' ||
@@ -1026,7 +1034,8 @@ try {
                             player.status === 'confirmed' ||
                             player.raid_status === 'confirmed' ||
                             player.registration_status === 'confirmed' ||
-                            sched.is_official_core // Si es core oficial, todos sus jugadores cuentan
+                            sched.is_official_core) &&
+                            (player.is_guild_member || player.from_supabase)
                         );
                         return sum + acceptedPlayers.length;
                       }, 0);
@@ -1079,9 +1088,10 @@ try {
                                             if (!schedule.players) return false;
                                             return schedule.players.some(
                                               (player) =>
-                                                ['aceptado', 'accepted', 'confirmed'].includes(player.status) ||
+                                                (['aceptado', 'accepted', 'confirmed'].includes(player.status) ||
                                                 ['aceptado', 'accepted', 'confirmed'].includes(player.raid_status) ||
-                                                ['aceptado', 'accepted', 'confirmed'].includes(player.registration_status)
+                                                ['aceptado', 'accepted', 'confirmed'].includes(player.registration_status)) &&
+                                                (player.is_guild_member || player.from_supabase)
                                             );
                                           }).length
                                         }{' '}
@@ -1175,10 +1185,11 @@ try {
                                       const totalDayPlayers = schedules.reduce((sum, s) => {
                                         // Include members from roster for official cores
                                         const count = s.players?.filter((p) =>
-                                          ['aceptado', 'accepted', 'confirmed'].includes(p.status) ||
+                                          (['aceptado', 'accepted', 'confirmed'].includes(p.status) ||
                                           ['aceptado', 'accepted', 'confirmed'].includes(p.raid_status) ||
                                           ['aceptado', 'accepted', 'confirmed'].includes(p.registration_status) ||
-                                          s.is_official_core // Si es core oficial, todos cuentan
+                                          s.is_official_core) &&
+                                          (p.is_guild_member || p.from_supabase)
                                         ).length || 0;
                                         return sum + count;
                                       }, 0);
@@ -1237,7 +1248,8 @@ try {
                                                     ['aceptado', 'accepted', 'confirmed'].includes(
                                                       player.registration_status
                                                     ) ||
-                                                    schedule.is_official_core)
+                                                    schedule.is_official_core) &&
+                                                    (player.is_guild_member || player.from_supabase)
                                                 ) || [];
 
                                               const roleCounts = countPlayersByRole(schedulePlayers.filter(p => !p.is_sanctioned));
@@ -1273,7 +1285,8 @@ try {
                                                             is_leader: p.raid_role === 'lider',
                                                             is_guild_member: p.is_guild_member === true,
                                                             guild_leave: p.guild_leave === true,
-                                                            is_sanctioned: p.is_sanctioned === true
+                                                            is_sanctioned: p.is_sanctioned === true,
+                                                            from_supabase: p.from_supabase === true
                                                           })),
                                                       })}
                                                       onclick={`(function(btn) {
@@ -1310,7 +1323,8 @@ try {
                                                             is_leader: true,
                                                             is_guild_member: p.is_guild_member === true,
                                                             guild_leave: p.guild_leave || false,
-                                                            is_sanctioned: p.is_sanctioned === true
+                                                            is_sanctioned: p.is_sanctioned === true,
+                                                            from_supabase: p.from_supabase === true
                                                           })),
                                                       })}
                                                       onclick={`(function(btn) {
@@ -1756,7 +1770,7 @@ try {
               .filter((s) => normalizeDay(s.day_of_week) === targetDay)
               .filter((s) => {
                 // Only show schedules that have at least one raid leader
-                return s.players.some(p => p.raid_role === 'lider');
+                return s.players.some(p => p.raid_role === 'lider' && (p.is_guild_member || p.from_supabase));
               })
               .sort((a, b) => {
                 // Extract time part (remove 'ST' if present)
@@ -1834,7 +1848,16 @@ try {
                         )}
                         <div class="mt-2 pt-2 border-t border-gray-700/50 flex justify-between items-center text-[10px]">
                           <span class="text-gray-500">
-                            {schedule.players.length} jugador{schedule.players.length !== 1 ? 'es' : ''}
+                            {(() => {
+                              const validPlayersCount = schedule.players.filter(p => 
+                                (['aceptado', 'accepted', 'confirmed'].includes(p.status) || 
+                                 ['aceptado', 'accepted', 'confirmed'].includes(p.raid_status) || 
+                                 ['aceptado', 'accepted', 'confirmed'].includes(p.registration_status) || 
+                                 schedule.is_official_core) && 
+                                (p.is_guild_member || p.from_supabase)
+                              ).length;
+                              return `${validPlayersCount} jugador${validPlayersCount !== 1 ? 'es' : ''}`;
+                            })()}
                           </span>
                         </div>
                       </div>
@@ -2573,7 +2596,7 @@ try {
     // Calculate legend counts - para líderes, todos son líderes
     const leaderCount = leaderList.length;
     const guildCount = leaderList.filter(p => p.is_guild_member && !p.is_sanctioned).length;
-    const posadaCount = leaderList.filter(p => p.is_guild_member === false).length;
+    const posadaCount = leaderList.filter(p => p.is_guild_member === false && p.from_supabase).length;
     const sancionadoCount = leaderList.filter(p => p.is_sanctioned).length;
     
     const legendEl = document.getElementById('raid-leaders-legend');
@@ -2772,7 +2795,7 @@ try {
     // Calculate legend counts
     const leaderCount = playerList.filter(p => p.is_leader).length;
     const guildCount = playerList.filter(p => p.is_guild_member && !p.is_sanctioned).length;
-    const posadaCount = playerList.filter(p => p.is_guild_member === false).length;
+    const posadaCount = playerList.filter(p => p.is_guild_member === false && p.from_supabase).length;
     const sancionadoCount = playerList.filter(p => p.is_sanctioned).length;
     
     const legendEl = document.getElementById('regular-players-legend');
