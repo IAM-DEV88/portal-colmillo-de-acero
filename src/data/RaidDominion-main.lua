@@ -2,1399 +2,1231 @@
 RaidDominionDB = {
 	["assignments"] = {
 		["roles"] = {
-			["healer 2"] = "Sargorath",
+			["abominacion"] = "Voidhammer",
+			["tanque dual auxiliar"] = 0,
 		},
 		["buffs"] = {
-			["don de lo salvaje"] = "Sargorath",
+			["grito desmoralizador"] = 0,
+			["poderío"] = "Voidhammer",
+			["piedra de alma"] = 0,
 		},
 		["abilities"] = {
-			["penitencia"] = 0,
-			["redireccion"] = 0,
-			["rejuvenecimiento"] = 0,
 			["heroismo"] = 0,
+			["raices enredadoras"] = 0,
 		},
 		["auras"] = {
-			["tótem corriente de sanación"] = 0,
-		},
-	},
-	["general"] = {
-		["locked"] = 0,
-		["scale"] = 1,
-		["debug"] = 0,
-		["minimap"] = {
-			["angle"] = 45,
-			["radius"] = 80,
-			["hide"] = 0,
-		},
-	},
-	["ui"] = {
-		["showGuildMenu"] = 1,
-		["showMechanicsMenu"] = 1,
-		["showMainMenuOnStart"] = 1,
-		["position"] = {
-			["y"] = -142.9400685138911,
-			["relativeTo"] = "UIParent",
-			["point"] = "LEFT",
-			["relativePoint"] = "LEFT",
-			["x"] = 326.0149150685797,
-		},
-	},
-	["auras"] = {
-		["tótem viento furioso"] = 1,
-		["tótem temblor"] = 1,
-		["presencia profana"] = 1,
-		["tótem fuerza de la tierra"] = 1,
-		["aura de retribución"] = 1,
-		["tótem corriente de sanación"] = 1,
-		["tótem piel de piedra"] = 1,
-		["presencia de sangre"] = 1,
-		["aspecto de la manada"] = 1,
-		["tótem marea de maná"] = 1,
-		["aura de devoción"] = 1,
-		["tótem de resistencia a las sombras"] = 1,
-		["tótem lengua de fuego"] = 1,
-		["tótem cólera del aire"] = 1,
-		["aura de cruzado"] = 1,
-		["aura de concentración"] = 1,
-		["tótem de resistencia a la naturaleza"] = 1,
-		["aspecto del guepardo"] = 1,
-		["presencia de escarcha"] = 1,
-		["aspecto del halcón"] = 1,
-	},
-	["profiles"] = {
-		["Sargorath - Bennu"] = {
-			["discordLink"] = "https://discord.gg/Xzp5Gf3S",
-			["chat"] = {
-				["channel"] = "DEFAULT",
-			},
-		},
-	},
-	["modules"] = {
-		["roleManager"] = {
-			["enabled"] = 1,
-			["autoPromote"] = 0,
-		},
-		["messageManager"] = {
-			["enabled"] = 1,
-			["announceEvents"] = 1,
-			["channel"] = "RAID",
 		},
 	},
 	["Guild"] = {
-		["lastUpdate"] = 1771195331,
-		["generatedBy"] = "Sargorath",
+		["lastUpdate"] = 1771335111,
+		["generatedBy"] = "Voidhammer",
 		["memberList"] = {
-			{
-				["name"] = "Aleila",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [1]
-			{
-				["name"] = "Calvasor",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [2]
-			{
-				["name"] = "Kendro",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [3]
-			{
-				["race"] = "HU",
-				["name"] = "Milus",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md6.0",
-				["rank"] = "Aspirante",
-			}, -- [4]
-			{
-				["race"] = "HU",
-				["name"] = "Mipiylin",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [5]
-			{
-				["name"] = "Mythoss",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [6]
-			{
-				["name"] = "Sepherina",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [7]
-			{
-				["name"] = "Warsatochi",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [8]
-			{
-				["race"] = "DR",
-				["name"] = "Janasha",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "mh4.8",
-				["rank"] = "Iniciado",
-			}, -- [9]
-			{
-				["name"] = "Luzdsol",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "md3.2",
-				["rank"] = "Iniciado",
-			}, -- [10]
-			{
-				["name"] = "Malivur",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "md4.9",
-				["rank"] = "Iniciado",
-			}, -- [11]
-			{
-				["race"] = "HU",
-				["name"] = "Spartac",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "md5.8",
-				["rank"] = "Iniciado",
-			}, -- [12]
-			{
-				["race"] = "UN",
-				["name"] = "Belhir",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md6.4",
-				["rank"] = "Explorador",
-			}, -- [13]
-			{
-				["race"] = "TR",
-				["name"] = "Eltufao",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md5.8",
-				["rank"] = "Explorador",
-			}, -- [14]
-			{
-				["name"] = "Icura",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "mh6.0",
-				["rank"] = "Explorador",
-			}, -- [15]
-			{
-				["race"] = "DR",
-				["name"] = "Mochiix",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "mh5.7",
-				["rank"] = "Explorador",
-			}, -- [16]
-			{
-				["race"] = "HU",
-				["name"] = "Nephttys",
-				["officerNote"] = "AWEBO",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "md5.8",
-				["rank"] = "Explorador",
-			}, -- [17]
-			{
-				["name"] = "Tenicer",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md5.9",
-				["rank"] = "Explorador",
-			}, -- [18]
-			{
-				["name"] = "Yojaness",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "mt5.7",
-				["rank"] = "Explorador",
-			}, -- [19]
-			{
-				["race"] = "NE",
-				["name"] = "Sargorath",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "ah6.1d5.3ALhb",
-				["rank"] = "Administrador",
-			}, -- [20]
 			{
 				["name"] = "Tgb",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [21]
+			}, -- [1]
 			{
 				["name"] = "Dracoskull",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [22]
+			}, -- [2]
 			{
 				["name"] = "Jacksonxd",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [23]
+			}, -- [3]
 			{
 				["name"] = "Polachekcita",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [24]
+			}, -- [4]
 			{
 				["name"] = "Puloski",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [25]
+			}, -- [5]
 			{
 				["name"] = "Recckful",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [26]
+			}, -- [6]
 			{
 				["name"] = "Nephsy",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [27]
+			}, -- [7]
 			{
 				["name"] = "Montriuk",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [28]
+			}, -- [8]
 			{
 				["name"] = "Vaquiitamuu",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [29]
+			}, -- [9]
 			{
 				["name"] = "Tarino",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [30]
+			}, -- [10]
 			{
 				["name"] = "Wiiwiwi",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [31]
+			}, -- [11]
 			{
 				["name"] = "Zulkutar",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [32]
+			}, -- [12]
 			{
 				["name"] = "Farfanmidas",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [33]
+			}, -- [13]
 			{
 				["name"] = "Fuumador",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [34]
+			}, -- [14]
 			{
 				["name"] = "Mooncharm",
 				["officerNote"] = "wusheng alt",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [35]
+			}, -- [15]
 			{
 				["name"] = "Rekt",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [36]
+			}, -- [16]
 			{
 				["name"] = "Tresbichas",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [37]
-			{
-				["name"] = "Dextructions",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [38]
+			}, -- [17]
 			{
 				["name"] = "Marketter",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [39]
+			}, -- [18]
 			{
 				["name"] = "Elfuni",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [40]
+			}, -- [19]
 			{
 				["name"] = "Keetees",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [41]
+			}, -- [20]
 			{
 				["name"] = "Lockbroc",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [42]
+			}, -- [21]
 			{
 				["name"] = "Pestilenciia",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [43]
+			}, -- [22]
 			{
 				["name"] = "Travesuco",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [44]
+			}, -- [23]
 			{
 				["name"] = "Wadeh",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [45]
+			}, -- [24]
 			{
 				["name"] = "Khaalia",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [46]
+			}, -- [25]
 			{
 				["name"] = "Tchondrius",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [47]
+			}, -- [26]
 			{
 				["name"] = "Pshao",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [48]
+			}, -- [27]
 			{
 				["name"] = "Honesot",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [49]
+			}, -- [28]
 			{
 				["name"] = "Elminitito",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [50]
+			}, -- [29]
 			{
 				["name"] = "Labubuperuka",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [51]
+			}, -- [30]
 			{
 				["name"] = "Agraciado",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [52]
+			}, -- [31]
 			{
 				["name"] = "Failchat",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [53]
+			}, -- [32]
 			{
 				["name"] = "Hunterblaack",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [54]
+			}, -- [33]
 			{
-				["name"] = "Gooddead",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [55]
-			{
-				["name"] = "Kaelthnas",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [56]
-			{
-				["name"] = "Vagador",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [57]
-			{
-				["name"] = "Zarenah",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [58]
-			{
-				["name"] = "Fnl",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [59]
-			{
-				["name"] = "Ihantank",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [60]
-			{
-				["name"] = "Jimagua",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [61]
-			{
-				["name"] = "Sumofu",
+				["name"] = "Lenoy",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [62]
-			{
-				["name"] = "Cherooke",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [63]
-			{
-				["name"] = "Diozz",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [64]
-			{
-				["name"] = "Lluzz",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [65]
-			{
-				["name"] = "Rastaboy",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [66]
-			{
-				["name"] = "Tylea",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [67]
-			{
-				["name"] = "Losandes",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [68]
-			{
-				["name"] = "Seray",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [69]
-			{
-				["name"] = "Kilimansharo",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [70]
-			{
-				["name"] = "Manupro",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [71]
-			{
-				["name"] = "Arcanitenn",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [72]
-			{
-				["name"] = "Duut",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [73]
-			{
-				["name"] = "Gustavoo",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [74]
-			{
-				["name"] = "Kardek",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [75]
-			{
-				["name"] = "Morenaxa",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [76]
-			{
-				["name"] = "Magordox",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [77]
-			{
-				["name"] = "Pintoski",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [78]
-			{
-				["name"] = "Klkjacc",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [79]
-			{
-				["name"] = "Malganlx",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [80]
-			{
-				["name"] = "Mirux",
-				["officerNote"] = "",
-				["class"] = "Sacerdote",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [81]
-			{
-				["name"] = "Demmonico",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [82]
-			{
-				["name"] = "Zaja",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [83]
-			{
-				["name"] = "Battlelion",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [84]
-			{
-				["name"] = "Cuiki",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [85]
-			{
-				["name"] = "Nandoh",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [86]
-			{
-				["name"] = "Phnx",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [87]
-			{
-				["name"] = "Shadownigth",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [88]
-			{
-				["name"] = "Inferrni",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [89]
-			{
-				["name"] = "Dakroz",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [90]
-			{
-				["name"] = "Latitisita",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [91]
-			{
-				["name"] = "Milkyheal",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [92]
-			{
-				["name"] = "Goudher",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [93]
-			{
-				["name"] = "Anghorroth",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [94]
-			{
-				["name"] = "Sillienne",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [95]
-			{
-				["name"] = "Sommeer",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [96]
-			{
-				["name"] = "Quimbara",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [97]
-			{
-				["name"] = "Bernadethe",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [98]
-			{
-				["name"] = "Miaujade",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [99]
-			{
-				["name"] = "Senira",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [100]
-			{
-				["name"] = "Bernalsoiyo",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [101]
-			{
-				["name"] = "Afoke",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [102]
-			{
-				["name"] = "Hudemor",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [103]
-			{
-				["name"] = "Lishyl",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [104]
-			{
-				["name"] = "Orionxz",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [105]
-			{
-				["name"] = "Palakdin",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [106]
-			{
-				["name"] = "Rijaab",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [107]
-			{
-				["name"] = "Jmkiuu",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [108]
-			{
-				["name"] = "Muxaxo",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [109]
-			{
-				["name"] = "Sanatork",
-				["officerNote"] = "",
-				["class"] = "Chamán",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [110]
-			{
-				["name"] = "Minecraftlow",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [111]
-			{
-				["name"] = "Orcrok",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [112]
-			{
-				["name"] = "Rambear",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [113]
-			{
-				["name"] = "Bicvioleta",
-				["officerNote"] = "",
-				["class"] = "Brujo",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [114]
-			{
-				["name"] = "Coloborracho",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [115]
-			{
-				["name"] = "Nephastic",
-				["officerNote"] = "",
-				["class"] = "Mago",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [116]
-			{
-				["name"] = "Riwayat",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [117]
-			{
-				["name"] = "Sojosue",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [118]
-			{
-				["name"] = "Ashlander",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [119]
-			{
-				["name"] = "Owep",
-				["officerNote"] = "",
-				["class"] = "Pícaro",
-				["publicNote"] = "md",
-				["rank"] = "Aspirante",
-			}, -- [120]
+			}, -- [34]
 			{
 				["name"] = "Valyval",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [121]
+			}, -- [35]
+			{
+				["name"] = "Gooddead",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [36]
+			{
+				["name"] = "Kaelthnas",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [37]
+			{
+				["name"] = "Vagador",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [38]
+			{
+				["name"] = "Zarenah",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [39]
+			{
+				["name"] = "Fnl",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [40]
+			{
+				["name"] = "Ihantank",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [41]
+			{
+				["name"] = "Jimagua",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [42]
+			{
+				["name"] = "Sumofu",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [43]
+			{
+				["name"] = "Cherooke",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [44]
+			{
+				["name"] = "Diozz",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [45]
+			{
+				["name"] = "Lluzz",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [46]
+			{
+				["name"] = "Rastaboy",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [47]
+			{
+				["name"] = "Tylea",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [48]
+			{
+				["name"] = "Losandes",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [49]
+			{
+				["name"] = "Seray",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [50]
+			{
+				["name"] = "Kilimansharo",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [51]
+			{
+				["name"] = "Manupro",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [52]
+			{
+				["name"] = "Arcanitenn",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [53]
+			{
+				["name"] = "Crazines",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [54]
+			{
+				["name"] = "Gustavoo",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [55]
+			{
+				["name"] = "Kardek",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [56]
+			{
+				["name"] = "Duut",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [57]
+			{
+				["name"] = "Morenaxa",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [58]
+			{
+				["name"] = "Magordox",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [59]
+			{
+				["name"] = "Pintoski",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [60]
+			{
+				["name"] = "Saucemon",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [61]
+			{
+				["name"] = "Klkjacc",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [62]
+			{
+				["name"] = "Malganlx",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [63]
+			{
+				["name"] = "Mirux",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [64]
+			{
+				["name"] = "Demmonico",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [65]
+			{
+				["name"] = "Zaja",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [66]
+			{
+				["name"] = "Battlelion",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [67]
+			{
+				["name"] = "Cuiki",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [68]
+			{
+				["name"] = "Nandoh",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [69]
+			{
+				["name"] = "Phnx",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [70]
+			{
+				["name"] = "Shadownigth",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [71]
+			{
+				["name"] = "Inferrni",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [72]
+			{
+				["name"] = "Dakroz",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [73]
+			{
+				["name"] = "Latitisita",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [74]
+			{
+				["name"] = "Milkyheal",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [75]
+			{
+				["name"] = "Goudher",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [76]
+			{
+				["name"] = "Anghorroth",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [77]
+			{
+				["name"] = "Sillienne",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [78]
+			{
+				["name"] = "Sommeer",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [79]
+			{
+				["name"] = "Quimbara",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [80]
+			{
+				["name"] = "Bernadethe",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [81]
+			{
+				["name"] = "Miaujade",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [82]
+			{
+				["name"] = "Senira",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [83]
+			{
+				["name"] = "Afoke",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [84]
+			{
+				["name"] = "Bernalsoiyo",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [85]
+			{
+				["name"] = "Hudemor",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [86]
+			{
+				["name"] = "Lishyl",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [87]
+			{
+				["name"] = "Orionxz",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [88]
+			{
+				["name"] = "Palakdin",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [89]
+			{
+				["name"] = "Rijaab",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [90]
+			{
+				["name"] = "Jmkiuu",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [91]
+			{
+				["name"] = "Muxaxo",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [92]
+			{
+				["name"] = "Sanatork",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [93]
+			{
+				["name"] = "Minecraftlow",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [94]
+			{
+				["name"] = "Orcrok",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [95]
+			{
+				["name"] = "Rambear",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [96]
+			{
+				["name"] = "Bicvioleta",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [97]
+			{
+				["name"] = "Coloborracho",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [98]
+			{
+				["name"] = "Nephastic",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [99]
+			{
+				["name"] = "Riwayat",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [100]
+			{
+				["name"] = "Sojosue",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [101]
+			{
+				["name"] = "Ashlander",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [102]
+			{
+				["name"] = "Owep",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [103]
 			{
 				["name"] = "Whesty",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [122]
+			}, -- [104]
 			{
 				["name"] = "Zhunterx",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [123]
+			}, -- [105]
 			{
 				["name"] = "Smarty",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [124]
+			}, -- [106]
 			{
 				["name"] = "Amerelda",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [125]
+			}, -- [107]
 			{
 				["name"] = "Exist",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [126]
+			}, -- [108]
 			{
 				["name"] = "Kitawa",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [127]
+			}, -- [109]
 			{
 				["name"] = "Ryyuzaki",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [128]
+			}, -- [110]
 			{
 				["name"] = "Traxeskill",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [129]
+			}, -- [111]
 			{
 				["name"] = "Chitoo",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [130]
+			}, -- [112]
 			{
 				["name"] = "Darkalex",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [131]
+			}, -- [113]
 			{
 				["name"] = "Innfernal",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [132]
+			}, -- [114]
 			{
 				["name"] = "Palawal",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [133]
+			}, -- [115]
 			{
 				["name"] = "Rrojas",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [134]
+			}, -- [116]
 			{
 				["name"] = "Darkfield",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [135]
+			}, -- [117]
 			{
 				["name"] = "Blackup",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [136]
+			}, -- [118]
 			{
 				["name"] = "Latumbadora",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [137]
+			}, -- [119]
 			{
 				["name"] = "Batmahlat",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [138]
+			}, -- [120]
 			{
 				["name"] = "Billyx",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [139]
+			}, -- [121]
 			{
 				["name"] = "Luciene",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [140]
+			}, -- [122]
 			{
 				["name"] = "Palodyn",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [141]
+			}, -- [123]
 			{
 				["name"] = "Blizzretry",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [142]
+			}, -- [124]
 			{
 				["name"] = "Cleyre",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [143]
+			}, -- [125]
 			{
 				["name"] = "Crazycoww",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [144]
+			}, -- [126]
 			{
 				["name"] = "Kpillo",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [145]
+			}, -- [127]
 			{
 				["name"] = "Deski",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [146]
+			}, -- [128]
 			{
 				["name"] = "Eltashy",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [147]
+			}, -- [129]
 			{
 				["name"] = "Enaneitorr",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [148]
+			}, -- [130]
 			{
 				["name"] = "Molenox",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [149]
+			}, -- [131]
 			{
 				["name"] = "Ramsesiv",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [150]
+			}, -- [132]
 			{
 				["name"] = "Vacaxiones",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [151]
+			}, -- [133]
 			{
 				["name"] = "Drogaictoxvi",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [152]
+			}, -- [134]
 			{
 				["name"] = "Kishimura",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [153]
+			}, -- [135]
 			{
 				["name"] = "Doccholliday",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [154]
+			}, -- [136]
 			{
 				["name"] = "Mandead",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [155]
+			}, -- [137]
 			{
 				["name"] = "Vanwolf",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [156]
+			}, -- [138]
 			{
 				["name"] = "Cowlordd",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [157]
+			}, -- [139]
 			{
 				["name"] = "Extazyx",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [158]
+			}, -- [140]
 			{
 				["name"] = "Kachos",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [159]
+			}, -- [141]
 			{
 				["name"] = "Luichq",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [160]
+			}, -- [142]
 			{
 				["name"] = "Tremendonene",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [161]
+			}, -- [143]
 			{
 				["name"] = "Yayizima",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [162]
+			}, -- [144]
 			{
 				["name"] = "Dkadhencia",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [163]
+			}, -- [145]
 			{
 				["name"] = "Chamelin",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [164]
+			}, -- [146]
 			{
 				["name"] = "Gianf",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [165]
+			}, -- [147]
 			{
 				["name"] = "Papivaca",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md1.8",
 				["rank"] = "Aspirante",
-			}, -- [166]
+			}, -- [148]
 			{
 				["name"] = "Alenoot",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [167]
+			}, -- [149]
 			{
 				["name"] = "Andalid",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [168]
+			}, -- [150]
 			{
 				["name"] = "Latrells",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [169]
+			}, -- [151]
 			{
 				["name"] = "Primordiall",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [170]
+			}, -- [152]
 			{
 				["name"] = "Purpureum",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [171]
+			}, -- [153]
 			{
 				["name"] = "Yahidkz",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [172]
+			}, -- [154]
 			{
 				["name"] = "Aarobi",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "ah4.2",
 				["rank"] = "Aspirante",
-			}, -- [173]
+			}, -- [155]
 			{
 				["name"] = "Aderyncc",
 				["officerNote"] = "ESPIRITU",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [174]
+			}, -- [156]
 			{
 				["name"] = "Adrines",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [175]
+			}, -- [157]
 			{
 				["name"] = "Agonisante",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [176]
+			}, -- [158]
 			{
 				["name"] = "Akadio",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [177]
+			}, -- [159]
 			{
 				["name"] = "Akarman",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [178]
+			}, -- [160]
+			{
+				["name"] = "Aleila",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [161]
+			{
+				["race"] = "HU",
+				["name"] = "Alesette",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [162]
 			{
 				["name"] = "Alethyst",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [179]
+			}, -- [163]
+			{
+				["name"] = "Alexbryan",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [164]
 			{
 				["name"] = "Algos",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [180]
+			}, -- [165]
 			{
 				["name"] = "Alienware",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [181]
+			}, -- [166]
 			{
 				["name"] = "Alitasdpollo",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [182]
+			}, -- [167]
 			{
 				["name"] = "Aluxe",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [183]
+			}, -- [168]
 			{
 				["name"] = "Amarguraa",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [184]
+			}, -- [169]
 			{
+				["race"] = "HU",
 				["name"] = "Andrewb",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [185]
+			}, -- [170]
 			{
 				["name"] = "Angelapirs",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [186]
+			}, -- [171]
+			{
+				["name"] = "Ansheti",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "ad",
+				["rank"] = "Aspirante",
+			}, -- [172]
 			{
 				["race"] = "DW",
 				["name"] = "Apelos",
@@ -1402,120 +1234,121 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [187]
+			}, -- [173]
 			{
-				["race"] = "HU",
 				["name"] = "Aphros",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [188]
+			}, -- [174]
 			{
 				["name"] = "Arezx",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [189]
+			}, -- [175]
 			{
 				["name"] = "Armamago",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.8",
 				["rank"] = "Aspirante",
-			}, -- [190]
+			}, -- [176]
 			{
 				["name"] = "Armosrxxvhc",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [191]
+			}, -- [177]
 			{
 				["name"] = "Arrechito",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [192]
+			}, -- [178]
 			{
 				["name"] = "Arsaran",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [193]
+			}, -- [179]
 			{
 				["name"] = "Asesinofb",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.4",
 				["rank"] = "Aspirante",
-			}, -- [194]
+			}, -- [180]
 			{
+				["race"] = "HU",
 				["name"] = "Ashtarteh",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md2.6",
 				["rank"] = "Aspirante",
-			}, -- [195]
+			}, -- [181]
 			{
 				["name"] = "Aslih",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [196]
+			}, -- [182]
 			{
 				["name"] = "Asmodheuz",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [197]
+			}, -- [183]
 			{
+				["race"] = "BE",
 				["name"] = "Atan",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [198]
+			}, -- [184]
 			{
 				["name"] = "Ausangate",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [199]
+			}, -- [185]
 			{
 				["name"] = "Axeconbara",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [200]
+			}, -- [186]
 			{
 				["name"] = "Axeltx",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [201]
+			}, -- [187]
 			{
 				["name"] = "Ayumiix",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [202]
+			}, -- [188]
 			{
 				["name"] = "Baita",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [203]
+			}, -- [189]
 			{
 				["race"] = "GN",
 				["name"] = "Bajitus",
@@ -1523,56 +1356,56 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.5",
 				["rank"] = "Aspirante",
-			}, -- [204]
+			}, -- [190]
 			{
 				["name"] = "Ballfireorb",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [205]
+			}, -- [191]
 			{
 				["name"] = "Bankayi",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [206]
+			}, -- [192]
 			{
 				["name"] = "Barvi",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [207]
+			}, -- [193]
 			{
 				["name"] = "Bashame",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [208]
+			}, -- [194]
 			{
 				["name"] = "Bedy",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [209]
+			}, -- [195]
 			{
 				["name"] = "Beellzebu",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [210]
+			}, -- [196]
 			{
 				["name"] = "Behomett",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [211]
+			}, -- [197]
 			{
 				["race"] = "NE",
 				["name"] = "Bigcrow",
@@ -1580,70 +1413,70 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "md2.2",
 				["rank"] = "Aspirante",
-			}, -- [212]
+			}, -- [198]
 			{
 				["name"] = "Bislow",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mh5.7",
 				["rank"] = "Aspirante",
-			}, -- [213]
+			}, -- [199]
 			{
 				["name"] = "Blackcard",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [214]
+			}, -- [200]
 			{
 				["name"] = "Bladtepex",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [215]
+			}, -- [201]
 			{
 				["name"] = "Blancaluna",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [216]
+			}, -- [202]
 			{
 				["name"] = "Bleidd",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [217]
+			}, -- [203]
 			{
 				["name"] = "Blizward",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [218]
+			}, -- [204]
 			{
 				["name"] = "Blunne",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [219]
+			}, -- [205]
 			{
 				["name"] = "Blythex",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [220]
+			}, -- [206]
 			{
 				["name"] = "Bore",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [221]
+			}, -- [207]
 			{
 				["race"] = "DW",
 				["name"] = "Borgun",
@@ -1651,56 +1484,71 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md4.8",
 				["rank"] = "Aspirante",
-			}, -- [222]
+			}, -- [208]
 			{
 				["name"] = "Briiuz",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [223]
+			}, -- [209]
 			{
 				["name"] = "Brunlot",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [224]
+			}, -- [210]
 			{
 				["name"] = "Bugiman",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [225]
+			}, -- [211]
 			{
 				["name"] = "Buraan",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [226]
+			}, -- [212]
 			{
 				["name"] = "Burnicegood",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [227]
+			}, -- [213]
+			{
+				["name"] = "Calvasor",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [214]
 			{
 				["name"] = "Capy",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [228]
+			}, -- [215]
 			{
+				["name"] = "Caracter",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [216]
+			{
+				["race"] = "NE",
 				["name"] = "Cazitapro",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md4.3",
 				["rank"] = "Aspirante",
-			}, -- [229]
+			}, -- [217]
 			{
 				["race"] = "HU",
 				["name"] = "Cedranth",
@@ -1708,14 +1556,14 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [230]
+			}, -- [218]
 			{
 				["name"] = "Chamelonius",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [231]
+			}, -- [219]
 			{
 				["race"] = "HU",
 				["name"] = "Chamelox",
@@ -1723,56 +1571,56 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [232]
+			}, -- [220]
 			{
 				["name"] = "Chivatonson",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [233]
+			}, -- [221]
 			{
 				["name"] = "Chuchulli",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [234]
+			}, -- [222]
 			{
 				["name"] = "Circuncidor",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [235]
+			}, -- [223]
 			{
 				["name"] = "Clairere",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [236]
+			}, -- [224]
 			{
 				["name"] = "Cobradtwo",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [237]
+			}, -- [225]
 			{
 				["name"] = "Cocainomanno",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [238]
+			}, -- [226]
 			{
 				["name"] = "Cocuo",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [239]
+			}, -- [227]
 			{
 				["race"] = "DR",
 				["name"] = "Codek",
@@ -1780,127 +1628,127 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md2.0",
 				["rank"] = "Aspirante",
-			}, -- [240]
+			}, -- [228]
 			{
 				["name"] = "Colrrado",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [241]
+			}, -- [229]
 			{
 				["name"] = "Corruptiva",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [242]
+			}, -- [230]
 			{
 				["name"] = "Cortabarbass",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [243]
+			}, -- [231]
 			{
 				["name"] = "Cositalhinda",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [244]
+			}, -- [232]
 			{
 				["name"] = "Covenac",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [245]
+			}, -- [233]
 			{
 				["name"] = "Creeddop",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [246]
+			}, -- [234]
 			{
 				["name"] = "Crohnos",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [247]
+			}, -- [235]
 			{
 				["name"] = "Cruxito",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [248]
+			}, -- [236]
 			{
 				["name"] = "Cunchigunchi",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [249]
+			}, -- [237]
 			{
 				["name"] = "Curatoor",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [250]
+			}, -- [238]
 			{
 				["name"] = "Daanmago",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [251]
+			}, -- [239]
 			{
 				["name"] = "Darkbrier",
 				["officerNote"] = "ESPIRITU",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [252]
+			}, -- [240]
 			{
-				["race"] = "HU",
 				["name"] = "Darkeno",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [253]
+			}, -- [241]
 			{
 				["name"] = "Darkoz",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [254]
+			}, -- [242]
 			{
+				["race"] = "HU",
 				["name"] = "Darkssouls",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [255]
+			}, -- [243]
 			{
 				["name"] = "Darkweipon",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [256]
+			}, -- [244]
 			{
 				["name"] = "Davidg",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [257]
+			}, -- [245]
 			{
 				["race"] = "DW",
 				["name"] = "Dblak",
@@ -1908,49 +1756,49 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [258]
+			}, -- [246]
 			{
 				["name"] = "Ddranosh",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [259]
+			}, -- [247]
 			{
 				["name"] = "Dearnlock",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [260]
+			}, -- [248]
 			{
 				["name"] = "Deathxil",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [261]
+			}, -- [249]
 			{
 				["name"] = "Deckyohan",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [262]
+			}, -- [250]
 			{
 				["name"] = "Deespi",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt4.9",
 				["rank"] = "Aspirante",
-			}, -- [263]
+			}, -- [251]
 			{
 				["name"] = "Demonxx",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [264]
+			}, -- [252]
 			{
 				["race"] = "HU",
 				["name"] = "Derekkush",
@@ -1958,98 +1806,100 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [265]
+			}, -- [253]
 			{
 				["name"] = "Desepticons",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [266]
+			}, -- [254]
 			{
 				["name"] = "Destro",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [267]
+			}, -- [255]
 			{
 				["name"] = "Destruh",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [268]
+			}, -- [256]
 			{
 				["name"] = "Dezpii",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [269]
+			}, -- [257]
 			{
+				["race"] = "HU",
 				["name"] = "Dianaatg",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [270]
+			}, -- [258]
 			{
 				["name"] = "Diegogt",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [271]
+			}, -- [259]
 			{
+				["race"] = "BE",
 				["name"] = "Diplopeed",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [272]
+			}, -- [260]
 			{
 				["name"] = "Direvictory",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [273]
+			}, -- [261]
 			{
 				["name"] = "Dkaan",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [274]
+			}, -- [262]
 			{
 				["name"] = "Dkinvincible",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [275]
+			}, -- [263]
 			{
 				["name"] = "Dontrauco",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [276]
+			}, -- [264]
 			{
 				["name"] = "Doodridder",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [277]
+			}, -- [265]
 			{
 				["name"] = "Draennita",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [278]
+			}, -- [266]
 			{
 				["race"] = "HU",
 				["name"] = "Dragao",
@@ -2057,35 +1907,36 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [279]
+			}, -- [267]
 			{
 				["name"] = "Dragonasaky",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [280]
+			}, -- [268]
 			{
 				["name"] = "Draiber",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [281]
+			}, -- [269]
 			{
 				["name"] = "Dreamshunter",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.3",
 				["rank"] = "Aspirante",
-			}, -- [282]
+			}, -- [270]
 			{
+				["race"] = "HU",
 				["name"] = "Drohico",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [283]
+			}, -- [271]
 			{
 				["race"] = "NE",
 				["name"] = "Druidpool",
@@ -2093,99 +1944,98 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [284]
+			}, -- [272]
 			{
 				["name"] = "Dudulinox",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [285]
+			}, -- [273]
 			{
 				["name"] = "Eberth",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [286]
+			}, -- [274]
 			{
 				["name"] = "Electrikk",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [287]
+			}, -- [275]
 			{
 				["name"] = "Elfablue",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md6",
 				["rank"] = "Aspirante",
-			}, -- [288]
+			}, -- [276]
 			{
 				["name"] = "Elgrankhari",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md6.0",
 				["rank"] = "Aspirante",
-			}, -- [289]
+			}, -- [277]
 			{
 				["name"] = "Ellafrost",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [290]
+			}, -- [278]
 			{
 				["name"] = "Elmole",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [291]
+			}, -- [279]
 			{
 				["name"] = "Elratero",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [292]
+			}, -- [280]
 			{
 				["name"] = "Elywhen",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [293]
+			}, -- [281]
 			{
 				["name"] = "Engelwar",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [294]
+			}, -- [282]
+			{
+				["name"] = "Enlo",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [283]
 			{
 				["name"] = "Estasz",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [295]
-			{
-				["race"] = "NE",
-				["name"] = "Estharos",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md5.7",
-				["rank"] = "Aspirante",
-			}, -- [296]
+			}, -- [284]
 			{
 				["name"] = "Evillive",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [297]
+			}, -- [285]
 			{
 				["race"] = "HU",
 				["name"] = "Faisin",
@@ -2193,35 +2043,28 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md4.5",
 				["rank"] = "Aspirante",
-			}, -- [298]
+			}, -- [286]
 			{
 				["name"] = "Faldric",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md4.5",
 				["rank"] = "Aspirante",
-			}, -- [299]
-			{
-				["name"] = "Falinruch",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [300]
+			}, -- [287]
 			{
 				["name"] = "Fatalys",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [301]
+			}, -- [288]
 			{
 				["name"] = "Felrick",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [302]
+			}, -- [289]
 			{
 				["race"] = "DR",
 				["name"] = "Fhatiimah",
@@ -2229,21 +2072,28 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [303]
+			}, -- [290]
 			{
 				["name"] = "Fherrtoxic",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [304]
+			}, -- [291]
+			{
+				["name"] = "Filosofoo",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [292]
 			{
 				["name"] = "Fracturadoor",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [305]
+			}, -- [293]
 			{
 				["race"] = "NE",
 				["name"] = "Freemyself",
@@ -2251,14 +2101,14 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [306]
+			}, -- [294]
 			{
 				["name"] = "Fyzhuker",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.1",
 				["rank"] = "Aspirante",
-			}, -- [307]
+			}, -- [295]
 			{
 				["race"] = "OR",
 				["name"] = "Gandda",
@@ -2266,42 +2116,43 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [308]
+			}, -- [296]
 			{
 				["name"] = "Garonazo",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [309]
+			}, -- [297]
 			{
 				["name"] = "Gebera",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [310]
+			}, -- [298]
 			{
 				["name"] = "Geedeon",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [311]
+			}, -- [299]
 			{
+				["race"] = "OR",
 				["name"] = "Goldenwarr",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [312]
+			}, -- [300]
 			{
 				["name"] = "Golemdp",
 				["officerNote"] = "ESPIRITU",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [313]
+			}, -- [301]
 			{
 				["race"] = "HU",
 				["name"] = "Gosheogorath",
@@ -2309,57 +2160,56 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [314]
+			}, -- [302]
 			{
 				["name"] = "Goshtmurder",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [315]
+			}, -- [303]
 			{
 				["name"] = "Grajam",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [316]
+			}, -- [304]
 			{
 				["name"] = "Grizzen",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [317]
+			}, -- [305]
 			{
 				["name"] = "Halasha",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [318]
+			}, -- [306]
 			{
 				["name"] = "Hamerrock",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [319]
+			}, -- [307]
 			{
-				["race"] = "NE",
 				["name"] = "Hanabata",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [320]
+			}, -- [308]
 			{
 				["name"] = "Hellsx",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [321]
+			}, -- [309]
 			{
 				["race"] = "HU",
 				["name"] = "Hiari",
@@ -2367,28 +2217,28 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [322]
+			}, -- [310]
 			{
 				["name"] = "Hileon",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [323]
+			}, -- [311]
 			{
 				["name"] = "Hinazuki",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [324]
+			}, -- [312]
 			{
 				["name"] = "Hirenkyaku",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [325]
+			}, -- [313]
 			{
 				["race"] = "HU",
 				["name"] = "Holyname",
@@ -2396,113 +2246,121 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [326]
+			}, -- [314]
 			{
 				["name"] = "Huevon",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [327]
+			}, -- [315]
 			{
 				["name"] = "Hunteerblack",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [328]
+			}, -- [316]
 			{
 				["name"] = "Huntercr",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [329]
+			}, -- [317]
 			{
+				["race"] = "NE",
 				["name"] = "Hunterssz",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md1.6",
 				["rank"] = "Aspirante",
-			}, -- [330]
+			}, -- [318]
 			{
 				["name"] = "Huvoflaco",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [331]
+			}, -- [319]
 			{
 				["name"] = "Ikanko",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [332]
+			}, -- [320]
 			{
 				["name"] = "Immortalwar",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [333]
+			}, -- [321]
+			{
+				["name"] = "Isilvyl",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [322]
 			{
 				["name"] = "Ivanovaa",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [334]
+			}, -- [323]
 			{
+				["race"] = "GN",
 				["name"] = "Jainapower",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [335]
+			}, -- [324]
 			{
 				["name"] = "Jasumi",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [336]
+			}, -- [325]
 			{
 				["name"] = "Jejy",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [337]
+			}, -- [326]
 			{
 				["name"] = "Jessiik",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [338]
+			}, -- [327]
 			{
 				["name"] = "Jhaxiel",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [339]
+			}, -- [328]
 			{
 				["name"] = "Jhuday",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [340]
+			}, -- [329]
 			{
-				["race"] = "DR",
 				["name"] = "Joil",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [341]
+			}, -- [330]
 			{
 				["race"] = "HU",
 				["name"] = "Julih",
@@ -2510,7 +2368,7 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [342]
+			}, -- [331]
 			{
 				["race"] = "NE",
 				["name"] = "Kaihoken",
@@ -2518,7 +2376,7 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [343]
+			}, -- [332]
 			{
 				["race"] = "NE",
 				["name"] = "Kaldoreil",
@@ -2526,127 +2384,136 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [344]
+			}, -- [333]
 			{
 				["name"] = "Kastrado",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [345]
+			}, -- [334]
 			{
 				["name"] = "Katsuri",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [346]
+			}, -- [335]
 			{
 				["name"] = "Keldoray",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "ad4.8",
 				["rank"] = "Aspirante",
-			}, -- [347]
+			}, -- [336]
+			{
+				["name"] = "Kendro",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [337]
 			{
 				["name"] = "Kepoa",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [348]
+			}, -- [338]
 			{
 				["name"] = "Khaelthalas",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [349]
+			}, -- [339]
 			{
+				["race"] = "NE",
 				["name"] = "Khalaras",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [350]
+			}, -- [340]
 			{
 				["name"] = "Kheni",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [351]
+			}, -- [341]
 			{
 				["name"] = "Khyron",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [352]
+			}, -- [342]
 			{
 				["name"] = "Kiahara",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [353]
+			}, -- [343]
 			{
 				["name"] = "Killtroz",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [354]
+			}, -- [344]
 			{
+				["race"] = "DW",
 				["name"] = "Kimbli",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [355]
+			}, -- [345]
 			{
 				["name"] = "Kkevvins",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [356]
+			}, -- [346]
 			{
 				["name"] = "Kolliry",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [357]
+			}, -- [347]
 			{
 				["name"] = "Korijutsu",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.0",
 				["rank"] = "Aspirante",
-			}, -- [358]
+			}, -- [348]
 			{
 				["race"] = "NE",
 				["name"] = "Kravensz",
 				["officerNote"] = "",
 				["class"] = "Cazador",
-				["publicNote"] = "md4.3",
+				["publicNote"] = "md4.5",
 				["rank"] = "Aspirante",
-			}, -- [359]
+			}, -- [349]
 			{
 				["name"] = "Krobelluss",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [360]
+			}, -- [350]
 			{
 				["name"] = "Krollis",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [361]
+			}, -- [351]
 			{
 				["race"] = "HU",
 				["name"] = "Krypts",
@@ -2654,84 +2521,84 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "md4.8",
 				["rank"] = "Aspirante",
-			}, -- [362]
+			}, -- [352]
 			{
 				["name"] = "Laardillita",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [363]
+			}, -- [353]
 			{
 				["name"] = "Labrujadel",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [364]
+			}, -- [354]
 			{
 				["name"] = "Lacarnisera",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [365]
+			}, -- [355]
 			{
 				["name"] = "Lagherthaas",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [366]
+			}, -- [356]
 			{
 				["name"] = "Laiyla",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [367]
+			}, -- [357]
 			{
 				["name"] = "Legenpa",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [368]
+			}, -- [358]
 			{
 				["name"] = "Lilianis",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.8",
 				["rank"] = "Aspirante",
-			}, -- [369]
+			}, -- [359]
 			{
 				["name"] = "Lorihan",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [370]
+			}, -- [360]
 			{
 				["name"] = "Lukboma",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.3",
 				["rank"] = "Aspirante",
-			}, -- [371]
+			}, -- [361]
 			{
 				["name"] = "Lusk",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [372]
+			}, -- [362]
 			{
 				["name"] = "Magato",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [373]
+			}, -- [363]
 			{
 				["race"] = "HU",
 				["name"] = "Magavaga",
@@ -2739,7 +2606,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "ad5.5",
 				["rank"] = "Aspirante",
-			}, -- [374]
+			}, -- [364]
 			{
 				["race"] = "NE",
 				["name"] = "Mahindra",
@@ -2747,77 +2614,84 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [375]
+			}, -- [365]
 			{
 				["name"] = "Makkaruul",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [376]
+			}, -- [366]
 			{
 				["name"] = "Maleante",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [377]
+			}, -- [367]
 			{
 				["name"] = "Maltratoss",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [378]
+			}, -- [368]
 			{
 				["name"] = "Manikato",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [379]
+			}, -- [369]
 			{
 				["name"] = "Marefqthlg",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [380]
+			}, -- [370]
 			{
 				["name"] = "Maridohlg",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [381]
+			}, -- [371]
 			{
 				["name"] = "Mariguaniel",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [382]
+			}, -- [372]
 			{
 				["name"] = "Marlocky",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [383]
+			}, -- [373]
+			{
+				["name"] = "Marther",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [374]
 			{
 				["name"] = "Matrixaqui",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [384]
+			}, -- [375]
 			{
 				["name"] = "Matygio",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [385]
+			}, -- [376]
 			{
 				["race"] = "NE",
 				["name"] = "Maurotee",
@@ -2825,106 +2699,123 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "md5.7",
 				["rank"] = "Aspirante",
-			}, -- [386]
+			}, -- [377]
 			{
 				["name"] = "Mazzpc",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [387]
+			}, -- [378]
 			{
 				["name"] = "Mct",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [388]
+			}, -- [379]
 			{
 				["name"] = "Menetihil",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [389]
+			}, -- [380]
 			{
-				["race"] = "HU",
 				["name"] = "Metastasis",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.7",
 				["rank"] = "Aspirante",
-			}, -- [390]
+			}, -- [381]
 			{
+				["race"] = "DR",
 				["name"] = "Micemental",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [391]
+			}, -- [382]
 			{
 				["name"] = "Miglory",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [392]
+			}, -- [383]
 			{
 				["name"] = "Mikisaa",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [393]
+			}, -- [384]
 			{
 				["name"] = "Milualice",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [394]
+			}, -- [385]
+			{
+				["race"] = "HU",
+				["name"] = "Milus",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md6.0",
+				["rank"] = "Aspirante",
+			}, -- [386]
 			{
 				["name"] = "Mingoxs",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [395]
+			}, -- [387]
+			{
+				["race"] = "HU",
+				["name"] = "Mipiylin",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [388]
 			{
 				["name"] = "Mirack",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [396]
+			}, -- [389]
 			{
 				["name"] = "Miroki",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [397]
+			}, -- [390]
 			{
 				["name"] = "Misspizza",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [398]
+			}, -- [391]
 			{
 				["name"] = "Mitsel",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [399]
+			}, -- [392]
 			{
+				["race"] = "TR",
 				["name"] = "Modoaiseday",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [400]
+			}, -- [393]
 			{
 				["race"] = "HU",
 				["name"] = "Mohrwen",
@@ -2932,28 +2823,29 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.7",
 				["rank"] = "Aspirante",
-			}, -- [401]
+			}, -- [394]
 			{
+				["race"] = "OR",
 				["name"] = "Monsterxm",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [402]
+			}, -- [395]
 			{
 				["name"] = "Montezz",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md4.5",
 				["rank"] = "Aspirante",
-			}, -- [403]
+			}, -- [396]
 			{
 				["name"] = "Mortisshade",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [404]
+			}, -- [397]
 			{
 				["race"] = "HU",
 				["name"] = "Mysteriuos",
@@ -2961,71 +2853,77 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.1",
 				["rank"] = "Aspirante",
-			}, -- [405]
+			}, -- [398]
+			{
+				["name"] = "Mythoss",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [399]
 			{
 				["name"] = "Nachii",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [406]
+			}, -- [400]
 			{
 				["name"] = "Nasor",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [407]
+			}, -- [401]
 			{
-				["race"] = "DR",
 				["name"] = "Neonh",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [408]
+			}, -- [402]
 			{
 				["name"] = "Netalia",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [409]
+			}, -- [403]
 			{
 				["name"] = "Nillsy",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [410]
+			}, -- [404]
 			{
 				["name"] = "Nivalor",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [411]
+			}, -- [405]
 			{
 				["name"] = "Nomalia",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [412]
+			}, -- [406]
 			{
 				["name"] = "Noobody",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [413]
+			}, -- [407]
 			{
 				["name"] = "Nyshinoya",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [414]
+			}, -- [408]
 			{
 				["race"] = "HU",
 				["name"] = "Odyssers",
@@ -3033,42 +2931,43 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [415]
+			}, -- [409]
 			{
 				["name"] = "Oldcollector",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [416]
+			}, -- [410]
 			{
+				["race"] = "HU",
 				["name"] = "Olem",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [417]
+			}, -- [411]
 			{
 				["name"] = "Orkusvk",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [418]
+			}, -- [412]
 			{
 				["name"] = "Orodretth",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [419]
+			}, -- [413]
 			{
 				["name"] = "Oziri",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [420]
+			}, -- [414]
 			{
 				["race"] = "HU",
 				["name"] = "Paanda",
@@ -3076,35 +2975,35 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "md5.7",
 				["rank"] = "Aspirante",
-			}, -- [421]
+			}, -- [415]
 			{
 				["name"] = "Pachafuker",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [422]
+			}, -- [416]
 			{
 				["name"] = "Paiwix",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [423]
+			}, -- [417]
 			{
 				["name"] = "Palagabriel",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [424]
+			}, -- [418]
 			{
 				["name"] = "Papusabroso",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [425]
+			}, -- [419]
 			{
 				["race"] = "DR",
 				["name"] = "Patitodelux",
@@ -3112,49 +3011,51 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [426]
+			}, -- [420]
 			{
 				["name"] = "Payiita",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [427]
+			}, -- [421]
 			{
 				["name"] = "Pedromercado",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [428]
+			}, -- [422]
 			{
+				["race"] = "DR",
 				["name"] = "Peerreo",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [429]
+			}, -- [423]
 			{
 				["name"] = "Peeru",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [430]
+			}, -- [424]
 			{
 				["name"] = "Penywins",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [431]
+			}, -- [425]
 			{
+				["race"] = "TA",
 				["name"] = "Pequecuerno",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [432]
+			}, -- [426]
 			{
 				["race"] = "HU",
 				["name"] = "Pestesagrado",
@@ -3162,70 +3063,71 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [433]
+			}, -- [427]
 			{
 				["name"] = "Pholem",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [434]
+			}, -- [428]
 			{
 				["name"] = "Picapicaron",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [435]
+			}, -- [429]
 			{
+				["race"] = "HU",
 				["name"] = "Pikman",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "ah6.4",
 				["rank"] = "Aspirante",
-			}, -- [436]
+			}, -- [430]
 			{
 				["name"] = "Pingael",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [437]
+			}, -- [431]
 			{
 				["name"] = "Pintada",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [438]
+			}, -- [432]
 			{
 				["name"] = "Pipisito",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [439]
+			}, -- [433]
 			{
 				["name"] = "Piye",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [440]
+			}, -- [434]
 			{
 				["name"] = "Platihealtii",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [441]
+			}, -- [435]
 			{
 				["name"] = "Plomito",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [442]
+			}, -- [436]
 			{
 				["race"] = "OR",
 				["name"] = "Poinass",
@@ -3233,36 +3135,35 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.9",
 				["rank"] = "Aspirante",
-			}, -- [443]
+			}, -- [437]
 			{
 				["name"] = "Ponchy",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [444]
+			}, -- [438]
 			{
 				["name"] = "Ponehordas",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [445]
+			}, -- [439]
 			{
-				["race"] = "HU",
 				["name"] = "Powerfult",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [446]
+			}, -- [440]
 			{
 				["name"] = "Profanoputas",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [447]
+			}, -- [441]
 			{
 				["race"] = "HU",
 				["name"] = "Punchman",
@@ -3270,36 +3171,35 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [448]
+			}, -- [442]
 			{
 				["name"] = "Putifarra",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [449]
+			}, -- [443]
 			{
 				["name"] = "Raisho",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [450]
+			}, -- [444]
 			{
 				["name"] = "Ravenfd",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [451]
+			}, -- [445]
 			{
-				["race"] = "HU",
 				["name"] = "Rayitoelu",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [452]
+			}, -- [446]
 			{
 				["race"] = "HU",
 				["name"] = "Rayleighx",
@@ -3307,56 +3207,58 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [453]
+			}, -- [447]
 			{
 				["name"] = "Razekk",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [454]
+			}, -- [448]
 			{
+				["race"] = "HU",
 				["name"] = "Redroland",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [455]
+			}, -- [449]
 			{
 				["name"] = "Reinkes",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [456]
+			}, -- [450]
 			{
 				["name"] = "Reivvax",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [457]
+			}, -- [451]
 			{
 				["name"] = "Relinchin",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [458]
+			}, -- [452]
 			{
+				["race"] = "HU",
 				["name"] = "Remydj",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [459]
+			}, -- [453]
 			{
 				["name"] = "Rhollex",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [460]
+			}, -- [454]
 			{
 				["race"] = "GN",
 				["name"] = "Ritenkult",
@@ -3364,14 +3266,14 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.5",
 				["rank"] = "Aspirante",
-			}, -- [461]
+			}, -- [455]
 			{
 				["name"] = "Rodly",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [462]
+			}, -- [456]
 			{
 				["race"] = "NE",
 				["name"] = "Rrloco",
@@ -3379,98 +3281,106 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Aspirante",
-			}, -- [463]
+			}, -- [457]
 			{
 				["name"] = "Ruvy",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [464]
+			}, -- [458]
 			{
 				["name"] = "Sacerdkevin",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [465]
+			}, -- [459]
 			{
 				["name"] = "Sagato",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [466]
+			}, -- [460]
 			{
+				["race"] = "NE",
 				["name"] = "Saitohashime",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md3.9",
 				["rank"] = "Aspirante",
-			}, -- [467]
+			}, -- [461]
 			{
 				["name"] = "Salvaciondd",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [468]
+			}, -- [462]
 			{
 				["name"] = "Samilmp",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [469]
+			}, -- [463]
 			{
 				["name"] = "Santafloo",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [470]
+			}, -- [464]
 			{
 				["name"] = "Saraxia",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [471]
+			}, -- [465]
 			{
 				["name"] = "Sargeiras",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [472]
+			}, -- [466]
 			{
 				["name"] = "Sariphiel",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [473]
+			}, -- [467]
 			{
 				["name"] = "Sdavids",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [474]
+			}, -- [468]
 			{
 				["name"] = "Segal",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [475]
+			}, -- [469]
 			{
 				["name"] = "Senjuro",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [476]
+			}, -- [470]
+			{
+				["name"] = "Sepherina",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [471]
 			{
 				["race"] = "HU",
 				["name"] = "Serape",
@@ -3478,7 +3388,7 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [477]
+			}, -- [472]
 			{
 				["race"] = "TA",
 				["name"] = "Serpenterra",
@@ -3486,7 +3396,7 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [478]
+			}, -- [473]
 			{
 				["race"] = "HU",
 				["name"] = "Seulghy",
@@ -3494,147 +3404,140 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [479]
+			}, -- [474]
 			{
 				["name"] = "Shailo",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [480]
+			}, -- [475]
 			{
 				["name"] = "Shakkax",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [481]
+			}, -- [476]
 			{
 				["name"] = "Shakkox",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [482]
+			}, -- [477]
 			{
 				["name"] = "Shamawape",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [483]
+			}, -- [478]
 			{
 				["name"] = "Shikimico",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [484]
+			}, -- [479]
 			{
 				["name"] = "Shuvaca",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [485]
+			}, -- [480]
 			{
 				["name"] = "Sigillo",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [486]
+			}, -- [481]
 			{
 				["name"] = "Sigmun",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [487]
+			}, -- [482]
 			{
 				["name"] = "Skyworker",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [488]
+			}, -- [483]
 			{
 				["name"] = "Snuphy",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [489]
+			}, -- [484]
 			{
 				["name"] = "Solismae",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [490]
+			}, -- [485]
 			{
 				["name"] = "Sommeil",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [491]
+			}, -- [486]
 			{
 				["name"] = "Sooulkingss",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [492]
+			}, -- [487]
 			{
 				["name"] = "Soyheleer",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [493]
-			{
-				["name"] = "Spartask",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [494]
+			}, -- [488]
 			{
 				["name"] = "Specthum",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [495]
+			}, -- [489]
 			{
 				["name"] = "Sumitomo",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [496]
+			}, -- [490]
 			{
 				["name"] = "Suprsayajin",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [497]
+			}, -- [491]
 			{
 				["name"] = "Sylvannass",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [498]
+			}, -- [492]
 			{
 				["name"] = "Takota",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [499]
+			}, -- [493]
 			{
 				["race"] = "NE",
 				["name"] = "Talentosa",
@@ -3642,56 +3545,57 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [500]
+			}, -- [494]
 			{
 				["name"] = "Teelochupee",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [501]
+			}, -- [495]
 			{
 				["name"] = "Tekkhu",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [502]
+			}, -- [496]
 			{
+				["race"] = "HU",
 				["name"] = "Terroziller",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.1",
 				["rank"] = "Aspirante",
-			}, -- [503]
+			}, -- [497]
 			{
 				["name"] = "Tetasbravas",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [504]
+			}, -- [498]
 			{
 				["name"] = "Tezeo",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [505]
+			}, -- [499]
 			{
 				["name"] = "Thdp",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [506]
+			}, -- [500]
 			{
 				["name"] = "Thebion",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [507]
+			}, -- [501]
 			{
 				["race"] = "HU",
 				["name"] = "Thonyfrost",
@@ -3699,7 +3603,7 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.9",
 				["rank"] = "Aspirante",
-			}, -- [508]
+			}, -- [502]
 			{
 				["race"] = "HU",
 				["name"] = "Thyrha",
@@ -3707,35 +3611,35 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [509]
+			}, -- [503]
 			{
 				["name"] = "Tibidabo",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [510]
+			}, -- [504]
 			{
 				["name"] = "Tioxxs",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [511]
+			}, -- [505]
 			{
 				["name"] = "Tjota",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [512]
+			}, -- [506]
 			{
 				["name"] = "Toritox",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [513]
+			}, -- [507]
 			{
 				["race"] = "DR",
 				["name"] = "Tuquiti",
@@ -3743,7 +3647,7 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [514]
+			}, -- [508]
 			{
 				["race"] = "HU",
 				["name"] = "Tuyuuti",
@@ -3751,9 +3655,52 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [515]
+			}, -- [509]
 			{
 				["name"] = "Umzakala",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [510]
+			{
+				["name"] = "Vaja",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "md5.9",
+				["rank"] = "Aspirante",
+			}, -- [511]
+			{
+				["race"] = "HU",
+				["name"] = "Vene",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "md6.0h6.0",
+				["rank"] = "Aspirante",
+			}, -- [512]
+			{
+				["name"] = "Violeht",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [513]
+			{
+				["name"] = "Volgax",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [514]
+			{
+				["name"] = "Vrutakus",
+				["officerNote"] = "",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [515]
+			{
+				["name"] = "Wadex",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
@@ -3761,138 +3708,104 @@ RaidDominionDB = {
 			}, -- [516]
 			{
 				["race"] = "HU",
-				["name"] = "Vaja",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "md5.9",
-				["rank"] = "Aspirante",
-			}, -- [517]
-			{
-				["name"] = "Vene",
-				["officerNote"] = "",
-				["class"] = "Paladín",
-				["publicNote"] = "md6.0h6.0",
-				["rank"] = "Aspirante",
-			}, -- [518]
-			{
-				["name"] = "Violeht",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [519]
-			{
-				["name"] = "Volgax",
-				["officerNote"] = "",
-				["class"] = "Guerrero",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [520]
-			{
-				["name"] = "Vrutakus",
-				["officerNote"] = "",
-				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [521]
-			{
-				["name"] = "Wadex",
-				["officerNote"] = "",
-				["class"] = "Druida",
-				["publicNote"] = "",
-				["rank"] = "Aspirante",
-			}, -- [522]
-			{
 				["name"] = "Wanjie",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [523]
+			}, -- [517]
 			{
 				["name"] = "Warck",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [524]
+			}, -- [518]
 			{
 				["name"] = "Warrowarmax",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [525]
+			}, -- [519]
+			{
+				["race"] = "HU",
+				["name"] = "Warsatochi",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "",
+				["rank"] = "Aspirante",
+			}, -- [520]
 			{
 				["name"] = "Warsonxd",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [526]
+			}, -- [521]
 			{
 				["name"] = "Warunlucky",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [527]
+			}, -- [522]
 			{
 				["name"] = "Whiteclaw",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [528]
+			}, -- [523]
 			{
 				["name"] = "Wokerzyto",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.4",
 				["rank"] = "Aspirante",
-			}, -- [529]
+			}, -- [524]
 			{
 				["name"] = "Worldito",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [530]
+			}, -- [525]
 			{
 				["name"] = "Wrakronz",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [531]
+			}, -- [526]
 			{
 				["name"] = "Xdcooperxd",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [532]
+			}, -- [527]
 			{
 				["name"] = "Xelvara",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [533]
+			}, -- [528]
 			{
 				["name"] = "Xhell",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [534]
+			}, -- [529]
 			{
 				["name"] = "Xherath",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [535]
+			}, -- [530]
 			{
 				["race"] = "HU",
 				["name"] = "Xhyomi",
@@ -3900,63 +3813,70 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [536]
+			}, -- [531]
 			{
 				["name"] = "Yaretcita",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [537]
+			}, -- [532]
 			{
 				["name"] = "Yaretzitha",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [538]
+			}, -- [533]
 			{
 				["name"] = "Yinxz",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md4.9",
 				["rank"] = "Aspirante",
-			}, -- [539]
+			}, -- [534]
+			{
+				["name"] = "Yoanval",
+				["officerNote"] = "",
+				["class"] = "Cazador",
+				["publicNote"] = "md",
+				["rank"] = "Aspirante",
+			}, -- [535]
 			{
 				["name"] = "Yonofuiin",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [540]
+			}, -- [536]
 			{
 				["name"] = "Yotha",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mt5.5",
 				["rank"] = "Aspirante",
-			}, -- [541]
+			}, -- [537]
 			{
 				["name"] = "Youngmikoo",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [542]
+			}, -- [538]
 			{
 				["name"] = "Yuguimoto",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [543]
+			}, -- [539]
 			{
 				["name"] = "Yulesia",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [544]
+			}, -- [540]
 			{
 				["race"] = "HU",
 				["name"] = "Yunderl",
@@ -3964,7 +3884,7 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [545]
+			}, -- [541]
 			{
 				["race"] = "HU",
 				["name"] = "Yuning",
@@ -3972,7 +3892,7 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [546]
+			}, -- [542]
 			{
 				["race"] = "HU",
 				["name"] = "Zabriela",
@@ -3980,126 +3900,127 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md4.8",
 				["rank"] = "Aspirante",
-			}, -- [547]
+			}, -- [543]
 			{
 				["name"] = "Zabrozona",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [548]
+			}, -- [544]
 			{
 				["name"] = "Zhaitan",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [549]
+			}, -- [545]
 			{
 				["name"] = "Zhamed",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.8",
 				["rank"] = "Aspirante",
-			}, -- [550]
+			}, -- [546]
 			{
 				["name"] = "Zharanko",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Aspirante",
-			}, -- [551]
+			}, -- [547]
 			{
 				["name"] = "Zhess",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Aspirante",
-			}, -- [552]
+			}, -- [548]
 			{
 				["name"] = "Ztiso",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mh4.9",
 				["rank"] = "Aspirante",
-			}, -- [553]
+			}, -- [549]
 			{
 				["name"] = "Sabajon",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Iniciado",
-			}, -- [554]
+			}, -- [550]
 			{
 				["name"] = "Brozulco",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md2.0",
 				["rank"] = "Iniciado",
-			}, -- [555]
+			}, -- [551]
 			{
 				["name"] = "Khani",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh1.0",
 				["rank"] = "Iniciado",
-			}, -- [556]
+			}, -- [552]
 			{
 				["name"] = "Fentaniila",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md3.8",
 				["rank"] = "Iniciado",
-			}, -- [557]
+			}, -- [553]
 			{
 				["name"] = "Dracowashere",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md2.0",
 				["rank"] = "Iniciado",
-			}, -- [558]
+			}, -- [554]
 			{
 				["name"] = "Paratetamol",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md",
 				["rank"] = "Iniciado",
-			}, -- [559]
+			}, -- [555]
 			{
 				["name"] = "Escoriazuma",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md1.3",
 				["rank"] = "Iniciado",
-			}, -- [560]
+			}, -- [556]
 			{
 				["name"] = "Littlelion",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md",
 				["rank"] = "Iniciado",
-			}, -- [561]
+			}, -- [557]
 			{
 				["name"] = "Aabf",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh4.9d4.9",
 				["rank"] = "Iniciado",
-			}, -- [562]
+			}, -- [558]
 			{
+				["race"] = "BE",
 				["name"] = "Abramwow",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [563]
+			}, -- [559]
 			{
 				["name"] = "Achidna",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh6.1d5.8",
 				["rank"] = "Iniciado",
-			}, -- [564]
+			}, -- [560]
 			{
 				["race"] = "DW",
 				["name"] = "Acorazado",
@@ -4107,28 +4028,29 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [565]
+			}, -- [561]
 			{
+				["race"] = "HU",
 				["name"] = "Adventuretit",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [566]
+			}, -- [562]
 			{
 				["name"] = "Ahinohaa",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [567]
+			}, -- [563]
 			{
 				["name"] = "Alcalina",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [568]
+			}, -- [564]
 			{
 				["race"] = "HU",
 				["name"] = "Aldhuyn",
@@ -4136,28 +4058,28 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "ad5.6",
 				["rank"] = "Iniciado",
-			}, -- [569]
+			}, -- [565]
 			{
 				["name"] = "Aldodark",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [570]
+			}, -- [566]
 			{
 				["name"] = "Aleazar",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.4h5.2",
 				["rank"] = "Iniciado",
-			}, -- [571]
+			}, -- [567]
 			{
 				["name"] = "Alezinho",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [572]
+			}, -- [568]
 			{
 				["race"] = "HU",
 				["name"] = "Aliem",
@@ -4165,7 +4087,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [573]
+			}, -- [569]
 			{
 				["race"] = "NE",
 				["name"] = "Alkita",
@@ -4173,14 +4095,14 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh6.0",
 				["rank"] = "Iniciado",
-			}, -- [574]
+			}, -- [570]
 			{
 				["name"] = "Alutarr",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mh4.1",
 				["rank"] = "Iniciado",
-			}, -- [575]
+			}, -- [571]
 			{
 				["race"] = "DR",
 				["name"] = "Andrewc",
@@ -4188,21 +4110,21 @@ RaidDominionDB = {
 				["class"] = "Chamán",
 				["publicNote"] = "ah6.2",
 				["rank"] = "Iniciado",
-			}, -- [576]
+			}, -- [572]
 			{
 				["name"] = "Anshina",
-				["officerNote"] = "pala retry 6k",
+				["officerNote"] = "russwell pliqui ansheti ...",
 				["class"] = "Paladín",
 				["publicNote"] = "md6.0",
 				["rank"] = "Iniciado",
-			}, -- [577]
+			}, -- [573]
 			{
 				["name"] = "Apuk",
 				["officerNote"] = "inscriptor full",
 				["class"] = "Druida",
 				["publicNote"] = "md6.0h6.4",
 				["rank"] = "Iniciado",
-			}, -- [578]
+			}, -- [574]
 			{
 				["race"] = "HU",
 				["name"] = "Architecture",
@@ -4210,7 +4132,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md3.3",
 				["rank"] = "Iniciado",
-			}, -- [579]
+			}, -- [575]
 			{
 				["race"] = "HU",
 				["name"] = "Arkaniu",
@@ -4218,7 +4140,7 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [580]
+			}, -- [576]
 			{
 				["race"] = "NE",
 				["name"] = "Arrozconlech",
@@ -4226,28 +4148,28 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [581]
+			}, -- [577]
 			{
 				["name"] = "Arthurft",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.7t5.3",
 				["rank"] = "Iniciado",
-			}, -- [582]
+			}, -- [578]
 			{
 				["name"] = "Asadoloko",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "mt3.0",
 				["rank"] = "Iniciado",
-			}, -- [583]
+			}, -- [579]
 			{
 				["name"] = "Asterizx",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md3.3",
 				["rank"] = "Iniciado",
-			}, -- [584]
+			}, -- [580]
 			{
 				["race"] = "HU",
 				["name"] = "Azrhaell",
@@ -4255,14 +4177,14 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "md4.7",
 				["rank"] = "Iniciado",
-			}, -- [585]
+			}, -- [581]
 			{
 				["name"] = "Balfette",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [586]
+			}, -- [582]
 			{
 				["race"] = "HU",
 				["name"] = "Baxster",
@@ -4270,57 +4192,65 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [587]
+			}, -- [583]
 			{
+				["race"] = "DR",
 				["name"] = "Bebesitho",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh6.0",
 				["rank"] = "Iniciado",
-			}, -- [588]
+			}, -- [584]
 			{
-				["race"] = "HU",
 				["name"] = "Beledhyr",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.7",
 				["rank"] = "Iniciado",
-			}, -- [589]
+			}, -- [585]
 			{
 				["name"] = "Bersekerss",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md4.2",
 				["rank"] = "Iniciado",
-			}, -- [590]
+			}, -- [586]
 			{
 				["name"] = "Bomflecher",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [591]
+			}, -- [587]
 			{
 				["name"] = "Bulltrok",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [592]
+			}, -- [588]
 			{
+				["name"] = "Cachora",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "md5.2",
+				["rank"] = "Iniciado",
+			}, -- [589]
+			{
+				["race"] = "NE",
 				["name"] = "Cazacontrol",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md6.0",
 				["rank"] = "Iniciado",
-			}, -- [593]
+			}, -- [590]
 			{
 				["name"] = "Cazarkan",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [594]
+			}, -- [591]
 			{
 				["race"] = "GN",
 				["name"] = "Chaliin",
@@ -4328,29 +4258,28 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md2.7",
 				["rank"] = "Iniciado",
-			}, -- [595]
+			}, -- [592]
 			{
 				["name"] = "Charzy",
 				["officerNote"] = "",
 				["class"] = "Mago",
-				["publicNote"] = "md5.8",
+				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [596]
+			}, -- [593]
 			{
-				["race"] = "HU",
 				["name"] = "Chasiis",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md4.7",
 				["rank"] = "Iniciado",
-			}, -- [597]
+			}, -- [594]
 			{
 				["name"] = "Chicocaguama",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "ad5.9",
 				["rank"] = "Iniciado",
-			}, -- [598]
+			}, -- [595]
 			{
 				["race"] = "DW",
 				["name"] = "Chubbminy",
@@ -4358,28 +4287,29 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [599]
+			}, -- [596]
 			{
 				["name"] = "Chuchor",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [600]
+			}, -- [597]
 			{
 				["name"] = "Cisio",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [601]
+			}, -- [598]
 			{
+				["race"] = "HU",
 				["name"] = "Colales",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md4.2",
 				["rank"] = "Iniciado",
-			}, -- [602]
+			}, -- [599]
 			{
 				["race"] = "HU",
 				["name"] = "Comidian",
@@ -4387,21 +4317,21 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [603]
+			}, -- [600]
 			{
 				["name"] = "Connetre",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [604]
+			}, -- [601]
 			{
 				["name"] = "Cryxuz",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [605]
+			}, -- [602]
 			{
 				["race"] = "DR",
 				["name"] = "Dantallian",
@@ -4409,14 +4339,14 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [606]
+			}, -- [603]
 			{
 				["name"] = "Darckcrow",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [607]
+			}, -- [604]
 			{
 				["race"] = "HU",
 				["name"] = "Darkleyend",
@@ -4424,7 +4354,7 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md6.0",
 				["rank"] = "Iniciado",
-			}, -- [608]
+			}, -- [605]
 			{
 				["race"] = "NE",
 				["name"] = "Darkyasper",
@@ -4432,28 +4362,28 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "mh5.2",
 				["rank"] = "Iniciado",
-			}, -- [609]
+			}, -- [606]
 			{
 				["name"] = "Darkzomer",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [610]
+			}, -- [607]
 			{
 				["name"] = "Deadtols",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [611]
+			}, -- [608]
 			{
 				["name"] = "Demmed",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md2.4",
 				["rank"] = "Iniciado",
-			}, -- [612]
+			}, -- [609]
 			{
 				["race"] = "HU",
 				["name"] = "Destok",
@@ -4461,7 +4391,7 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [613]
+			}, -- [610]
 			{
 				["race"] = "HU",
 				["name"] = "Destruidoor",
@@ -4469,35 +4399,35 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [614]
+			}, -- [611]
 			{
 				["name"] = "Deviates",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [615]
+			}, -- [612]
 			{
 				["name"] = "Dkopetin",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md6.3t6.0",
 				["rank"] = "Iniciado",
-			}, -- [616]
+			}, -- [613]
 			{
 				["name"] = "Dominatrixxd",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [617]
+			}, -- [614]
 			{
 				["name"] = "Donsam",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [618]
+			}, -- [615]
 			{
 				["race"] = "HU",
 				["name"] = "Drahico",
@@ -4505,21 +4435,21 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "ad5.2",
 				["rank"] = "Iniciado",
-			}, -- [619]
+			}, -- [616]
 			{
 				["name"] = "Drakanis",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt5.0",
 				["rank"] = "Iniciado",
-			}, -- [620]
+			}, -- [617]
 			{
 				["name"] = "Drakaryzz",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh4.0",
 				["rank"] = "Iniciado",
-			}, -- [621]
+			}, -- [618]
 			{
 				["race"] = "DR",
 				["name"] = "Drehico",
@@ -4527,7 +4457,7 @@ RaidDominionDB = {
 				["class"] = "Chamán",
 				["publicNote"] = "mh6.0",
 				["rank"] = "Iniciado",
-			}, -- [622]
+			}, -- [619]
 			{
 				["race"] = "HU",
 				["name"] = "Driadg",
@@ -4535,7 +4465,7 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [623]
+			}, -- [620]
 			{
 				["race"] = "HU",
 				["name"] = "Driheco",
@@ -4543,21 +4473,21 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt5.9",
 				["rank"] = "Iniciado",
-			}, -- [624]
+			}, -- [621]
 			{
 				["name"] = "Earbuds",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [625]
+			}, -- [622]
 			{
 				["name"] = "Eddruing",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.1",
 				["rank"] = "Iniciado",
-			}, -- [626]
+			}, -- [623]
 			{
 				["race"] = "DR",
 				["name"] = "Edmary",
@@ -4565,43 +4495,52 @@ RaidDominionDB = {
 				["class"] = "Chamán",
 				["publicNote"] = "mh6.2HBAL",
 				["rank"] = "Iniciado",
-			}, -- [627]
+			}, -- [624]
 			{
 				["name"] = "Elbetia",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [628]
+			}, -- [625]
+			{
+				["race"] = "NE",
+				["name"] = "Elenelor",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "mh5.2",
+				["rank"] = "Iniciado",
+			}, -- [626]
 			{
 				["name"] = "Elmostro",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.7t5.3",
 				["rank"] = "Iniciado",
-			}, -- [629]
+			}, -- [627]
 			{
+				["race"] = "NE",
 				["name"] = "Elpeyuco",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Iniciado",
-			}, -- [630]
+			}, -- [628]
 			{
 				["name"] = "Empaladorx",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [631]
+			}, -- [629]
 			{
 				["race"] = "HU",
 				["name"] = "Enzocr",
 				["officerNote"] = "",
 				["class"] = "Paladín",
-				["publicNote"] = "md5.3",
+				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [632]
+			}, -- [630]
 			{
 				["race"] = "DR",
 				["name"] = "Ephesto",
@@ -4609,14 +4548,14 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [633]
+			}, -- [631]
 			{
 				["name"] = "Evilink",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [634]
+			}, -- [632]
 			{
 				["race"] = "HU",
 				["name"] = "Eyras",
@@ -4624,21 +4563,29 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [635]
+			}, -- [633]
 			{
 				["name"] = "Ezoni",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [636]
+			}, -- [634]
 			{
+				["name"] = "Falinruch",
+				["officerNote"] = "",
+				["class"] = "Guerrero",
+				["publicNote"] = "md5.5",
+				["rank"] = "Iniciado",
+			}, -- [635]
+			{
+				["race"] = "GN",
 				["name"] = "Felipinho",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [637]
+			}, -- [636]
 			{
 				["race"] = "NE",
 				["name"] = "Fellea",
@@ -4646,7 +4593,7 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [638]
+			}, -- [637]
 			{
 				["race"] = "HU",
 				["name"] = "Fogozza",
@@ -4654,7 +4601,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [639]
+			}, -- [638]
 			{
 				["race"] = "HU",
 				["name"] = "Freakunleash",
@@ -4662,14 +4609,14 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [640]
+			}, -- [639]
 			{
 				["name"] = "Frostbones",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [641]
+			}, -- [640]
 			{
 				["race"] = "HU",
 				["name"] = "Frostrain",
@@ -4677,7 +4624,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [642]
+			}, -- [641]
 			{
 				["race"] = "HU",
 				["name"] = "Gabiramires",
@@ -4685,32 +4632,42 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [643]
+			}, -- [642]
 			{
 				["name"] = "Garnush",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh4.9",
 				["rank"] = "Iniciado",
-			}, -- [644]
+			}, -- [643]
 			{
 				["name"] = "Gasparsito",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mh5.8",
 				["rank"] = "Iniciado",
-			}, -- [645]
+			}, -- [644]
 			{
+				["race"] = "DW",
 				["name"] = "Gonk",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [646]
+			}, -- [645]
 			{
+				["race"] = "HU",
 				["name"] = "Griffiitth",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "md5.3",
+				["rank"] = "Iniciado",
+			}, -- [646]
+			{
+				["race"] = "HU",
+				["name"] = "Guritur",
+				["officerNote"] = "",
+				["class"] = "Paladín",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
 			}, -- [647]
@@ -4722,6 +4679,7 @@ RaidDominionDB = {
 				["rank"] = "Iniciado",
 			}, -- [648]
 			{
+				["race"] = "HU",
 				["name"] = "Harlokk",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
@@ -4729,41 +4687,43 @@ RaidDominionDB = {
 				["rank"] = "Iniciado",
 			}, -- [649]
 			{
+				["race"] = "HU",
+				["name"] = "Hermiion",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "ad6.0",
+				["rank"] = "Iniciado",
+			}, -- [650]
+			{
 				["name"] = "Hhekler",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "ad3.0",
 				["rank"] = "Iniciado",
-			}, -- [650]
+			}, -- [651]
 			{
 				["name"] = "Hileometro",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.2",
 				["rank"] = "Iniciado",
-			}, -- [651]
+			}, -- [652]
 			{
 				["name"] = "Hodinzz",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh6.1",
 				["rank"] = "Iniciado",
-			}, -- [652]
+			}, -- [653]
 			{
 				["name"] = "Holyspiritu",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.1",
 				["rank"] = "Iniciado",
-			}, -- [653]
-			{
-				["name"] = "Hombrera",
-				["officerNote"] = "",
-				["class"] = "Cazador",
-				["publicNote"] = "md5.6",
-				["rank"] = "Iniciado",
 			}, -- [654]
 			{
+				["race"] = "NE",
 				["name"] = "Horinander",
 				["officerNote"] = "",
 				["class"] = "Druida",
@@ -4801,6 +4761,7 @@ RaidDominionDB = {
 				["rank"] = "Iniciado",
 			}, -- [659]
 			{
+				["race"] = "HU",
 				["name"] = "Idylla",
 				["officerNote"] = "",
 				["class"] = "Paladín",
@@ -4823,40 +4784,49 @@ RaidDominionDB = {
 				["rank"] = "Iniciado",
 			}, -- [662]
 			{
+				["race"] = "DR",
+				["name"] = "Janasha",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "mh5.0",
+				["rank"] = "Iniciado",
+			}, -- [663]
+			{
 				["name"] = "Janhas",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [663]
+			}, -- [664]
 			{
 				["name"] = "Janio",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md4.1t3.8",
 				["rank"] = "Iniciado",
-			}, -- [664]
+			}, -- [665]
 			{
 				["name"] = "Jessilady",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [665]
+			}, -- [666]
 			{
+				["race"] = "HU",
 				["name"] = "Jmdk",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md4.7",
 				["rank"] = "Iniciado",
-			}, -- [666]
+			}, -- [667]
 			{
 				["name"] = "Jockeruwu",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt5.9",
 				["rank"] = "Iniciado",
-			}, -- [667]
+			}, -- [668]
 			{
 				["race"] = "HU",
 				["name"] = "Jofbirtz",
@@ -4864,28 +4834,29 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [668]
+			}, -- [669]
 			{
+				["race"] = "BE",
 				["name"] = "Johanz",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mt4.6d4.5",
 				["rank"] = "Iniciado",
-			}, -- [669]
+			}, -- [670]
 			{
 				["name"] = "Johnfrost",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [670]
+			}, -- [671]
 			{
 				["name"] = "Johngordon",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [671]
+			}, -- [672]
 			{
 				["race"] = "HU",
 				["name"] = "Jorgetele",
@@ -4893,93 +4864,94 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [672]
+			}, -- [673]
 			{
 				["name"] = "Jorthal",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [673]
+			}, -- [674]
 			{
 				["name"] = "Jorz",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [674]
+			}, -- [675]
 			{
 				["race"] = "HU",
 				["name"] = "Joseefaa",
 				["officerNote"] = "",
 				["class"] = "Brujo",
-				["publicNote"] = "md4.8",
+				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [675]
+			}, -- [676]
 			{
+				["race"] = "HU",
 				["name"] = "Jugadora",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [676]
+			}, -- [677]
 			{
 				["name"] = "Kaeldin",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.1",
 				["rank"] = "Iniciado",
-			}, -- [677]
+			}, -- [678]
 			{
+				["race"] = "DR",
 				["name"] = "Kannad",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [678]
+			}, -- [679]
 			{
 				["name"] = "Kannan",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [679]
+			}, -- [680]
 			{
 				["name"] = "Kazamax",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [680]
+			}, -- [681]
 			{
 				["name"] = "Keydiz",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [681]
+			}, -- [682]
 			{
-				["race"] = "OR",
 				["name"] = "Kraoss",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "",
 				["rank"] = "Iniciado",
-			}, -- [682]
+			}, -- [683]
 			{
 				["name"] = "Krosth",
 				["officerNote"] = "Tank 4.1 Heal 4.3",
 				["class"] = "Paladín",
 				["publicNote"] = "mt3.8",
 				["rank"] = "Iniciado",
-			}, -- [683]
+			}, -- [684]
 			{
 				["name"] = "Kumasaurio",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [684]
+			}, -- [685]
 			{
 				["race"] = "HU",
 				["name"] = "Labetia",
@@ -4987,43 +4959,51 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [685]
+			}, -- [686]
 			{
+				["race"] = "HU",
 				["name"] = "Laurisbel",
 				["officerNote"] = "Velanfrost",
 				["class"] = "Paladín",
 				["publicNote"] = "ad5.9",
 				["rank"] = "Iniciado",
-			}, -- [686]
+			}, -- [687]
+			{
+				["name"] = "Layai",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "md5.1",
+				["rank"] = "Iniciado",
+			}, -- [688]
 			{
 				["name"] = "Lbrujas",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "ad5.7",
 				["rank"] = "Iniciado",
-			}, -- [687]
+			}, -- [689]
 			{
 				["name"] = "Lecherancea",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mh5.8",
 				["rank"] = "Iniciado",
-			}, -- [688]
+			}, -- [690]
 			{
-				["race"] = "DW",
 				["name"] = "Legolahss",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [689]
+			}, -- [691]
 			{
+				["race"] = "UN",
 				["name"] = "Levitor",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [690]
+			}, -- [692]
 			{
 				["race"] = "NE",
 				["name"] = "Lipasa",
@@ -5031,7 +5011,7 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh5.4",
 				["rank"] = "Iniciado",
-			}, -- [691]
+			}, -- [693]
 			{
 				["race"] = "HU",
 				["name"] = "Lloroncita",
@@ -5039,84 +5019,92 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "md4.8",
 				["rank"] = "Iniciado",
-			}, -- [692]
+			}, -- [694]
 			{
 				["name"] = "Lodax",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [693]
+			}, -- [695]
 			{
+				["race"] = "GN",
 				["name"] = "Lolalalo",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md4.7",
 				["rank"] = "Iniciado",
-			}, -- [694]
+			}, -- [696]
 			{
 				["name"] = "Luciusvelkan",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [695]
+			}, -- [697]
 			{
 				["name"] = "Lupingon",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mt6.1d5.7",
 				["rank"] = "Iniciado",
-			}, -- [696]
+			}, -- [698]
+			{
+				["name"] = "Luzdsol",
+				["officerNote"] = "",
+				["class"] = "Sacerdote",
+				["publicNote"] = "md3.2",
+				["rank"] = "Iniciado",
+			}, -- [699]
 			{
 				["name"] = "Lyts",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh5.5",
 				["rank"] = "Iniciado",
-			}, -- [697]
+			}, -- [700]
 			{
 				["name"] = "Magiclaw",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [698]
+			}, -- [701]
 			{
 				["name"] = "Maguzo",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [699]
+			}, -- [702]
 			{
 				["name"] = "Makoh",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [700]
+			}, -- [703]
 			{
 				["name"] = "Mamarcela",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh6.0",
 				["rank"] = "Iniciado",
-			}, -- [701]
+			}, -- [704]
 			{
 				["name"] = "Mamaste",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [702]
+			}, -- [705]
 			{
 				["name"] = "Marcellswx",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [703]
+			}, -- [706]
 			{
 				["race"] = "GN",
 				["name"] = "Marokito",
@@ -5124,42 +5112,51 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [704]
+			}, -- [707]
 			{
 				["name"] = "Mashii",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md6.2",
 				["rank"] = "Iniciado",
-			}, -- [705]
+			}, -- [708]
 			{
+				["race"] = "HU",
+				["name"] = "Matafull",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "ad5.7",
+				["rank"] = "Iniciado",
+			}, -- [709]
+			{
+				["race"] = "HU",
 				["name"] = "Membererect",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [706]
+			}, -- [710]
 			{
 				["name"] = "Memeboss",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [707]
+			}, -- [711]
 			{
 				["name"] = "Metapala",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.2h5.0",
 				["rank"] = "Iniciado",
-			}, -- [708]
+			}, -- [712]
 			{
 				["name"] = "Milotar",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt1.8",
 				["rank"] = "Iniciado",
-			}, -- [709]
+			}, -- [713]
 			{
 				["race"] = "GN",
 				["name"] = "Minigris",
@@ -5167,106 +5164,107 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [710]
+			}, -- [714]
 			{
 				["name"] = "Miqtu",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md",
 				["rank"] = "Iniciado",
-			}, -- [711]
+			}, -- [715]
 			{
 				["name"] = "Miserinos",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "ad1.0",
 				["rank"] = "Iniciado",
-			}, -- [712]
+			}, -- [716]
 			{
+				["race"] = "HU",
 				["name"] = "Mivase",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md4.8",
 				["rank"] = "Iniciado",
-			}, -- [713]
+			}, -- [717]
 			{
 				["name"] = "Monitido",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [714]
+			}, -- [718]
 			{
 				["name"] = "Monsterkil",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [715]
+			}, -- [719]
 			{
+				["race"] = "DR",
 				["name"] = "Moonjacket",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [716]
+			}, -- [720]
 			{
 				["name"] = "Motekul",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [717]
+			}, -- [721]
 			{
 				["name"] = "Mstzatan",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md3.0",
 				["rank"] = "Iniciado",
-			}, -- [718]
+			}, -- [722]
 			{
 				["name"] = "Muzzann",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [719]
+			}, -- [723]
 			{
 				["name"] = "Naitan",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "ad5.0t4.5",
 				["rank"] = "Iniciado",
-			}, -- [720]
+			}, -- [724]
 			{
 				["name"] = "Nathassha",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt5.4/prf5.2",
 				["rank"] = "Iniciado",
-			}, -- [721]
+			}, -- [725]
 			{
 				["name"] = "Natir",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [722]
+			}, -- [726]
 			{
-				["race"] = "NE",
 				["name"] = "Nattures",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md2.7SKLW",
 				["rank"] = "Iniciado",
-			}, -- [723]
+			}, -- [727]
 			{
 				["name"] = "Natusha",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [724]
+			}, -- [728]
 			{
 				["race"] = "NE",
 				["name"] = "Necantu",
@@ -5274,14 +5272,14 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [725]
+			}, -- [729]
 			{
 				["name"] = "Newterror",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [726]
+			}, -- [730]
 			{
 				["race"] = "DR",
 				["name"] = "Nibix",
@@ -5289,170 +5287,174 @@ RaidDominionDB = {
 				["class"] = "Chamán",
 				["publicNote"] = "md6.3",
 				["rank"] = "Iniciado",
-			}, -- [727]
+			}, -- [731]
 			{
 				["name"] = "Nismoli",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [728]
+			}, -- [732]
 			{
 				["name"] = "Octagrama",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh5.6",
 				["rank"] = "Iniciado",
-			}, -- [729]
+			}, -- [733]
 			{
 				["name"] = "Osvaldeka",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md4.7",
 				["rank"] = "Iniciado",
-			}, -- [730]
+			}, -- [734]
 			{
 				["name"] = "Palafeliz",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.4",
 				["rank"] = "Iniciado",
-			}, -- [731]
+			}, -- [735]
 			{
+				["race"] = "BE",
 				["name"] = "Palbishop",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md4.5",
 				["rank"] = "Iniciado",
-			}, -- [732]
+			}, -- [736]
 			{
+				["race"] = "NE",
 				["name"] = "Pamola",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "ah5.6d5.6",
 				["rank"] = "Iniciado",
-			}, -- [733]
+			}, -- [737]
 			{
 				["name"] = "Pandorashaw",
 				["officerNote"] = "punt ",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [734]
+			}, -- [738]
 			{
+				["race"] = "NE",
 				["name"] = "Papasalada",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [735]
+			}, -- [739]
 			{
+				["race"] = "HU",
 				["name"] = "Papox",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md6.0",
 				["rank"] = "Iniciado",
-			}, -- [736]
+			}, -- [740]
 			{
 				["name"] = "Papufrio",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [737]
+			}, -- [741]
 			{
 				["name"] = "Paryt",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [738]
+			}, -- [742]
 			{
 				["name"] = "Pauhunter",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [739]
+			}, -- [743]
 			{
+				["race"] = "HU",
 				["name"] = "Pepitalaloca",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.7MNJW",
 				["rank"] = "Iniciado",
-			}, -- [740]
+			}, -- [744]
 			{
-				["race"] = "DR",
 				["name"] = "Phabius",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md6.1h5.6",
 				["rank"] = "Iniciado",
-			}, -- [741]
+			}, -- [745]
 			{
 				["name"] = "Pierpa",
 				["officerNote"] = "md4.7d4.7tl",
 				["class"] = "Brujo",
 				["publicNote"] = "md4.5",
 				["rank"] = "Iniciado",
-			}, -- [742]
+			}, -- [746]
 			{
 				["name"] = "Pillamoscas",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [743]
+			}, -- [747]
 			{
+				["race"] = "BE",
 				["name"] = "Pintao",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [744]
+			}, -- [748]
 			{
-				["race"] = "HU",
 				["name"] = "Pistacucha",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md6.2",
 				["rank"] = "Iniciado",
-			}, -- [745]
+			}, -- [749]
 			{
 				["name"] = "Pliqui",
 				["officerNote"] = "dk 6k",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "",
 				["rank"] = "Iniciado",
-			}, -- [746]
+			}, -- [750]
 			{
 				["name"] = "Polloql",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.3MNJW",
 				["rank"] = "Iniciado",
-			}, -- [747]
+			}, -- [751]
 			{
 				["name"] = "Pomberino",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [748]
+			}, -- [752]
 			{
 				["name"] = "Pornub",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [749]
+			}, -- [753]
 			{
 				["name"] = "Ppriscila",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [750]
+			}, -- [754]
 			{
 				["race"] = "HU",
 				["name"] = "Pugberto",
@@ -5460,49 +5462,49 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md6.0",
 				["rank"] = "Iniciado",
-			}, -- [751]
+			}, -- [755]
 			{
 				["name"] = "Pulquee",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [752]
+			}, -- [756]
 			{
 				["name"] = "Punchfire",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [753]
+			}, -- [757]
 			{
 				["name"] = "Purpple",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [754]
+			}, -- [758]
 			{
 				["name"] = "Purris",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.8",
 				["rank"] = "Iniciado",
-			}, -- [755]
+			}, -- [759]
 			{
 				["name"] = "Quemadito",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [756]
+			}, -- [760]
 			{
 				["name"] = "Quinich",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [757]
+			}, -- [761]
 			{
 				["race"] = "HU",
 				["name"] = "Raaikon",
@@ -5510,15 +5512,14 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md4.1",
 				["rank"] = "Iniciado",
-			}, -- [758]
+			}, -- [762]
 			{
-				["race"] = "HU",
 				["name"] = "Raiikon",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [759]
+			}, -- [763]
 			{
 				["race"] = "NE",
 				["name"] = "Ramarkan",
@@ -5526,7 +5527,7 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [760]
+			}, -- [764]
 			{
 				["race"] = "HU",
 				["name"] = "Rasteck",
@@ -5534,7 +5535,7 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md6.9dt6.4",
 				["rank"] = "Iniciado",
-			}, -- [761]
+			}, -- [765]
 			{
 				["race"] = "NE",
 				["name"] = "Rattsel",
@@ -5542,28 +5543,28 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [762]
+			}, -- [766]
 			{
 				["name"] = "Rayozin",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [763]
+			}, -- [767]
 			{
 				["name"] = "Rhenerya",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh2.0",
 				["rank"] = "Iniciado",
-			}, -- [764]
+			}, -- [768]
 			{
 				["name"] = "Rickkv",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mt5.4",
 				["rank"] = "Iniciado",
-			}, -- [765]
+			}, -- [769]
 			{
 				["race"] = "NE",
 				["name"] = "Rikinal",
@@ -5571,99 +5572,100 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [766]
+			}, -- [770]
 			{
 				["name"] = "Rohm",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md4.5t4.5",
 				["rank"] = "Iniciado",
-			}, -- [767]
+			}, -- [771]
 			{
-				["race"] = "HU",
 				["name"] = "Rokamatiko",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md6.1",
 				["rank"] = "Iniciado",
-			}, -- [768]
+			}, -- [772]
 			{
 				["name"] = "Romeho",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [769]
+			}, -- [773]
 			{
 				["name"] = "Romeodk",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "ad5.6",
 				["rank"] = "Iniciado",
-			}, -- [770]
+			}, -- [774]
 			{
 				["name"] = "Romeopicacul",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [771]
+			}, -- [775]
 			{
+				["race"] = "NE",
 				["name"] = "Rootem",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [772]
+			}, -- [776]
 			{
 				["name"] = "Rothmanss",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md6.1",
 				["rank"] = "Iniciado",
-			}, -- [773]
+			}, -- [777]
 			{
 				["name"] = "Ruglud",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md5,2INHB",
 				["rank"] = "Iniciado",
-			}, -- [774]
+			}, -- [778]
 			{
 				["name"] = "Rumbler",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [775]
+			}, -- [779]
 			{
 				["name"] = "Rumian",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [776]
+			}, -- [780]
 			{
 				["name"] = "Russwell",
-				["officerNote"] = "",
+				["officerNote"] = "Anshina y Pliqui",
 				["class"] = "Druida",
-				["publicNote"] = "md4.9",
+				["publicNote"] = "ad4.9",
 				["rank"] = "Iniciado",
-			}, -- [777]
+			}, -- [781]
 			{
+				["race"] = "DR",
 				["name"] = "Rychell",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.8",
 				["rank"] = "Iniciado",
-			}, -- [778]
+			}, -- [782]
 			{
 				["name"] = "Ryzengh",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh4.4",
 				["rank"] = "Iniciado",
-			}, -- [779]
+			}, -- [783]
 			{
 				["race"] = "DR",
 				["name"] = "Safena",
@@ -5671,87 +5673,94 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md5.1",
 				["rank"] = "Iniciado",
-			}, -- [780]
+			}, -- [784]
 			{
 				["name"] = "Saintkoga",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.1INMN",
 				["rank"] = "Iniciado",
-			}, -- [781]
+			}, -- [785]
 			{
 				["name"] = "Saintshoot",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md3.1",
 				["rank"] = "Iniciado",
-			}, -- [782]
+			}, -- [786]
 			{
 				["name"] = "Saltamundos",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mh5.0",
 				["rank"] = "Iniciado",
-			}, -- [783]
+			}, -- [787]
 			{
+				["race"] = "BE",
 				["name"] = "Sawetie",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [784]
+			}, -- [788]
 			{
-				["race"] = "DR",
 				["name"] = "Seha",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md5.3INMN",
 				["rank"] = "Iniciado",
-			}, -- [785]
+			}, -- [789]
 			{
-				["race"] = "HU",
 				["name"] = "Sevensnow",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md6.1",
 				["rank"] = "Iniciado",
-			}, -- [786]
+			}, -- [790]
 			{
 				["name"] = "Shaolinex",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [787]
+			}, -- [791]
 			{
 				["name"] = "Shazna",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.8",
 				["rank"] = "Iniciado",
-			}, -- [788]
+			}, -- [792]
 			{
 				["name"] = "Simara",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [789]
+			}, -- [793]
 			{
-				["race"] = "DR",
 				["name"] = "Skdi",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md6.9t6.5",
 				["rank"] = "Iniciado",
-			}, -- [790]
+			}, -- [794]
 			{
+				["race"] = "HU",
+				["name"] = "Spartac",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "md5.8",
+				["rank"] = "Iniciado",
+			}, -- [795]
+			{
+				["race"] = "OR",
 				["name"] = "Srwiski",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [791]
+			}, -- [796]
 			{
 				["race"] = "HU",
 				["name"] = "Sthacy",
@@ -5759,7 +5768,7 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [792]
+			}, -- [797]
 			{
 				["race"] = "HU",
 				["name"] = "Susurrakill",
@@ -5767,78 +5776,80 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [793]
+			}, -- [798]
 			{
 				["name"] = "Tesstarosa",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [794]
+			}, -- [799]
 			{
 				["name"] = "Tharlias",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh5.4d5.3",
 				["rank"] = "Iniciado",
-			}, -- [795]
+			}, -- [800]
 			{
 				["name"] = "Theborz",
 				["officerNote"] = "dk profano 5.7",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [796]
+			}, -- [801]
 			{
 				["name"] = "Thelaris",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [797]
+			}, -- [802]
 			{
+				["race"] = "HU",
 				["name"] = "Thepatriota",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [798]
+			}, -- [803]
 			{
+				["race"] = "NE",
 				["name"] = "Thersu",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [799]
+			}, -- [804]
 			{
 				["name"] = "Tootti",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [800]
+			}, -- [805]
 			{
 				["name"] = "Topopikachu",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.8",
 				["rank"] = "Iniciado",
-			}, -- [801]
+			}, -- [806]
 			{
 				["name"] = "Ttotti",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.2d3.1",
 				["rank"] = "Iniciado",
-			}, -- [802]
+			}, -- [807]
 			{
 				["race"] = "DR",
 				["name"] = "Tuyuti",
 				["officerNote"] = "",
 				["class"] = "Chamán",
-				["publicNote"] = "mh5.3",
+				["publicNote"] = "mh5.4",
 				["rank"] = "Iniciado",
-			}, -- [803]
+			}, -- [808]
 			{
 				["race"] = "NE",
 				["name"] = "Tyrannys",
@@ -5846,7 +5857,7 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [804]
+			}, -- [809]
 			{
 				["race"] = "HU",
 				["name"] = "Ukyox",
@@ -5854,147 +5865,150 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md6.0",
 				["rank"] = "Iniciado",
-			}, -- [805]
+			}, -- [810]
 			{
 				["name"] = "Urianna",
 				["officerNote"] = "shdw",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md6.9t6.5",
 				["rank"] = "Iniciado",
-			}, -- [806]
+			}, -- [811]
 			{
 				["name"] = "Vakon",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mt5.3",
 				["rank"] = "Iniciado",
-			}, -- [807]
+			}, -- [812]
 			{
 				["name"] = "Valgruun",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [808]
+			}, -- [813]
 			{
 				["name"] = "Vanerh",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.9",
 				["rank"] = "Iniciado",
-			}, -- [809]
+			}, -- [814]
 			{
 				["name"] = "Vikwar",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [810]
+			}, -- [815]
 			{
 				["name"] = "Walkingdk",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md",
 				["rank"] = "Iniciado",
-			}, -- [811]
+			}, -- [816]
 			{
 				["name"] = "Wapoll",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
-				["publicNote"] = "md5.1",
+				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [812]
+			}, -- [817]
 			{
 				["name"] = "Warbunker",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.4",
 				["rank"] = "Iniciado",
-			}, -- [813]
+			}, -- [818]
 			{
 				["name"] = "Waytwogo",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md4.9",
 				["rank"] = "Iniciado",
-			}, -- [814]
+			}, -- [819]
 			{
 				["name"] = "Whanted",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md4.6",
 				["rank"] = "Iniciado",
-			}, -- [815]
+			}, -- [820]
 			{
+				["race"] = "OR",
 				["name"] = "Wolfesten",
 				["officerNote"] = "6.1",
 				["class"] = "Guerrero",
 				["publicNote"] = "md6.1",
 				["rank"] = "Iniciado",
-			}, -- [816]
+			}, -- [821]
 			{
 				["name"] = "Xprowar",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.0",
 				["rank"] = "Iniciado",
-			}, -- [817]
+			}, -- [822]
 			{
 				["name"] = "Yamalube",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.5",
 				["rank"] = "Iniciado",
-			}, -- [818]
+			}, -- [823]
 			{
 				["name"] = "Yasvek",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.7",
 				["rank"] = "Iniciado",
-			}, -- [819]
+			}, -- [824]
 			{
+				["race"] = "HU",
 				["name"] = "Yhisuz",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md5.2",
 				["rank"] = "Iniciado",
-			}, -- [820]
+			}, -- [825]
 			{
 				["name"] = "Yonor",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md4.5",
 				["rank"] = "Iniciado",
-			}, -- [821]
+			}, -- [826]
 			{
 				["name"] = "Yulima",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "rtry5.2//mt4.9",
 				["rank"] = "Iniciado",
-			}, -- [822]
+			}, -- [827]
 			{
+				["race"] = "DR",
 				["name"] = "Zaidh",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.3",
 				["rank"] = "Iniciado",
-			}, -- [823]
+			}, -- [828]
 			{
 				["name"] = "Zarshi",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md4.3",
 				["rank"] = "Iniciado",
-			}, -- [824]
+			}, -- [829]
 			{
 				["name"] = "Zefra",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md6.0t5.3",
 				["rank"] = "Iniciado",
-			}, -- [825]
+			}, -- [830]
 			{
 				["race"] = "HU",
 				["name"] = "Zeiszz",
@@ -6002,57 +6016,56 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md4.8",
 				["rank"] = "Iniciado",
-			}, -- [826]
+			}, -- [831]
 			{
 				["name"] = "Zeraph",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.5h6.0",
 				["rank"] = "Iniciado",
-			}, -- [827]
+			}, -- [832]
 			{
 				["name"] = "Zitzit",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.6",
 				["rank"] = "Iniciado",
-			}, -- [828]
+			}, -- [833]
 			{
 				["name"] = "Cachadeacero",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "ad",
 				["rank"] = "Explorador",
-			}, -- [829]
+			}, -- [834]
 			{
 				["name"] = "Druhmahouk",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "AH",
 				["rank"] = "Explorador",
-			}, -- [830]
+			}, -- [835]
 			{
-				["race"] = "TR",
 				["name"] = "Abysusx",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md6.0",
 				["rank"] = "Explorador",
-			}, -- [831]
+			}, -- [836]
 			{
 				["name"] = "Ahbregh",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.5",
 				["rank"] = "Explorador",
-			}, -- [832]
+			}, -- [837]
 			{
 				["name"] = "Akleina",
 				["officerNote"] = "",
 				["class"] = "Chamán",
-				["publicNote"] = "mh5.6",
+				["publicNote"] = "mh5.7",
 				["rank"] = "Explorador",
-			}, -- [833]
+			}, -- [838]
 			{
 				["race"] = "NE",
 				["name"] = "Alterek",
@@ -6060,7 +6073,7 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md6.0",
 				["rank"] = "Explorador",
-			}, -- [834]
+			}, -- [839]
 			{
 				["race"] = "HU",
 				["name"] = "Andrewv",
@@ -6068,7 +6081,14 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt6.1d5.6",
 				["rank"] = "Explorador",
-			}, -- [835]
+			}, -- [840]
+			{
+				["name"] = "Arshavinx",
+				["officerNote"] = "MD5.4MNDG",
+				["class"] = "Cazador",
+				["publicNote"] = "md5.4",
+				["rank"] = "Explorador",
+			}, -- [841]
 			{
 				["race"] = "NE",
 				["name"] = "Arteriss",
@@ -6076,7 +6096,7 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md6.0SK",
 				["rank"] = "Explorador",
-			}, -- [836]
+			}, -- [842]
 			{
 				["race"] = "DR",
 				["name"] = "Asdawfdqef",
@@ -6084,7 +6104,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.8",
 				["rank"] = "Explorador",
-			}, -- [837]
+			}, -- [843]
 			{
 				["race"] = "GN",
 				["name"] = "Asm",
@@ -6092,14 +6112,21 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.4",
 				["rank"] = "Explorador",
-			}, -- [838]
+			}, -- [844]
+			{
+				["name"] = "Belhir",
+				["officerNote"] = "",
+				["class"] = "Brujo",
+				["publicNote"] = "md6.4",
+				["rank"] = "Explorador",
+			}, -- [845]
 			{
 				["name"] = "Bhelld",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "ad5.4",
 				["rank"] = "Explorador",
-			}, -- [839]
+			}, -- [846]
 			{
 				["race"] = "NE",
 				["name"] = "Buhonerokt",
@@ -6107,36 +6134,35 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "mg5.7",
 				["rank"] = "Explorador",
-			}, -- [840]
+			}, -- [847]
 			{
 				["name"] = "Casabichos",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "ad5.9",
 				["rank"] = "Explorador",
-			}, -- [841]
+			}, -- [848]
 			{
-				["race"] = "DR",
 				["name"] = "Chuzmi",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.8",
 				["rank"] = "Explorador",
-			}, -- [842]
+			}, -- [849]
 			{
 				["name"] = "Cordaver",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.1",
 				["rank"] = "Explorador",
-			}, -- [843]
+			}, -- [850]
 			{
 				["name"] = "Crael",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.6",
 				["rank"] = "Explorador",
-			}, -- [844]
+			}, -- [851]
 			{
 				["race"] = "HU",
 				["name"] = "Daoud",
@@ -6144,28 +6170,28 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "mh5.7",
 				["rank"] = "Explorador",
-			}, -- [845]
+			}, -- [852]
 			{
 				["name"] = "Daviel",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md4.5",
 				["rank"] = "Explorador",
-			}, -- [846]
+			}, -- [853]
 			{
 				["name"] = "Dinamic",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md5.8",
 				["rank"] = "Explorador",
-			}, -- [847]
+			}, -- [854]
 			{
 				["name"] = "Dkprime",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.9",
 				["rank"] = "Explorador",
-			}, -- [848]
+			}, -- [855]
 			{
 				["race"] = "HU",
 				["name"] = "Dkreita",
@@ -6173,28 +6199,29 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt5.7",
 				["rank"] = "Explorador",
-			}, -- [849]
+			}, -- [856]
 			{
 				["name"] = "Drudael",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "h5.8",
 				["rank"] = "Explorador",
-			}, -- [850]
+			}, -- [857]
 			{
 				["name"] = "Drukall",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "ad5.3",
 				["rank"] = "Explorador",
-			}, -- [851]
+			}, -- [858]
 			{
+				["race"] = "NE",
 				["name"] = "Duduss",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "ad5.4t5.0",
 				["rank"] = "Explorador",
-			}, -- [852]
+			}, -- [859]
 			{
 				["race"] = "HU",
 				["name"] = "Dundance",
@@ -6202,7 +6229,7 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "md5.9",
 				["rank"] = "Explorador",
-			}, -- [853]
+			}, -- [860]
 			{
 				["race"] = "NE",
 				["name"] = "Eille",
@@ -6210,21 +6237,28 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "mh5.7EN",
 				["rank"] = "Explorador",
-			}, -- [854]
+			}, -- [861]
 			{
 				["name"] = "Elpaulo",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "ad5.5",
 				["rank"] = "Explorador",
-			}, -- [855]
+			}, -- [862]
+			{
+				["name"] = "Eltufao",
+				["officerNote"] = "",
+				["class"] = "Mago",
+				["publicNote"] = "md5.8",
+				["rank"] = "Explorador",
+			}, -- [863]
 			{
 				["name"] = "Fabrik",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.1",
 				["rank"] = "Explorador",
-			}, -- [856]
+			}, -- [864]
 			{
 				["race"] = "NE",
 				["name"] = "Finisht",
@@ -6232,7 +6266,7 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8",
 				["rank"] = "Explorador",
-			}, -- [857]
+			}, -- [865]
 			{
 				["race"] = "DR",
 				["name"] = "Frostdrake",
@@ -6240,7 +6274,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md6.2",
 				["rank"] = "Explorador",
-			}, -- [858]
+			}, -- [866]
 			{
 				["race"] = "DR",
 				["name"] = "Futari",
@@ -6248,7 +6282,7 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "ad5.2t5.0",
 				["rank"] = "Explorador",
-			}, -- [859]
+			}, -- [867]
 			{
 				["race"] = "OR",
 				["name"] = "Gabozinn",
@@ -6256,14 +6290,14 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "md6.0JWTL",
 				["rank"] = "Explorador",
-			}, -- [860]
+			}, -- [868]
 			{
 				["name"] = "Gesh",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "",
 				["rank"] = "Explorador",
-			}, -- [861]
+			}, -- [869]
 			{
 				["race"] = "HU",
 				["name"] = "Goldennuts",
@@ -6271,14 +6305,14 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md6.0",
 				["rank"] = "Explorador",
-			}, -- [862]
+			}, -- [870]
 			{
 				["name"] = "Gomenazai",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md5.9",
 				["rank"] = "Explorador",
-			}, -- [863]
+			}, -- [871]
 			{
 				["race"] = "BE",
 				["name"] = "Hanssi",
@@ -6286,7 +6320,7 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.7",
 				["rank"] = "Explorador",
-			}, -- [864]
+			}, -- [872]
 			{
 				["race"] = "NE",
 				["name"] = "Hekler",
@@ -6294,7 +6328,7 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "ah5.6d5.0ENIN",
 				["rank"] = "Explorador",
-			}, -- [865]
+			}, -- [873]
 			{
 				["race"] = "DR",
 				["name"] = "Helerchaman",
@@ -6302,7 +6336,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md5.4",
 				["rank"] = "Explorador",
-			}, -- [866]
+			}, -- [874]
 			{
 				["race"] = "HU",
 				["name"] = "Hellzinn",
@@ -6310,14 +6344,14 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "md5.6t5.0JWSK",
 				["rank"] = "Explorador",
-			}, -- [867]
+			}, -- [875]
 			{
 				["name"] = "Hiey",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md6.5",
 				["rank"] = "Explorador",
-			}, -- [868]
+			}, -- [876]
 			{
 				["race"] = "HU",
 				["name"] = "Ichigokuroz",
@@ -6325,7 +6359,14 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.6",
 				["rank"] = "Explorador",
-			}, -- [869]
+			}, -- [877]
+			{
+				["name"] = "Icura",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "mh6.0",
+				["rank"] = "Explorador",
+			}, -- [878]
 			{
 				["race"] = "HU",
 				["name"] = "Iloverock",
@@ -6333,28 +6374,29 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "ad5.6",
 				["rank"] = "Explorador",
-			}, -- [870]
+			}, -- [879]
 			{
+				["race"] = "NE",
 				["name"] = "Inquishidor",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md6.0h6.1",
 				["rank"] = "Explorador",
-			}, -- [871]
+			}, -- [880]
 			{
 				["name"] = "Javden",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.3",
 				["rank"] = "Explorador",
-			}, -- [872]
+			}, -- [881]
 			{
 				["name"] = "Jeringa",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "ad5.2",
 				["rank"] = "Explorador",
-			}, -- [873]
+			}, -- [882]
 			{
 				["race"] = "DW",
 				["name"] = "Jhesmy",
@@ -6362,36 +6404,36 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt6.0",
 				["rank"] = "Explorador",
-			}, -- [874]
+			}, -- [883]
 			{
 				["name"] = "Jhonnysims",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "ad5.0h5.0",
 				["rank"] = "Explorador",
-			}, -- [875]
+			}, -- [884]
 			{
 				["name"] = "Jhonyc",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.3",
 				["rank"] = "Explorador",
-			}, -- [876]
+			}, -- [885]
 			{
 				["race"] = "HU",
 				["name"] = "Jokerm",
 				["officerNote"] = "profano 5.7 dual tanke 5.6",
 				["class"] = "Caballero de la Muerte",
-				["publicNote"] = "md5.7",
+				["publicNote"] = "md5.8t5.6",
 				["rank"] = "Explorador",
-			}, -- [877]
+			}, -- [886]
 			{
 				["name"] = "Jonared",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "at5.0",
 				["rank"] = "Explorador",
-			}, -- [878]
+			}, -- [887]
 			{
 				["race"] = "DR",
 				["name"] = "Juliwar",
@@ -6399,14 +6441,14 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "aD5.5",
 				["rank"] = "Explorador",
-			}, -- [879]
+			}, -- [888]
 			{
 				["name"] = "Kandace",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md6.0",
 				["rank"] = "Explorador",
-			}, -- [880]
+			}, -- [889]
 			{
 				["race"] = "HU",
 				["name"] = "Kekos",
@@ -6414,21 +6456,21 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "MT4.7",
 				["rank"] = "Explorador",
-			}, -- [881]
+			}, -- [890]
 			{
 				["name"] = "Kelezet",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.9",
 				["rank"] = "Explorador",
-			}, -- [882]
+			}, -- [891]
 			{
 				["name"] = "Kervin",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.6TLEN",
 				["rank"] = "Explorador",
-			}, -- [883]
+			}, -- [892]
 			{
 				["race"] = "TR",
 				["name"] = "Kguzz",
@@ -6436,7 +6478,7 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.8",
 				["rank"] = "Explorador",
-			}, -- [884]
+			}, -- [893]
 			{
 				["race"] = "DR",
 				["name"] = "Khrii",
@@ -6444,21 +6486,21 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.8",
 				["rank"] = "Explorador",
-			}, -- [885]
+			}, -- [894]
 			{
 				["name"] = "Kilime",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "ad4.6",
 				["rank"] = "Explorador",
-			}, -- [886]
+			}, -- [895]
 			{
 				["name"] = "Kiritoferal",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md5.4h5.0",
 				["rank"] = "Explorador",
-			}, -- [887]
+			}, -- [896]
 			{
 				["race"] = "HU",
 				["name"] = "Kispocho",
@@ -6466,14 +6508,14 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "mt5.5",
 				["rank"] = "Explorador",
-			}, -- [888]
+			}, -- [897]
 			{
 				["name"] = "Kkikass",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.0",
 				["rank"] = "Explorador",
-			}, -- [889]
+			}, -- [898]
 			{
 				["race"] = "DR",
 				["name"] = "Krialania",
@@ -6481,14 +6523,14 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "ad3.6",
 				["rank"] = "Explorador",
-			}, -- [890]
+			}, -- [899]
 			{
 				["name"] = "Kukushibo",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "md5.6JCEN",
 				["rank"] = "Explorador",
-			}, -- [891]
+			}, -- [900]
 			{
 				["race"] = "NE",
 				["name"] = "Legarks",
@@ -6496,28 +6538,28 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md5.8JCEN",
 				["rank"] = "Explorador",
-			}, -- [892]
+			}, -- [901]
 			{
 				["name"] = "Loranea",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md2.3",
 				["rank"] = "Explorador",
-			}, -- [893]
+			}, -- [902]
 			{
 				["name"] = "Luckytoloco",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.3",
 				["rank"] = "Explorador",
-			}, -- [894]
+			}, -- [903]
 			{
 				["name"] = "Magescarcha",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.3",
 				["rank"] = "Explorador",
-			}, -- [895]
+			}, -- [904]
 			{
 				["race"] = "DW",
 				["name"] = "Magim",
@@ -6525,79 +6567,86 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "mt5.9",
 				["rank"] = "Explorador",
-			}, -- [896]
+			}, -- [905]
 			{
-				["race"] = "GN",
 				["name"] = "Maguitoz",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "ad4.3ALHB",
 				["rank"] = "Explorador",
-			}, -- [897]
+			}, -- [906]
 			{
 				["name"] = "Marculin",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "adMNJC",
 				["rank"] = "Explorador",
-			}, -- [898]
+			}, -- [907]
 			{
 				["name"] = "Mfer",
 				["officerNote"] = "",
 				["class"] = "Brujo",
 				["publicNote"] = "ad5.6",
 				["rank"] = "Explorador",
-			}, -- [899]
+			}, -- [908]
 			{
 				["name"] = "Mhegara",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "mt6.0",
 				["rank"] = "Explorador",
-			}, -- [900]
+			}, -- [909]
 			{
 				["name"] = "Miakalyfa",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "mh6.1t6.0",
 				["rank"] = "Explorador",
-			}, -- [901]
+			}, -- [910]
 			{
+				["race"] = "NE",
 				["name"] = "Miamiau",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "ad5.7",
 				["rank"] = "Explorador",
-			}, -- [902]
+			}, -- [911]
 			{
 				["name"] = "Midorithundr",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md5.0",
 				["rank"] = "Explorador",
-			}, -- [903]
+			}, -- [912]
 			{
-				["race"] = "TR",
 				["name"] = "Mimarin",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.8d5.9AL",
 				["rank"] = "Explorador",
-			}, -- [904]
+			}, -- [913]
+			{
+				["race"] = "DR",
+				["name"] = "Mochiix",
+				["officerNote"] = "",
+				["class"] = "Chamán",
+				["publicNote"] = "mh5.7",
+				["rank"] = "Explorador",
+			}, -- [914]
 			{
 				["name"] = "Muertodasco",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md6.0",
 				["rank"] = "Explorador",
-			}, -- [905]
+			}, -- [915]
 			{
 				["name"] = "Nanitas",
-				["officerNote"] = "",
+				["officerNote"] = "shadow",
 				["class"] = "Sacerdote",
-				["publicNote"] = "md5.4",
+				["publicNote"] = "md5.6",
 				["rank"] = "Explorador",
-			}, -- [906]
+			}, -- [916]
 			{
 				["race"] = "NE",
 				["name"] = "Nasci",
@@ -6605,63 +6654,72 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "mh6.0",
 				["rank"] = "Explorador",
-			}, -- [907]
+			}, -- [917]
+			{
+				["race"] = "HU",
+				["name"] = "Nephttys",
+				["officerNote"] = "AWEBO",
+				["class"] = "Caballero de la Muerte",
+				["publicNote"] = "md5.8",
+				["rank"] = "Explorador",
+			}, -- [918]
 			{
 				["name"] = "Neymare",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.5t4.9",
 				["rank"] = "Explorador",
-			}, -- [908]
+			}, -- [919]
 			{
 				["name"] = "Nubiz",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "md6.0",
 				["rank"] = "Explorador",
-			}, -- [909]
+			}, -- [920]
 			{
 				["name"] = "Nypth",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "ad5.7",
 				["rank"] = "Explorador",
-			}, -- [910]
+			}, -- [921]
 			{
 				["name"] = "Ogmago",
 				["officerNote"] = "fire",
 				["class"] = "Mago",
 				["publicNote"] = "md5.8",
 				["rank"] = "Explorador",
-			}, -- [911]
+			}, -- [922]
 			{
 				["name"] = "Papeo",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.2",
 				["rank"] = "Explorador",
-			}, -- [912]
+			}, -- [923]
 			{
 				["name"] = "Pliklin",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "ad4.7",
 				["rank"] = "Explorador",
-			}, -- [913]
+			}, -- [924]
 			{
 				["name"] = "Portalmaker",
 				["officerNote"] = "TOC10H ICC25N",
 				["class"] = "Mago",
 				["publicNote"] = "MD5.4JCMN TOC10N ICC10N",
 				["rank"] = "Explorador",
-			}, -- [914]
+			}, -- [925]
 			{
+				["race"] = "TR",
 				["name"] = "Prestoxx",
 				["officerNote"] = "",
 				["class"] = "Sacerdote",
 				["publicNote"] = "ad6.2",
 				["rank"] = "Explorador",
-			}, -- [915]
+			}, -- [926]
 			{
 				["race"] = "DW",
 				["name"] = "Pyladin",
@@ -6669,28 +6727,29 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "at5.5",
 				["rank"] = "Explorador",
-			}, -- [916]
+			}, -- [927]
 			{
+				["race"] = "OR",
 				["name"] = "Ragnarups",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.9",
 				["rank"] = "Explorador",
-			}, -- [917]
+			}, -- [928]
 			{
 				["name"] = "Rapftalia",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.7JWMN",
 				["rank"] = "Explorador",
-			}, -- [918]
+			}, -- [929]
 			{
 				["name"] = "Rassal",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md6.1",
 				["rank"] = "Explorador",
-			}, -- [919]
+			}, -- [930]
 			{
 				["race"] = "GN",
 				["name"] = "Redaleister",
@@ -6698,21 +6757,21 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "md5.8ALHB",
 				["rank"] = "Explorador",
-			}, -- [920]
+			}, -- [931]
 			{
 				["name"] = "Redrat",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt5.3",
 				["rank"] = "Explorador",
-			}, -- [921]
+			}, -- [932]
 			{
 				["name"] = "Rojiriin",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.5",
 				["rank"] = "Explorador",
-			}, -- [922]
+			}, -- [933]
 			{
 				["race"] = "DW",
 				["name"] = "Rossmary",
@@ -6720,7 +6779,7 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "md5.7",
 				["rank"] = "Explorador",
-			}, -- [923]
+			}, -- [934]
 			{
 				["race"] = "DR",
 				["name"] = "Roussh",
@@ -6728,56 +6787,57 @@ RaidDominionDB = {
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.6",
 				["rank"] = "Explorador",
-			}, -- [924]
+			}, -- [935]
 			{
+				["race"] = "OR",
 				["name"] = "Rsoo",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.9",
 				["rank"] = "Explorador",
-			}, -- [925]
+			}, -- [936]
 			{
 				["name"] = "Saintblack",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "at5.7 ICC10N ICC25N RS10N RS25N",
 				["rank"] = "Explorador",
-			}, -- [926]
+			}, -- [937]
 			{
 				["name"] = "Saintdash",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "ad5.8h5.8",
 				["rank"] = "Explorador",
-			}, -- [927]
+			}, -- [938]
 			{
 				["name"] = "Saintholy",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "ad5.9h6.3",
 				["rank"] = "Explorador",
-			}, -- [928]
+			}, -- [939]
 			{
 				["name"] = "Saintt",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.4",
 				["rank"] = "Explorador",
-			}, -- [929]
+			}, -- [940]
 			{
 				["name"] = "Sainttouch",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "ah5.0d4.9",
 				["rank"] = "Explorador",
-			}, -- [930]
+			}, -- [941]
 			{
 				["name"] = "Sashu",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "MD",
 				["rank"] = "Explorador",
-			}, -- [931]
+			}, -- [942]
 			{
 				["race"] = "GN",
 				["name"] = "Scime",
@@ -6785,7 +6845,7 @@ RaidDominionDB = {
 				["class"] = "Mago",
 				["publicNote"] = "md6.0",
 				["rank"] = "Explorador",
-			}, -- [932]
+			}, -- [943]
 			{
 				["race"] = "DR",
 				["name"] = "Seahorse",
@@ -6793,14 +6853,14 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.5",
 				["rank"] = "Explorador",
-			}, -- [933]
+			}, -- [944]
 			{
 				["name"] = "Seban",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "ad5.0",
 				["rank"] = "Explorador",
-			}, -- [934]
+			}, -- [945]
 			{
 				["race"] = "DW",
 				["name"] = "Semevaelagro",
@@ -6808,77 +6868,86 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "mt6.0d5.8",
 				["rank"] = "Explorador",
-			}, -- [935]
+			}, -- [946]
 			{
+				["race"] = "TR",
 				["name"] = "Sezane",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "mh5.1d5.1",
 				["rank"] = "Explorador",
-			}, -- [936]
+			}, -- [947]
 			{
 				["name"] = "Shinani",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "mt5.7",
 				["rank"] = "Explorador",
-			}, -- [937]
+			}, -- [948]
 			{
+				["race"] = "NE",
 				["name"] = "Sindinera",
 				["officerNote"] = "feral",
 				["class"] = "Druida",
 				["publicNote"] = "md5.9",
 				["rank"] = "Explorador",
-			}, -- [938]
+			}, -- [949]
 			{
 				["name"] = "Stewen",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "AD5.9 Icc10n Icc25N RS10N RS25N",
 				["rank"] = "Explorador",
-			}, -- [939]
+			}, -- [950]
 			{
 				["name"] = "Sumetal",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "ad5.8JCBS",
 				["rank"] = "Explorador",
-			}, -- [940]
+			}, -- [951]
 			{
 				["name"] = "Surik",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "ad5.3EGMN",
 				["rank"] = "Explorador",
-			}, -- [941]
+			}, -- [952]
+			{
+				["name"] = "Tenicer",
+				["officerNote"] = "",
+				["class"] = "Pícaro",
+				["publicNote"] = "md5.9",
+				["rank"] = "Explorador",
+			}, -- [953]
 			{
 				["name"] = "Tigerup",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md6.2h6.2",
 				["rank"] = "Explorador",
-			}, -- [942]
+			}, -- [954]
 			{
 				["name"] = "Toruz",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mt5.8",
 				["rank"] = "Explorador",
-			}, -- [943]
+			}, -- [955]
 			{
 				["name"] = "Trapfrost",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "ad3.1 ",
 				["rank"] = "Explorador",
-			}, -- [944]
+			}, -- [956]
 			{
 				["name"] = "Tummacho",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.6",
 				["rank"] = "Explorador",
-			}, -- [945]
+			}, -- [957]
 			{
 				["race"] = "DR",
 				["name"] = "Tyliax",
@@ -6886,14 +6955,14 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "mt5.4",
 				["rank"] = "Explorador",
-			}, -- [946]
+			}, -- [958]
 			{
 				["name"] = "Urcis",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mt5.3",
 				["rank"] = "Explorador",
-			}, -- [947]
+			}, -- [959]
 			{
 				["race"] = "HU",
 				["name"] = "Vacelinas",
@@ -6901,7 +6970,7 @@ RaidDominionDB = {
 				["class"] = "Sacerdote",
 				["publicNote"] = "ah5.9",
 				["rank"] = "Explorador",
-			}, -- [948]
+			}, -- [960]
 			{
 				["race"] = "DR",
 				["name"] = "Valatrax",
@@ -6909,49 +6978,50 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "MD4.9EGMN",
 				["rank"] = "Explorador",
-			}, -- [949]
+			}, -- [961]
 			{
 				["name"] = "Valiris",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "ad5.7h5.3BSJC",
 				["rank"] = "Explorador",
-			}, -- [950]
+			}, -- [962]
 			{
+				["race"] = "HU",
 				["name"] = "Velanfrost",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "md5.4",
 				["rank"] = "Explorador",
-			}, -- [951]
+			}, -- [963]
 			{
 				["name"] = "Vorandir",
 				["officerNote"] = "5.7 dps //5.0 tank",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.7t5.0",
 				["rank"] = "Explorador",
-			}, -- [952]
+			}, -- [964]
 			{
 				["name"] = "Warcitoo",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.2",
 				["rank"] = "Explorador",
-			}, -- [953]
+			}, -- [965]
 			{
 				["name"] = "Wondern",
 				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "md5.3",
 				["rank"] = "Explorador",
-			}, -- [954]
+			}, -- [966]
 			{
 				["name"] = "Wonderpala",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md6.1t5.7",
 				["rank"] = "Explorador",
-			}, -- [955]
+			}, -- [967]
 			{
 				["race"] = "HU",
 				["name"] = "Workfast",
@@ -6959,14 +7029,14 @@ RaidDominionDB = {
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.2",
 				["rank"] = "Explorador",
-			}, -- [956]
+			}, -- [968]
 			{
 				["name"] = "Wusheng",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md5.7",
 				["rank"] = "Explorador",
-			}, -- [957]
+			}, -- [969]
 			{
 				["race"] = "NE",
 				["name"] = "Xelino",
@@ -6974,7 +7044,7 @@ RaidDominionDB = {
 				["class"] = "Druida",
 				["publicNote"] = "aD5.7HB",
 				["rank"] = "Explorador",
-			}, -- [958]
+			}, -- [970]
 			{
 				["race"] = "NE",
 				["name"] = "Xhalok",
@@ -6982,106 +7052,116 @@ RaidDominionDB = {
 				["class"] = "Cazador",
 				["publicNote"] = "md5.2",
 				["rank"] = "Explorador",
-			}, -- [959]
+			}, -- [971]
 			{
 				["name"] = "Xhiang",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md5.1",
 				["rank"] = "Explorador",
-			}, -- [960]
+			}, -- [972]
 			{
 				["name"] = "Xiaron",
 				["officerNote"] = "Sastre / encanta  - SP / Heal",
 				["class"] = "Sacerdote",
 				["publicNote"] = "md5.6h5.0TLEN",
 				["rank"] = "Explorador",
-			}, -- [961]
+			}, -- [973]
 			{
+				["race"] = "NE",
 				["name"] = "Xodo",
 				["officerNote"] = "",
 				["class"] = "Cazador",
 				["publicNote"] = "md5.6",
 				["rank"] = "Explorador",
-			}, -- [962]
+			}, -- [974]
 			{
 				["name"] = "Xxoe",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.6h5.0",
 				["rank"] = "Explorador",
-			}, -- [963]
+			}, -- [975]
 			{
+				["race"] = "NE",
 				["name"] = "Yhuroichi",
 				["officerNote"] = "",
 				["class"] = "Druida",
 				["publicNote"] = "mh5.1",
 				["rank"] = "Explorador",
-			}, -- [964]
+			}, -- [976]
+			{
+				["name"] = "Yojaness",
+				["officerNote"] = "",
+				["class"] = "Paladín",
+				["publicNote"] = "mt5.7",
+				["rank"] = "Explorador",
+			}, -- [977]
 			{
 				["name"] = "Yuis",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "aD5.8",
 				["rank"] = "Explorador",
-			}, -- [965]
+			}, -- [978]
 			{
+				["race"] = "BE",
 				["name"] = "Zanathosa",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "aD5.8",
 				["rank"] = "Explorador",
-			}, -- [966]
+			}, -- [979]
 			{
 				["name"] = "Zanathoska",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "md5.0",
 				["rank"] = "Explorador",
-			}, -- [967]
+			}, -- [980]
 			{
 				["name"] = "Zenshy",
 				["officerNote"] = "",
 				["class"] = "Guerrero",
 				["publicNote"] = "ad4.5",
 				["rank"] = "Explorador",
-			}, -- [968]
+			}, -- [981]
 			{
 				["name"] = "Zhorath",
 				["officerNote"] = "",
 				["class"] = "Caballero de la Muerte",
 				["publicNote"] = "md2.1",
 				["rank"] = "Explorador",
-			}, -- [969]
+			}, -- [982]
 			{
 				["name"] = "Zorito",
 				["officerNote"] = "",
 				["class"] = "Paladín",
 				["publicNote"] = "md5.6",
 				["rank"] = "Explorador",
-			}, -- [970]
+			}, -- [983]
 			{
 				["name"] = "Zumbie",
 				["officerNote"] = "",
 				["class"] = "Mago",
 				["publicNote"] = "ah5.9d5.3inEN",
 				["rank"] = "Explorador",
-			}, -- [971]
+			}, -- [984]
 			{
 				["name"] = "Bosakiller",
 				["officerNote"] = "",
 				["class"] = "Pícaro",
 				["publicNote"] = "md6.0",
 				["rank"] = "Oficial",
-			}, -- [972]
+			}, -- [985]
 			{
 				["race"] = "DR",
 				["name"] = "Howlshade",
-				["officerNote"] = "test",
+				["officerNote"] = "",
 				["class"] = "Chamán",
 				["publicNote"] = "ah6.1d5.3ALhb",
 				["rank"] = "Administrador",
-			}, -- [973]
+			}, -- [986]
 			{
 				["race"] = "GN",
 				["name"] = "Ravenguard",
@@ -7089,7 +7169,15 @@ RaidDominionDB = {
 				["class"] = "Pícaro",
 				["publicNote"] = "ah6.1d5.3ALhb",
 				["rank"] = "Administrador",
-			}, -- [974]
+			}, -- [987]
+			{
+				["race"] = "NE",
+				["name"] = "Sargorath",
+				["officerNote"] = "",
+				["class"] = "Druida",
+				["publicNote"] = "ah6.1d5.3ALhb",
+				["rank"] = "Administrador",
+			}, -- [988]
 			{
 				["race"] = "HU",
 				["name"] = "Voidhammer",
@@ -7097,7 +7185,7 @@ RaidDominionDB = {
 				["class"] = "Paladín",
 				["publicNote"] = "ad6.1tlen",
 				["rank"] = "Administrador",
-			}, -- [975]
+			}, -- [989]
 			{
 				["race"] = "HU",
 				["name"] = "Vorthrak",
@@ -7105,7 +7193,7 @@ RaidDominionDB = {
 				["class"] = "Guerrero",
 				["publicNote"] = "ad6.0t5.4ENBS ",
 				["rank"] = "Administrador",
-			}, -- [976]
+			}, -- [990]
 			{
 				["race"] = "GN",
 				["name"] = "Stormgrim",
@@ -7113,250 +7201,239 @@ RaidDominionDB = {
 				["class"] = "Brujo",
 				["publicNote"] = "ad6.1tlen",
 				["rank"] = "Administrador",
-			}, -- [977]
+			}, -- [991]
 		},
 	},
-	["abilities"] = {
-		["resucitar caidos"] = 1,
-		["hervor de sangre"] = 0,
-		["imposicion de manos"] = 1,
-		["atraccion letal"] = 1,
-		["colera sagrada"] = 1,
-		["golpe de la plaga"] = 0,
-		["maestria en auras"] = 1,
-		["heroismo"] = 1,
-		["mano de sacrificio"] = 1,
-		["cadenas de hielo"] = 1,
-		["toque de sanación"] = 1,
-		["martillo de justicia"] = 1,
-		["ahuyentar el mal"] = 1,
-		["rezo de sanación"] = 1,
-		["raices enredadoras"] = 1,
-		["escudo sagrado"] = 1,
-		["muerte y descomposición"] = 1,
-		["dispersion"] = 1,
-		["desactivar trampa"] = 1,
-		["trampa de escarcha"] = 1,
-		["golpe helado"] = 1,
-		["redireccion"] = 1,
-		["ritual de refrigerio"] = 1,
-		["mano de libertad"] = 1,
-		["escudo divino"] = 0,
-		["secretos del oficio"] = 1,
-		["escudo de maná"] = 1,
-		["rejuvenecimiento"] = 1,
-		["ciclon"] = 1,
-		["penitencia"] = 1,
-		["marca del cazador"] = 1,
-		["ritual de invocacion"] = 1,
-		["crecimiento salvaje"] = 1,
+	["ui"] = {
+		["showGuildMenu"] = 1,
+		["showMechanicsMenu"] = 1,
+		["position"] = {
+			["y"] = -175.4303773003631,
+			["relativeTo"] = "UIParent",
+			["point"] = "LEFT",
+			["relativePoint"] = "LEFT",
+			["x"] = 303.8728095698265,
+		},
+		["showMainMenuOnStart"] = 1,
+	},
+	["recognition"] = {
+	},
+	["modules"] = {
+		["messageManager"] = {
+			["enabled"] = 1,
+			["channel"] = "RAID",
+			["announceEvents"] = 1,
+		},
+		["roleManager"] = {
+			["enabled"] = 1,
+			["autoPromote"] = 0,
+		},
+	},
+	["chat"] = {
+		["channel"] = "DEFAULT",
+	},
+	["roles"] = {
+		["healer 3"] = 1,
+		["healer 1"] = 1,
+		["abominacion"] = 1,
+		["tanque dual auxiliar"] = 0,
+		["healer dual auxiliar"] = 0,
+		["sangres"] = 0,
+		["healer 4"] = 1,
+		["main tank"] = 1,
+		["healer 2"] = 1,
+		["fragmentador"] = 1,
+		["off tank"] = 1,
+		["healer 5"] = 1,
 	},
 	["Core"] = {
 		{
-			["schedule"] = "Jueves 18:00",
+			["schedule"] = "Lunes 18:00",
 			["minGS"] = 5800,
 			["name"] = "ICC10H abas",
 			["members"] = {
 				{
-					["specAbbr"] = "Afl",
-					["role"] = "Tank",
-					["name"] = "Stormgrim",
-					["class"] = "WARLOCK",
-					["classOrderIndex"] = 8,
+					["specAbbr"] = "Ret",
+					["role"] = "nuevo",
+					["name"] = "Voidhammer",
+					["class"] = "PALADIN",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 1,
 				}, -- [1]
 				{
-					["role"] = "healer",
-					["name"] = "Estervina",
-					["class"] = "PALADIN",
+					["role"] = "Healer",
+					["name"] = "Alborack",
+					["class"] = "SHAMAN",
+					["classOrderIndex"] = 6,
 					["originalIndex"] = 2,
-					["classOrderIndex"] = 2,
 				}, -- [2]
 				{
-					["role"] = "healer",
-					["name"] = "Azwraith",
-					["class"] = "SHAMAN",
+					["role"] = "Healer",
+					["name"] = "Dbe",
+					["class"] = "PALADIN",
 					["originalIndex"] = 3,
-					["classOrderIndex"] = 6,
+					["classOrderIndex"] = 2,
 				}, -- [3]
 				{
-					["role"] = "tank",
-					["name"] = "Marleenn",
-					["class"] = "PALADIN",
+					["role"] = "Tank",
+					["name"] = "Dretro",
+					["class"] = "WARRIOR",
 					["originalIndex"] = 4,
-					["classOrderIndex"] = 2,
+					["classOrderIndex"] = 1,
 				}, -- [4]
 				{
-					["role"] = "tank",
-					["name"] = "Whiteshield",
-					["class"] = "DEATHKNIGHT",
+					["role"] = "Tank",
+					["name"] = "Azgel",
+					["class"] = "PALADIN",
 					["originalIndex"] = 5,
-					["classOrderIndex"] = 10,
+					["classOrderIndex"] = 2,
 				}, -- [5]
 				{
-					["role"] = "tank",
-					["name"] = "Sscarface",
-					["class"] = "DEATHKNIGHT",
+					["role"] = "healer",
+					["name"] = "Enfermeraxx",
+					["classOrderIndex"] = 6,
 					["originalIndex"] = 6,
-					["classOrderIndex"] = 10,
+					["class"] = "SHAMAN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [6]
 				{
-					["role"] = "tank",
-					["name"] = "Mipotasio",
-					["classOrderIndex"] = 2,
+					["role"] = "healer",
+					["name"] = "Nasci",
+					["classOrderIndex"] = 9,
 					["originalIndex"] = 7,
-					["class"] = "PALADIN",
+					["class"] = "DRUID",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [7]
 				{
-					["role"] = "healer",
-					["name"] = "Falsaalarma",
-					["classOrderIndex"] = 6,
+					["role"] = "tank",
+					["name"] = "Snakman",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 8,
-					["class"] = "SHAMAN",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [8]
 				{
-					["role"] = "healer",
-					["name"] = "Killerfrog",
-					["classOrderIndex"] = 5,
+					["role"] = "Tank",
+					["name"] = "Jhesmy",
+					["class"] = "DEATHKNIGHT",
 					["originalIndex"] = 9,
-					["class"] = "PRIEST",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
+					["classOrderIndex"] = 10,
 				}, -- [9]
 				{
-					["role"] = "tank",
-					["name"] = "Kempach",
-					["classOrderIndex"] = 10,
+					["role"] = "nuevo",
+					["name"] = "Hermiion",
+					["classOrderIndex"] = 8,
 					["originalIndex"] = 10,
-					["class"] = "DEATHKNIGHT",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [10]
 				{
 					["role"] = "healer",
-					["name"] = "Senyas",
-					["classOrderIndex"] = 5,
-					["originalIndex"] = 11,
-					["class"] = "PRIEST",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [11]
-				{
-					["role"] = "healer",
-					["name"] = "Naskee",
+					["name"] = "Falsaalarma",
 					["classOrderIndex"] = 6,
 					["originalIndex"] = 12,
 					["class"] = "SHAMAN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
+				}, -- [11]
+				{
+					["role"] = "tank",
+					["name"] = "Altek",
+					["classOrderIndex"] = 1,
+					["originalIndex"] = 13,
+					["class"] = "WARRIOR",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [12]
 				{
-					["role"] = "nuevo",
-					["name"] = "Sargorath",
-					["classOrderIndex"] = 9,
-					["originalIndex"] = 15,
-					["class"] = "DRUID",
+					["role"] = "tank",
+					["name"] = "Matilederhos",
+					["classOrderIndex"] = 2,
+					["originalIndex"] = 14,
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [13]
 				{
-					["role"] = "nuevo",
-					["name"] = "Tootti",
-					["isLeader"] = 0,
+					["role"] = "healer",
+					["name"] = "Retroxchill",
+					["classOrderIndex"] = 5,
+					["originalIndex"] = 15,
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
-					["class"] = "WARLOCK",
-					["originalIndex"] = 16,
-					["classOrderIndex"] = 8,
+					["isLeader"] = 0,
 				}, -- [14]
 				{
-					["role"] = "tank",
-					["name"] = "Emilyst",
-					["class"] = "DEATHKNIGHT",
-					["isLeader"] = 0,
+					["role"] = "nuevo",
+					["name"] = "Kumasaurio",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [15]
 				{
 					["role"] = "nuevo",
-					["name"] = "Driadg",
-					["class"] = "WARLOCK",
+					["name"] = "Rattsel",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [16]
 				{
 					["role"] = "nuevo",
-					["name"] = "Nasci",
-					["class"] = "DRUID",
+					["name"] = "Tootti",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [17]
 				{
 					["role"] = "nuevo",
-					["name"] = "Tenicer",
-					["class"] = "ROGUE",
+					["name"] = "Scime",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [18]
-				{
-					["role"] = "nuevo",
-					["name"] = "Vacelinas",
-					["class"] = "PRIEST",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [19]
-				{
-					["role"] = "nuevo",
-					["name"] = "Zanathosa",
-					["class"] = "PALADIN",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [20]
-				{
-					["role"] = "nuevo",
-					["name"] = "Ravenguard",
-					["class"] = "ROGUE",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [21]
 			},
 			["withNote"] = 0,
 		}, -- [1]
 		{
-			["schedule"] = "Jueves 19:30",
+			["schedule"] = "Lunes 19:30",
 			["minGS"] = 5000,
 			["name"] = "ICC25N",
 			["members"] = {
 				{
-					["role"] = "healer",
-					["name"] = "Radamantixss",
-					["class"] = "PRIEST",
+					["specAbbr"] = "Ret",
+					["role"] = "nuevo",
+					["name"] = "Voidhammer",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+					["class"] = "PALADIN",
 					["originalIndex"] = 1,
-					["classOrderIndex"] = 5,
+					["classOrderIndex"] = 2,
 				}, -- [1]
 				{
-					["role"] = "healer",
-					["name"] = "Leonardox",
-					["isLeader"] = 0,
-					["isSanctioned"] = 0,
-					["class"] = "PALADIN",
+					["role"] = "nuevo",
+					["name"] = "Hermiion",
+					["classOrderIndex"] = 8,
 					["originalIndex"] = 2,
-					["classOrderIndex"] = 2,
+					["class"] = "WARLOCK",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [2]
 				{
-					["role"] = "tank",
-					["name"] = "Sscarface",
-					["isLeader"] = 0,
-					["isSanctioned"] = 0,
-					["class"] = "DEATHKNIGHT",
+					["role"] = "nuevo",
+					["name"] = "Hombrera",
+					["classOrderIndex"] = 3,
 					["originalIndex"] = 3,
-					["classOrderIndex"] = 10,
+					["class"] = "HUNTER",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [3]
 				{
 					["role"] = "nuevo",
-					["name"] = "Sargorath",
+					["name"] = "Motekul",
 					["classOrderIndex"] = 9,
 					["originalIndex"] = 4,
 					["class"] = "DRUID",
@@ -7365,21 +7442,21 @@ RaidDominionDB = {
 				}, -- [4]
 				{
 					["role"] = "nuevo",
-					["name"] = "Shaolinex",
-					["classOrderIndex"] = 2,
+					["name"] = "Pulquee",
+					["classOrderIndex"] = 3,
 					["originalIndex"] = 5,
-					["class"] = "PALADIN",
-					["isLeader"] = 0,
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [5]
 				{
-					["role"] = "nuevo",
-					["name"] = "Tootti",
-					["classOrderIndex"] = 8,
+					["role"] = "rango",
+					["name"] = "Nanitas",
+					["classOrderIndex"] = 5,
 					["originalIndex"] = 6,
-					["class"] = "WARLOCK",
-					["isLeader"] = 0,
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [6]
 				{
 					["role"] = "nuevo",
@@ -7387,175 +7464,183 @@ RaidDominionDB = {
 					["classOrderIndex"] = 4,
 					["originalIndex"] = 7,
 					["class"] = "ROGUE",
-					["isLeader"] = 0,
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [7]
 				{
 					["role"] = "nuevo",
-					["name"] = "Estharos",
-					["classOrderIndex"] = 3,
+					["name"] = "Ritenkult",
+					["classOrderIndex"] = 7,
 					["originalIndex"] = 8,
-					["class"] = "HUNTER",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [8]
 				{
 					["role"] = "nuevo",
-					["name"] = "Driadg",
-					["classOrderIndex"] = 8,
+					["name"] = "Abramwow",
+					["classOrderIndex"] = 7,
 					["originalIndex"] = 9,
-					["class"] = "WARLOCK",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [9]
 				{
 					["role"] = "nuevo",
-					["name"] = "Wapoll",
-					["classOrderIndex"] = 5,
+					["name"] = "Kumasaurio",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 10,
-					["class"] = "PRIEST",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [10]
 				{
-					["role"] = "healer",
-					["name"] = "Akleina",
-					["classOrderIndex"] = 6,
+					["role"] = "nuevo",
+					["name"] = "Rattsel",
+					["classOrderIndex"] = 3,
 					["originalIndex"] = 11,
-					["class"] = "SHAMAN",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [11]
 				{
-					["role"] = "healer",
-					["name"] = "Nasci",
-					["classOrderIndex"] = 9,
+					["role"] = "nuevo",
+					["name"] = "Romeodk",
+					["classOrderIndex"] = 10,
 					["originalIndex"] = 12,
-					["class"] = "DRUID",
+					["class"] = "DEATHKNIGHT",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [12]
 				{
 					["role"] = "nuevo",
-					["name"] = "Neymare",
-					["classOrderIndex"] = 1,
+					["name"] = "Tootti",
+					["classOrderIndex"] = 8,
 					["originalIndex"] = 13,
-					["class"] = "WARRIOR",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [13]
 				{
-					["role"] = "melee",
-					["name"] = "Rojiriin",
-					["classOrderIndex"] = 4,
+					["role"] = "healer",
+					["name"] = "Tuyuti",
+					["classOrderIndex"] = 6,
 					["originalIndex"] = 14,
-					["class"] = "ROGUE",
+					["class"] = "SHAMAN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [14]
 				{
-					["role"] = "melee",
-					["name"] = "Tenicer",
-					["classOrderIndex"] = 4,
+					["role"] = "nuevo",
+					["name"] = "Yulima",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 15,
-					["class"] = "ROGUE",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [15]
 				{
-					["role"] = "rango",
-					["name"] = "Vacelinas",
-					["classOrderIndex"] = 5,
+					["role"] = "healer",
+					["name"] = "Akleina",
+					["classOrderIndex"] = 6,
 					["originalIndex"] = 16,
-					["class"] = "PRIEST",
+					["class"] = "SHAMAN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [16]
 				{
-					["role"] = "nuevo",
-					["name"] = "Wusheng",
-					["classOrderIndex"] = 10,
+					["role"] = "rango",
+					["name"] = "Scime",
+					["classOrderIndex"] = 7,
 					["originalIndex"] = 17,
-					["class"] = "DEATHKNIGHT",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [17]
 				{
-					["role"] = "nuevo",
-					["name"] = "Zanathosa",
-					["classOrderIndex"] = 2,
+					["role"] = "melee",
+					["name"] = "Stormgrim",
+					["classOrderIndex"] = 8,
 					["originalIndex"] = 18,
-					["class"] = "PALADIN",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [18]
 				{
-					["role"] = "melee",
-					["name"] = "Ravenguard",
-					["classOrderIndex"] = 4,
+					["role"] = "healer",
+					["name"] = "Radamantixss",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 19,
-					["class"] = "ROGUE",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [19]
 				{
-					["role"] = "nuevo",
-					["name"] = "Gunhiild",
-					["class"] = "WARRIOR",
-					["classOrderIndex"] = 1,
+					["role"] = "healer",
+					["name"] = "Leonardox",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 20,
+					["class"] = "",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [20]
 				{
-					["role"] = "nuevo",
-					["name"] = "Tiomilo",
-					["class"] = "WARRIOR",
-					["classOrderIndex"] = 1,
+					["role"] = "tank",
+					["name"] = "Sscarface",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 21,
+					["class"] = "",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [21]
-				{
-					["role"] = "healer",
-					["name"] = "Blamkito",
-					["class"] = "PRIEST",
-					["classOrderIndex"] = 5,
-					["originalIndex"] = 22,
-				}, -- [22]
-				{
-					["role"] = "nuevo",
-					["name"] = "Hunterdeemoo",
-					["class"] = "HUNTER",
-					["classOrderIndex"] = 3,
-					["originalIndex"] = 23,
-				}, -- [23]
-				{
-					["role"] = "melee",
-					["name"] = "Voidhammer",
-					["classOrderIndex"] = 2,
-					["originalIndex"] = 24,
-					["class"] = "PALADIN",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [24]
-				{
-					["role"] = "melee",
-					["name"] = "Stormgrim",
-					["classOrderIndex"] = 8,
-					["originalIndex"] = 25,
-					["class"] = "WARLOCK",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [25]
 				{
 					["role"] = "melee",
 					["name"] = "Howlshade",
 					["classOrderIndex"] = 6,
-					["originalIndex"] = 26,
+					["originalIndex"] = 22,
 					["class"] = "SHAMAN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [22]
+				{
+					["role"] = "tank",
+					["name"] = "Amadeusprime",
+					["classOrderIndex"] = 999,
+					["originalIndex"] = 23,
+					["class"] = "",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [23]
+				{
+					["role"] = "tank",
+					["name"] = "Arastel",
+					["classOrderIndex"] = 999,
+					["originalIndex"] = 24,
+					["class"] = "",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [24]
+				{
+					["role"] = "healer",
+					["name"] = "Darknesi",
+					["classOrderIndex"] = 999,
+					["originalIndex"] = 25,
+					["class"] = "",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [25]
+				{
+					["role"] = "healer",
+					["name"] = "Dimeroo",
+					["classOrderIndex"] = 999,
+					["originalIndex"] = 26,
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [26]
 				{
-					["role"] = "tank",
-					["name"] = "Amadeusprime",
+					["role"] = "healer",
+					["name"] = "Valeriiaa",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 27,
 					["class"] = "",
@@ -7563,8 +7648,8 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [27]
 				{
-					["role"] = "tank",
-					["name"] = "Arastel",
+					["role"] = "healer",
+					["name"] = "Hitadory",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 28,
 					["class"] = "",
@@ -7573,7 +7658,7 @@ RaidDominionDB = {
 				}, -- [28]
 				{
 					["role"] = "healer",
-					["name"] = "Darknesi",
+					["name"] = "Daimarys",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 29,
 					["class"] = "",
@@ -7582,7 +7667,7 @@ RaidDominionDB = {
 				}, -- [29]
 				{
 					["role"] = "healer",
-					["name"] = "Dimeroo",
+					["name"] = "Dariuns",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 30,
 					["class"] = "",
@@ -7591,7 +7676,7 @@ RaidDominionDB = {
 				}, -- [30]
 				{
 					["role"] = "healer",
-					["name"] = "Valeriiaa",
+					["name"] = "Matonjr",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 31,
 					["class"] = "",
@@ -7599,26 +7684,26 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [31]
 				{
-					["role"] = "healer",
-					["name"] = "Hitadory",
-					["classOrderIndex"] = 999,
+					["role"] = "melee",
+					["name"] = "Tenicer",
+					["classOrderIndex"] = 4,
 					["originalIndex"] = 32,
-					["class"] = "",
+					["class"] = "ROGUE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [32]
 				{
-					["role"] = "healer",
-					["name"] = "Daimarys",
-					["classOrderIndex"] = 999,
+					["role"] = "melee",
+					["name"] = "Falinruch",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 33,
-					["class"] = "",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [33]
 				{
-					["role"] = "healer",
-					["name"] = "Dariuns",
+					["role"] = "melee",
+					["name"] = "Jorjetele",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 34,
 					["class"] = "",
@@ -7627,7 +7712,7 @@ RaidDominionDB = {
 				}, -- [34]
 				{
 					["role"] = "healer",
-					["name"] = "Matonjr",
+					["name"] = "Lizren",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 35,
 					["class"] = "",
@@ -7635,35 +7720,35 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [35]
 				{
-					["role"] = "melee",
-					["name"] = "Falinruch",
-					["classOrderIndex"] = 1,
+					["role"] = "tank",
+					["name"] = "Redsuns",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 36,
-					["class"] = "WARRIOR",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [36]
 				{
-					["role"] = "melee",
-					["name"] = "Jorjetele",
-					["classOrderIndex"] = 999,
+					["role"] = "rango",
+					["name"] = "Javden",
+					["classOrderIndex"] = 8,
 					["originalIndex"] = 37,
-					["class"] = "",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [37]
 				{
-					["role"] = "healer",
-					["name"] = "Lizren",
-					["classOrderIndex"] = 999,
+					["role"] = "melee",
+					["name"] = "Kannan",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 38,
-					["class"] = "",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [38]
 				{
-					["role"] = "tank",
-					["name"] = "Redsuns",
+					["role"] = "healer",
+					["name"] = "Tealivio",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 39,
 					["class"] = "",
@@ -7672,7 +7757,7 @@ RaidDominionDB = {
 				}, -- [39]
 				{
 					["role"] = "rango",
-					["name"] = "Javden",
+					["name"] = "Pierpa",
 					["classOrderIndex"] = 8,
 					["originalIndex"] = 40,
 					["class"] = "WARLOCK",
@@ -7681,25 +7766,25 @@ RaidDominionDB = {
 				}, -- [40]
 				{
 					["role"] = "melee",
-					["name"] = "Kannan",
-					["classOrderIndex"] = 1,
+					["name"] = "Enzocr",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 41,
-					["class"] = "WARRIOR",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [41]
 				{
-					["role"] = "rango",
-					["name"] = "Nanitas",
-					["classOrderIndex"] = 5,
+					["role"] = "healer",
+					["name"] = "Cuistone",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 42,
-					["class"] = "PRIEST",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [42]
 				{
-					["role"] = "healer",
-					["name"] = "Tealivio",
+					["role"] = "tank",
+					["name"] = "Bordalas",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 43,
 					["class"] = "",
@@ -7708,16 +7793,16 @@ RaidDominionDB = {
 				}, -- [43]
 				{
 					["role"] = "rango",
-					["name"] = "Pierpa",
-					["classOrderIndex"] = 8,
+					["name"] = "Quemadito",
+					["classOrderIndex"] = 3,
 					["originalIndex"] = 44,
-					["class"] = "WARLOCK",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [44]
 				{
 					["role"] = "melee",
-					["name"] = "Enzocr",
+					["name"] = "Geedeon",
 					["classOrderIndex"] = 2,
 					["originalIndex"] = 45,
 					["class"] = "PALADIN",
@@ -7725,8 +7810,8 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [45]
 				{
-					["role"] = "healer",
-					["name"] = "Cuistone",
+					["role"] = "melee",
+					["name"] = "Dearn",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 46,
 					["class"] = "",
@@ -7734,8 +7819,8 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [46]
 				{
-					["role"] = "tank",
-					["name"] = "Bordalas",
+					["role"] = "healer",
+					["name"] = "Dakilia",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 47,
 					["class"] = "",
@@ -7743,26 +7828,26 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [47]
 				{
-					["role"] = "rango",
-					["name"] = "Quemadito",
-					["classOrderIndex"] = 3,
+					["role"] = "melee",
+					["name"] = "Naxxa",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 48,
-					["class"] = "HUNTER",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [48]
 				{
 					["role"] = "melee",
-					["name"] = "Geedeon",
-					["classOrderIndex"] = 2,
+					["name"] = "Destruidoor",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 49,
-					["class"] = "PALADIN",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [49]
 				{
 					["role"] = "melee",
-					["name"] = "Dearn",
+					["name"] = "Sachimy",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 50,
 					["class"] = "",
@@ -7770,8 +7855,8 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [50]
 				{
-					["role"] = "healer",
-					["name"] = "Dakilia",
+					["role"] = "rango",
+					["name"] = "Estiblet",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 51,
 					["class"] = "",
@@ -7780,16 +7865,16 @@ RaidDominionDB = {
 				}, -- [51]
 				{
 					["role"] = "melee",
-					["name"] = "Naxxa",
-					["classOrderIndex"] = 999,
+					["name"] = "Creeddop",
+					["classOrderIndex"] = 10,
 					["originalIndex"] = 52,
-					["class"] = "",
+					["class"] = "DEATHKNIGHT",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [52]
 				{
 					["role"] = "melee",
-					["name"] = "Destruidoor",
+					["name"] = "Adventuretit",
 					["classOrderIndex"] = 1,
 					["originalIndex"] = 53,
 					["class"] = "WARRIOR",
@@ -7798,7 +7883,7 @@ RaidDominionDB = {
 				}, -- [53]
 				{
 					["role"] = "melee",
-					["name"] = "Sachimy",
+					["name"] = "Dytor",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 54,
 					["class"] = "",
@@ -7806,8 +7891,8 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [54]
 				{
-					["role"] = "rango",
-					["name"] = "Estiblet",
+					["role"] = "melee",
+					["name"] = "Karken",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 55,
 					["class"] = "",
@@ -7816,25 +7901,25 @@ RaidDominionDB = {
 				}, -- [55]
 				{
 					["role"] = "melee",
-					["name"] = "Creeddop",
-					["classOrderIndex"] = 10,
+					["name"] = "Warbunker",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 56,
-					["class"] = "DEATHKNIGHT",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [56]
 				{
-					["role"] = "melee",
-					["name"] = "Adventuretit",
-					["classOrderIndex"] = 1,
+					["role"] = "tank",
+					["name"] = "Roicobaye",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 57,
-					["class"] = "WARRIOR",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [57]
 				{
-					["role"] = "melee",
-					["name"] = "Dytor",
+					["role"] = "rango",
+					["name"] = "Iyawollianh",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 58,
 					["class"] = "",
@@ -7842,8 +7927,8 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [58]
 				{
-					["role"] = "melee",
-					["name"] = "Karken",
+					["role"] = "rango",
+					["name"] = "Ooxtalanxoo",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 59,
 					["class"] = "",
@@ -7851,17 +7936,17 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [59]
 				{
-					["role"] = "melee",
-					["name"] = "Warbunker",
-					["classOrderIndex"] = 1,
+					["role"] = "healer",
+					["name"] = "Vitiy",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 60,
-					["class"] = "WARRIOR",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [60]
 				{
-					["role"] = "tank",
-					["name"] = "Roicobaye",
+					["role"] = "melee",
+					["name"] = "Khuris",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 61,
 					["class"] = "",
@@ -7869,26 +7954,26 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [61]
 				{
-					["role"] = "rango",
-					["name"] = "Iyawollianh",
-					["classOrderIndex"] = 999,
+					["role"] = "melee",
+					["name"] = "Zitzit",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 62,
-					["class"] = "",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [62]
 				{
-					["role"] = "rango",
-					["name"] = "Ooxtalanxoo",
-					["classOrderIndex"] = 999,
+					["role"] = "healer",
+					["name"] = "Mamarcela",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 63,
-					["class"] = "",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [63]
 				{
-					["role"] = "healer",
-					["name"] = "Vitiy",
+					["role"] = "melee",
+					["name"] = "Bonesan",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 64,
 					["class"] = "",
@@ -7896,143 +7981,143 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [64]
 				{
-					["role"] = "melee",
-					["name"] = "Khuris",
-					["classOrderIndex"] = 999,
+					["role"] = "rango",
+					["name"] = "Ahinohaa",
+					["classOrderIndex"] = 7,
 					["originalIndex"] = 65,
-					["class"] = "",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [65]
 				{
 					["role"] = "melee",
-					["name"] = "Zitzit",
-					["classOrderIndex"] = 1,
+					["name"] = "Wonderpala",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 66,
-					["class"] = "WARRIOR",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [66]
 				{
-					["role"] = "healer",
-					["name"] = "Mamarcela",
-					["classOrderIndex"] = 2,
+					["role"] = "rango",
+					["name"] = "Ogmago",
+					["classOrderIndex"] = 7,
 					["originalIndex"] = 67,
-					["class"] = "PALADIN",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [67]
 				{
-					["role"] = "melee",
-					["name"] = "Bonesan",
-					["classOrderIndex"] = 999,
+					["role"] = "tank",
+					["name"] = "Yamalube",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 68,
-					["class"] = "",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [68]
 				{
-					["role"] = "rango",
-					["name"] = "Ahinohaa",
-					["classOrderIndex"] = 7,
+					["role"] = "tank",
+					["name"] = "Kryssthall",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 69,
-					["class"] = "MAGE",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [69]
 				{
 					["role"] = "melee",
-					["name"] = "Wonderpala",
-					["classOrderIndex"] = 2,
+					["name"] = "Bosakiller",
+					["classOrderIndex"] = 4,
 					["originalIndex"] = 70,
-					["class"] = "PALADIN",
+					["class"] = "ROGUE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [70]
 				{
-					["role"] = "rango",
-					["name"] = "Ogmago",
-					["classOrderIndex"] = 7,
+					["role"] = "melee",
+					["name"] = "Theshags",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 71,
-					["class"] = "MAGE",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [71]
 				{
-					["role"] = "tank",
-					["name"] = "Yamalube",
-					["classOrderIndex"] = 1,
+					["role"] = "rango",
+					["name"] = "Sargorath",
+					["classOrderIndex"] = 9,
 					["originalIndex"] = 72,
-					["class"] = "WARRIOR",
+					["class"] = "DRUID",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [72]
 				{
-					["role"] = "tank",
-					["name"] = "Kryssthall",
-					["classOrderIndex"] = 999,
+					["role"] = "healer",
+					["name"] = "Nasci",
+					["classOrderIndex"] = 9,
 					["originalIndex"] = 73,
-					["class"] = "",
+					["class"] = "DRUID",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [73]
 				{
-					["role"] = "melee",
-					["name"] = "Bosakiller",
-					["classOrderIndex"] = 4,
+					["role"] = "healer",
+					["name"] = "Blamkito",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 74,
-					["class"] = "ROGUE",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [74]
 				{
-					["role"] = "melee",
-					["name"] = "Theshags",
-					["classOrderIndex"] = 999,
+					["role"] = "tank",
+					["name"] = "Kispocho",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 75,
-					["class"] = "",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [75]
 				{
 					["role"] = "tank",
-					["name"] = "Kispocho",
-					["classOrderIndex"] = 2,
+					["name"] = "Nathassha",
+					["classOrderIndex"] = 10,
 					["originalIndex"] = 76,
-					["class"] = "PALADIN",
+					["class"] = "DEATHKNIGHT",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [76]
 				{
-					["role"] = "rango",
-					["name"] = "Yasvek",
-					["classOrderIndex"] = 3,
+					["role"] = "healer",
+					["name"] = "Meer",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 77,
-					["class"] = "HUNTER",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [77]
 				{
-					["role"] = "tank",
-					["name"] = "Nathassha",
-					["classOrderIndex"] = 10,
+					["role"] = "healer",
+					["name"] = "Lavie",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 78,
-					["class"] = "DEATHKNIGHT",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [78]
 				{
-					["role"] = "rango",
-					["name"] = "Unconvivemio",
-					["classOrderIndex"] = 999,
+					["role"] = "healer",
+					["name"] = "Tharlias",
+					["classOrderIndex"] = 5,
 					["originalIndex"] = 79,
-					["class"] = "",
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [79]
 				{
-					["role"] = "rango",
-					["name"] = "Charmanderr",
+					["role"] = "tank",
+					["name"] = "Hannsi",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 80,
 					["class"] = "",
@@ -8041,16 +8126,16 @@ RaidDominionDB = {
 				}, -- [80]
 				{
 					["role"] = "healer",
-					["name"] = "Meer",
-					["classOrderIndex"] = 999,
+					["name"] = "Icura",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 81,
-					["class"] = "",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [81]
 				{
-					["role"] = "melee",
-					["name"] = "Habuser",
+					["role"] = "healer",
+					["name"] = "Alborack",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 82,
 					["class"] = "",
@@ -8059,34 +8144,34 @@ RaidDominionDB = {
 				}, -- [82]
 				{
 					["role"] = "healer",
-					["name"] = "Lavie",
-					["classOrderIndex"] = 999,
+					["name"] = "Sezane",
+					["classOrderIndex"] = 6,
 					["originalIndex"] = 83,
-					["class"] = "",
+					["class"] = "SHAMAN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [83]
 				{
-					["role"] = "rango",
-					["name"] = "Rumbler",
-					["classOrderIndex"] = 8,
+					["role"] = "healer",
+					["name"] = "Adiana",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 84,
-					["class"] = "WARLOCK",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [84]
 				{
-					["role"] = "melee",
-					["name"] = "Goldennuts",
-					["classOrderIndex"] = 1,
+					["role"] = "healer",
+					["name"] = "Daoud",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 85,
-					["class"] = "WARRIOR",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [85]
 				{
-					["role"] = "melee",
-					["name"] = "Durotedark",
+					["role"] = "healer",
+					["name"] = "Lorynel",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 86,
 					["class"] = "",
@@ -8094,26 +8179,26 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [86]
 				{
-					["role"] = "healer",
-					["name"] = "Tharlias",
-					["classOrderIndex"] = 5,
+					["role"] = "tank",
+					["name"] = "Raelzah",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 87,
-					["class"] = "PRIEST",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [87]
 				{
-					["role"] = "rango",
-					["name"] = "Vulpys",
-					["classOrderIndex"] = 999,
+					["role"] = "tank",
+					["name"] = "Shinani",
+					["classOrderIndex"] = 10,
 					["originalIndex"] = 88,
-					["class"] = "",
+					["class"] = "DEATHKNIGHT",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [88]
 				{
-					["role"] = "rango",
-					["name"] = "Neferopitou",
+					["role"] = "healer",
+					["name"] = "Zenitth",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 89,
 					["class"] = "",
@@ -8122,7 +8207,7 @@ RaidDominionDB = {
 				}, -- [89]
 				{
 					["role"] = "tank",
-					["name"] = "Hannsi",
+					["name"] = "Desenchanted",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 90,
 					["class"] = "",
@@ -8130,17 +8215,17 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [90]
 				{
-					["role"] = "rango",
-					["name"] = "Scime",
-					["classOrderIndex"] = 7,
+					["role"] = "healer",
+					["name"] = "Crael",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 91,
-					["class"] = "MAGE",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [91]
 				{
-					["role"] = "melee",
-					["name"] = "Pitufinn",
+					["role"] = "healer",
+					["name"] = "Soyundios",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 92,
 					["class"] = "",
@@ -8148,35 +8233,35 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [92]
 				{
-					["role"] = "melee",
-					["name"] = "Hellzinn",
-					["classOrderIndex"] = 2,
+					["role"] = "healer",
+					["name"] = "Sclavito",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 93,
-					["class"] = "PALADIN",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [93]
 				{
-					["role"] = "rango",
-					["name"] = "Kharinegro",
-					["classOrderIndex"] = 999,
+					["role"] = "tank",
+					["name"] = "Yojaness",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 94,
-					["class"] = "",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [94]
 				{
 					["role"] = "healer",
-					["name"] = "Icura",
-					["classOrderIndex"] = 2,
+					["name"] = "Mochiix",
+					["classOrderIndex"] = 6,
 					["originalIndex"] = 95,
-					["class"] = "PALADIN",
+					["class"] = "SHAMAN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [95]
 				{
-					["role"] = "healer",
-					["name"] = "Alborack",
+					["role"] = "tank",
+					["name"] = "Dukissjs",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 96,
 					["class"] = "",
@@ -8185,25 +8270,25 @@ RaidDominionDB = {
 				}, -- [96]
 				{
 					["role"] = "rango",
-					["name"] = "Redaleister",
-					["classOrderIndex"] = 8,
+					["name"] = "Yasvek",
+					["classOrderIndex"] = 3,
 					["originalIndex"] = 97,
-					["class"] = "WARLOCK",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [97]
 				{
-					["role"] = "melee",
-					["name"] = "Chubbminy",
-					["classOrderIndex"] = 1,
+					["role"] = "rango",
+					["name"] = "Vacelinas",
+					["classOrderIndex"] = 5,
 					["originalIndex"] = 98,
-					["class"] = "WARRIOR",
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [98]
 				{
 					["role"] = "rango",
-					["name"] = "Choozen",
+					["name"] = "Unconvivemio",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 99,
 					["class"] = "",
@@ -8212,43 +8297,43 @@ RaidDominionDB = {
 				}, -- [99]
 				{
 					["role"] = "rango",
-					["name"] = "Xelino",
-					["classOrderIndex"] = 9,
+					["name"] = "Charmanderr",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 100,
-					["class"] = "DRUID",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [100]
 				{
-					["role"] = "healer",
-					["name"] = "Sezane",
-					["classOrderIndex"] = 6,
+					["role"] = "melee",
+					["name"] = "Habuser",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 101,
-					["class"] = "SHAMAN",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [101]
 				{
-					["role"] = "healer",
-					["name"] = "Adiana",
-					["classOrderIndex"] = 999,
+					["role"] = "rango",
+					["name"] = "Rumbler",
+					["classOrderIndex"] = 8,
 					["originalIndex"] = 102,
-					["class"] = "",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [102]
 				{
-					["role"] = "healer",
-					["name"] = "Daoud",
-					["classOrderIndex"] = 2,
+					["role"] = "melee",
+					["name"] = "Goldennuts",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 103,
-					["class"] = "PALADIN",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [103]
 				{
-					["role"] = "healer",
-					["name"] = "Lorynel",
+					["role"] = "melee",
+					["name"] = "Durotedark",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 104,
 					["class"] = "",
@@ -8256,8 +8341,8 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [104]
 				{
-					["role"] = "tank",
-					["name"] = "Raelzah",
+					["role"] = "rango",
+					["name"] = "Vulpys",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 105,
 					["class"] = "",
@@ -8265,62 +8350,62 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [105]
 				{
-					["role"] = "tank",
-					["name"] = "Shinani",
-					["classOrderIndex"] = 10,
+					["role"] = "rango",
+					["name"] = "Neferopitou",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 106,
-					["class"] = "DEATHKNIGHT",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [106]
 				{
-					["role"] = "healer",
-					["name"] = "Zenitth",
-					["classOrderIndex"] = 999,
+					["role"] = "melee",
+					["name"] = "Pitufinn",
+					["classOrderIndex"] = 4,
 					["originalIndex"] = 107,
-					["class"] = "",
+					["class"] = "ROGUE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [107]
 				{
 					["role"] = "melee",
-					["name"] = "Vorthrak",
-					["classOrderIndex"] = 1,
+					["name"] = "Hellzinn",
+					["classOrderIndex"] = 2,
 					["originalIndex"] = 108,
-					["class"] = "WARRIOR",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [108]
 				{
-					["role"] = "tank",
-					["name"] = "Desenchanted",
-					["classOrderIndex"] = 10,
+					["role"] = "rango",
+					["name"] = "Kharinegro",
+					["classOrderIndex"] = 999,
 					["originalIndex"] = 109,
-					["class"] = "DEATHKNIGHT",
+					["class"] = "",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [109]
 				{
-					["role"] = "healer",
-					["name"] = "Crael",
-					["classOrderIndex"] = 2,
+					["role"] = "rango",
+					["name"] = "Redaleister",
+					["classOrderIndex"] = 8,
 					["originalIndex"] = 110,
-					["class"] = "PALADIN",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [110]
 				{
-					["role"] = "healer",
-					["name"] = "Soyundios",
-					["classOrderIndex"] = 999,
+					["role"] = "melee",
+					["name"] = "Chubbminy",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 111,
-					["class"] = "",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [111]
 				{
-					["role"] = "healer",
-					["name"] = "Sclavito",
+					["role"] = "rango",
+					["name"] = "Choozen",
 					["classOrderIndex"] = 999,
 					["originalIndex"] = 112,
 					["class"] = "",
@@ -8328,212 +8413,328 @@ RaidDominionDB = {
 					["isLeader"] = 0,
 				}, -- [112]
 				{
-					["role"] = "tank",
-					["name"] = "Yojaness",
-					["classOrderIndex"] = 2,
+					["role"] = "rango",
+					["name"] = "Xelino",
+					["classOrderIndex"] = 9,
 					["originalIndex"] = 113,
-					["class"] = "PALADIN",
+					["class"] = "DRUID",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [113]
 				{
-					["role"] = "healer",
-					["name"] = "Mochiix",
-					["classOrderIndex"] = 6,
+					["role"] = "melee",
+					["name"] = "Ravenguard",
+					["classOrderIndex"] = 4,
 					["originalIndex"] = 114,
-					["class"] = "SHAMAN",
+					["class"] = "ROGUE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [114]
 				{
-					["role"] = "nuevo",
-					["name"] = "Buhonerokt",
-					["class"] = "DRUID",
-					["classOrderIndex"] = 9,
+					["role"] = "melee",
+					["name"] = "Vorthrak",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 115,
+					["class"] = "WARRIOR",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [115]
 				{
-					["role"] = "nuevo",
-					["name"] = "Eltufao",
-					["class"] = "MAGE",
-					["classOrderIndex"] = 7,
+					["role"] = "melee",
+					["name"] = "Rojiriin",
+					["classOrderIndex"] = 4,
 					["originalIndex"] = 116,
+					["class"] = "ROGUE",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [116]
 				{
 					["role"] = "nuevo",
-					["name"] = "Jesikaa",
-					["class"] = "HUNTER",
-					["classOrderIndex"] = 3,
+					["name"] = "Puroveneno",
+					["class"] = "ROGUE",
+					["classOrderIndex"] = 4,
 					["originalIndex"] = 117,
 				}, -- [117]
 				{
 					["role"] = "nuevo",
-					["name"] = "Kenatzu",
-					["class"] = "ROGUE",
-					["classOrderIndex"] = 4,
+					["name"] = "Chudux",
+					["class"] = "DEATHKNIGHT",
+					["classOrderIndex"] = 10,
 					["originalIndex"] = 118,
 				}, -- [118]
 				{
 					["role"] = "nuevo",
-					["name"] = "Conejocs",
-					["class"] = "MAGE",
-					["classOrderIndex"] = 7,
+					["name"] = "Dkasitaxc",
+					["class"] = "DEATHKNIGHT",
+					["classOrderIndex"] = 10,
 					["originalIndex"] = 119,
 				}, -- [119]
 				{
 					["role"] = "nuevo",
-					["name"] = "Diniv",
-					["class"] = "ROGUE",
-					["classOrderIndex"] = 4,
+					["name"] = "Javierlok",
+					["class"] = "WARRIOR",
+					["classOrderIndex"] = 1,
 					["originalIndex"] = 120,
 				}, -- [120]
 				{
 					["role"] = "nuevo",
-					["name"] = "Shadem",
-					["class"] = "WARRIOR",
-					["classOrderIndex"] = 1,
+					["name"] = "Drektarr",
+					["class"] = "PRIEST",
+					["classOrderIndex"] = 5,
 					["originalIndex"] = 121,
 				}, -- [121]
 				{
-					["role"] = "tank",
-					["name"] = "Dukissjs",
-					["classOrderIndex"] = 10,
+					["role"] = "otro",
+					["name"] = "Janhas",
+					["class"] = "DRUID",
+					["classOrderIndex"] = 9,
 					["originalIndex"] = 122,
+				}, -- [122]
+				{
+					["role"] = "tank",
+					["name"] = "Guiito",
+					["class"] = "PALADIN",
+					["classOrderIndex"] = 2,
+					["originalIndex"] = 123,
+				}, -- [123]
+				{
+					["role"] = "nuevo",
+					["name"] = "Reikoski",
+					["class"] = "HUNTER",
+					["classOrderIndex"] = 3,
+					["originalIndex"] = 124,
+				}, -- [124]
+				{
+					["role"] = "nuevo",
+					["name"] = "Khakishi",
+					["class"] = "PALADIN",
+					["classOrderIndex"] = 2,
+					["originalIndex"] = 125,
+				}, -- [125]
+				{
+					["role"] = "nuevo",
+					["name"] = "Tourin",
+					["class"] = "WARRIOR",
+					["classOrderIndex"] = 1,
+					["originalIndex"] = 126,
+				}, -- [126]
+				{
+					["role"] = "tank",
+					["name"] = "Eteriaz",
+					["class"] = "DEATHKNIGHT",
+					["classOrderIndex"] = 10,
+					["originalIndex"] = 127,
+				}, -- [127]
+				{
+					["role"] = "nuevo",
+					["name"] = "Yude",
+					["class"] = "HUNTER",
+					["classOrderIndex"] = 3,
+					["originalIndex"] = 128,
+				}, -- [128]
+				{
+					["role"] = "nuevo",
+					["name"] = "Peleteriaa",
+					["class"] = "DRUID",
+					["classOrderIndex"] = 9,
+					["originalIndex"] = 129,
+				}, -- [129]
+				{
+					["role"] = "nuevo",
+					["name"] = "Condonusadoo",
+					["class"] = "DEATHKNIGHT",
+					["classOrderIndex"] = 10,
+					["originalIndex"] = 130,
+				}, -- [130]
+				{
+					["role"] = "nuevo",
+					["name"] = "Elbetia",
+					["class"] = "MAGE",
+					["classOrderIndex"] = 7,
+					["originalIndex"] = 131,
+				}, -- [131]
+				{
+					["role"] = "healer",
+					["name"] = "Pepinas",
+					["class"] = "PALADIN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [132]
+				{
+					["role"] = "healer",
+					["name"] = "Ciaren",
+					["class"] = "DRUID",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [133]
+				{
+					["role"] = "healer",
+					["name"] = "Crapter",
+					["class"] = "SHAMAN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [134]
+				{
+					["role"] = "healer",
+					["name"] = "Debonaire",
+					["class"] = "PALADIN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [135]
+				{
+					["role"] = "tank",
+					["name"] = "Bronso",
 					["class"] = "DEATHKNIGHT",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
-				}, -- [122]
+				}, -- [136]
+				{
+					["role"] = "healer",
+					["name"] = "Immanuelle",
+					["class"] = "PRIEST",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [137]
+				{
+					["role"] = "tank",
+					["name"] = "Miakalyfa",
+					["class"] = "PALADIN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [138]
 			},
 			["withNote"] = 0,
 		}, -- [2]
 		{
-			["schedule"] = "28 de Febrero de 2026",
+			["schedule"] = "28 de Febrero de 2026 - 18:00/00:00 hora server",
 			["minGS"] = 0,
 			["name"] = "Evento de Fin de Mes",
 			["members"] = {
 				{
 					["role"] = "nuevo",
-					["name"] = "Sargorath",
-					["class"] = "DRUID",
+					["name"] = "Voidhammer",
+					["classOrderIndex"] = 2,
+					["originalIndex"] = 1,
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [1]
 				{
 					["role"] = "nuevo",
-					["name"] = "Capy",
-					["class"] = "PALADIN",
-					["isLeader"] = 0,
+					["name"] = "Holyname",
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [2]
 				{
 					["role"] = "nuevo",
-					["name"] = "Shaolinex",
-					["class"] = "PALADIN",
-					["isLeader"] = 0,
+					["name"] = "Samilmp",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [3]
 				{
 					["role"] = "nuevo",
-					["name"] = "Tootti",
+					["name"] = "Hermiion",
 					["class"] = "WARLOCK",
-					["isLeader"] = 0,
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [4]
 				{
 					["role"] = "nuevo",
-					["name"] = "Xhiang",
-					["class"] = "ROGUE",
-					["isLeader"] = 0,
+					["name"] = "Hombrera",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [5]
 				{
 					["role"] = "nuevo",
-					["name"] = "Bleidd",
-					["class"] = "ROGUE",
+					["name"] = "Motekul",
+					["class"] = "DRUID",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [6]
 				{
 					["role"] = "nuevo",
-					["name"] = "Calvasor",
-					["class"] = "WARRIOR",
+					["name"] = "Pulquee",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [7]
 				{
 					["role"] = "nuevo",
-					["name"] = "Estharos",
-					["class"] = "HUNTER",
+					["name"] = "Nanitas",
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [8]
 				{
 					["role"] = "nuevo",
-					["name"] = "Fhatiimah",
-					["class"] = "PALADIN",
+					["name"] = "Xhiang",
+					["class"] = "ROGUE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [9]
 				{
 					["role"] = "nuevo",
-					["name"] = "Mochiix",
-					["class"] = "SHAMAN",
+					["name"] = "Ritenkult",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [10]
 				{
 					["role"] = "nuevo",
-					["name"] = "Pumaa",
-					["class"] = "WARRIOR",
+					["name"] = "Abramwow",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [11]
 				{
 					["role"] = "nuevo",
-					["name"] = "Spartask",
-					["class"] = "PALADIN",
+					["name"] = "Janasha",
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [12]
 				{
 					["role"] = "nuevo",
-					["name"] = "Yinxz",
-					["class"] = "PALADIN",
+					["name"] = "Kumasaurio",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [13]
 				{
 					["role"] = "nuevo",
-					["name"] = "Driadg",
-					["class"] = "WARLOCK",
+					["name"] = "Rattsel",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [14]
 				{
 					["role"] = "nuevo",
-					["name"] = "Jofbirtz",
-					["class"] = "WARRIOR",
+					["name"] = "Romeodk",
+					["class"] = "DEATHKNIGHT",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [15]
 				{
 					["role"] = "nuevo",
-					["name"] = "Luzdsol",
-					["class"] = "PRIEST",
+					["name"] = "Tootti",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [16]
 				{
 					["role"] = "nuevo",
-					["name"] = "Rohm",
-					["class"] = "DEATHKNIGHT",
+					["name"] = "Tuyuti",
+					["class"] = "SHAMAN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [17]
 				{
 					["role"] = "nuevo",
-					["name"] = "Wapoll",
-					["class"] = "PRIEST",
+					["name"] = "Yulima",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [18]
@@ -8546,60 +8747,11 @@ RaidDominionDB = {
 				}, -- [19]
 				{
 					["role"] = "nuevo",
-					["name"] = "Nasci",
-					["class"] = "DRUID",
+					["name"] = "Scime",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [20]
-				{
-					["role"] = "nuevo",
-					["name"] = "Neymare",
-					["class"] = "WARRIOR",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [21]
-				{
-					["role"] = "nuevo",
-					["name"] = "Rojiriin",
-					["class"] = "ROGUE",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [22]
-				{
-					["role"] = "nuevo",
-					["name"] = "Tenicer",
-					["class"] = "ROGUE",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [23]
-				{
-					["role"] = "nuevo",
-					["name"] = "Vacelinas",
-					["class"] = "PRIEST",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [24]
-				{
-					["role"] = "nuevo",
-					["name"] = "Wusheng",
-					["class"] = "DEATHKNIGHT",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [25]
-				{
-					["role"] = "nuevo",
-					["name"] = "Zanathosa",
-					["class"] = "PALADIN",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [26]
-				{
-					["role"] = "nuevo",
-					["name"] = "Ravenguard",
-					["class"] = "ROGUE",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [27]
 			},
 			["withNote"] = 0,
 		}, -- [3]
@@ -8609,274 +8761,263 @@ RaidDominionDB = {
 			["name"] = "Temporal",
 			["members"] = {
 				{
-					["role"] = "nuevo",
-					["name"] = "Sargorath",
-					["class"] = "DRUID",
-					["isSanctioned"] = 0,
+					["role"] = "healer",
+					["name"] = "Sezane",
+					["class"] = "SHAMAN",
 					["isLeader"] = 0,
+					["isSanctioned"] = 0,
 				}, -- [1]
 				{
-					["role"] = "tank",
-					["name"] = "Chiminigagua",
-					["class"] = "DRUID",
-					["isSanctioned"] = 0,
+					["role"] = "healer",
+					["name"] = "Ahng",
+					["class"] = "PALADIN",
 					["isLeader"] = 0,
+					["isSanctioned"] = 0,
 				}, -- [2]
 				{
 					["role"] = "tank",
-					["name"] = "Papuch",
-					["class"] = "PALADIN",
-					["isSanctioned"] = 0,
+					["name"] = "Semevaelagro",
+					["class"] = "WARRIOR",
 					["isLeader"] = 0,
+					["isSanctioned"] = 0,
 				}, -- [3]
 				{
 					["role"] = "healer",
-					["name"] = "Powerangers",
-					["class"] = "SHAMAN",
-					["isSanctioned"] = 0,
+					["name"] = "Greybac",
+					["class"] = "PRIEST",
 					["isLeader"] = 0,
+					["isSanctioned"] = 0,
 				}, -- [4]
 				{
-					["role"] = "nuevo",
-					["name"] = "Capy",
-					["class"] = "PALADIN",
+					["role"] = "tank",
+					["name"] = "Chinchetillo",
+					["class"] = "DEATHKNIGHT",
 					["isLeader"] = 0,
 					["isSanctioned"] = 0,
 				}, -- [5]
 				{
-					["role"] = "nuevo",
-					["name"] = "Shaolinex",
+					["role"] = "tank",
+					["name"] = "Bolasnegras",
 					["class"] = "PALADIN",
 					["isLeader"] = 0,
 					["isSanctioned"] = 0,
 				}, -- [6]
 				{
-					["role"] = "nuevo",
-					["name"] = "Tootti",
-					["class"] = "WARLOCK",
+					["role"] = "healer",
+					["name"] = "Maximodesimo",
+					["class"] = "SHAMAN",
 					["isLeader"] = 0,
 					["isSanctioned"] = 0,
 				}, -- [7]
 				{
-					["role"] = "nuevo",
-					["name"] = "Xhiang",
-					["class"] = "ROGUE",
+					["role"] = "healer",
+					["name"] = "Saby",
+					["class"] = "DRUID",
 					["isLeader"] = 0,
 					["isSanctioned"] = 0,
 				}, -- [8]
 				{
-					["role"] = "nuevo",
-					["name"] = "Bleidd",
-					["class"] = "ROGUE",
-					["isSanctioned"] = 0,
+					["role"] = "healer",
+					["name"] = "Pelito",
+					["class"] = "DRUID",
 					["isLeader"] = 0,
+					["isSanctioned"] = 0,
 				}, -- [9]
 				{
-					["role"] = "nuevo",
-					["name"] = "Calvasor",
-					["class"] = "WARRIOR",
-					["isSanctioned"] = 0,
+					["role"] = "healer",
+					["name"] = "Irilenh",
+					["class"] = "SHAMAN",
 					["isLeader"] = 0,
+					["isSanctioned"] = 0,
 				}, -- [10]
 				{
 					["role"] = "nuevo",
-					["name"] = "Estharos",
-					["class"] = "HUNTER",
+					["name"] = "Holyname",
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [11]
 				{
 					["role"] = "nuevo",
-					["name"] = "Fhatiimah",
-					["class"] = "PALADIN",
+					["name"] = "Samilmp",
+					["class"] = "WARRIOR",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [12]
 				{
-					["role"] = "healer",
-					["name"] = "Mochiix",
-					["class"] = "SHAMAN",
+					["role"] = "nuevo",
+					["name"] = "Hermiion",
+					["class"] = "WARLOCK",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [13]
 				{
 					["role"] = "nuevo",
-					["name"] = "Pumaa",
-					["class"] = "WARRIOR",
+					["name"] = "Hombrera",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [14]
 				{
 					["role"] = "nuevo",
-					["name"] = "Spartask",
-					["class"] = "PALADIN",
+					["name"] = "Motekul",
+					["class"] = "DRUID",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [15]
 				{
 					["role"] = "nuevo",
-					["name"] = "Yinxz",
-					["class"] = "PALADIN",
+					["name"] = "Pulquee",
+					["class"] = "HUNTER",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [16]
 				{
 					["role"] = "nuevo",
-					["name"] = "Driadg",
-					["class"] = "WARLOCK",
+					["name"] = "Nanitas",
+					["class"] = "PRIEST",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [17]
 				{
 					["role"] = "nuevo",
-					["name"] = "Jofbirtz",
-					["class"] = "WARRIOR",
+					["name"] = "Xhiang",
+					["class"] = "ROGUE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [18]
 				{
 					["role"] = "nuevo",
-					["name"] = "Luzdsol",
-					["class"] = "PRIEST",
+					["name"] = "Voidhammer",
+					["class"] = "PALADIN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [19]
 				{
 					["role"] = "nuevo",
-					["name"] = "Rohm",
-					["class"] = "DEATHKNIGHT",
+					["name"] = "Ritenkult",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [20]
 				{
 					["role"] = "nuevo",
-					["name"] = "Wapoll",
-					["class"] = "PRIEST",
+					["name"] = "Abramwow",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [21]
+				{
+					["role"] = "nuevo",
+					["name"] = "Janasha",
+					["class"] = "PRIEST",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [22]
+				{
+					["role"] = "nuevo",
+					["name"] = "Kumasaurio",
+					["class"] = "WARRIOR",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [23]
+				{
+					["role"] = "nuevo",
+					["name"] = "Rattsel",
+					["class"] = "HUNTER",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [24]
+				{
+					["role"] = "nuevo",
+					["name"] = "Romeodk",
+					["class"] = "DEATHKNIGHT",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [25]
+				{
+					["role"] = "nuevo",
+					["name"] = "Tootti",
+					["class"] = "WARLOCK",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [26]
+				{
+					["role"] = "nuevo",
+					["name"] = "Tuyuti",
+					["class"] = "SHAMAN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [27]
+				{
+					["role"] = "nuevo",
+					["name"] = "Yulima",
+					["class"] = "PALADIN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [28]
 				{
 					["role"] = "nuevo",
 					["name"] = "Akleina",
 					["class"] = "SHAMAN",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
-				}, -- [22]
-				{
-					["role"] = "nuevo",
-					["name"] = "Nasci",
-					["class"] = "DRUID",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [23]
-				{
-					["role"] = "nuevo",
-					["name"] = "Neymare",
-					["class"] = "WARRIOR",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [24]
-				{
-					["role"] = "nuevo",
-					["name"] = "Rojiriin",
-					["class"] = "ROGUE",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [25]
-				{
-					["role"] = "nuevo",
-					["name"] = "Tenicer",
-					["class"] = "ROGUE",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [26]
-				{
-					["role"] = "nuevo",
-					["name"] = "Vacelinas",
-					["class"] = "PRIEST",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [27]
-				{
-					["role"] = "nuevo",
-					["name"] = "Wusheng",
-					["class"] = "DEATHKNIGHT",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
-				}, -- [28]
-				{
-					["role"] = "nuevo",
-					["name"] = "Zanathosa",
-					["class"] = "PALADIN",
-					["isSanctioned"] = 0,
-					["isLeader"] = 0,
 				}, -- [29]
 				{
 					["role"] = "nuevo",
-					["name"] = "Ravenguard",
-					["class"] = "ROGUE",
+					["name"] = "Scime",
+					["class"] = "MAGE",
 					["isSanctioned"] = 0,
 					["isLeader"] = 0,
 				}, -- [30]
 				{
-					["role"] = "tank",
-					["name"] = "Adaiah",
-					["class"] = "WARRIOR",
-					["isLeader"] = 0,
+					["role"] = "healer",
+					["name"] = "Crapter",
+					["class"] = "",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [31]
 				{
-					["role"] = "healer",
-					["name"] = "Rayt",
-					["class"] = "SHAMAN",
-					["isLeader"] = 0,
+					["role"] = "otro",
+					["name"] = "Peleteriaa",
+					["class"] = "DRUID",
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [32]
 				{
-					["role"] = "healer",
-					["name"] = "Fumadoando",
+					["role"] = "otro",
+					["name"] = "Ciaren",
 					["class"] = "DRUID",
-					["isLeader"] = 0,
 					["isSanctioned"] = 0,
+					["isLeader"] = 0,
 				}, -- [33]
+				{
+					["role"] = "healer",
+					["name"] = "Pepinas",
+					["class"] = "PALADIN",
+					["isSanctioned"] = 0,
+					["isLeader"] = 0,
+				}, -- [34]
 			},
 			["withNote"] = 0,
 		}, -- [4]
 	},
-	["roles"] = {
-		["healer 3"] = 1,
-		["healer 1"] = 1,
-		["abominacion"] = 0,
-		["tanque dual auxiliar"] = 0,
-		["healer dual auxiliar"] = 0,
-		["sangres"] = 0,
-		["healer 5"] = 1,
-		["main tank"] = 1,
-		["healer 2"] = 1,
-		["fragmentador"] = 1,
-		["off tank"] = 1,
-		["healer 4"] = 1,
+	["profiles"] = {
+		["Voidhammer - Bennu"] = {
+			["chat"] = {
+				["channel"] = "DEFAULT",
+			},
+			["discordLink"] = "https://discord.gg/Xzp5Gf3S",
+		},
 	},
-	["buffs"] = {
-		["sabiduría"] = 1,
-		["grito de batalla"] = 1,
-		["atenuar magia"] = 1,
-		["enfocar"] = 1,
-		["rezos de espiritu, proteccion y entereza"] = 1,
-		["reyes"] = 1,
-		["piedra de alma"] = 1,
-		["grito desmoralizador"] = 1,
-		["don de lo salvaje"] = 1,
-		["salvaguarda"] = 1,
-		["amplificar magia"] = 1,
-		["poderío"] = 1,
-		["grito de orden"] = 1,
-		["intelecto arcano"] = 1,
-		["vigilancia"] = 1,
-	},
-	["chat"] = {
-		["channel"] = "DEFAULT",
-	},
-	["recognition"] = {
+	["general"] = {
+		["locked"] = 0,
+		["scale"] = 1,
+		["debug"] = 0,
+		["minimap"] = {
+			["angle"] = 45,
+			["radius"] = 80,
+			["hide"] = 0,
+		},
 	},
 }
