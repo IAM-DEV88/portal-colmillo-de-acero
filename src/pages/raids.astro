@@ -986,7 +986,7 @@ try {
                     )
                     .map((raid, index) => {
                       const raidSchedulesForRaid = raidSchedules.filter(
-                        (schedule) => schedule.raid_id === raid.id
+                        (schedule) => schedule.raid_id.toUpperCase() === raid.id.toUpperCase()
                       );
                       const approvedSchedulesCount = raidSchedulesForRaid.filter((schedule) => {
                         // Include official cores even if empty
@@ -1038,7 +1038,7 @@ try {
                     })
                     .map((raid, index) => {
                       const raidSchedulesForRaid = raidSchedules.filter(
-                        (schedule) => schedule.raid_id === raid.id
+                        (schedule) => schedule.raid_id.toUpperCase() === raid.id.toUpperCase()
                       );
 
                       // Only count players with 'aceptado' status for the total
@@ -1220,6 +1220,7 @@ try {
                                           key={day} 
                                           class="mb-2" 
                                           x-data="{ open: false }"
+                                          data-day-group={day}
                                         >
                                           <button
                                             @click="open = !open; $nextTick(() => { if(window.updateSlider) window.updateSlider(); })"
@@ -1776,14 +1777,6 @@ try {
       </div>
     </div>
     
-    <div class="mt-8 flex justify-end opacity-40 hover:opacity-100 transition-opacity duration-500">
-          <a href="https://paypal.me/iamdev88" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900/30 hover:bg-amber-900/20 border border-transparent hover:border-amber-600/30 transition-all duration-300" title="Apoya el desarrollo">
-            <span class="text-[10px] uppercase tracking-wider text-gray-500 group-hover:text-amber-400/80 font-medium transition-colors">Invítame a un café</span>
-            <svg class="w-3 h-3 text-gray-600 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-            </svg>
-          </a>
-        </div>
 
     <div
       class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
@@ -2247,6 +2240,89 @@ try {
   </div>
 </div>
   </Fragment>
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const raidId = urlParams.get('raid-id');
+    const day = urlParams.get('day');
+
+    if (raidId) {
+      // Find the raid slide index
+      // We look for the slide element with data-raid-id
+      const slides = document.querySelectorAll('.swiper-slide');
+      let targetIndex = -1;
+      
+      slides.forEach((slide, index) => {
+        // Try exact match first
+        let slideRaidDiv = slide.querySelector(`[data-raid-id="${raidId}"]`);
+        
+        // If not found, try case-insensitive matching
+        if (!slideRaidDiv) {
+            const raidDivs = slide.querySelectorAll('[data-raid-id]');
+            for (const div of raidDivs) {
+                if (div.getAttribute('data-raid-id').toLowerCase() === raidId.toLowerCase()) {
+                    slideRaidDiv = div;
+                    break;
+                }
+            }
+        }
+
+        if (slideRaidDiv) {
+          targetIndex = index;
+        }
+      });
+
+      if (targetIndex !== -1) {
+        // Wait a bit for slider initialization
+        setTimeout(() => {
+          // Find the pagination item and click it to switch slide
+          const paginationItems = document.querySelectorAll('.pagination-item');
+          if (paginationItems[targetIndex]) {
+            paginationItems[targetIndex].click();
+            
+            // If day is specified, expand the day group
+            if (day) {
+              setTimeout(() => {
+                // Find the day group in the active slide
+                const activeSlide = slides[targetIndex];
+                // Try exact match first
+                let dayGroup = activeSlide.querySelector(`[data-day-group="${day}"]`);
+                
+                // If not found, try case-insensitive matching manually with normalization
+                if (!dayGroup) {
+                   const allGroups = activeSlide.querySelectorAll('[data-day-group]');
+                   for (const group of allGroups) {
+                     const groupDay = group.getAttribute('data-day-group').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                     const targetDay = day.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                     
+                     if (groupDay === targetDay) {
+                       dayGroup = group;
+                       break;
+                     }
+                   }
+                }
+                
+                if (dayGroup) {
+                  // Find the button inside and click it
+                  const button = dayGroup.querySelector('button');
+                  if (button) {
+                    button.click();
+                    
+                    // Scroll to the element
+                    setTimeout(() => {
+                      dayGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                  }
+                }
+              }, 500); // Wait for slide transition
+            }
+          }
+        }, 500); // Wait for initial render/slider init
+      }
+    }
+  });
+</script>
 </Layout>
 <script is:inline>
   // Raid Leaders and Regular Players Modal Functions

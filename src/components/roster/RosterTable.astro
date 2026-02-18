@@ -2991,8 +2991,22 @@ const totalRaiders = rosterData.members.filter(
             else if (raidUpper.includes('25N'))
               diffColorClass = 'bg-purple-900/30 text-purple-300 border-purple-700/40';
 
+            // Extract day from schedule (e.g., "Sabado 18:00" -> "sabado")
+             let dayParam = '';
+             if (core.schedule) {
+               const parts = core.schedule.split(' ');
+               if (parts.length > 0) {
+                 dayParam = parts[0].toLowerCase()
+                   .normalize('NFD')
+                   .replace(/[\u0300-\u036f]/g, '');
+               }
+             }
+            
+            // Construct URL with parameters
+            const raidUrl = `/raids?raid-id=${encodeURIComponent(core.raid)}&day=${encodeURIComponent(dayParam)}`;
+
             html += `
-              <a href="/raids" class="block group bg-gray-800/40 p-3 rounded-md border border-amber-600/20 hover:border-amber-500/40 hover:bg-gray-800/60 transition-all duration-200">
+              <a href="${raidUrl}" class="block group bg-gray-800/40 p-3 rounded-md border border-amber-600/20 hover:border-amber-500/40 hover:bg-gray-800/60 transition-all duration-200">
                 <div class="flex flex-col mb-1">
                   <span class="font-bold text-amber-300 text-sm group-hover:text-amber-200 transition-colors">${core.raid}</span>
                 </div>

@@ -1,5 +1,5 @@
 {
-    "globalLastUpdate": 1771381623,
+    "globalLastUpdate": 1771430497,
     "players": {
         "Tgb": {
             "class": "Guerrero",
@@ -57,15 +57,6 @@
         },
         "Nephsy": {
             "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
-        "Vannar": {
-            "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -163,6 +154,15 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Killhexrogue": {
+            "class": "Pícaro",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Amilgoul": {
             "class": "Brujo",
             "rank": "Aspirante",
@@ -221,6 +221,15 @@
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Vannar": {
+            "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -667,19 +676,19 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Susurradead": {
-            "class": "Chamán",
+        "Inferrni": {
+            "class": "Pícaro",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
-        "Inferrni": {
-            "class": "Pícaro",
+        "Susurradead": {
+            "class": "Chamán",
             "rank": "Aspirante",
-            "publicNote": "md",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -811,15 +820,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Bernalsoiyo": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Hudemor": {
             "class": "Cazador",
             "rank": "Aspirante",
@@ -840,6 +840,15 @@
         },
         "Orionxz": {
             "class": "Pícaro",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Bernalsoiyo": {
+            "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
             "officerNote": "",
@@ -1252,15 +1261,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Drogaictoxvi": {
-            "class": "Sacerdote",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Kishimura": {
             "class": "Guerrero",
             "rank": "Aspirante",
@@ -1272,6 +1272,15 @@
         },
         "Mandead": {
             "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Drogaictoxvi": {
+            "class": "Sacerdote",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -1867,7 +1876,7 @@
         "Bleidd": {
             "class": "Pícaro",
             "rank": "Aspirante",
-            "publicNote": "md3.3",
+            "publicNote": "md3.4",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -3649,7 +3658,7 @@
         "Mysteriuos": {
             "class": "Pícaro",
             "rank": "Aspirante",
-            "publicNote": "md5.1",
+            "publicNote": "md5.2",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -4549,7 +4558,7 @@
         "Terroziller": {
             "class": "Mago",
             "rank": "Aspirante",
-            "publicNote": "md5.1",
+            "publicNote": "md5.2",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -5356,6 +5365,15 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Bario": {
+            "class": "Paladín",
+            "rank": "Iniciado",
+            "publicNote": "mt5.6",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Baxster": {
             "class": "Guerrero",
             "rank": "Iniciado",
@@ -5656,9 +5674,9 @@
         "Drahico": {
             "class": "Sacerdote",
             "rank": "Iniciado",
-            "publicNote": "ad5.2",
+            "publicNote": "ad5.3",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6490,6 +6508,15 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Matafocas": {
+            "class": "Guerrero",
+            "rank": "Iniciado",
+            "publicNote": "md5.2",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Matafull": {
             "class": "Pícaro",
             "rank": "Iniciado",
@@ -6706,15 +6733,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Oblak": {
-            "class": "Guerrero",
-            "rank": "Iniciado",
-            "publicNote": "md5.8",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Octagrama": {
             "class": "Sacerdote",
             "rank": "Iniciado",
@@ -6727,7 +6745,7 @@
         "Osvaldeka": {
             "class": "Chamán",
             "rank": "Iniciado",
-            "publicNote": "md4.7",
+            "publicNote": "md5.0",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -7048,15 +7066,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Rickkv": {
-            "class": "Paladín",
-            "rank": "Iniciado",
-            "publicNote": "mt5.4",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Rikinal": {
             "class": "Druida",
             "rank": "Iniciado",
@@ -7108,6 +7117,15 @@
             "publicNote": "md5.0",
             "officerNote": "",
             "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Rompecuello": {
+            "class": "Caballero de la Muerte",
+            "rank": "Iniciado",
+            "publicNote": "ad5.1",
+            "officerNote": "",
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -9143,7 +9161,7 @@
             "race": "GN",
             "guildLeave": false,
             "leaderData": {
-                "lastUpdate": 1771381623,
+                "lastUpdate": 1771430497,
                 "cores": [
                     {
                         "raid": "ICC10H abas",
