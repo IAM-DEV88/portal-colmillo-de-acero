@@ -2,10 +2,11 @@
 // Definir las props del componente
 interface Props {
   initialRosterData?: any[];
+  raidRegistrations?: any[];
 }
 
 // Obtener las props
-const { initialRosterData: rosterDataFromProps = [] } = Astro.props;
+const { initialRosterData: rosterDataFromProps = [], raidRegistrations = [] } = Astro.props;
 
 // Define default class info with TypeScript type
 const defaultClassInfo: Record<string, { name: string; color: string }> = {
@@ -2706,6 +2707,7 @@ const totalRaiders = rosterData.members.filter(
       professionNames: JSON.stringify(professionNames),
       raceNames: JSON.stringify(RACE_NAMES),
       factionNames: JSON.stringify(FACTION_NAMES),
+      raidRegistrations: JSON.stringify(raidRegistrations),
     }}
   >
     // Analizar los datos del roster
@@ -2714,6 +2716,7 @@ const totalRaiders = rosterData.members.filter(
     const professionNamesData = JSON.parse(professionNames);
     const raceNamesData = JSON.parse(raceNames);
     const factionNamesData = JSON.parse(factionNames);
+    const raidRegistrationsData = JSON.parse(raidRegistrations);
 
     // Función para inicializar tooltips
     function initTooltips() {
@@ -2911,6 +2914,7 @@ const totalRaiders = rosterData.members.filter(
       function updateRaidsDisplay(member) {
         const container = document.getElementById('raids-container');
         const badge = document.getElementById('badge-raids');
+        const tabButton = document.getElementById('tab-raids');
         if (!container) return;
 
         let html = '';
@@ -2919,13 +2923,30 @@ const totalRaiders = rosterData.members.filter(
         // Collect all cores from all leaders
         const allCores = [];
         if (member.leaderData) {
-          Object.entries(member.leaderData).forEach(([leaderName, data]) => {
-            if (data.cores && Array.isArray(data.cores)) {
+          // Handle direct structure (e.g., leader's own cores)
+          if (member.leaderData.cores && Array.isArray(member.leaderData.cores)) {
+            member.leaderData.cores.forEach((core) => {
+              allCores.push({
+                ...core,
+                leader: member.name,
+                lastUpdate: member.leaderData.lastUpdate || 0,
+                source: 'roster'
+              });
+            });
+          }
+
+          // Handle nested structure (membership in other leaders' cores)
+          Object.entries(member.leaderData).forEach(([key, data]) => {
+            // Skip keys that are part of the direct structure
+            if (key === 'cores' || key === 'lastUpdate') return;
+
+            if (data && typeof data === 'object' && data.cores && Array.isArray(data.cores)) {
               data.cores.forEach((core) => {
                 allCores.push({
                   ...core,
-                  leader: leaderName,
-                  lastUpdate: data.lastUpdate,
+                  leader: key,
+                  lastUpdate: data.lastUpdate || 0,
+                  source: 'roster'
                 });
               });
             }
@@ -2936,6 +2957,19 @@ const totalRaiders = rosterData.members.filter(
         if (badge) {
           badge.textContent = totalRaids.toString();
           badge.classList.toggle('hidden', totalRaids === 0);
+        }
+
+        if (tabButton) {
+          if (totalRaids === 0) {
+            tabButton.style.display = 'none';
+            // Si estamos en la pestaña de raids, cambiar a general
+            const activeTab = document.querySelector('.modal-tab.border-amber-500');
+            if (activeTab && activeTab.id === 'tab-raids') {
+              window.switchModalTab('general');
+            }
+          } else {
+            tabButton.style.display = ''; // Restaurar display original (flex)
+          }
         }
 
         if (totalRaids > 0) {
@@ -2958,23 +2992,17 @@ const totalRaiders = rosterData.members.filter(
               diffColorClass = 'bg-purple-900/30 text-purple-300 border-purple-700/40';
 
             html += `
-              <div class="bg-gray-800/40 p-3 rounded-md border border-amber-600/20 hover:border-amber-500/40 transition-all duration-200">
-                <div class="flex justify-between items-start mb-2">
-                  <div class="flex flex-col">
-                    <span class="font-bold text-amber-300 text-sm">${core.raid}</span>
-                    <span class="text-[10px] text-gray-400">Actualizado por: ${core.leader}</span>
-                  </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${diffColorClass}">
-                    ${core.gs > 0 ? `GS ${core.gs}+` : 'Sin GS'}
-                  </span>
+              <a href="/raids" class="block group bg-gray-800/40 p-3 rounded-md border border-amber-600/20 hover:border-amber-500/40 hover:bg-gray-800/60 transition-all duration-200">
+                <div class="flex flex-col mb-1">
+                  <span class="font-bold text-amber-300 text-sm group-hover:text-amber-200 transition-colors">${core.raid}</span>
                 </div>
-                <div class="flex items-center gap-2 mt-1 text-xs text-gray-300">
-                  <svg class="w-3.5 h-3.5 text-amber-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-2 mt-1 text-xs text-gray-300 group-hover:text-gray-200">
+                  <svg class="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                   <span>${core.schedule}</span>
                 </div>
-              </div>
+              </a>
             `;
           });
           html += '</div>';
@@ -3282,6 +3310,9 @@ const totalRaiders = rosterData.members.filter(
           }
         }
 
+        // Update raids display (to update badge count)
+        updateRaidsDisplay(member);
+
         // Show modal
         modal.classList.remove('hidden');
         modal.classList.add('show');
@@ -3469,6 +3500,65 @@ const totalRaiders = rosterData.members.filter(
         updatePaginationInfo();
       }
 
+      // Función para calcular el número de raids de un miembro
+      function getMemberRaidCount(member) {
+        if (!member) return 0;
+        const allCores = [];
+        
+        try {
+          // 1. From leaderData
+          if (member.leaderData) {
+            // Direct structure
+            if (member.leaderData.cores && Array.isArray(member.leaderData.cores)) {
+              member.leaderData.cores.forEach((core) => {
+                if (core) allCores.push({ ...core });
+              });
+            }
+
+            // Nested structure
+            Object.entries(member.leaderData).forEach(([key, data]) => {
+              if (key === 'cores' || key === 'lastUpdate') return;
+              if (data && typeof data === 'object' && data.cores && Array.isArray(data.cores)) {
+                data.cores.forEach((core) => {
+                  if (core) allCores.push({ ...core });
+                });
+              }
+            });
+          }
+
+          // 2. From Supabase - DISABLED by request (only leaderData should determine raids/leadership)
+          /* 
+          if (raidRegistrationsData && Array.isArray(raidRegistrationsData)) {
+              const memberName = member.name ? member.name.toLowerCase() : '';
+              if (memberName) {
+                const memberRegistrations = raidRegistrationsData.filter(reg => 
+                    reg.player_name && reg.player_name.toLowerCase() === memberName
+                );
+
+                memberRegistrations.forEach(reg => {
+                    if (!reg.raid_id || !reg.day_of_week) return;
+                    
+                    const isDuplicate = allCores.some(core => 
+                        core.raid === reg.raid_id && 
+                        core.schedule && 
+                        core.schedule.toLowerCase().includes(reg.day_of_week.toLowerCase())
+                    );
+
+                    if (!isDuplicate) {
+                        allCores.push({ raid: reg.raid_id });
+                    }
+                });
+              }
+          }
+          */
+        } catch (e) {
+          console.error('Error calculating raid count for member:', member?.name, e);
+          return 0;
+        }
+
+        return allCores.length;
+      }
+
       // Actualizar la tabla (ahora grid) con los miembros filtrados y ordenados
       function updateTable() {
         if (!rosterGrid) return;
@@ -3484,6 +3574,7 @@ const totalRaiders = rosterData.members.filter(
             };
             const className = classData.name;
             const classColor = classData.color;
+            const raidCount = getMemberRaidCount(member);
 
             return `
             <div class="group bg-gradient-to-br from-gray-900/60 to-gray-800/50 backdrop-blur-sm rounded-md p-1 sm:p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
@@ -3496,6 +3587,18 @@ const totalRaiders = rosterData.members.filter(
                 
                 <!-- Stats Indicators -->
                 <div class="absolute top-1 right-1 flex flex-col gap-0.5 sm:flex-row sm:gap-1 z-10 flex-shrink-0">
+                  ${
+                    raidCount > 0
+                      ? `
+                  <div class="px-1.5 py-0.5 rounded text-[9px] sm:text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1" title="${raidCount} Raids Activas">
+                    <svg class="w-2 h-2 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <span>${raidCount}</span>
+                  </div>
+                  `
+                      : ''
+                  }
                   ${
                     member.recognitions && member.recognitions.length > 0
                       ? `
@@ -3760,7 +3863,17 @@ const totalRaiders = rosterData.members.filter(
         </div>
       </div>
     </div>
+    <div class="mt-8 flex justify-end opacity-40 hover:opacity-100 transition-opacity duration-500">
+    <a href="https://paypal.me/iamdev88" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900/30 hover:bg-amber-900/20 border border-transparent hover:border-amber-600/30 transition-all duration-300" title="Apoya el desarrollo">
+      <span class="text-[10px] uppercase tracking-wider text-gray-500 group-hover:text-amber-400/80 font-medium transition-colors">Invítame a un café</span>
+      <svg class="w-3 h-3 text-gray-600 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+      </svg>
+    </a>
   </div>
+  </div>
+  
+  
 </div>
 
 <!-- Modal de Detalles del Miembro -->

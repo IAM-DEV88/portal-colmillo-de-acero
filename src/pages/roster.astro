@@ -4,6 +4,7 @@ import RosterTable from '../components/roster/RosterTable.astro';
 import FeaturedPlayers from '../components/roster/FeaturedPlayers.astro';
 import rosterData from '../data/roster.json';
 import { validatePublicNote } from '../utils/rosterUtils';
+import { supabase } from '../lib/supabase';
 
 // Definir el tipo para los miembros del roster
 interface RosterMember {
@@ -143,6 +144,12 @@ const featuredPlayers = currentMonthData
   )
   .reverse(); // Invertir el orden para mostrar los más recientes primero
 
+// Fetch active raid registrations
+const { data: raidRegistrations } = await supabase
+  .from('raid_registrations')
+  .select('*')
+  .in('status', ['aceptado', 'en_revision', 'en_espera']);
+
 // Manejar la paginación - 3 en móvil, 10 en pantallas más grandes
 let itemsPerPage = 3; // Valor por defecto para móvil
 let totalPages = 1; // Inicializar variable
@@ -178,7 +185,7 @@ if (Astro.url.searchParams.has('page')) {
   <div class="mx-auto animate-fade-in max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- Tabla de Roster -->
     <div class="relative z-40">
-      <RosterTable initialRosterData={formattedRosterData} />
+      <RosterTable initialRosterData={formattedRosterData} raidRegistrations={raidRegistrations || []} />
     </div>
 
     <!-- Sección de Jugadores Destacados -->

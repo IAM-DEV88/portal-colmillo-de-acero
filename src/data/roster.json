@@ -1,5 +1,5 @@
 {
-    "globalLastUpdate": 1771335111,
+    "globalLastUpdate": 1771381623,
     "players": {
         "Tgb": {
             "class": "Guerrero",
@@ -57,6 +57,15 @@
         },
         "Nephsy": {
             "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Vannar": {
+            "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -127,15 +136,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Mooncharm": {
-            "class": "Mago",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "wusheng alt",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Rekt": {
             "class": "Mago",
             "rank": "Aspirante",
@@ -145,10 +145,28 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Mooncharm": {
+            "class": "Mago",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "wusheng alt",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Tresbichas": {
             "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Amilgoul": {
+            "class": "Brujo",
+            "rank": "Aspirante",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -237,6 +255,15 @@
         },
         "Pshao": {
             "class": "Guerrero",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Culeeador": {
+            "class": "Druida",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -344,6 +371,15 @@
             "leaderData": {}
         },
         "Zarenah": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Caiso": {
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
@@ -478,15 +514,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Crazines": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Gustavoo": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -541,15 +568,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Saucemon": {
-            "class": "Chamán",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Klkjacc": {
             "class": "Guerrero",
             "rank": "Aspirante",
@@ -572,6 +590,15 @@
             "class": "Sacerdote",
             "rank": "Aspirante",
             "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Crazines": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -640,10 +667,28 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Susurradead": {
+            "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Inferrni": {
             "class": "Pícaro",
             "rank": "Aspirante",
             "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Chetazo": {
+            "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -689,6 +734,15 @@
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Saucemon": {
+            "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -982,8 +1036,8 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Ryyuzaki": {
-            "class": "Caballero de la Muerte",
+        "Kronosiro": {
+            "class": "Druida",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -991,10 +1045,10 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Traxeskill": {
-            "class": "Cazador",
+        "Ryyuzaki": {
+            "class": "Caballero de la Muerte",
             "rank": "Aspirante",
-            "publicNote": "md",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1216,15 +1270,6 @@
             "guildLeave": false,
             "leaderData": {}
         },
-        "Doccholliday": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
         "Mandead": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
@@ -1247,6 +1292,15 @@
             "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Doccholliday": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1473,7 +1527,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1527,7 +1581,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1617,7 +1671,7 @@
             "rank": "Aspirante",
             "publicNote": "md5.4",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1626,7 +1680,7 @@
             "rank": "Aspirante",
             "publicNote": "md2.6",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1653,7 +1707,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1699,15 +1753,6 @@
             "publicNote": "",
             "officerNote": "",
             "race": null,
-            "guildLeave": false,
-            "leaderData": {}
-        },
-        "Bajitus": {
-            "class": "Mago",
-            "rank": "Aspirante",
-            "publicNote": "md5.5",
-            "officerNote": "",
-            "race": "GN",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1770,7 +1815,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1822,9 +1867,9 @@
         "Bleidd": {
             "class": "Pícaro",
             "rank": "Aspirante",
-            "publicNote": "md",
+            "publicNote": "md3.3",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1950,7 +1995,7 @@
             "rank": "Aspirante",
             "publicNote": "md4.3",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -1978,6 +2023,15 @@
             "publicNote": "",
             "officerNote": "",
             "race": "HU",
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Chipewa": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2049,7 +2103,7 @@
             "rank": "Aspirante",
             "publicNote": "md2.0",
             "officerNote": "",
-            "race": "DR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2139,7 +2193,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "DR",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2319,7 +2373,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2337,7 +2391,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2490,7 +2544,7 @@
             "rank": "Aspirante",
             "publicNote": "md6.0",
             "officerNote": "",
-            "race": null,
+            "race": "BE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2535,7 +2589,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2571,7 +2625,7 @@
             "rank": "Aspirante",
             "publicNote": "md4.5",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2643,7 +2697,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2661,7 +2715,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "OR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2697,7 +2751,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "OR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2715,7 +2769,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2859,7 +2913,7 @@
             "rank": "Aspirante",
             "publicNote": "md1.6",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2967,7 +3021,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "DR",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2976,7 +3030,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -2995,6 +3049,15 @@
             "publicNote": "",
             "officerNote": "",
             "race": "NE",
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Karkinus": {
+            "class": "Brujo",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3057,7 +3120,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3102,7 +3165,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "DW",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3165,7 +3228,7 @@
             "rank": "Aspirante",
             "publicNote": "md4.8",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3235,7 +3298,7 @@
         "Lorihan": {
             "class": "Paladín",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "md5.8",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -3327,7 +3390,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3359,6 +3422,15 @@
             "leaderData": {}
         },
         "Marther": {
+            "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": "HU",
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Matilederhos": {
             "class": "Paladín",
             "rank": "Aspirante",
             "publicNote": "",
@@ -3426,7 +3498,7 @@
             "rank": "Aspirante",
             "publicNote": "md5.7",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3435,7 +3507,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "DR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3534,7 +3606,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "TR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3552,7 +3624,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "OR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3696,7 +3768,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3831,7 +3903,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "TA",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3894,7 +3966,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "DW",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -3930,7 +4002,7 @@
             "rank": "Aspirante",
             "publicNote": "md5.9",
             "officerNote": "",
-            "race": "OR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -4074,7 +4146,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -4123,6 +4195,15 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Sacatripaxd": {
+            "class": "Pícaro",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Sacerdkevin": {
             "class": "Sacerdote",
             "rank": "Aspirante",
@@ -4146,7 +4227,7 @@
             "rank": "Aspirante",
             "publicNote": "md3.9",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -4344,7 +4425,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "TA",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -4470,7 +4551,7 @@
             "rank": "Aspirante",
             "publicNote": "md5.1",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -4537,6 +4618,15 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Tilinmaximus": {
+            "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Tioxxs": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -4559,6 +4649,15 @@
             "class": "Druida",
             "rank": "Aspirante",
             "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Traxeskill": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -4600,12 +4699,21 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Vanjance": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Vene": {
             "class": "Paladín",
             "rank": "Aspirante",
             "publicNote": "md6.0h6.0",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -4852,6 +4960,15 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Yukiax": {
+            "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": "HU",
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Yulesia": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
@@ -5028,7 +5145,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.1",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5055,7 +5172,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.2",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5145,7 +5262,7 @@
             "rank": "Iniciado",
             "publicNote": "ah6.2",
             "officerNote": "",
-            "race": "DR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5190,7 +5307,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.4",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5235,7 +5352,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.2",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5262,7 +5379,7 @@
             "rank": "Iniciado",
             "publicNote": "mh5.7",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5298,7 +5415,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.2",
             "officerNote": "",
-            "race": null,
+            "race": "DR",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5343,7 +5460,7 @@
             "rank": "Iniciado",
             "publicNote": "md4.7",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5352,7 +5469,7 @@
             "rank": "Iniciado",
             "publicNote": "ad5.9",
             "officerNote": "",
-            "race": null,
+            "race": "BE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5478,7 +5595,7 @@
             "rank": "Iniciado",
             "publicNote": "md2.4",
             "officerNote": "",
-            "race": null,
+            "race": "GN",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5541,7 +5658,7 @@
             "rank": "Iniciado",
             "publicNote": "ad5.2",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5721,7 +5838,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.0",
             "officerNote": "",
-            "race": "GN",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5775,7 +5892,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.1",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5829,7 +5946,7 @@
             "rank": "Iniciado",
             "publicNote": "at4.1",
             "officerNote": "",
-            "race": null,
+            "race": "BE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5847,7 +5964,7 @@
             "rank": "Iniciado",
             "publicNote": "ad6.0",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5937,7 +6054,7 @@
             "rank": "Iniciado",
             "publicNote": "mt5.2ENIN",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -5962,7 +6079,7 @@
         "Janasha": {
             "class": "Sacerdote",
             "rank": "Iniciado",
-            "publicNote": "mh5.0",
+            "publicNote": "mh5.0d5.0",
             "officerNote": "",
             "race": "DR",
             "guildLeave": false,
@@ -6000,7 +6117,7 @@
             "rank": "Iniciado",
             "publicNote": "md4.7",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6027,7 +6144,7 @@
             "rank": "Iniciado",
             "publicNote": "mt4.6d4.5",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6108,7 +6225,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.7",
             "officerNote": "",
-            "race": "DR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6180,7 +6297,7 @@
             "rank": "Iniciado",
             "publicNote": "ad5.9",
             "officerNote": "Velanfrost",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6216,7 +6333,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.8",
             "officerNote": "",
-            "race": null,
+            "race": "DW",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6225,16 +6342,16 @@
             "rank": "Iniciado",
             "publicNote": "md5.4",
             "officerNote": "",
-            "race": "UN",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
-        "Lipasa": {
-            "class": "Sacerdote",
+        "Liyuka": {
+            "class": "Druida",
             "rank": "Iniciado",
-            "publicNote": "mh5.4",
+            "publicNote": "",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6297,7 +6414,7 @@
             "rank": "Iniciado",
             "publicNote": "mh5.5",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6378,7 +6495,7 @@
             "rank": "Iniciado",
             "publicNote": "ad5.7",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6387,7 +6504,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.8",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6477,7 +6594,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.3",
             "officerNote": "",
-            "race": "DR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6589,6 +6706,15 @@
             "guildLeave": false,
             "leaderData": {}
         },
+        "Oblak": {
+            "class": "Guerrero",
+            "rank": "Iniciado",
+            "publicNote": "md5.8",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
         "Octagrama": {
             "class": "Sacerdote",
             "rank": "Iniciado",
@@ -6621,7 +6747,16 @@
             "rank": "Iniciado",
             "publicNote": "md4.5",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Palos": {
+            "class": "Paladín",
+            "rank": "Iniciado",
+            "publicNote": "md6.0",
+            "officerNote": "",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6630,7 +6765,7 @@
             "rank": "Iniciado",
             "publicNote": "ah5.6d5.6",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6648,7 +6783,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.8",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6693,7 +6828,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.7MNJW",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6720,7 +6855,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.8",
             "officerNote": "",
-            "race": null,
+            "race": "TR",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6729,7 +6864,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.4",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6746,7 +6881,7 @@
             "class": "Caballero de la Muerte",
             "rank": "Iniciado",
             "publicNote": "",
-            "officerNote": "dk 6k",
+            "officerNote": "russwell anshina ansheti ...",
             "race": null,
             "guildLeave": false,
             "leaderData": {}
@@ -6792,7 +6927,7 @@
             "rank": "Iniciado",
             "publicNote": "md6.0",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6882,7 +7017,7 @@
             "rank": "Iniciado",
             "publicNote": "md6.9dt6.4",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6927,7 +7062,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.1",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -6982,6 +7117,15 @@
             "publicNote": "md5.3",
             "officerNote": "",
             "race": "NE",
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Rosequarzz": {
+            "class": "Paladín",
+            "rank": "Iniciado",
+            "publicNote": "md5.2",
+            "officerNote": "",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7089,7 +7233,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.2",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7107,7 +7251,7 @@
             "rank": "Iniciado",
             "publicNote": "md6.1",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7143,7 +7287,7 @@
             "rank": "Iniciado",
             "publicNote": "md6.9t6.5",
             "officerNote": "",
-            "race": null,
+            "race": "DR",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7233,7 +7377,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.3",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7267,7 +7411,7 @@
         "Tuyuti": {
             "class": "Chamán",
             "rank": "Iniciado",
-            "publicNote": "mh5.4",
+            "publicNote": "mh5.6",
             "officerNote": "",
             "race": "DR",
             "guildLeave": false,
@@ -7278,7 +7422,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.6",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7314,7 +7458,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.6",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7322,6 +7466,15 @@
             "class": "Brujo",
             "rank": "Iniciado",
             "publicNote": "md5.9",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {}
+        },
+        "Venomouse": {
+            "class": "Pícaro",
+            "rank": "Iniciado",
+            "publicNote": "md5.2",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -7386,7 +7539,7 @@
             "rank": "Iniciado",
             "publicNote": "md6.1",
             "officerNote": "6.1",
-            "race": "OR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7431,7 +7584,7 @@
             "rank": "Iniciado",
             "publicNote": "md4.5",
             "officerNote": "",
-            "race": null,
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7449,7 +7602,7 @@
             "rank": "Iniciado",
             "publicNote": "md5.3",
             "officerNote": "",
-            "race": "DR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7566,7 +7719,7 @@
             "rank": "Explorador",
             "publicNote": "md5.4",
             "officerNote": "MD5.4MNDG",
-            "race": null,
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7602,7 +7755,7 @@
             "rank": "Explorador",
             "publicNote": "md6.4",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7620,7 +7773,7 @@
             "rank": "Explorador",
             "publicNote": "mg5.7",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7746,7 +7899,7 @@
             "rank": "Explorador",
             "publicNote": "mh5.7EN",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7845,7 +7998,7 @@
             "rank": "Explorador",
             "publicNote": "md5.7",
             "officerNote": "",
-            "race": "BE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7854,7 +8007,7 @@
             "rank": "Explorador",
             "publicNote": "ah5.6d5.0ENIN",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7872,7 +8025,7 @@
             "rank": "Explorador",
             "publicNote": "md5.6t5.0JWSK",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7899,7 +8052,7 @@
             "rank": "Explorador",
             "publicNote": "mh6.0",
             "officerNote": "",
-            "race": null,
+            "race": "BE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7944,7 +8097,7 @@
             "rank": "Explorador",
             "publicNote": "mt6.0",
             "officerNote": "alter de Jhexy",
-            "race": "DW",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -7971,7 +8124,7 @@
             "rank": "Explorador",
             "publicNote": "md5.8t5.6",
             "officerNote": "profano 5.7 dual tanke 5.6",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8007,7 +8160,7 @@
             "rank": "Explorador",
             "publicNote": "MT4.7",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8061,7 +8214,7 @@
             "rank": "Explorador",
             "publicNote": "md5.4h5.0",
             "officerNote": "",
-            "race": null,
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8133,7 +8286,7 @@
             "rank": "Explorador",
             "publicNote": "md5.3",
             "officerNote": "",
-            "race": null,
+            "race": "BE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8151,7 +8304,7 @@
             "rank": "Explorador",
             "publicNote": "ad4.3ALHB",
             "officerNote": "",
-            "race": null,
+            "race": "GN",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8187,7 +8340,7 @@
             "rank": "Explorador",
             "publicNote": "mh6.1t6.0",
             "officerNote": "",
-            "race": null,
+            "race": "BE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8331,7 +8484,7 @@
             "rank": "Explorador",
             "publicNote": "ad6.2",
             "officerNote": "",
-            "race": "TR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8349,7 +8502,7 @@
             "rank": "Explorador",
             "publicNote": "mh5.9",
             "officerNote": "",
-            "race": "OR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8358,7 +8511,7 @@
             "rank": "Explorador",
             "publicNote": "md5.7JWMN",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8421,7 +8574,7 @@
             "rank": "Explorador",
             "publicNote": "md5.9",
             "officerNote": "",
-            "race": "OR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8493,7 +8646,7 @@
             "rank": "Explorador",
             "publicNote": "md5.5",
             "officerNote": "",
-            "race": "DR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8520,7 +8673,7 @@
             "rank": "Explorador",
             "publicNote": "mh5.1d5.1",
             "officerNote": "",
-            "race": "TR",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8529,7 +8682,7 @@
             "rank": "Explorador",
             "publicNote": "mt5.7",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8556,7 +8709,7 @@
             "rank": "Explorador",
             "publicNote": "ad5.8JCBS",
             "officerNote": "",
-            "race": null,
+            "race": "OR",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8583,7 +8736,7 @@
             "rank": "Explorador",
             "publicNote": "md6.2h6.2",
             "officerNote": "",
-            "race": null,
+            "race": "DR",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8664,7 +8817,7 @@
             "rank": "Explorador",
             "publicNote": "md5.4",
             "officerNote": "",
-            "race": "HU",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8781,7 +8934,7 @@
             "rank": "Explorador",
             "publicNote": "mh5.1",
             "officerNote": "",
-            "race": "NE",
+            "race": null,
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8844,7 +8997,7 @@
             "rank": "Explorador",
             "publicNote": "md5.6",
             "officerNote": "",
-            "race": null,
+            "race": "BE",
             "guildLeave": false,
             "leaderData": {}
         },
@@ -8990,7 +9143,7 @@
             "race": "GN",
             "guildLeave": false,
             "leaderData": {
-                "lastUpdate": 1771129220,
+                "lastUpdate": 1771381623,
                 "cores": [
                     {
                         "raid": "ICC10H abas",
@@ -9017,6 +9170,26 @@
                                 "isLeader": 0,
                                 "isSanctioned": 1,
                                 "class": "PALADIN"
+                            },
+                            {
+                                "name": "Nasci",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Isolte",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "SHAMAN"
+                            },
+                            {
+                                "name": "Scarg",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "DEATHKNIGHT"
                             }
                         ]
                     },
@@ -9287,6 +9460,20 @@
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": "PRIEST"
+                            },
+                            {
+                                "name": "Scarg",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "DEATHKNIGHT"
+                            },
+                            {
+                                "name": "Swacretry",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "PALADIN"
                             }
                         ]
                     }
@@ -9735,8 +9922,8 @@
         "Voidhammer": {
             "class": "Paladín",
             "rank": "Administrador",
-            "publicNote": "ad6.1tlen",
-            "officerNote": "test",
+            "publicNote": "ad6.1t5.7tlen",
+            "officerNote": "",
             "race": "HU",
             "guildLeave": false,
             "leaderData": {
