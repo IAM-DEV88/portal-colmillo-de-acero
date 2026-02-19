@@ -13703,15 +13703,6 @@
             "guildLeave": true,
             "leaderData": {}
         },
-        "ICC10H abas": {
-            "class": "WARLOCK",
-            "rank": null,
-            "publicNote": null,
-            "officerNote": null,
-            "race": null,
-            "guildLeave": true,
-            "leaderData": {}
-        },
         "Soyelmal": {
             "class": "DEATHKNIGHT",
             "rank": null,
@@ -13811,26 +13802,8 @@
             "guildLeave": true,
             "leaderData": {}
         },
-        "ICC25N": {
-            "class": "DEATHKNIGHT",
-            "rank": null,
-            "publicNote": null,
-            "officerNote": null,
-            "race": null,
-            "guildLeave": true,
-            "leaderData": {}
-        },
         "Whiteferal": {
             "class": "DRUID",
-            "rank": null,
-            "publicNote": null,
-            "officerNote": null,
-            "race": null,
-            "guildLeave": true,
-            "leaderData": {}
-        },
-        "Entidad desconocida": {
-            "class": null,
             "rank": null,
             "publicNote": null,
             "officerNote": null,
@@ -13867,33 +13840,6 @@
         },
         "Shugarmami": {
             "class": "SHAMAN",
-            "rank": null,
-            "publicNote": null,
-            "officerNote": null,
-            "race": null,
-            "guildLeave": true,
-            "leaderData": {}
-        },
-        "ICC25H": {
-            "class": "WARLOCK",
-            "rank": null,
-            "publicNote": null,
-            "officerNote": null,
-            "race": null,
-            "guildLeave": true,
-            "leaderData": {}
-        },
-        "ICC10N": {
-            "class": "WARLOCK",
-            "rank": null,
-            "publicNote": null,
-            "officerNote": null,
-            "race": null,
-            "guildLeave": true,
-            "leaderData": {}
-        },
-        "Party": {
-            "class": "WARLOCK",
             "rank": null,
             "publicNote": null,
             "officerNote": null,
@@ -13957,15 +13903,6 @@
         },
         "Vessper": {
             "class": "WARRIOR",
-            "rank": null,
-            "publicNote": null,
-            "officerNote": null,
-            "race": null,
-            "guildLeave": true,
-            "leaderData": {}
-        },
-        "ICC10H": {
-            "class": "WARLOCK",
             "rank": null,
             "publicNote": null,
             "officerNote": null,
