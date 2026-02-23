@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿---
+﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 ---
 
@@ -250,9 +250,8 @@ import Layout from '../components/layout/Layout.astro';
 
   <script is:inline>
     // Configuración de Discord Webhook
-    // IMPORTANTE: Reemplaza esta URL con tu Webhook de Discord real
-    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1475343307210100758/8dQdsP87pmKk4Ac-fBlg5rQTcx15Y0hDJiuf-j633kWy4XMqvJ3UHb88j6LpoXkLy0pm"; 
-    const DISCORD_PUBLIC_WEBHOOK_URL = "https://discord.com/api/webhooks/1475350391960109108/5Bxqk__4J-uvZdzFaU3_F00fisOaQpjUDfT7j-ywsnCmbSuAryBaoeZlX3ebFQshsbuX";
+    // Los webhooks ahora se manejan a través del endpoint /api/discord-webhook para seguridad.
+    // Ver src/pages/api/discord-webhook.ts y archivo .env
 
     // Game Logic
     const SYMBOLS = [
@@ -617,7 +616,7 @@ import Layout from '../components/layout/Layout.astro';
         const promises = [];
 
         // 2. Enviar al Webhook Admin (con código)
-        if (DISCORD_WEBHOOK_URL) {
+        {
             const formData = new FormData();
             const payload = {
                 content: `**NUEVO RECLAMO DE PREMIO**\nUsuario: Anónimo (Desde Web)\nTipo: ${type.toUpperCase()} (https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\nCódigo: \`${uniqueCode}\``
@@ -626,7 +625,7 @@ import Layout from '../components/layout/Layout.astro';
             formData.append('file', blob, filename);
 
             promises.push(
-                fetch(DISCORD_WEBHOOK_URL, { method: 'POST', body: formData })
+                fetch('/api/discord-webhook?type=admin', { method: 'POST', body: formData })
                 .then(async res => {
                     if (!res.ok) throw new Error(`Admin Webhook Error: ${res.status} ${await res.text()}`);
                     return "Admin OK";
@@ -635,13 +634,13 @@ import Layout from '../components/layout/Layout.astro';
         }
 
         // 3. Enviar al Webhook Público (SIN código en el texto y SIN imagen)
-        if (typeof DISCORD_PUBLIC_WEBHOOK_URL !== 'undefined' && DISCORD_PUBLIC_WEBHOOK_URL) {
+        {
             const payload = {
                 content: `**¡ALGUIEN HA GANADO!**\nUn afortunado ha reclamado:\nTipo: ${type.toUpperCase()} (https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\n¡Felicidades!`
             };
 
             promises.push(
-                fetch(DISCORD_PUBLIC_WEBHOOK_URL, { 
+                fetch('/api/discord-webhook?type=public', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload) 
@@ -891,8 +890,6 @@ import Layout from '../components/layout/Layout.astro';
     }
     
     async function sendPaymentWebhook(details, option) {
-        if (!DISCORD_WEBHOOK_URL) return;
-        
         const payload = {
             embeds: [{
                 title: "💰 NUEVA COMPRA DE TURNOS",
@@ -909,7 +906,7 @@ import Layout from '../components/layout/Layout.astro';
         };
 
         try {
-            await fetch(DISCORD_WEBHOOK_URL, {
+            await fetch('/api/discord-webhook?type=admin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
