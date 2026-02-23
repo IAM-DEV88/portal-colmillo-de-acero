@@ -30,6 +30,15 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     const body = await request.json();
     const ip = getClientIP(request, clientAddress);
+
+    // Ignorar visitas locales (localhost/127.0.0.1)
+    if (ip === '127.0.0.1' || body.url?.includes('localhost') || body.url?.includes('127.0.0.1')) {
+        return new Response(JSON.stringify({ success: true, ignored: true }), { 
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
     const userAgent = request.headers.get('user-agent') || 'Unknown';
     
     // Construct simplified Discord Embed
