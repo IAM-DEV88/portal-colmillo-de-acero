@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿---
+﻿﻿﻿﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 ---
 
@@ -21,7 +21,7 @@ import Layout from '../components/layout/Layout.astro';
       <div class="w-full max-w-4xl mx-auto flex flex-col gap-4">
         
         <!-- ROW 1: REELS + SPIN BUTTON -->
-        <div id="game-container" class="flex flex-col md:flex-row items-center justify-center gap-4 w-full transition-all duration-300 rounded-xl p-2">
+        <div id="game-container" class="flex flex-col md:flex-row items-center justify-center gap-4 w-full transition-all duration-300 rounded-xl">
             
             <!-- Reels Container (Flexible width now) -->
             <div class="flex gap-2 md:gap-4 justify-center bg-black/80 p-4 rounded-lg border border-amber-900/50 shadow-inner w-full max-w-lg md:max-w-3xl flex-shrink-0 md:flex-shrink">
@@ -71,36 +71,38 @@ import Layout from '../components/layout/Layout.astro';
                         <span id="credits-display" class="text-white text-3xl font-extrabold drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">5</span>
                     </div>
                     
-                    <div class="flex flex-col items-center gap-2">
-                        <!-- Code Redemption -->
-                        <div class="flex items-center gap-1">
-                            <input type="text" id="redeem-code-input" placeholder="CÓDIGO" class="bg-gray-900/80 border border-gray-700 rounded px-2 py-1 text-[0.65rem] w-20 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 uppercase tracking-widest font-mono text-center shadow-inner" />
-                            <button onclick="redeemCode()" class="bg-gradient-to-b from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white text-[0.65rem] font-bold px-2 py-1 rounded transition-all shadow-md border border-amber-500/50">
-                                OK
-                            </button>
-                        </div>
-
-                        <!-- HERRAMIENTAS DE DESARROLLO (Descomentar para pruebas)
-                        <div class="flex gap-1 opacity-50 hover:opacity-100 transition-opacity">
+                    <!-- Actions (Middle) -->
+                    <div class="flex flex-col items-center gap-1 mx-2">
+                         <div class="flex gap-1 opacity-50 hover:opacity-100 transition-opacity">
                             <button onclick="resetGame()" class="text-[0.6rem] text-gray-600 hover:text-gray-400 border border-gray-800 rounded px-1 py-0.5 transition-colors" title="Reset Game">
                                 ⚠️
                             </button>
+                            <!--
                             <button onclick="simulateChokerSpin()" class="text-[0.6rem] text-purple-600 hover:text-purple-400 border border-purple-800 rounded px-1 py-0.5 transition-colors" title="Simulate Win">
                                 ✨
                             </button>
-                        </div>
-                        -->
-
-                        <button id="claim-btn" onclick="claimReward()" class="text-[0.6rem] text-green-600 hover:text-green-400 border border-green-800 rounded px-2 py-1 transition-colors mt-1 hidden" disabled>
+                            -->
+                         </div>
+                         <button id="claim-btn" onclick="claimReward()" class="text-[0.6rem] text-green-600 hover:text-green-400 border border-green-800 rounded px-2 py-1 transition-colors hidden" disabled>
                             ✅ RECLAMAR
-                        </button>
+                         </button>
                     </div>
 
                     <div class="flex flex-col items-end relative">
                         <span class="text-xs text-red-500/70 uppercase font-bold tracking-widest">Pozo Acumulado</span>
                         <span class="text-amber-200 text-2xl font-bold font-mono tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                            <span id="pool-display">100</span> 🪙
+                            <span id="pool-display">100</span> 🟡
                         </span>
+                    </div>
+                </div>
+
+                <!-- Code Redemption -->
+                <div class="flex flex-row justify-center items-center bg-black/60 p-4 rounded-lg border border-amber-900/30 backdrop-blur-sm">
+                    <div class="flex items-center gap-1">
+                        <input type="text" id="redeem-code-input" placeholder="INGRESA TU CÓDIGO" class="bg-gray-900/80 border border-gray-700 rounded px-3 py-2 text-sm flex-grow text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 uppercase tracking-widest font-mono text-center shadow-inner" />
+                        <button onclick="redeemCode()" class="bg-gradient-to-b from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white text-sm font-bold px-3 py-2 rounded transition-all shadow-md border border-amber-500/50">
+                            CANJEAR
+                        </button>
                     </div>
                 </div>
 
@@ -132,7 +134,7 @@ import Layout from '../components/layout/Layout.astro';
                     <span class="text-[0.6rem] text-yellow-300 font-bold uppercase mt-1 leading-tight text-center">Bolsa<br>2900 Oro</span>
                   </div>
                   <div class="flex flex-col items-center p-2 min-w-[3rem] bg-yellow-900/10 rounded border border-yellow-500/20">
-                    <span class="text-2xl">🪙</span>
+                    <span class="text-2xl">🟡</span>
                     <span class="text-[0.6rem] text-yellow-200 font-bold uppercase mt-1 leading-tight text-center">Moneda<br>600 Oro</span>
                   </div>
                   <div class="flex flex-col items-center p-2 min-w-[3rem] bg-green-900/20 rounded border border-green-500/30">
@@ -155,18 +157,18 @@ import Layout from '../components/layout/Layout.astro';
             <button onclick="showBuyModal(0)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all">
                 <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">5 Turnos</div>
                 <div class="text-gray-400 text-sm">$1 USD</div>
-                <div class="text-amber-300 text-xs mt-1">Incluye 500 Oro 🪙</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 500 Oro 🟡</div>
             </button>
             <button onclick="showBuyModal(1)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-amber-600 text-black text-[0.6rem] font-bold px-2 py-0.5 transform rotate-0 rounded-bl">POPULAR</div>
                 <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">15 Turnos</div>
                 <div class="text-gray-400 text-sm">$2 USD</div>
-                <div class="text-amber-300 text-xs mt-1">Incluye 1500 Oro 🪙</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 1500 Oro 🟡</div>
             </button>
             <button onclick="showBuyModal(2)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all">
                 <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">50 Turnos</div>
                 <div class="text-gray-400 text-sm">$5 USD</div>
-                <div class="text-amber-300 text-xs mt-1">Incluye 5000 Oro 🪙</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 5000 Oro 🟡</div>
             </button>
         </div>
 
@@ -188,23 +190,14 @@ import Layout from '../components/layout/Layout.astro';
       transition: transform 0.1s linear; /* Default, will be overridden by JS */
     }
     
-    .symbol {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      border: 2px solid transparent;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background-color: rgba(0,0,0,0.2);
-      padding: 0.5rem;
-      box-sizing: border-box;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
 
     .reel-container {
       box-shadow: inset 0 -20px 20px -10px rgba(0,0,0,0.8);
+
+      
+        white-space: nowrap; /* Force single line */
+        
+        text-overflow: ellipsis; /* Dot dot dot if it still overflows */
     }
 
     .symbol.highlight {
@@ -229,12 +222,6 @@ import Layout from '../components/layout/Layout.astro';
         text-align: center;
         margin-top: 0.1rem;
         
-        white-space: nowrap; /* Force single line */
-        line-height: 1;
-        width: 100%;
-        padding: 0 1px;
-        overflow: hidden;
-        text-overflow: ellipsis; /* Dot dot dot if it still overflows */
     }
 
     @media (min-width: 768px) {
@@ -268,7 +255,7 @@ import Layout from '../components/layout/Layout.astro';
     // Game Logic
     const SYMBOLS = [
       { id: 'skull', icon: '💀', weight: 50, name: 'MALDICIÓN' }, // Common (Loss)
-      { id: 'gold_small', icon: '🪙', weight: 28, name: 'MONEDA' }, // Frequent (Target 501-1000 range)
+      { id: 'gold_small', icon: '🟡', weight: 28, name: 'MONEDA' }, // Frequent (Target 501-1000 range)
       { id: 'gold_bag', icon: '💰', weight: 16, name: 'BOLSA' }, // Uncommon (Target 1001-3000 range)
       { id: 'chest', icon: '📦', weight: 2.5, name: 'COFRE' }, // Very Rare (Target 7000+)
       { id: 'choker', icon: '📿', weight: 0.5, name: 'GARGANTILLA' }, // Legendary (Item)
@@ -320,7 +307,7 @@ import Layout from '../components/layout/Layout.astro';
         goldPool += amount * 100; 
         localStorage.setItem('ruleta_pool', goldPool);
         
-        updateDisplay();
+        updateDisplay(false, amount * 100);
         showMessage(`¡+${amount} GIROS AÑADIDOS!`, 'text-green-400');
       };
     });
@@ -456,7 +443,7 @@ import Layout from '../components/layout/Layout.astro';
             floatEl.style.left = 'calc(50% + 30px)'; 
         } else if (elementId === 'credits-display') {
             // Adjust for credits-display to be 30px to the right
-            floatEl.style.left = 'calc(25%)';
+            floatEl.style.left = 'calc(50%)';
         }
         // The -translate-x-1/2 from the class will still apply, centering it relative to this new left.
         // For other elements, the default left-1/2 from the class will apply.
@@ -471,12 +458,15 @@ import Layout from '../components/layout/Layout.astro';
     }
 
     // Game State
-    function updateDisplay(finalUpdate = false) {
+    function updateDisplay(finalUpdate = false, amountChanged = null) {
        const creditsEl = document.getElementById('credits-display');
        const poolEl = document.getElementById('pool-display');
        
-       let currentCredits = creditsEl ? parseInt(creditsEl.innerText.replace(/,/g, '')) : 0;
-       let currentPool = poolEl ? parseInt(poolEl.innerText.replace(/,/g, '')) : 0;
+       let currentCredits = creditsEl ? parseInt(creditsEl.innerText.replace(/[^\d-]/g, '')) : 0;
+       let currentPool = poolEl ? parseInt(poolEl.innerText.replace(/[^\d-]/g, '')) : 0;
+
+       if (isNaN(currentCredits)) currentCredits = 0;
+       if (isNaN(currentPool)) currentPool = 0;
 
        if(creditsEl && currentCredits !== credits) {
            const diff = credits - currentCredits;
@@ -486,7 +476,9 @@ import Layout from '../components/layout/Layout.astro';
        if(poolEl && currentPool !== goldPool) {
            const diff = goldPool - currentPool;
            animateValue(poolEl, currentPool, goldPool, 1500);
-           showFloatingText('pool-display', diff);
+           
+           const displayChange = (amountChanged !== null) ? amountChanged : diff;
+           showFloatingText('pool-display', displayChange);
        }
 
        localStorage.setItem('ruleta_credits', credits);
@@ -543,7 +535,7 @@ import Layout from '../components/layout/Layout.astro';
         // Reset Pool
         goldPool = 0;
         localStorage.setItem('ruleta_pool', goldPool);
-        updateDisplay();
+        updateDisplay(false, -amount);
         
       } else if (type === 'choker') {
         const poolAmount = goldPool;
@@ -554,7 +546,7 @@ import Layout from '../components/layout/Layout.astro';
         hasWonChoker = false;
         goldPool = 0;
         localStorage.setItem('ruleta_pool', goldPool);
-        updateDisplay();
+        updateDisplay(false, -poolAmount);
       }
 
       // Create Canvas for Ticket
@@ -962,6 +954,7 @@ import Layout from '../components/layout/Layout.astro';
 
 
     function spin() {
+      const startPool = goldPool;
       if (credits <= 0 || isSpinning) return;
       
       // Set spinning state first
@@ -1015,11 +1008,39 @@ import Layout from '../components/layout/Layout.astro';
         updateHistoryDisplay();
 
         // Then update display (will show modal only if credits are still 0)
-        updateDisplay(true); // finalUpdate = true
+        updateDisplay(true, goldPool - startPool); // finalUpdate = true, pass change
       });
     }
 
+    function resetGame() {
+        if (!confirm('¿Estás seguro de reiniciar el juego? Se perderá todo el progreso actual.')) return;
+        
+        const oldCredits = credits;
+        const oldPool = goldPool;
+        
+        credits = 5;
+        goldPool = 100;
+        hasWonChoker = false;
+        spinHistory.length = 0; // Clear array
+        
+        localStorage.setItem('ruleta_credits', credits);
+        localStorage.setItem('ruleta_pool', goldPool);
+        
+        updateHistoryDisplay();
+        updateDisplay(false, goldPool - oldPool); // Pass negative change to animate down
+        
+        // Also force update credits display if it wasn't updated by updateDisplay (if we want to animate it too)
+        const creditsEl = document.getElementById('credits-display');
+        if (creditsEl) {
+             animateValue(creditsEl, oldCredits, credits, 1000);
+             showFloatingText('credits-display', credits - oldCredits);
+        }
+
+        showMessage('JUEGO REINICIADO', 'text-gray-400');
+    }
+
     function simulateChokerSpin() {
+      const startPool = goldPool;
       if (isSpinning) return;
 
       isSpinning = true;
@@ -1048,7 +1069,7 @@ import Layout from '../components/layout/Layout.astro';
         spinHistory.unshift([outcome[0], outcome[1], outcome[2]]);
         if (spinHistory.length > 3) spinHistory.pop();
         updateHistoryDisplay();
-        updateDisplay(true);
+        updateDisplay(true, goldPool - startPool);
       });
     }
 
@@ -1176,10 +1197,10 @@ import Layout from '../components/layout/Layout.astro';
 
       if (id1 === 'skull' && id2 === 'skull' && id3 === 'skull') {
         // BAD LUCK: LOSE POOL
+        const oldPool = goldPool;
         goldPool = Math.floor(goldPool / 2); // Lose half pool
         localStorage.setItem('ruleta_pool', goldPool);
         showMessage('☠️ ¡LA REINA RECLAMA TU ALMA! (Pozo reducido) ☠️', 'text-red-600 font-bold text-xl animate-pulse');
-        updateDisplay();
         return;
       }
 
