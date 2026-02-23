@@ -163,8 +163,8 @@
     "fin": "12-31",
     "enlaces": [
       {
-        "frase_cta": "🗳️ ¡Votaciones! 🗳️",
-        "url": "/voto"
+        "frase_cta": "🎰 ¡Juega a la Ruleta! 🎰",
+        "url": "/ruleta"
       }
     ],
     "activo": true

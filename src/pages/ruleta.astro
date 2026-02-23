@@ -1,0 +1,1100 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿---
+import Layout from '../components/layout/Layout.astro';
+---
+
+<Layout title="Ruleta de la Fortuna">
+      <main class="relative z-10 flex flex-col items-center">
+      
+      <!-- Paytable Toggle (Mobile) / Visible (Desktop) -->
+      <!-- Keeping Paytable at top or moving to bottom? User didn't specify, but implies main game UI first. -->
+      <!-- Let's keep paytable collapsible or smaller at bottom, or top as "Leyenda" -->
+      
+      <!-- Message Area (Moved to Top) -->
+      <div class="w-full max-w-4xl mx-auto mb-4">
+        <div class="w-full bg-black/40 rounded-lg border border-amber-500/20 p-4 min-h-[4rem] flex items-center justify-center text-center backdrop-blur-sm">
+            <div id="message-display" class="text-amber-100/80 text-lg md:text-xl font-light tracking-wide animate-fade-in">
+                ¿Te atreves a desafiar a la Reina?
+            </div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-4xl mx-auto flex flex-col gap-4">
+        
+        <!-- ROW 1: REELS + SPIN BUTTON -->
+        <div id="game-container" class="flex flex-col md:flex-row items-center justify-center gap-4 w-full transition-all duration-300 rounded-xl p-2">
+            
+            <!-- Reels Container (Flexible width now) -->
+            <div class="flex gap-2 md:gap-4 justify-center bg-black/80 p-4 rounded-lg border border-amber-900/50 shadow-inner w-full max-w-lg md:max-w-3xl flex-shrink-0 md:flex-shrink">
+                <!-- Reel 1 -->
+                <div class="reel-container flex-1 min-w-[5rem] h-20 md:h-28 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 rounded border border-amber-500/30 overflow-hidden relative">
+                    <div class="reel-strip absolute top-0 left-0 w-full" id="reel-1"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90 pointer-events-none z-10"></div>
+                    <div class="absolute inset-0 border-2 border-amber-900/30 pointer-events-none z-20"></div>
+                </div>
+                
+                <!-- Reel 2 -->
+                <div class="reel-container flex-1 min-w-[5rem] h-20 md:h-28 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 rounded border border-amber-500/30 overflow-hidden relative">
+                    <div class="reel-strip absolute top-0 left-0 w-full" id="reel-2"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90 pointer-events-none z-10"></div>
+                    <div class="absolute inset-0 border-2 border-amber-900/30 pointer-events-none z-20"></div>
+                </div>
+                
+                <!-- Reel 3 -->
+                <div class="reel-container flex-1 min-w-[5rem] h-20 md:h-28 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 rounded border border-amber-500/30 overflow-hidden relative">
+                    <div class="reel-strip absolute top-0 left-0 w-full" id="reel-3"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90 pointer-events-none z-10"></div>
+                    <div class="absolute inset-0 border-2 border-amber-900/30 pointer-events-none z-20"></div>
+                </div>
+            </div>
+
+            <!-- Spin Button (Right of Reels on Desktop, Below on Mobile) -->
+            <button id="spin-btn" class="group relative px-8 py-4 md:py-8 bg-gradient-to-b from-amber-600 to-amber-800 rounded-xl border-4 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.5)] transform active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_40px_rgba(245,158,11,0.8)] flex flex-col items-center justify-center">
+                <span class="text-3xl md:text-4xl mb-1 filter drop-shadow-lg group-hover:animate-bounce">🎰</span>
+                <span class="font-black text-white text-lg md:text-xl uppercase tracking-widest drop-shadow-md">GIRAR</span>
+                <span class="text-xs text-amber-200 font-bold mt-1 bg-black/30 px-2 py-0.5 rounded">-1 Turno</span>
+                
+                <!-- Shiny effect -->
+                <div class="absolute inset-0 rounded-lg bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            </button>
+        </div>
+
+        <!-- ROW 2: STATS & STACK -->
+        <div class="flex flex-col md:flex-row gap-4 w-full">
+            
+            <!-- Left Column: Stats & History -->
+            <div class="flex-1 flex flex-col gap-4">
+                
+                <!-- Stats (Turnos y Pozo) -->
+                <div class="flex flex-row justify-between items-center bg-black/60 p-4 rounded-lg border border-amber-900/30 backdrop-blur-sm">
+                    <div class="flex flex-col relative">
+                        <span class="text-xs text-amber-500/70 uppercase font-bold tracking-widest">Tus Turnos</span>
+                        <span id="credits-display" class="text-white text-3xl font-extrabold drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">5</span>
+                    </div>
+                    
+                    <div class="flex flex-col items-center">
+                        <button onclick="resetGame()" class="text-[0.6rem] text-gray-600 hover:text-gray-400 border border-gray-800 rounded px-2 py-1 transition-colors">
+                            ⚠️ RESET
+                        </button>
+                        <button onclick="simulateChokerSpin()" class="text-[0.6rem] text-purple-600 hover:text-purple-400 border border-purple-800 rounded px-2 py-1 transition-colors mt-1">
+                            ✨ 3 GARGANTILLAS
+                        </button>
+                        <button id="claim-btn" onclick="claimReward()" class="text-[0.6rem] text-green-600 hover:text-green-400 border border-green-800 rounded px-2 py-1 transition-colors mt-1 hidden" disabled>
+                            ✅ RECLAMAR
+                        </button>
+                    </div>
+
+                    <div class="flex flex-col items-end relative">
+                        <span class="text-xs text-red-500/70 uppercase font-bold tracking-widest">Pozo Acumulado</span>
+                        <span class="text-amber-200 text-2xl font-bold font-mono tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            <span id="pool-display">100</span> 🪙
+                        </span>
+                    </div>
+                </div>
+
+                <!-- History Stack (Moved here) -->
+                <div class="bg-black/60 border border-amber-900/50 rounded-lg p-2 backdrop-blur-sm">
+                    <div class="text-[0.6rem] text-amber-500/70 uppercase font-bold tracking-widest mb-1 text-center">Últimos Giros</div>
+                    <div id="history-stack" class="flex flex-wrap justify-center gap-2 min-h-[2.5rem]">
+                        <!-- History items will be injected here -->
+                        <div class="text-xs text-gray-500 italic">Sin historial</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Paytable Mini -->
+            <div class="flex-1 bg-black/60 border border-amber-900/50 rounded-lg p-2 backdrop-blur-sm flex items-center justify-center">
+                <div class="grid grid-cols-3 gap-2 w-full max-w-sm mx-auto">
+                  <!-- Condensed Paytable Items -->
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-purple-900/20 rounded border border-purple-500/30">
+                    <span class="text-2xl">📿</span>
+                    <span class="text-[0.6rem] text-purple-300 font-bold uppercase mt-1 leading-tight text-center">Gargantilla<br>(Item Real)</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-blue-900/20 rounded border border-blue-500/30">
+                    <span class="text-2xl">📦</span>
+                    <span class="text-[0.6rem] text-blue-300 font-bold uppercase mt-1 leading-tight text-center">Cofre<br>7k Oro</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-yellow-900/20 rounded border border-yellow-500/30">
+                    <span class="text-2xl">💰</span>
+                    <span class="text-[0.6rem] text-yellow-300 font-bold uppercase mt-1 leading-tight text-center">Bolsa<br>2900 Oro</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-yellow-900/10 rounded border border-yellow-500/20">
+                    <span class="text-2xl">🪙</span>
+                    <span class="text-[0.6rem] text-yellow-200 font-bold uppercase mt-1 leading-tight text-center">Moneda<br>600 Oro</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-green-900/20 rounded border border-green-500/30">
+                    <span class="text-2xl">🗡️</span>
+                    <span class="text-[0.6rem] text-green-400 font-bold uppercase mt-1 leading-tight text-center">Pícaro<br>+5 Turnos</span>
+                  </div>
+                   <div class="flex flex-col items-center p-2 min-w-[3rem] bg-red-900/20 rounded border border-red-500/30">
+                    <span class="text-2xl">💀</span>
+                    <span class="text-[0.6rem] text-red-400 font-bold uppercase mt-1 leading-tight text-center">Maldición<br>Perder</span>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 3: INDICATORS (Removed, moved to top) -->
+        <!-- Old location was here -->
+
+        <!-- Buy Credits Section -->
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <button onclick="addCredits(5)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all">
+                <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">5 Turnos</div>
+                <div class="text-gray-400 text-sm">$1 USD</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 500 Oro 🪙</div>
+            </button>
+            <button onclick="addCredits(15)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-amber-600 text-black text-[0.6rem] font-bold px-2 py-0.5 transform rotate-0 rounded-bl">POPULAR</div>
+                <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">15 Turnos</div>
+                <div class="text-gray-400 text-sm">$2 USD</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 1500 Oro 🪙</div>
+            </button>
+            <button onclick="addCredits(50)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all">
+                <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">50 Turnos</div>
+                <div class="text-gray-400 text-sm">$5 USD</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 5000 Oro 🪙</div>
+            </button>
+        </div>
+
+      </div>
+    </main>
+
+  <style>
+    .font-title { font-family: 'Arial', sans-serif; }
+    
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .animate-shine { animation: shine 2s infinite; }
+
+    .reel-strip {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.1s linear; /* Default, will be overridden by JS */
+    }
+    
+    .symbol {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border: 2px solid transparent;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: rgba(0,0,0,0.2);
+      padding: 0.5rem;
+      box-sizing: border-box;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .reel-container {
+      box-shadow: inset 0 -20px 20px -10px rgba(0,0,0,0.8);
+    }
+
+    .symbol.highlight {
+      border: 2px solid #fbbf24;
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+      background-color: rgba(251, 191, 36, 0.1);
+      z-index: 25;
+      border-radius: 0.5rem;
+    }
+
+    .symbol span {
+        font-size: 3rem;
+        line-height: 1;
+    }
+    
+    .symbol-label {
+        font-size: 0.5rem; 
+        color: #fbbf24; 
+        text-transform: uppercase;
+        font-weight: 800;
+        text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        text-align: center;
+        margin-top: 0.1rem;
+        
+        white-space: nowrap; /* Force single line */
+        line-height: 1;
+        width: 100%;
+        padding: 0 1px;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Dot dot dot if it still overflows */
+    }
+
+    @media (min-width: 768px) {
+        .symbol {
+            height: 10rem; 
+        }
+        .symbol span {
+            font-size: 4rem;
+        }
+        .symbol-label {
+        font-size: 0.75rem; /* Increased slightly for desktop as we shortened names */
+    }
+
+    @keyframes floatUpFade {
+      0% { transform: translate(-50%, -50%) translateY(0) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateY(-30px) scale(1.1); opacity: 0; }
+    }
+    .floating-stat {
+      /* Base styles in JS class string, animation here */
+      animation: floatUpFade 2s ease-out forwards;
+    }
+  }
+  </style>
+
+  <script is:inline>
+    // Configuración de Discord Webhook
+    // IMPORTANTE: Reemplaza esta URL con tu Webhook de Discord real
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1475343307210100758/8dQdsP87pmKk4Ac-fBlg5rQTcx15Y0hDJiuf-j633kWy4XMqvJ3UHb88j6LpoXkLy0pm"; 
+    const DISCORD_PUBLIC_WEBHOOK_URL = "https://discord.com/api/webhooks/1475350391960109108/5Bxqk__4J-uvZdzFaU3_F00fisOaQpjUDfT7j-ywsnCmbSuAryBaoeZlX3ebFQshsbuX";
+
+    // Game Logic
+    const SYMBOLS = [
+      { id: 'skull', icon: '💀', weight: 50, name: 'MALDICIÓN' }, // Common (Loss)
+      { id: 'gold_small', icon: '🪙', weight: 28, name: 'MONEDA' }, // Frequent (Target 501-1000 range)
+      { id: 'gold_bag', icon: '💰', weight: 16, name: 'BOLSA' }, // Uncommon (Target 1001-3000 range)
+      { id: 'chest', icon: '📦', weight: 2.5, name: 'COFRE' }, // Very Rare (Target 7000+)
+      { id: 'choker', icon: '📿', weight: 0.5, name: 'GARGANTILLA' }, // Legendary (Item)
+      { id: 'thief', icon: '🗡️', weight: 3, name: 'PÍCARO' } // Rare (Turns)
+    ];
+
+    let credits = parseInt(localStorage.getItem('ruleta_credits') || '5'); // Start with fewer turns (5 instead of 10)
+    let goldPool = parseInt(localStorage.getItem('ruleta_pool') || '100'); 
+    let isSpinning = false;
+    let hasWonChoker = false; // Nueva variable para rastrear si se ganó una gargantilla
+    
+    // History stack to store last spins
+    const spinHistory = [];
+
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load credits
+      const savedCredits = localStorage.getItem('ruleta_credits');
+      if (savedCredits) credits = parseInt(savedCredits);
+      else localStorage.setItem('ruleta_credits', credits);
+
+      // Load Gold Pool (simulated persistence for demo)
+      const savedPool = localStorage.getItem('ruleta_pool');
+      if (savedPool) goldPool = parseInt(savedPool);
+      else localStorage.setItem('ruleta_pool', goldPool);
+
+      // Initial display without animation
+      const creditsEl = document.getElementById('credits-display');
+      const poolEl = document.getElementById('pool-display');
+      if(creditsEl) creditsEl.innerHTML = credits.toLocaleString();
+      if(poolEl) poolEl.innerHTML = goldPool.toLocaleString();
+      
+      updateHistoryDisplay();
+      updateDisplay(true); // Añadir esta línea para asegurar que el botón Reclamar se evalúe al cargar la página
+      
+      // Init Reels
+      initReel('reel-1');
+      initReel('reel-2');
+      initReel('reel-3');
+      
+      // Event Listeners
+      document.getElementById('spin-btn').addEventListener('click', spin);
+      
+      window.addCredits = (amount) => {
+        credits += amount;
+        localStorage.setItem('ruleta_credits', credits);
+        // Increase pool when buying credits to simulate community pot
+        goldPool += amount * 100; 
+        localStorage.setItem('ruleta_pool', goldPool);
+        
+        updateDisplay();
+        showMessage(`¡+${amount} GIROS AÑADIDOS!`, 'text-green-400');
+      };
+    });
+
+    function updateHistoryDisplay() {
+        const container = document.getElementById('history-stack');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        if (spinHistory.length === 0) {
+            container.innerHTML = '<div class="text-xs text-gray-500 italic p-2">Sin historial</div>';
+            return;
+        }
+
+        spinHistory.forEach(spin => { 
+            const div = document.createElement('div');
+            div.className = 'flex items-center gap-1 bg-black/40 px-2 py-1 rounded border border-gray-800 min-w-max animate-fade-in';
+            
+            spin.forEach(sym => {
+                const span = document.createElement('span');
+                span.textContent = sym.icon;
+                span.className = 'text-lg leading-none';
+                div.appendChild(span);
+            });
+            
+            container.appendChild(div);
+        });
+    }
+
+    function initReel(elementId) {
+      const reel = document.getElementById(elementId);
+      reel.innerHTML = '';
+      
+      // Generate random strip
+      for (let i = 0; i < 20; i++) {
+        const symbol = getRandomSymbol();
+        const div = createSymbolElement(symbol);
+        reel.appendChild(div);
+      }
+    }
+
+    function getRandomSymbol() {
+      // Weighted random
+      const totalWeight = SYMBOLS.reduce((sum, s) => sum + s.weight, 0);
+      let random = Math.random() * totalWeight;
+      
+      for (const symbol of SYMBOLS) {
+        random -= symbol.weight;
+        if (random <= 0) return symbol;
+      }
+      return SYMBOLS[0];
+    }
+
+    // Number Animation Helper
+    function animateValue(obj, start, end, duration) {
+        if (start === end) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // Ease-out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+            const value = Math.floor(ease * (end - start) + start);
+            obj.innerHTML = value.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.innerHTML = end.toLocaleString();
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Floating Text Helper
+    function showFloatingText(elementId, change) {
+        if (change === 0) return;
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        
+        // Find closest relative parent or use immediate parent
+        let parent = el.closest('.relative') || el.parentElement;
+        
+        // Ensure parent is relative if not already (safeguard)
+        if (getComputedStyle(parent).position === 'static') {
+            parent.style.position = 'relative';
+        }
+
+        const floatEl = document.createElement('div');
+        // Use absolute positioning with transform to center
+        floatEl.className = 'floating-stat pointer-events-none absolute top-1/2 -translate-y-1/2 text-xl font-bold z-50 whitespace-nowrap ' + 
+                            (change > 0 ? 'text-green-400 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' : 'text-red-500 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]');
+        
+        floatEl.innerText = (change > 0 ? '+' : '') + change.toLocaleString();
+
+        // Adjust position based on elementId
+        if (elementId === 'pool-display') {
+            // Override the left-1/2 from the class to move it 30px to the right
+            floatEl.style.left = 'calc(50% + 30px)'; 
+        } else if (elementId === 'credits-display') {
+            // Adjust for credits-display to be 30px to the right
+            floatEl.style.left = 'calc(25%)';
+        }
+        // The -translate-x-1/2 from the class will still apply, centering it relative to this new left.
+        // For other elements, the default left-1/2 from the class will apply.
+        
+        // Append to parent
+        parent.appendChild(floatEl);
+        
+        // Remove after animation (match CSS duration)
+        setTimeout(() => {
+            if (floatEl.parentNode) floatEl.remove();
+        }, 2000);
+    }
+
+    // Game State
+    function updateDisplay(finalUpdate = false) {
+       const creditsEl = document.getElementById('credits-display');
+       const poolEl = document.getElementById('pool-display');
+       
+       let currentCredits = creditsEl ? parseInt(creditsEl.innerText.replace(/,/g, '')) : 0;
+       let currentPool = poolEl ? parseInt(poolEl.innerText.replace(/,/g, '')) : 0;
+
+       if(creditsEl && currentCredits !== credits) {
+           const diff = credits - currentCredits;
+           animateValue(creditsEl, currentCredits, credits, 1000);
+           showFloatingText('credits-display', diff);
+       }
+       if(poolEl && currentPool !== goldPool) {
+           const diff = goldPool - currentPool;
+           animateValue(poolEl, currentPool, goldPool, 1500);
+           showFloatingText('pool-display', diff);
+       }
+
+       localStorage.setItem('ruleta_credits', credits);
+       localStorage.setItem('ruleta_pool', goldPool);
+
+       const claimBtn = document.getElementById('claim-btn');
+       if (claimBtn) {
+           const shouldBeActive = (credits <= 0 || hasWonChoker) && !isSpinning;
+           claimBtn.disabled = !shouldBeActive;
+           claimBtn.classList.toggle('hidden', !shouldBeActive);
+       }
+
+       if (credits <= 0 && !isSpinning && finalUpdate) {
+         document.getElementById('spin-btn').disabled = true;
+         document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
+         // Wait for animation (1000ms) + small delay
+         setTimeout(() => showGameOver(hasWonChoker), 1200); 
+       } else if (!isSpinning) {
+         document.getElementById('spin-btn').disabled = false;
+         document.getElementById('spin-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+       }
+    }
+
+    let modalCountdownIntervalId;
+
+    function getFormattedTimeUntilMidnight() {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0); // Próxima medianoche
+
+      const timeLeft = midnight.getTime() - now.getTime();
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      const restartDate = midnight.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      return {
+        time: `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`,
+        date: restartDate
+      };
+    }
+
+    async function handleDiscordClaim(type) {
+      let claimText = "";
+      let subText = "";
+      let amount = 0;
+
+      if (type === 'pool') {
+        amount = goldPool; 
+        claimText = `RECLAMO DE POZO: ${amount.toLocaleString()} ORO`;
+        subText = "¡La suerte te sonríe!";
+        
+        // Reset Pool
+        goldPool = 0;
+        localStorage.setItem('ruleta_pool', goldPool);
+        updateDisplay();
+        
+      } else if (type === 'choker') {
+        const poolAmount = goldPool;
+        claimText = `¡GARGANTILLA + ${poolAmount.toLocaleString()} ORO!`;
+        subText = "Item Legendario y Pozo Obtenidos";
+        
+        // Reset Choker and Pool
+        hasWonChoker = false;
+        goldPool = 0;
+        localStorage.setItem('ruleta_pool', goldPool);
+        updateDisplay();
+      }
+
+      // Create Canvas for Ticket
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, '#1a1a1a');
+      gradient.addColorStop(1, '#000000');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Border
+      ctx.strokeStyle = '#F59E0B'; 
+      ctx.lineWidth = 8;
+      ctx.strokeRect(4, 4, canvas.width-8, canvas.height-8);
+      
+      // Inner Border
+      ctx.strokeStyle = '#92400E'; 
+      ctx.lineWidth = 2;
+      ctx.strokeRect(15, 15, canvas.width-30, canvas.height-30);
+
+      // Title
+      ctx.fillStyle = '#F59E0B';
+      ctx.font = 'bold 32px Arial';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = "rgba(245, 158, 11, 0.5)";
+      ctx.shadowBlur = 10;
+      ctx.fillText(claimText, canvas.width/2, 100);
+      ctx.shadowBlur = 0;
+
+      // Subtext
+      ctx.fillStyle = '#D1D5DB';
+      ctx.font = 'italic 20px Arial';
+      ctx.fillText(subText, canvas.width/2, 140);
+
+      // Date
+      const date = new Date().toLocaleString('es-ES', { dateStyle: 'full', timeStyle: 'short' });
+      ctx.fillStyle = '#9CA3AF';
+      ctx.font = '16px Arial';
+      ctx.fillText(`Fecha: ${date}`, canvas.width/2, 200);
+      
+      // Verification Code
+      const uniqueCode = `R-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random()*1000)}`;
+      ctx.fillStyle = '#4B5563';
+      ctx.font = 'bold 18px Courier New';
+      ctx.fillText(`ID VERIFICACIÓN:`, canvas.width/2, 280);
+      
+      ctx.fillStyle = '#FFF';
+      ctx.font = 'bold 24px Courier New';
+      ctx.fillText(uniqueCode, canvas.width/2, 310);
+      
+      // Footer
+      ctx.fillStyle = '#6B7280';
+      ctx.font = '14px Arial';
+      ctx.fillText("Sube esta imagen a Discord para validar tu premio", canvas.width/2, 360);
+
+      canvas.toBlob(async (blob) => {
+        // 1. Siempre descargar la imagen para el usuario
+        downloadTicket(canvas, type);
+
+        const filename = `TICKET-${type.toUpperCase()}-${Date.now()}.png`;
+        const promises = [];
+
+        // 2. Enviar al Webhook Admin (con código)
+        if (DISCORD_WEBHOOK_URL) {
+            const formData = new FormData();
+            const payload = {
+                content: `**NUEVO RECLAMO DE PREMIO**\nUsuario: Anónimo (Desde Web)\nTipo: ${type.toUpperCase()} (https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\nCódigo: \`${uniqueCode}\``
+            };
+            formData.append('payload_json', JSON.stringify(payload));
+            formData.append('file', blob, filename);
+
+            promises.push(
+                fetch(DISCORD_WEBHOOK_URL, { method: 'POST', body: formData })
+                .then(async res => {
+                    if (!res.ok) throw new Error(`Admin Webhook Error: ${res.status} ${await res.text()}`);
+                    return "Admin OK";
+                })
+            );
+        }
+
+        // 3. Enviar al Webhook Público (SIN código en el texto y SIN imagen)
+        if (typeof DISCORD_PUBLIC_WEBHOOK_URL !== 'undefined' && DISCORD_PUBLIC_WEBHOOK_URL) {
+            const payload = {
+                content: `**¡ALGUIEN HA GANADO!**\nUn afortunado ha reclamado:\nTipo: ${type.toUpperCase()} (https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\n¡Felicidades!`
+            };
+
+            promises.push(
+                fetch(DISCORD_PUBLIC_WEBHOOK_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload) 
+                })
+                .then(async res => {
+                    if (!res.ok) throw new Error(`Public Webhook Error: ${res.status} ${await res.text()}`);
+                    return "Public OK";
+                })
+            );
+        }
+
+        if (promises.length > 0) {
+            try {
+                const results = await Promise.allSettled(promises);
+                const errors = results.filter(r => r.status === 'rejected');
+                
+                if (errors.length > 0) {
+                    console.error('Algunos envíos fallaron:', errors);
+                    alert('Ticket descargado. Hubo un problema enviando a Discord automáticamente, por favor súbelo manualmente.');
+                    window.open('https://discord.gg/Rq5Y54kh', '_blank');
+                } else {
+                    alert('¡Felicidades! Ticket descargado y enviado a Discord exitosamente.');
+                }
+            } catch (err) {
+                console.error('Error general en envío:', err);
+            }
+        } else {
+            // Si no hay webhooks, solo abrir discord
+            setTimeout(() => {
+                window.open('https://discord.gg/Rq5Y54kh', '_blank');
+            }, 1000);
+        }
+      }, 'image/png');
+      
+      closeModalAndClearInterval();
+    }
+
+    function downloadTicket(canvas, type) {
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `TICKET-${type.toUpperCase()}-${Date.now()}.png`;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        console.error("Error generating ticket:", e);
+        alert("Error generando ticket. Por favor toma una captura de pantalla.");
+      }
+    }
+
+    function closeModalAndClearInterval() {
+      const modal = document.getElementById('game-over-modal');
+      if (modal) {
+        modal.remove();
+      }
+      if (modalCountdownIntervalId) {
+        clearInterval(modalCountdownIntervalId);
+        modalCountdownIntervalId = null;
+      }
+    }
+
+    function showGameOver(wonChoker = false) {
+      // Prevent multiple modals
+      if (document.getElementById('game-over-modal')) return;
+      
+      let modalContent = '';
+      const countdownInfo = getFormattedTimeUntilMidnight();
+
+      if (wonChoker) {
+        modalContent = `
+          <div class="bg-gradient-to-b from-gray-900 to-black border-2 border-purple-600 rounded-xl p-6 max-w-md w-full text-center shadow-[0_0_50px_rgba(139,92,246,0.3)]">
+            <div class="text-4xl mb-4">�</div>
+            <h2 class="text-2xl font-bold text-purple-500 mb-2 uppercase">¡Gargantilla Ganada!</h2>
+            <p class="text-gray-300 mb-4">Has conquistado la gargantilla de la Reina.</p>
+            <p class="text-sm text-gray-400 mt-2">El juego se reinicia el ${countdownInfo.date} en: <span id="modal-countdown-display">${countdownInfo.time}</span></p>
+            <div class="space-y-3">
+              <button onclick="handleDiscordClaim('choker')" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded transition transform hover:scale-105 shadow-lg border border-indigo-500/50">
+                📸 Reclamar Gargantilla en Discord
+              </button>
+              ${credits > 0 ? `
+              <button onclick="closeModalAndClearInterval()" class="block w-full bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 px-4 rounded transition transform hover:scale-105">
+                ▶️ Continuar Jugando
+              </button>
+              ` : `
+              <button onclick="closeModalAndClearInterval()" class="block w-full bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 px-4 rounded transition transform hover:scale-105">
+                🔄 Comprar Más Turnos
+              </button>
+              `}
+            </div>
+            <button onclick="closeModalAndClearInterval()" class="mt-4 text-sm text-gray-500 hover:text-gray-400 underline">Cerrar y mirar</button>
+          </div>
+        `;
+      } else {
+        modalContent = `
+          <div class="bg-gradient-to-b from-gray-900 to-black border-2 border-amber-600 rounded-xl p-6 max-w-md w-full text-center shadow-[0_0_50px_rgba(245,158,11,0.3)]">
+            <div class="text-4xl mb-4">🎰</div>
+            <h2 class="text-2xl font-bold text-amber-500 mb-2 uppercase">¡Sin Créditos!</h2>
+            <p class="text-gray-300 mb-4">La suerte es caprichosa... ¿Te vas a rendir ahora?</p>
+            
+            <div class="bg-black/40 rounded p-3 mb-6 border border-amber-900/30">
+              <div class="text-xs text-amber-500 uppercase tracking-widest mb-1">Pozo Actual a Reclamar</div>
+              <div class="text-2xl font-mono font-bold text-amber-300 drop-shadow-md">
+                ${goldPool.toLocaleString()} 🪙
+              </div>
+            </div>
+            
+            <p class="text-sm text-gray-400 mt-2">El juego se reinicia el ${countdownInfo.date} en: <span id="modal-countdown-display">${countdownInfo.time}</span></p>
+            <div class="space-y-3">
+              ${goldPool > 0 ? `
+              <button onclick="handleDiscordClaim('pool')" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded transition transform hover:scale-105 shadow-lg border border-indigo-500/50">
+                📸 Reclamar Premio en Discord
+              </button>
+              ` : ''}
+              <button onclick="closeModalAndClearInterval()" class="block w-full bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 px-4 rounded transition transform hover:scale-105">
+                🔄 Comprar Más Turnos
+              </button>
+            </div>
+            <button onclick="closeModalAndClearInterval()" class="mt-4 text-sm text-gray-500 hover:text-gray-400 underline">Cerrar y mirar</button>
+          </div>
+        `;
+      }
+
+      const modal = document.createElement('div');
+      modal.id = 'game-over-modal';
+      modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-fade-in';
+      modal.innerHTML = modalContent;
+      document.body.appendChild(modal);
+
+      // Start countdown in modal
+      modalCountdownIntervalId = setInterval(() => {
+        const countdownEl = document.getElementById('modal-countdown-display');
+        if (countdownEl) {
+          countdownEl.textContent = getFormattedTimeUntilMidnight().time;
+        } else {
+          // If element is not found, modal might have been closed, clear interval
+          clearInterval(modalCountdownIntervalId);
+          modalCountdownIntervalId = null;
+        }
+      }, 1000);
+    }
+
+    function resetGame() {
+      localStorage.removeItem('ruleta_credits');
+      localStorage.removeItem('ruleta_pool');
+      hasWonChoker = false; // Reiniciar el estado de la gargantilla
+      document.getElementById('claim-btn').classList.add('hidden'); // Asegurarse de que el botón Reclamar esté oculto al reiniciar
+      document.getElementById('claim-btn').disabled = true; // Asegurarse de que el botón Reclamar esté deshabilitado al reiniciar
+      window.location.reload();
+    }
+
+    function claimReward() {
+      showMessage('¡PREMIO RECLAMADO! Redirigiendo...', 'text-green-400', 1000);
+      // Optionally, clear the pool after claiming if it's a one-time claim
+      // goldPool = 0;
+      // localStorage.setItem('ruleta_pool', goldPool);
+      
+      // Show the game over modal which has the Discord link
+      setTimeout(() => showGameOver(hasWonChoker), 1500); 
+    }
+
+    function showMessage(msg, colorClass = 'text-amber-300', duration = 3000) {
+      const el = document.getElementById('message-display');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = `text-lg md:text-xl font-medium tracking-wide animate-pulse ${colorClass}`;
+
+      if (duration > 0) {
+        setTimeout(() => {
+          // Revert to default message and classes after duration
+          el.textContent = '¿Te atreves a desafiar a la Reina?';
+          el.className = 'text-amber-100/80 text-lg md:text-xl font-light tracking-wide animate-fade-in';
+        }, duration);
+      }
+    }
+
+
+
+    function spin() {
+      if (credits <= 0 || isSpinning) return;
+      
+      // Set spinning state first
+      isSpinning = true;
+      document.getElementById('spin-btn').disabled = true;
+      document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
+
+      credits--;
+      // Add a small amount to the pool each spin
+      goldPool += 10;
+      
+      localStorage.setItem('ruleta_credits', credits);
+      localStorage.setItem('ruleta_pool', goldPool);
+      
+      // DO NOT update display yet, wait for animation
+      // updateDisplay();
+      
+      showMessage('LA REINA DECIDE TU DESTINO...', 'text-red-400');
+      
+      // Determine outcome
+      const outcome = getOutcome();
+      
+      // Animate reels
+      // Reset highlights
+      document.querySelectorAll('.symbol.highlight').forEach(el => el.classList.remove('highlight'));
+
+      animateReel('reel-1', outcome[0], 1500, () => {
+          highlightReel('reel-1');
+          showMessage(`${outcome[0].name}`, 'text-amber-200');
+      });
+      
+      animateReel('reel-2', outcome[1], 2500, () => {
+          highlightReel('reel-2');
+          if (outcome[0].id === outcome[1].id) {
+             showMessage(`¡DOS ${outcome[1].name}S!`, 'text-yellow-400 font-bold animate-pulse');
+          } else {
+             showMessage(`${outcome[1].name}`, 'text-amber-200');
+          }
+      });
+      
+      animateReel('reel-3', outcome[2], 3500, () => {
+        highlightReel('reel-3');
+        isSpinning = false;
+        
+        // Check win first to potentially add credits
+        checkWin(outcome);
+        
+        // Add outcome to history reliably AFTER spin completes
+        spinHistory.unshift([outcome[0], outcome[1], outcome[2]]);
+        if (spinHistory.length > 3) spinHistory.pop(); // Keep only last 3
+        updateHistoryDisplay();
+
+        // Then update display (will show modal only if credits are still 0)
+        updateDisplay(true); // finalUpdate = true
+      });
+    }
+
+    function simulateChokerSpin() {
+      if (isSpinning) return;
+
+      isSpinning = true;
+      document.getElementById('spin-btn').disabled = true;
+      document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
+
+      showMessage('¡SIMULANDO TRES GARGANTILLAS!', 'text-purple-400');
+
+      const chokerSymbol = SYMBOLS.find(s => s.id === 'choker');
+      const outcome = [chokerSymbol, chokerSymbol, chokerSymbol];
+
+      document.querySelectorAll('.symbol.highlight').forEach(el => el.classList.remove('highlight'));
+
+      animateReel('reel-1', outcome[0], 1500, () => {
+          highlightReel('reel-1');
+      });
+      
+      animateReel('reel-2', outcome[1], 2500, () => {
+          highlightReel('reel-2');
+      });
+      
+      animateReel('reel-3', outcome[2], 3500, () => {
+        highlightReel('reel-3');
+        isSpinning = false;
+        checkWin(outcome);
+        spinHistory.unshift([outcome[0], outcome[1], outcome[2]]);
+        if (spinHistory.length > 3) spinHistory.pop();
+        updateHistoryDisplay();
+        updateDisplay(true);
+      });
+    }
+
+    function highlightReel(reelId) {
+        const target = document.getElementById(`${reelId}-target`);
+        if (target) {
+            target.classList.add('highlight');
+        }
+    }
+
+    function getOutcome() {
+      // 3 Skulls = Lose Pool (Bad luck)
+      // 5% chance of 3 matching (Win)
+      // 35% chance of Near Miss
+      
+      const rand = Math.random();
+      
+      // 1% Chance of TOTAL LOSS (3 Skulls)
+      if (rand < 0.01) {
+          const skull = SYMBOLS.find(s => s.id === 'skull');
+          return [skull, skull, skull];
+      }
+      
+      // 4% Chance of WIN
+      if (rand < 0.05) {
+        // WIN!
+        let sym = getRandomSymbol();
+        // Prevent skulls from being a "win" in this block unless we want small prize
+        while (sym.id === 'skull') {
+            sym = getRandomSymbol();
+        }
+        return [sym, sym, sym];
+      } 
+      
+      // 35% Chance of NEAR MISS
+      if (rand < 0.40) {
+        // NEAR MISS (2 matching)
+        const sym = getRandomSymbol();
+        const other = getRandomSymbol();
+        return [sym, sym, other];
+      } 
+      
+      // Random
+      return [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
+    }
+
+    function createSymbolElement(sym) {
+        const div = document.createElement('div');
+        div.className = 'symbol';
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = sym.icon;
+        
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'symbol-label';
+        labelSpan.textContent = sym.name;
+        
+        div.appendChild(iconSpan);
+        div.appendChild(labelSpan);
+        
+        div.style.flex = '0 0 100%';
+        div.style.height = '100%'; // Ensure it fills the container exactly
+        return div;
+    }
+
+    function animateReel(reelId, finalSymbol, duration, callback) {
+      const reel = document.getElementById(reelId);
+      
+      // Calculate strip size
+      const totalItems = 50; 
+      const finalIndex = 45; // Must be large enough to spin for a while
+
+      // Create new strip content
+      reel.innerHTML = '';
+      for (let i = 0; i < totalItems; i++) {
+         let sym;
+         if (i === finalIndex) {
+             sym = finalSymbol;
+         } else {
+             sym = getRandomSymbol();
+         }
+         
+         const div = createSymbolElement(sym);
+         if (i === finalIndex) {
+             div.id = `${reelId}-target`;
+         }
+         reel.appendChild(div);
+      }
+      
+      // Reset position 
+      reel.style.transition = 'none';
+      reel.style.transform = 'translateY(0)';
+      
+      // Force reflow
+      void reel.offsetWidth;
+      
+      // Animate to center the final symbol
+      // The strip is inside a container of height H.
+      // Each item is height H.
+      // To show item i, we translate by -i * 100% of item height.
+      // But since we are translating the strip relative to its own height (which is totalItems * H),
+      // we need to translate by - (i / totalItems) * 100%.
+      
+      const percentage = (finalIndex / totalItems) * 100;
+      
+      reel.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
+      reel.style.transform = `translateY(-${percentage}%)`;
+      
+      setTimeout(() => {
+        if (callback) callback();
+      }, duration);
+    }
+
+    // Simplified checkWin to use prizes from pool, not credits
+    function checkWin(outcome) {
+      let won = false;
+      let prizeName = '';
+      let prizeAmount = 0;
+      let colorClass = 'text-white';
+      
+      // Calculate multiplier or prize
+      const id1 = outcome[0].id;
+      const id2 = outcome[1].id;
+      const id3 = outcome[2].id;
+
+      if (id1 === 'skull' && id2 === 'skull' && id3 === 'skull') {
+        // BAD LUCK: LOSE POOL
+        goldPool = Math.floor(goldPool / 2); // Lose half pool
+        localStorage.setItem('ruleta_pool', goldPool);
+        showMessage('☠️ ¡LA REINA RECLAMA TU ALMA! (Pozo reducido) ☠️', 'text-red-600 font-bold text-xl animate-pulse');
+        updateDisplay();
+        return;
+      }
+
+      // 3 Match Logic (Jackpots)
+      if (outcome[0].id === outcome[1].id && outcome[1].id === outcome[2].id) {
+          won = true;
+          const symbolId = outcome[0].id;
+
+          if (symbolId === 'choker') {
+             prizeName = "¡GARGANTILLA LEGENDARIA! (RECLAMA EN DISCORD)";
+             colorClass = "text-purple-400";
+             prizeAmount = 0;
+             hasWonChoker = true; // Establecer a true cuando se gana una gargantilla
+             updateDisplay(true); // Asegurarse de que updateDisplay actualice el botón Reclamar
+          } else if (symbolId === 'chest') {
+              prizeAmount = 7000;
+              prizeName = "¡GRAN COFRE! (+7000)";
+              colorClass = "text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]";
+          } else if (symbolId === 'gold_bag') {
+              prizeAmount = 2900;
+              prizeName = "¡BOLSA DE ORO! (+2900)";
+              colorClass = "text-yellow-300";
+          } else if (symbolId === 'gold_small') {
+              prizeAmount = 600;
+              prizeName = "¡MONEDAS! (+600)";
+              colorClass = "text-yellow-200";
+          } else if (symbolId === 'thief') {
+               // Bonus Turns
+               credits += 5;
+               prizeName = "¡PÍCARO! (+5 TURNOS)";
+               colorClass = "text-purple-400";
+               // Don't add gold
+               prizeAmount = 0;
+          } else {
+              // 3 Skulls = Loss
+              won = false;
+              prizeName = "INTÉNTALO DE NUEVO";
+              colorClass = "text-gray-400";
+          }
+
+      } else {
+          // 2 Match Logic (Consolation)
+          // Check for pairs
+          let pairSymbol = null;
+          if (outcome[0].id === outcome[1].id) pairSymbol = outcome[0].id;
+          else if (outcome[1].id === outcome[2].id) pairSymbol = outcome[1].id;
+          else if (outcome[0].id === outcome[2].id) pairSymbol = outcome[0].id;
+
+          if (pairSymbol) {
+               if (pairSymbol === 'thief') {
+                   won = true;
+                   credits += 2;
+                   prizeName = "PAR DE PÍCAROS (+2 TURNOS)";
+                   colorClass = "text-purple-300";
+              } else if (pairSymbol !== 'skull' && pairSymbol !== 'gold_small') {
+                  // Only high value pairs pay gold
+                  won = true;
+                  prizeAmount = 100;
+                  prizeName = "PAR GANADOR (+100)";
+                  colorClass = "text-yellow-100";
+              }
+          }
+      }
+
+      if (won) {
+         if (prizeAmount > 0) {
+             goldPool += prizeAmount; // Add to pool (Accumulated Winnings)
+             showMessage(`🎉 ${prizeName} (+${prizeAmount} ORO) 🎉`, colorClass);
+         } else if (prizeName.includes("TURNOS")) {
+             // Turns message
+             showMessage(`🎉 ${prizeName} 🎉`, colorClass);
+         } else {
+              // Real item message
+              showMessage(`🎉 ${prizeName} (RECLAMA EN DISCORD) 🎉`, colorClass);
+         }
+        
+        // Trigger confetti or visual effect here if possible
+        const machine = document.getElementById('game-container');
+        if (machine) {
+            machine.classList.add('ring-4', 'ring-yellow-400', 'ring-opacity-100');
+            setTimeout(() => machine.classList.remove('ring-4', 'ring-yellow-400', 'ring-opacity-100'), 1000);
+        }
+      } else {
+        const msgs = [
+            'La Reina exige más sacrificios...',
+            'Tu suerte se agota...',
+            '¿Te atreves a girar de nuevo?',
+            'El abismo te observa...',
+            'Casi... pero no.'
+        ];
+        const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
+        showMessage(randomMsg, 'text-gray-500');
+      }
+      
+      isSpinning = false;
+      document.getElementById('spin-btn').disabled = false;
+    }
+
+  </script>
+</Layout>
