@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿---
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 ---
 
@@ -263,26 +263,60 @@ import Layout from '../components/layout/Layout.astro';
       { id: 'thief', icon: '🗡️', weight: 3, name: 'PÍCARO' } // Rare (Turns)
     ];
 
-    let credits = parseInt(localStorage.getItem('ruleta_credits') || '5'); // Start with fewer turns (5 instead of 10)
-    let goldPool = parseInt(localStorage.getItem('ruleta_pool') || '100'); 
+    let credits = 5; 
+    let goldPool = 100; 
     let isSpinning = false;
-    let hasWonChoker = false; // Nueva variable para rastrear si se ganó una gargantilla
-    
-    // History stack to store last spins
+    let hasWonChoker = false; 
     const spinHistory = [];
+
+    // Sincronización con API (Persistencia por IP)
+    async function fetchGameState() {
+        try {
+            // Añadir timestamp para evitar caché del navegador
+            const res = await fetch('/api/game-state?t=' + Date.now(), {
+                cache: 'no-store'
+            });
+            if (res.ok) {
+                const data = await res.json();
+                console.log("Estado recibido:", data);
+                credits = data.credits;
+                goldPool = data.gold_pool;
+                hasWonChoker = data.has_won_choker;
+                if (data.spin_history && Array.isArray(data.spin_history)) {
+                    spinHistory.length = 0;
+                    data.spin_history.forEach(s => spinHistory.push(s));
+                }
+                
+                console.log("Sesión cargada para IP:", data.ip_hash);
+                
+                // Actualizar UI inmediatamente
+                const creditsEl = document.getElementById('credits-display');
+                const poolEl = document.getElementById('pool-display');
+                if(creditsEl) creditsEl.innerHTML = credits.toLocaleString();
+                if(poolEl) poolEl.innerHTML = goldPool.toLocaleString();
+                updateHistoryDisplay();
+                updateDisplay(true);
+            } else {
+                console.error("Error del servidor al cargar estado:", await res.text());
+            }
+        } catch (e) { console.error("Error loading state", e); }
+    }
+
+    async function syncGameState() {
+        try {
+            await fetch('/api/game-state', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ credits, gold_pool: goldPool, has_won_choker: hasWonChoker, spin_history: spinHistory })
+            });
+        } catch (e) { console.error("Error saving state", e); }
+    }
 
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      // Load credits
-      const savedCredits = localStorage.getItem('ruleta_credits');
-      if (savedCredits) credits = parseInt(savedCredits);
-      else localStorage.setItem('ruleta_credits', credits);
-
-      // Load Gold Pool (simulated persistence for demo)
-      const savedPool = localStorage.getItem('ruleta_pool');
-      if (savedPool) goldPool = parseInt(savedPool);
-      else localStorage.setItem('ruleta_pool', goldPool);
+      // Load credits from Server (IP based persistence)
+      fetchGameState();
 
       // Initial display without animation
       const creditsEl = document.getElementById('credits-display');
@@ -303,10 +337,10 @@ import Layout from '../components/layout/Layout.astro';
       
       window.addCredits = (amount) => {
         credits += amount;
-        localStorage.setItem('ruleta_credits', credits);
         // Increase pool when buying credits to simulate community pot
         goldPool += amount * 100; 
-        localStorage.setItem('ruleta_pool', goldPool);
+        
+        syncGameState();
         
         updateDisplay(false, amount * 100);
         showMessage(`¡+${amount} GIROS AÑADIDOS!`, 'text-green-400');
@@ -482,8 +516,7 @@ import Layout from '../components/layout/Layout.astro';
            showFloatingText('pool-display', displayChange);
        }
 
-       localStorage.setItem('ruleta_credits', credits);
-       localStorage.setItem('ruleta_pool', goldPool);
+
 
        const claimBtn = document.getElementById('claim-btn');
        if (claimBtn) {
@@ -535,7 +568,7 @@ import Layout from '../components/layout/Layout.astro';
         
         // Reset Pool
         goldPool = 0;
-        localStorage.setItem('ruleta_pool', goldPool);
+        syncGameState();
         updateDisplay(false, -amount);
         
       } else if (type === 'choker') {
@@ -546,7 +579,7 @@ import Layout from '../components/layout/Layout.astro';
         // Reset Choker and Pool
         hasWonChoker = false;
         goldPool = 0;
-        localStorage.setItem('ruleta_pool', goldPool);
+        syncGameState();
         updateDisplay(false, -poolAmount);
       }
 
@@ -916,20 +949,12 @@ import Layout from '../components/layout/Layout.astro';
         }
     }
 
-    function resetGame() {
-      localStorage.removeItem('ruleta_credits');
-      localStorage.removeItem('ruleta_pool');
-      hasWonChoker = false; // Reiniciar el estado de la gargantilla
-      document.getElementById('claim-btn').classList.add('hidden'); // Asegurarse de que el botón Reclamar esté oculto al reiniciar
-      document.getElementById('claim-btn').disabled = true; // Asegurarse de que el botón Reclamar esté deshabilitado al reiniciar
-      window.location.reload();
-    }
+
 
     function claimReward() {
       showMessage('¡PREMIO RECLAMADO! Redirigiendo...', 'text-green-400', 1000);
       // Optionally, clear the pool after claiming if it's a one-time claim
       // goldPool = 0;
-      // localStorage.setItem('ruleta_pool', goldPool);
       
       // Show the game over modal which has the Discord link
       setTimeout(() => showGameOver(hasWonChoker), 1500); 
@@ -965,8 +990,7 @@ import Layout from '../components/layout/Layout.astro';
       // Add a small amount to the pool each spin
       goldPool += 10;
       
-      localStorage.setItem('ruleta_credits', credits);
-      localStorage.setItem('ruleta_pool', goldPool);
+      syncGameState();
       
       // DO NOT update display yet, wait for animation
       // updateDisplay();
@@ -1008,6 +1032,8 @@ import Layout from '../components/layout/Layout.astro';
 
         // Then update display (will show modal only if credits are still 0)
         updateDisplay(true, goldPool - startPool); // finalUpdate = true, pass change
+        
+        syncGameState();
       });
     }
 
@@ -1018,12 +1044,11 @@ import Layout from '../components/layout/Layout.astro';
         const oldPool = goldPool;
         
         credits = 5;
-        goldPool = 100;
-        hasWonChoker = false;
-        spinHistory.length = 0; // Clear array
-        
-        localStorage.setItem('ruleta_credits', credits);
-        localStorage.setItem('ruleta_pool', goldPool);
+              goldPool = 100;
+              hasWonChoker = false;
+              spinHistory.length = 0; // Clear array
+              
+              syncGameState();
         
         updateHistoryDisplay();
         updateDisplay(false, goldPool - oldPool); // Pass negative change to animate down
@@ -1198,7 +1223,7 @@ import Layout from '../components/layout/Layout.astro';
         // BAD LUCK: LOSE POOL
         const oldPool = goldPool;
         goldPool = Math.floor(goldPool / 2); // Lose half pool
-        localStorage.setItem('ruleta_pool', goldPool);
+
         showMessage('☠️ ¡LA REINA RECLAMA TU ALMA! (Pozo reducido) ☠️', 'text-red-600 font-bold text-xl animate-pulse');
         return;
       }
