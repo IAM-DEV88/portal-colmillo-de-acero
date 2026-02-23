@@ -1,4 +1,4 @@
-﻿﻿---
+﻿﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 ---
 
@@ -655,7 +655,8 @@ import Layout from '../components/layout/Layout.astro';
         {
             const formData = new FormData();
             const payload = {
-                content: `**NUEVO RECLAMO DE PREMIO**\nUsuario: Anónimo (Desde Web)\nTipo: ${type.toUpperCase()} (https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\nCódigo: \`${uniqueCode}\``
+                username: "Portal Web Colmillo de Acero",
+                content: `**NUEVO RECLAMO DE PREMIO**\nUsuario: Anónimo (Desde Web)\nTipo: [${type.toUpperCase()}](https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\nCódigo: \`${uniqueCode}\``
             };
             formData.append('payload_json', JSON.stringify(payload));
             formData.append('file', blob, filename);
@@ -672,7 +673,8 @@ import Layout from '../components/layout/Layout.astro';
         // 3. Enviar al Webhook Público (SIN código en el texto y SIN imagen)
         {
             const payload = {
-                content: `**¡ALGUIEN HA GANADO!**\nUn afortunado ha reclamado:\nTipo: ${type.toUpperCase()} (https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\n¡Felicidades!`
+                username: "Portal Web Colmillo de Acero",
+                content: `**¡ALGUIEN HA GANADO!**\nUn afortunado ha reclamado:\nTipo: [${type.toUpperCase()}](https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\n¡Felicidades!`
             };
 
             promises.push(
