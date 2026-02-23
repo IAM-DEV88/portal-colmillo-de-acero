@@ -113,5 +113,45 @@ const { title = 'Colmillo de Acero' } = Astro.props;
     </div> <!-- Close the content wrapper -->
     <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+
+    <!-- Visitor Tracking -->
+    <script is:inline>
+      (function() {
+        // Skip tracking for admin pages
+        if (window.location.pathname.startsWith('/admin')) return;
+
+        const TRACK_KEY = 'last_tracked_url';
+        const TRACK_TIME_KEY = 'last_tracked_time';
+        
+        const currentUrl = window.location.href;
+        const now = Date.now();
+        const lastUrl = sessionStorage.getItem(TRACK_KEY);
+        const lastTime = parseInt(sessionStorage.getItem(TRACK_TIME_KEY) || '0');
+        
+        // Prevent duplicate tracking within 5 seconds for the same URL
+        if (lastUrl === currentUrl && (now - lastTime < 5000)) {
+            return;
+        }
+        
+        sessionStorage.setItem(TRACK_KEY, currentUrl);
+        sessionStorage.setItem(TRACK_TIME_KEY, now.toString());
+
+        const payload = {
+          url: currentUrl,
+          referrer: document.referrer,
+          screen: `${window.screen.width}x${window.screen.height}`,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          language: navigator.language
+        };
+        
+        // Send tracking data
+        fetch('/api/track-visit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          keepalive: true
+        }).catch(err => console.debug('Tracking error', err));
+      })();
+    </script>
   </body>
 </html>
