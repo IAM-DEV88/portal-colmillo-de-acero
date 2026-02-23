@@ -1,0 +1,26 @@
+name: Raid Notification Check
+
+on:
+  schedule:
+    # Ejecutar cada 10 minutos
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Permite ejecución manual desde la UI de GitHub
+
+jobs:
+  check-raids:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Raid Check API
+        run: |
+          echo "Checking for upcoming raids..."
+          response=$(curl -s -w "%{http_code}" https://colmillo.netlify.app/api/check-raids)
+          http_code=${response: -3}
+          content=${response:0:${#response}-3}
+          
+          echo "Status Code: $http_code"
+          echo "Response: $content"
+          
+          if [ $http_code -ne 200 ]; then
+            echo "Error: API returned status $http_code"
+            exit 1
+          fi
