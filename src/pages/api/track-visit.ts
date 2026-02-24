@@ -62,7 +62,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
           username: "Portal Web Colmillo de Acero",
-          avatar_url: "https://colmillo.netlify.app/images/logo.png",
+          avatar_url: "https://colmillo.netlify.app/images/raids/default.jpg",
           embeds: [embed] 
       })
     });
