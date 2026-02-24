@@ -105,7 +105,7 @@ def lua_to_json(lua_file, json_file):
             
             # Filter members by role (only tank, healer, dps; exclude "nuevo")
             member_blocks = re.findall(r'\{[^{}]*\}', members_content)
-            valid_roles = ["tank", "healer", "dps"]
+            valid_roles = ["tank", "healer", "dps", "melee", "rango", "melee dps", "ranged dps"]
             filtered_members = []
             
             for m_block in member_blocks:
@@ -152,8 +152,19 @@ def lua_to_json(lua_file, json_file):
     new_players = {}
 
     # Update globalLastUpdate
-    if current_last_update > consolidated["globalLastUpdate"]:
-        consolidated["globalLastUpdate"] = current_last_update
+    # Always synchronize with the lastUpdate of the currently processed Lua file
+    consolidated["globalLastUpdate"] = current_last_update
+
+    # 0. Collect all players from cores (to ensure they exist in players dictionary)
+    core_players = {} # name -> {class, isSanctioned}
+    for core in all_cores:
+        for m in core["members"]:
+            name = m["name"]
+            if name not in core_players:
+                core_players[name] = {
+                    "class": m.get("class"),
+                    "isSanctioned": m.get("isSanctioned", 0)
+                }
 
     # 1. Process players from current Guild memberList
     for m in guild_members:
@@ -174,7 +185,8 @@ def lua_to_json(lua_file, json_file):
             "officerNote": m["officerNote"],
             "race": m["race"],
             "guildLeave": False,
-            "leaderData": old_leader_data
+            "leaderData": old_leader_data,
+            "isSanctioned": core_players.get(name, {}).get("isSanctioned", 0) # Capture from core if present
         }
         
         # Update leaderData for the current generator
@@ -187,7 +199,7 @@ def lua_to_json(lua_file, json_file):
         
         new_players[name] = player_record
 
-    # 2. Preserve players with guildLeave: True
+    # 2. Preserve players with guildLeave: True (who were already in existing_players)
     for name, data in existing_players.items():
         if data.get("guildLeave") is True and name not in new_players:
             # Point 3: Clear leaderData for recovered players who left the guild
@@ -195,6 +207,11 @@ def lua_to_json(lua_file, json_file):
             new_players[name] = data
 
     # Replace old players with the new consolidated list
+    # Remove unnecessary isExternal property if it exists in any player
+    for name, data in new_players.items():
+        if "isExternal" in data:
+            del data["isExternal"]
+    
     consolidated["players"] = new_players
 
     # 5. Save
