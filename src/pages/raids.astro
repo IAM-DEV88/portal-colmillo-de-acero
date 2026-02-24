@@ -1821,7 +1821,7 @@ try {
             if (daySchedules.length === 0) return null;
 
             return (
-              <div class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
+              <div class="border border-blue-600/40 rounded-md hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden">
                 <div class="bg-gray-800/80 p-2 text-center border-b border-gray-700/50">
                   <h3 class="font-bold text-gray-200 text-sm">{day}</h3>
                 </div>
@@ -1835,22 +1835,16 @@ try {
                       
                       return (
                       <div class="group relative bg-gray-900/60 hover:bg-gray-800 p-3 rounded border-l-2 border-amber-500 transition-all duration-200 cursor-default shadow-sm hover:shadow-md">
-                        <div class="flex flex-col justify-between items-center mb-2">
-                          <span class="text-xs font-bold text-amber-400 flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            {schedule.start_time} hora server
-                          </span>
-                          <span class="text-xs text-red-400 font-bold whitespace-nowrap bg-red-900/20 px-2 py-0.5 rounded-full">
-                            {allAvailableRaids.find((r) => r.id === schedule.raid_id)?.minGearScore} GS
-                          </span>
-                        </div>
+                        
                         <div class="mb-2">
-                          <span class="text-sm text-white font-semibold leading-tight whitespace-normal break-words">
+                          <button 
+                            onclick={`window.navigateToRaid('${schedule.raid_id}', '${normalizeDay(schedule.day_of_week)}')`}
+                            class="text-left text-sm text-white font-semibold leading-tight whitespace-normal break-words hover:text-amber-400 transition-colors focus:outline-none focus:text-amber-400 w-full"
+                          >
                             {schedule.raid_name}
-                          </span>
+                          </button>
                         </div>
+                        
                         {raidLeadersFromRoster.length > 0 && (
                           <div class="mt-1 flex flex-wrap items-center gap-2">
                             <span class="text-[10px] text-gray-400">Líder{raidLeadersFromRoster.length > 1 ? 'es' : ''}:</span>
@@ -1878,7 +1872,8 @@ try {
                             ))}
                           </div>
                         )}
-                        <div class="mt-2 pt-2 border-t border-gray-700/50 flex justify-between items-center text-[10px]">
+                        
+                        <div class="mb-2 pb-2 border-b border-gray-700/50 flex justify-between items-center text-[10px]">
                           <span class="text-gray-500">
                             {(() => {
                               const validPlayersCount = schedule.players.filter(p => 
@@ -1890,6 +1885,17 @@ try {
                               ).length;
                               return `${validPlayersCount} jugador${validPlayersCount !== 1 ? 'es' : ''}`;
                             })()}
+                          </span>
+                        </div>
+                        <div class="flex flex-col justify-between items-center">
+                          <span class="text-xs font-bold text-amber-400 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {schedule.start_time} hora server
+                          </span>
+                          <span class="text-xs text-red-400 font-bold whitespace-nowrap bg-red-900/20 px-2 py-0.5 rounded-full">
+                            {allAvailableRaids.find((r) => r.id === schedule.raid_id)?.minGearScore} GS Min.
                           </span>
                         </div>
                       </div>
@@ -2244,6 +2250,86 @@ try {
   </div>
 </div>
   </Fragment>
+<script is:inline>
+  window.navigateToRaid = (raidId, day) => {
+    // Find the raid slide index
+    const slides = document.querySelectorAll('.swiper-slide');
+    let targetIndex = -1;
+    
+    slides.forEach((slide, index) => {
+      // Try exact match first
+      let slideRaidDiv = slide.querySelector(`[data-raid-id="${raidId}"]`);
+      
+      // If not found, try case-insensitive matching
+      if (!slideRaidDiv) {
+          const raidDivs = slide.querySelectorAll('[data-raid-id]');
+          for (const div of raidDivs) {
+              if (div.getAttribute('data-raid-id').toLowerCase() === raidId.toLowerCase()) {
+                  slideRaidDiv = div;
+                  break;
+              }
+          }
+      }
+
+      if (slideRaidDiv) {
+        targetIndex = index;
+      }
+    });
+
+    if (targetIndex !== -1) {
+      // Find the pagination item and click it to switch slide
+      const paginationItems = document.querySelectorAll('.pagination-item');
+      if (paginationItems[targetIndex]) {
+        paginationItems[targetIndex].click();
+        
+        // Scroll to slider
+        const sliderContainer = document.querySelector('.slider-container');
+        if (sliderContainer) {
+          sliderContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // If day is specified, expand the day group
+        if (day) {
+          setTimeout(() => {
+            // Find the day group in the active slide
+            const activeSlide = slides[targetIndex];
+            
+            // Normalize target day
+            const normalizedTargetDay = day.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            // Find matching group
+            let dayGroup = null;
+            const allGroups = activeSlide.querySelectorAll('[data-day-group]');
+            for (const group of allGroups) {
+              const groupDay = group.getAttribute('data-day-group').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              if (groupDay === normalizedTargetDay) {
+                dayGroup = group;
+                break;
+              }
+            }
+            
+            if (dayGroup) {
+              // Find the button inside and click it to expand
+              const button = dayGroup.querySelector('button');
+              // Check if already expanded (optional, but good practice)
+              // Assuming button click toggles it. If it's closed, click it.
+              // We can't easily know state from here without x-data context, 
+              // but usually clicking opens it if we just navigated.
+              if (button) {
+                button.click();
+                
+                // Scroll to the element
+                setTimeout(() => {
+                  dayGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+              }
+            }
+          }, 500); // Wait for slide transition
+        }
+      }
+    }
+  };
+</script>
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
     // Get URL parameters
