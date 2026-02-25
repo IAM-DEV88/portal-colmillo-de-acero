@@ -28,6 +28,12 @@ const GENERAL_MESSAGES = [
     description: "¿Buscas una hermandad comprometida? Revisa nuestras normas y roster. ¡Te estamos esperando!",
     url: "https://colmillo.netlify.app/roster",
     color: 0x8b5cf6 // Violet
+  },
+  {
+    title: ":game_die: ¡Ruleta a Colmillo de Acero!",
+    description: "¿Quieres ganar una gargantilla? ¡Usa la ruleta y participa en el sorteo!",
+    url: "https://colmillo.netlify.app/ruleta",
+    color: 0xf59e0b // Amber
   }
 ];
 
@@ -73,9 +79,10 @@ export const GET = async ({ request, url }) => {
         if (upcomingRaids.length > 0) {
             messageType = 'RAID';
         } else {
-            // 2. Secundaria: Mensaje General (Cada hora, primeros 10 mins)
+            // 2. Secundaria: Mensaje General (Cada media hora: XX:00-XX:10 o XX:30-XX:40)
             const now = new Date();
-            if (now.getMinutes() < 10) {
+            const minutes = now.getMinutes();
+            if ((minutes >= 0 && minutes < 10) || (minutes >= 30 && minutes < 40)) {
                 messageType = 'GENERAL';
             }
         }
