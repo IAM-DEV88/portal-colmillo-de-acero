@@ -75,16 +75,23 @@ export const GET = async ({ request, url }) => {
         // En producción
         const now = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
         const minutes = now.getMinutes();
+        
+        console.log(`[Production Check] Time: ${now.toISOString()} (${GUILD_TIMEZONE}), Minutes: ${minutes}`);
 
         // 1. Prioridad: Raid Inminente (30 mins)
-        upcomingRaids = getUpcomingRaids(30, 10);
+        upcomingRaids = getUpcomingRaids(30, 15); // Aumentamos ventana a 15 mins para mayor fiabilidad con el cron
         
         if (upcomingRaids.length > 0) {
+            console.log(`[Production Check] Upcoming raids found: ${upcomingRaids.length}`);
             messageType = 'RAID';
         } else {
-            // 2. Secundaria: Mensaje General (Cada media hora: XX:00-XX:10 o XX:30-XX:40)
-            if ((minutes >= 0 && minutes < 10) || (minutes >= 30 && minutes < 40)) {
+            // 2. Secundaria: Mensaje General (Cada media hora)
+            // Aumentamos la ventana a 15 minutos para asegurar que el cron de GitHub (que a veces se retrasa) lo capture
+            if ((minutes >= 0 && minutes < 15) || (minutes >= 30 && minutes < 45)) {
+                console.log(`[Production Check] General message window active (minutes: ${minutes})`);
                 messageType = 'GENERAL';
+            } else {
+                console.log(`[Production Check] Outside general message window (minutes: ${minutes})`);
             }
         }
     }
