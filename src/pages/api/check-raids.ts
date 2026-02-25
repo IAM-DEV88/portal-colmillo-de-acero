@@ -6,25 +6,25 @@ import rosterData from '../../data/roster.json';
 // Mensajes aleatorios generales
 const GENERAL_MESSAGES = [
   {
-    title: "🛡️ RaidDominion",
-    description: "Descrube nuestro addon para raids y cómo usarlo.",
+    title: ":shield: RaidDominion",
+    description: "Descrube nuestro addon para dirigir raids y cómo usarlo.",
     url: "https://colmillo.netlify.app/",
     color: 0xf59e0b // Amber
   },
   {
-    title: "📅 Calendario de Raids",
+    title: ":calendar: Calendario de Raids",
     description: "No te pierdas ninguna raid. Consulta nuestros horarios y apúntate en el sistema.",
     url: "https://colmillo.netlify.app/raids",
     color: 0x3b82f6 // Blue
   },
   {
-    title: "📜 Guias de Raideo",
+    title: ":scroll: Guias de Raideo",
     description: "Encuentra información detallada sobre cómo jugar y participar en raids.",
     url: "https://colmillo.netlify.app/guides",
     color: 0x10b981 // Green
   },
   {
-    title: "👥 ¡Únete a Colmillo de Acero!",
+    title: ":group: ¡Únete a Colmillo de Acero!",
     description: "¿Buscas una hermandad comprometida? Revisa nuestras normas y roster. ¡Te estamos esperando!",
     url: "https://colmillo.netlify.app/roster",
     color: 0x8b5cf6 // Violet
@@ -96,7 +96,7 @@ export const GET = async ({ request, url }) => {
         const payload = {
             username: "Portal Web Colmillo de Acero",
             avatar_url: "https://colmillo.netlify.app/images/logo.png",
-            content: isTest ? "📢 **【 TEST MENSAJE GENERAL 】**" : undefined,
+            content: isTest ? ":loudspeaker: **【 TEST MENSAJE GENERAL 】**" : undefined,
             embeds: [{
                 title: msg.title,
                 description: msg.description,
@@ -107,21 +107,22 @@ export const GET = async ({ request, url }) => {
             }]
         };
 
-        await fetch(webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        
-        // Enlace separado
+        // Primero el mensaje del enlace solo para que genere metadata
         await fetch(webhookUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 username: "Portal Web Colmillo de Acero",
                 avatar_url: "https://colmillo.netlify.app/images/logo.png",
-                content: `🔗 [Ir a la Web](${msg.url})` 
+                content: `:link: [Ir a la Web](${msg.url})` 
             })
+        });
+
+        // Luego la card visual (embed)
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
         return new Response(JSON.stringify({ success: true, type: 'GENERAL' }), { status: 200 });
@@ -156,14 +157,20 @@ export const GET = async ({ request, url }) => {
       }
       
       // Formato amigable de tiempo
-      const minutesRemaining = Math.ceil(diffMs / 60000);
+      const totalMinutes = Math.ceil(diffMs / 60000);
       let timeString = "";
-      if (minutesRemaining <= 0) {
+      
+      if (totalMinutes <= 0) {
           timeString = "¡AHORA MISMO!";
-      } else if (minutesRemaining === 1) {
-          timeString = "en 1 minuto";
       } else {
-          timeString = `en ${minutesRemaining} minutos`;
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          
+          if (hours > 0) {
+              timeString = `en ${hours} ${hours === 1 ? 'hora' : 'horas'}${minutes > 0 ? ` y ${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}` : ''}`;
+          } else {
+              timeString = `en ${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}`;
+          }
       }
 
       const embed = {
@@ -215,10 +222,29 @@ export const GET = async ({ request, url }) => {
     // Si hay embeds en el mensaje, Discord suele suprimir la preview de los enlaces del content.
     // Solución: Enviar primero la notificación con el embed, y luego un segundo mensaje con el enlace solo.
     
+    // 1. Enviar primero el mensaje solo con el enlace para generar preview
+    const nowLink = new Date();
+    const monthName = nowLink.toLocaleString('es-ES', { month: 'long', timeZone: GUILD_TIMEZONE });
+    const currentYear = nowLink.getFullYear();
+    const dynamicLabel = `Temporada ${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${currentYear}`;
+
+    const payloadLink = {
+        username: "Portal Web Colmillo de Acero",
+        avatar_url: "https://colmillo.netlify.app/images/logo.png",
+        content: `[:link: ${dynamicLabel}](https://colmillo.netlify.app/raids)`
+    };
+
+    await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payloadLink)
+    });
+
+    // 2. Enviar la notificación con el embed (Roster)
     const payloadMain = {
       username: "Portal Web Colmillo de Acero",
       avatar_url: "https://colmillo.netlify.app/images/logo.png",
-      content: (isTest ? "📢 **【 TEST DE AVISO DE RAID 】**" : "📢 **【 AVISO DE RAID PRÓXIMA 】 ** <@&1336049966465454153>"),
+      content: (isTest ? ":loudspeaker: **【 TEST DE AVISO DE RAID 】**" : ":loudspeaker: **【 AVISO DE RAID PRÓXIMA 】 ** <@&1336049966465454153>"),
       embeds: embeds
     };
 
@@ -231,19 +257,6 @@ export const GET = async ({ request, url }) => {
     if (!responseMain.ok) {
       throw new Error(`Discord API Error (Main): ${responseMain.status} ${await responseMain.text()}`);
     }
-
-    // Segundo mensaje solo con el enlace para generar preview
-    const payloadLink = {
-        username: "Portal Web Colmillo de Acero",
-        avatar_url: "https://colmillo.netlify.app/images/logo.png",
-        content: "[🔗 Ver Horario de Raid Completo en la Web](https://colmillo.netlify.app/raids)"
-    };
-
-    await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payloadLink)
-    });
 
     return new Response(JSON.stringify({ 
       success: true, 
