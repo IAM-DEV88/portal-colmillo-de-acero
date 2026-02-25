@@ -1,6 +1,6 @@
 export const prerender = false;
 
-import { getUpcomingRaids, GUILD_TIMEZONE, getRaidRosterForScheduleWithExternal } from '../../utils/raidUtils';
+import { getUpcomingRaids, GUILD_TIMEZONE, getRaidRosterForScheduleWithExternal, getAllRaidSchedules } from '../../utils/raidUtils';
 import rosterData from '../../data/roster.json';
 
 // Mensajes aleatorios generales
@@ -30,7 +30,7 @@ const GENERAL_MESSAGES = [
     color: 0x8b5cf6 // Violet
   },
   {
-    title: ":game_die: ¡Ruleta a Colmillo de Acero!",
+    title: ":game_die: ¡Ruleta Colmillo de Acero!",
     description: "¿Quieres ganar una gargantilla? ¡Usa la ruleta y participa en el sorteo!",
     url: "https://colmillo.netlify.app/ruleta",
     color: 0xf59e0b // Amber
@@ -106,7 +106,82 @@ export const GET = async ({ request, url }) => {
 
     // --- ENVÍO MENSAJE GENERAL ---
     if (messageType === 'GENERAL') {
-        const msg = GENERAL_MESSAGES[Math.floor(Math.random() * GENERAL_MESSAGES.length)];
+        const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
+        const currentDay = nowServer.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
+        const allSchedules = getAllRaidSchedules();
+        
+        // Función para formatear el resumen de raids (Hoy o Mañana)
+         const getRaidSummary = (targetDay: string, isTomorrow = false) => {
+             const raids = allSchedules.filter(s => s.day_of_week === targetDay);
+             if (raids.length === 0) return null;
+
+             // Ordenar raids por hora (00:00 se trata como 24:00 para que vaya al final)
+             raids.sort((a, b) => {
+                 const timeA = a.start_time === '00:00' ? '24:00' : a.start_time;
+                 const timeB = b.start_time === '00:00' ? '24:00' : b.start_time;
+                 return timeA.localeCompare(timeB);
+             });
+ 
+             let summary = `**Raids de ${isTomorrow ? 'Mañana' : 'Hoy'} (${targetDay.charAt(0).toUpperCase() + targetDay.slice(1)}):**\n`;
+             raids.forEach(r => {
+                 const [h, m] = r.start_time.split(':').map(Number);
+                 const raidDate = new Date(nowServer);
+                 
+                 // Si la hora es 00:00, la tratamos como el final del día objetivo
+                 if (h === 0 && m === 0) {
+                     raidDate.setHours(24, 0, 0, 0);
+                 } else {
+                     raidDate.setHours(h, m, 0, 0);
+                 }
+
+                 if (isTomorrow) raidDate.setDate(raidDate.getDate() + 1);
+ 
+                 const diffMs = raidDate.getTime() - nowServer.getTime();
+                 const totalMinutes = Math.floor(diffMs / 60000);
+                
+                let timeInfo = "";
+                if (diffMs < 0) {
+                    timeInfo = "*(Ya finalizada o en curso)*";
+                } else {
+                    const hrs = Math.floor(totalMinutes / 60);
+                    const mins = totalMinutes % 60;
+                    timeInfo = hrs > 0 ? `(en ${hrs}h ${mins}m)` : `(en ${mins}m)`;
+                }
+
+                summary += `• **${r.raid_name}** - ${r.start_time} ${timeInfo} | Líder: ${r.leader}\n`;
+            });
+            return summary;
+        };
+
+        // Intentar obtener resumen de hoy, si no hay o ya pasaron todas, intentar mañana
+        let raidSummaryText = getRaidSummary(currentDay);
+        let summaryTitle = "📅 Próximas Raids";
+        
+        // Si no hay raids hoy, buscar mañana
+        if (!raidSummaryText || !raidSummaryText.includes("(en")) {
+            const tomorrow = new Date(nowServer);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowDay = tomorrow.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
+            const tomorrowSummary = getRaidSummary(tomorrowDay, true);
+            if (tomorrowSummary) {
+                raidSummaryText = tomorrowSummary;
+                summaryTitle = "📅 Raids de Mañana";
+            }
+        }
+
+        const dynamicMessages = [...GENERAL_MESSAGES];
+        
+        // Si logramos generar un resumen, añadirlo como opción prioritaria o aleatoria
+        if (raidSummaryText) {
+            dynamicMessages.push({
+                title: summaryTitle,
+                description: raidSummaryText,
+                url: "https://colmillo.netlify.app/raids",
+                color: 0xff0000 // Red for raids
+            });
+        }
+
+        const msg = dynamicMessages[Math.floor(Math.random() * dynamicMessages.length)];
         
         const payload = {
             username: "Portal Web Colmillo de Acero",

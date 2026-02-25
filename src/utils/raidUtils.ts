@@ -109,11 +109,13 @@ export function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes
 
       const [h, m] = schedule.start_time.split(':').map(Number);
       
+      // Si la hora es 00:00, la tratamos como el final del día (minuto 1440)
+      const schedTimeMinutes = (h === 0 && m === 0) ? 24 * 60 : h * 60 + m;
+      
       let dayDiff = schedDayIndex - todayIndex;
       if (dayDiff < 0) dayDiff += 7; // Es en la próxima semana
       
       // Si es hoy pero la hora ya pasó, es la próxima semana
-      const schedTimeMinutes = h * 60 + m;
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
       
       if (dayDiff === 0 && schedTimeMinutes < nowMinutes) {
@@ -150,13 +152,27 @@ export function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes
   const windowEnd = targetTimeMinutes + windowMinutes;
 
   return allSchedules.filter(schedule => {
-    // 1. Coincidir día
-    if (schedule.day_of_week !== targetDay) return false;
-
-    // 2. Coincidir hora dentro de la ventana
+    // Para raids a las 00:00, tratarlas como el final del día (técnicamente el inicio del día siguiente)
+    // Pero si el calendario dice "Jueves 00:00", el aviso debe dispararse cuando el targetTime es Viernes 00:00.
     const [h, m] = schedule.start_time.split(':').map(Number);
     const scheduleTimeMinutes = h * 60 + m;
+    
+    // Calcular el día efectivo de la raid según la hora
+    // Si la hora es 00:00, el targetDay debería ser el día SIGUIENTE al que figura en el schedule
+    let effectiveDay = schedule.day_of_week;
+    if (h === 0 && m === 0) {
+      const daysOrder = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+      const dayIndex = daysOrder.indexOf(schedule.day_of_week);
+      if (dayIndex !== -1) {
+        effectiveDay = daysOrder[(dayIndex + 1) % 7];
+      }
+    }
 
+    // 1. Coincidir día efectivo
+    if (effectiveDay !== targetDay) return false;
+
+    // 2. Coincidir hora dentro de la ventana
+    // Si h=0, ya sabemos que coincide con el inicio del día efectivo (targetDay)
     return scheduleTimeMinutes >= windowStart && scheduleTimeMinutes <= windowEnd;
   });
 }
