@@ -73,6 +73,9 @@ export const GET = async ({ request, url }) => {
         }
     } else {
         // En producción
+        const now = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
+        const minutes = now.getMinutes();
+
         // 1. Prioridad: Raid Inminente (30 mins)
         upcomingRaids = getUpcomingRaids(30, 10);
         
@@ -80,8 +83,6 @@ export const GET = async ({ request, url }) => {
             messageType = 'RAID';
         } else {
             // 2. Secundaria: Mensaje General (Cada media hora: XX:00-XX:10 o XX:30-XX:40)
-            const now = new Date();
-            const minutes = now.getMinutes();
             if ((minutes >= 0 && minutes < 10) || (minutes >= 30 && minutes < 40)) {
                 messageType = 'GENERAL';
             }
@@ -181,36 +182,36 @@ export const GET = async ({ request, url }) => {
       }
 
       const embed = {
-        title: `⚠️ Recordatorio de Raid: ${raid.raid_name} (${new Date().toLocaleTimeString('es-ES', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' })})`,
+        title: `:warning: Recordatorio de Raid: ${raid.raid_name} (${now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })})`,
         url: raidLink, 
-        description: `@everyone La raid de **${raid.raid_name}** liderada por **${raid.leader}** está programada para comenzar **${timeString}** via **RaidDominion**.\n\n👉 **¡Reacciona a este mensaje para confirmar tu asistencia y estar listo para la invocación!**\n\n[【Ver Roster Completo en la Web】](${raidLink})`,
+        description: `@everyone La raid de **${raid.raid_name}** liderada por **${raid.leader}** está programada para comenzar **${timeString}** via **RaidDominion**.\n\n:point_right: **¡Reacciona a este mensaje para confirmar tu asistencia y estar listo para la invocación!**\n\n[【Ver Roster Completo en la Web】](${raidLink})`,
         color: 0xff0000, 
         thumbnail: {
           url: "https://colmillo.netlify.app/images/logo.png"
         },
         fields: [
           // Fila 1: Hora / Día / Líder
-          { name: "⏰ Hora de Inicio", value: raid.start_time, inline: true },
-          { name: "📅 Día", value: raid.day_of_week.charAt(0).toUpperCase() + raid.day_of_week.slice(1), inline: true },
-          { name: "👑 Líder", value: leaderInfo, inline: true },
+          { name: ":alarm_clock: Hora de Inicio", value: raid.start_time, inline: true },
+          { name: ":calendar: Día", value: raid.day_of_week.charAt(0).toUpperCase() + raid.day_of_week.slice(1), inline: true },
+          { name: ":king: Líder", value: leaderInfo, inline: true },
           
           // Separador visual o salto de línea forzado si es necesario, pero inline: false ya hace salto.
           
           // Fila 2: Tanques / Sanadores (2 columnas para dar más ancho)
-          { name: "🛡️ Tanques", value: tanksList, inline: true },
-          { name: "🌿 Sanadores", value: healersList, inline: true },
+          { name: ":shield: Tanques", value: tanksList, inline: true },
+          { name: ":herb: Sanadores", value: healersList, inline: true },
           { name: "\u200b", value: "\u200b", inline: true }, // Spacer invisible para mantener grid de 3 si discord fuerza 3
           
           // Fila 3: Melee / Ranged / Sancionados
-          { name: "⚔️ Cuerpo a Cuerpo", value: meleeList, inline: true },
-          { name: "🏹 A Distancia", value: rangedList, inline: true },
-          { name: "🚫 Sancionados", value: sanctionedList, inline: true }
+          { name: ":crossed_swords: Cuerpo a Cuerpo", value: meleeList, inline: true },
+          { name: ":bow_and_arrow: A Distancia", value: rangedList, inline: true },
+          { name: ":no_entry: Sancionados", value: sanctionedList, inline: true }
         ],
         footer: {
           text: "Sistema de Notificaciones RaidDominion",
           icon_url: "https://colmillo.netlify.app/images/logo.png",
         },
-        timestamp: new Date().toISOString()
+        timestamp: now.toISOString()
       };
       return embed;
     }));
@@ -230,9 +231,9 @@ export const GET = async ({ request, url }) => {
     // Solución: Enviar primero la notificación con el embed, y luego un segundo mensaje con el enlace solo.
     
     // 1. Enviar primero el mensaje solo con el enlace para generar preview
-    const nowLink = new Date();
-    const monthName = nowLink.toLocaleString('es-ES', { month: 'long', timeZone: GUILD_TIMEZONE });
-    const currentYear = nowLink.getFullYear();
+    const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
+    const monthName = nowServer.toLocaleString('es-ES', { month: 'long' });
+    const currentYear = nowServer.getFullYear();
     const dynamicLabel = `Temporada ${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${currentYear}`;
 
     const payloadLink = {
