@@ -2,8 +2,9 @@ import rosterData from '../data/roster.json';
 import { supabase } from '../lib/supabase';
 
 // Configuración de la zona horaria de la hermandad (ajustar según corresponda)
-// Usamos Europe/Madrid para CET/CEST (UTC+1 / UTC+2)
-export const GUILD_TIMEZONE = 'Europe/Madrid';
+// Usamos Europe/London para coincidir con la hora del servidor (UTC+0 / UTC+1)
+// Anteriormente Europe/Madrid (UTC+1 / UTC+2)
+export const GUILD_TIMEZONE = 'Europe/London';
 
 interface RaidSchedule {
   raid_name: string;

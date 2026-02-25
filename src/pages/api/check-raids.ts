@@ -3,44 +3,39 @@ export const prerender = false;
 import { getUpcomingRaids, GUILD_TIMEZONE, getRaidRosterForScheduleWithExternal } from '../../utils/raidUtils';
 import rosterData from '../../data/roster.json';
 
+// Mensajes aleatorios generales
+const GENERAL_MESSAGES = [
+  {
+    title: "🛡️ ¡Únete a Colmillo de Acero!",
+    description: "¿Buscas una hermandad comprometida? Revisa nuestras normas y roster. ¡Te estamos esperando!",
+    url: "https://colmillo.netlify.app/",
+    color: 0xf59e0b // Amber
+  },
+  {
+    title: "📅 Calendario de Raids",
+    description: "No te pierdas ninguna raid. Consulta nuestros horarios y apúntate en el sistema.",
+    url: "https://colmillo.netlify.app/raids",
+    color: 0x3b82f6 // Blue
+  },
+  {
+    title: "📜 Normas de Loot",
+    description: "Mantente informado sobre nuestras reglas de distribución de botín. La transparencia es clave.",
+    url: "https://colmillo.netlify.app/",
+    color: 0x10b981 // Green
+  },
+  {
+    title: "👥 Nuestro Roster",
+    description: "Conoce a los miembros de la hermandad y sus roles. ¡Mira quién está activo!",
+    url: "https://colmillo.netlify.app/",
+    color: 0x8b5cf6 // Violet
+  }
+];
+
 export const GET = async ({ request, url }) => {
   try {
     const isTest = url.searchParams.get('test') === 'true';
-    let upcomingRaids = [];
-
-    if (isTest) {
-      // En modo test, buscar la raid más próxima (sin ventana de tiempo)
-      // Pasamos null como minutesAhead para activar la búsqueda de "la siguiente más cercana"
-      upcomingRaids = getUpcomingRaids(null);
-      
-      if (upcomingRaids.length === 0) {
-        // Fallback si no encuentra nada (raro si hay roster)
-         upcomingRaids = [
-          {
-            raid_name: 'ICC25N',
-            day_of_week: 'lunes',
-            start_time: '22:00',
-            leader: 'TestLeader'
-          }
-        ];
-      }
-    } else {
-      // 1. Verificar si hay raids próximas (30 minutos antes)
-      upcomingRaids = getUpcomingRaids(30, 10); // Ventana de 10 minutos para ser flexible con el cron
-    }
-
-    if (upcomingRaids.length === 0) {
-      return new Response(JSON.stringify({ 
-        message: 'No upcoming raids found in the next 30 minutes.',
-        timestamp: new Date().toISOString()
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // 2. Preparar payload para Discord
-    // Si es test, usar canal admin/privado. Si es real, usar canal público.
+    
+    // Configuración del Webhook
     const webhookUrl = isTest 
       ? import.meta.env.DISCORD_WEBHOOK_URL 
       : import.meta.env.DISCORD_PUBLIC_WEBHOOK_URL;
@@ -50,7 +45,91 @@ export const GET = async ({ request, url }) => {
       return new Response(JSON.stringify({ error: 'Webhook configuration missing' }), { status: 500 });
     }
 
-    const embeds = await Promise.all(upcomingRaids.map(async (raid) => {
+    // Lógica de Selección de Mensaje
+    let messageType = 'NONE';
+    let upcomingRaids = [];
+    
+    if (isTest) {
+        // En test, aleatorio entre RAID y GENERAL
+        messageType = Math.random() < 0.5 ? 'RAID' : 'GENERAL';
+        
+        if (messageType === 'RAID') {
+             upcomingRaids = getUpcomingRaids(null); // Buscar cualquiera
+             if (upcomingRaids.length === 0) {
+                 // Mock si no hay
+                 upcomingRaids = [{
+                    raid_name: 'ICC25N',
+                    day_of_week: 'lunes',
+                    start_time: '22:00',
+                    leader: 'TestLeader'
+                 }];
+             }
+        }
+    } else {
+        // En producción
+        // 1. Prioridad: Raid Inminente (30 mins)
+        upcomingRaids = getUpcomingRaids(30, 10);
+        
+        if (upcomingRaids.length > 0) {
+            messageType = 'RAID';
+        } else {
+            // 2. Secundaria: Mensaje General (Cada hora, primeros 10 mins)
+            const now = new Date();
+            if (now.getMinutes() < 10) {
+                messageType = 'GENERAL';
+            }
+        }
+    }
+
+    // Ejecutar envío según tipo
+    if (messageType === 'NONE') {
+      return new Response(JSON.stringify({ 
+        message: 'No actions required at this time.',
+        timestamp: new Date().toISOString()
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    // --- ENVÍO MENSAJE GENERAL ---
+    if (messageType === 'GENERAL') {
+        const msg = GENERAL_MESSAGES[Math.floor(Math.random() * GENERAL_MESSAGES.length)];
+        
+        const payload = {
+            username: "Portal Web Colmillo de Acero",
+            avatar_url: "https://colmillo.netlify.app/images/logo.png",
+            content: isTest ? "📢 **【 TEST MENSAJE GENERAL 】**" : undefined,
+            embeds: [{
+                title: msg.title,
+                description: msg.description,
+                url: msg.url,
+                color: msg.color,
+                thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
+                footer: { text: "Colmillo de Acero • Comunidad", icon_url: "https://colmillo.netlify.app/images/logo.png" }
+            }]
+        };
+
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        // Enlace separado
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: "Portal Web Colmillo de Acero",
+                avatar_url: "https://colmillo.netlify.app/images/logo.png",
+                content: `🔗 [Ir a la Web](${msg.url})` 
+            })
+        });
+
+        return new Response(JSON.stringify({ success: true, type: 'GENERAL' }), { status: 200 });
+    }
+
+    // --- ENVÍO MENSAJE RAID (Lógica anterior refinada) ---
+    if (messageType === 'RAID') {
+        const embeds = await Promise.all(upcomingRaids.map(async (raid) => {
       const raidLink = `https://colmillo.netlify.app/raids?raid-id=${encodeURIComponent(raid.raid_name)}&day=${encodeURIComponent(raid.day_of_week)}`;
       const roster = await getRaidRosterForScheduleWithExternal(raid);
       const leaderInfo = roster.leaderClass ? `${raid.leader} — ${roster.leaderClass}` : raid.leader;
@@ -88,7 +167,7 @@ export const GET = async ({ request, url }) => {
       }
 
       const embed = {
-        title: `⚠️ Recordatorio de Raid: ${raid.raid_name} (${new Date().toLocaleTimeString('es-ES', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit' })})`,
+        title: `⚠️ Recordatorio de Raid: ${raid.raid_name} (${new Date().toLocaleTimeString('es-ES', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' })})`,
         url: raidLink, 
         description: `@everyone La raid de **${raid.raid_name}** liderada por **${raid.leader}** está programada para comenzar **${timeString}** via **RaidDominion**.\n\n👉 **¡Reacciona a este mensaje para confirmar tu asistencia y estar listo para la invocación!**\n\n[【Ver Roster Completo en la Web】](${raidLink})`,
         color: 0xff0000, 
@@ -174,6 +253,7 @@ export const GET = async ({ request, url }) => {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
+    } // Closing brace for if (messageType === 'RAID')
 
   } catch (error) {
     console.error('Error in check-raids:', error);
