@@ -6,8 +6,8 @@ import rosterData from '../../data/roster.json';
 // Mensajes aleatorios generales
 const GENERAL_MESSAGES = [
   {
-    title: "🛡️ ¡Únete a Colmillo de Acero!",
-    description: "¿Buscas una hermandad comprometida? Revisa nuestras normas y roster. ¡Te estamos esperando!",
+    title: "🛡️ RaidDominion",
+    description: "Descrube nuestro addon para raids y cómo usarlo.",
     url: "https://colmillo.netlify.app/",
     color: 0xf59e0b // Amber
   },
@@ -18,15 +18,15 @@ const GENERAL_MESSAGES = [
     color: 0x3b82f6 // Blue
   },
   {
-    title: "📜 Normas de Loot",
-    description: "Mantente informado sobre nuestras reglas de distribución de botín. La transparencia es clave.",
-    url: "https://colmillo.netlify.app/",
+    title: "📜 Guias de Raideo",
+    description: "Encuentra información detallada sobre cómo jugar y participar en raids.",
+    url: "https://colmillo.netlify.app/guides",
     color: 0x10b981 // Green
   },
   {
-    title: "👥 Nuestro Roster",
-    description: "Conoce a los miembros de la hermandad y sus roles. ¡Mira quién está activo!",
-    url: "https://colmillo.netlify.app/",
+    title: "👥 ¡Únete a Colmillo de Acero!",
+    description: "¿Buscas una hermandad comprometida? Revisa nuestras normas y roster. ¡Te estamos esperando!",
+    url: "https://colmillo.netlify.app/roster",
     color: 0x8b5cf6 // Violet
   }
 ];
