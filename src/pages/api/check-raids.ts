@@ -54,15 +54,15 @@ export const GET = async ({ request, url }) => {
     // Lógica de Selección de Mensaje
     let messageType = 'NONE';
     let upcomingRaids = [];
+    const testType = url.searchParams.get('type'); // 'RAID', 'ROSTER', 'WEEKLY', 'SUMMARY', 'SCHEDULE', 'GENERAL'
     
     if (isTest) {
-        // En test, aleatorio entre RAID y GENERAL
-        messageType = Math.random() < 0.5 ? 'RAID' : 'GENERAL';
+        // En test, si no se especifica tipo, es aleatorio
+        messageType = testType?.toUpperCase() || (Math.random() < 0.5 ? 'RAID' : 'GENERAL');
         
         if (messageType === 'RAID') {
              upcomingRaids = getUpcomingRaids(null); // Buscar cualquiera
              if (upcomingRaids.length === 0) {
-                 // Mock si no hay
                  upcomingRaids = [{
                     raid_name: 'ICC25N',
                     day_of_week: 'lunes',
@@ -104,8 +104,9 @@ export const GET = async ({ request, url }) => {
       }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     }
 
-    // --- ENVÍO MENSAJE GENERAL ---
-    if (messageType === 'GENERAL') {
+    // --- ENVÍO MENSAJE GENERAL / DINÁMICO ---
+    const isGeneralMessage = ['GENERAL', 'SUMMARY', 'ROSTER', 'WEEKLY', 'SCHEDULE'].includes(messageType);
+    if (isGeneralMessage) {
         const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
         const currentDay = nowServer.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
         const allSchedules = getAllRaidSchedules();
@@ -171,17 +172,147 @@ export const GET = async ({ request, url }) => {
 
         const dynamicMessages = [...GENERAL_MESSAGES];
         
-        // Si logramos generar un resumen, añadirlo como opción prioritaria o aleatoria
+        // --- 1. RESUMEN DE ROSTER POR RANGOS ---
+        const players = rosterData.players || {};
+        const activePlayers = Object.values(players).filter((p: any) => !p.guildLeave);
+        const totalMembers = activePlayers.length;
+        const rankCounts: Record<string, number> = {};
+        
+        activePlayers.forEach((p: any) => {
+            const rank = p.rank || 'Sin Rango';
+            rankCounts[rank] = (rankCounts[rank] || 0) + 1;
+        });
+
+        // Metadatos de actualización
+        const globalLastUpdate = (rosterData as any).globalLastUpdate;
+        const lastUpdatedBy = Object.entries(players).find(
+            ([_, player]: [string, any]) => player.leaderData?.lastUpdate === globalLastUpdate
+        )?.[0] || 'Desconocido';
+        
+        const lastUpdateDate = globalLastUpdate ? new Date(globalLastUpdate * 1000) : null;
+        const formattedDate = lastUpdateDate 
+            ? lastUpdateDate.toLocaleString('es-ES', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                timeZone: GUILD_TIMEZONE 
+              }) 
+            : 'Desconocida';
+
+        // Ordenar rangos por jerarquía específica
+        const rankHierarchy = ['Administrador', 'Oficial', 'Explorador', 'Iniciado', 'Aspirante'];
+        
+        const sortedRanks = Object.entries(rankCounts).sort((a, b) => {
+            const indexA = rankHierarchy.indexOf(a[0]);
+            const indexB = rankHierarchy.indexOf(b[0]);
+            
+            // Si ambos están en la jerarquía, usar ese orden
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            // Si solo uno está, ese va primero
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            // Si ninguno está, por cantidad descendente
+            return b[1] - a[1];
+        });
+
+        const rosterFields: any[] = [];
+        // Añadir Total como primer campo destacado
+        rosterFields.push({ name: "📊 Total Miembros", value: `**${totalMembers}**`, inline: true });
+        rosterFields.push({ name: "🕒 Última Actualización", value: `${formattedDate}`, inline: true });
+        rosterFields.push({ name: "✍️ Autor", value: `${lastUpdatedBy}`, inline: true });
+        
+        sortedRanks.forEach(([rank, count]) => {
+            rosterFields.push({
+                name: rank,
+                value: `**${count}**`,
+                inline: true
+            });
+        });
+        
+        const rosterMsg = {
+            title: "👥 Estado del Roster",
+            description: "Distribución actual de miembros por rango y metadatos de actualización:",
+            fields: rosterFields,
+            url: "https://colmillo.netlify.app/roster",
+            color: 0x8b5cf6,
+            type: 'ROSTER'
+        };
+        dynamicMessages.push(rosterMsg);
+
+        // --- 2. RESUMEN SEMANAL DE RAIDS ---
+        const dayCounts: Record<string, number> = {
+            'lunes': 0, 'martes': 0, 'miercoles': 0, 'jueves': 0, 'viernes': 0, 'sabado': 0, 'domingo': 0
+        };
+        allSchedules.forEach(s => {
+            if (dayCounts[s.day_of_week] !== undefined) dayCounts[s.day_of_week]++;
+        });
+        const daysInOrder = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+        let weeklySummary = `**Actividad de la Hermandad:**\n\n`;
+        daysInOrder.forEach(day => {
+            const count = dayCounts[day];
+            if (count > 0) weeklySummary += `• **${day.charAt(0).toUpperCase() + day.slice(1)}:** ${count} ${count === 1 ? 'raid' : 'raids'}\n`;
+        });
+
+        const weeklyMsg = {
+            title: "⚔️ Actividad Semanal",
+            description: weeklySummary,
+            url: "https://colmillo.netlify.app/raids",
+            color: 0xef4444,
+            type: 'WEEKLY'
+        };
+        dynamicMessages.push(weeklyMsg);
+
+        // --- 3. HORARIO SEMANAL DETALLADO ---
+        const scheduleByDay: Record<string, string[]> = {};
+        allSchedules.forEach(s => {
+            if (!scheduleByDay[s.day_of_week]) scheduleByDay[s.day_of_week] = [];
+            scheduleByDay[s.day_of_week].push(`\`${s.start_time}\` **${s.raid_name}**`);
+        });
+
+        const scheduleFields: any[] = [];
+        daysInOrder.forEach(day => {
+            const raids = scheduleByDay[day];
+            if (raids && raids.length > 0) {
+                scheduleFields.push({
+                    name: `📅 ${day.charAt(0).toUpperCase() + day.slice(1)}`,
+                    value: raids.join('\n'),
+                    inline: true
+                });
+            }
+        });
+
+        const scheduleMsg = {
+            title: "🗓️ Horario Semanal de Raids",
+            description: "Resumen de las bandas programadas para esta semana:",
+            fields: scheduleFields,
+            url: "https://colmillo.netlify.app/raids",
+            color: 0x3b82f6,
+            type: 'SCHEDULE'
+        };
+        dynamicMessages.push(scheduleMsg);
+        
+        // --- 4. RESUMEN DE RAIDS HOY/MAÑANA ---
+        let summaryMsg = null;
         if (raidSummaryText) {
-            dynamicMessages.push({
+            summaryMsg = {
                 title: summaryTitle,
                 description: raidSummaryText,
                 url: "https://colmillo.netlify.app/raids",
-                color: 0xff0000 // Red for raids
-            });
+                color: 0xff0000,
+                type: 'SUMMARY'
+            };
+            dynamicMessages.push(summaryMsg);
         }
 
-        const msg = dynamicMessages[Math.floor(Math.random() * dynamicMessages.length)];
+        // Selección del mensaje (Test específico o aleatorio)
+        let msg;
+        if (isTest && testType) {
+            msg = dynamicMessages.find(m => (m as any).type === messageType) || dynamicMessages[Math.floor(Math.random() * dynamicMessages.length)];
+        } else {
+            msg = dynamicMessages[Math.floor(Math.random() * dynamicMessages.length)];
+        }
         
         const payload = {
             username: "Portal Web Colmillo de Acero",
@@ -192,6 +323,7 @@ export const GET = async ({ request, url }) => {
                 description: msg.description,
                 url: msg.url,
                 color: msg.color,
+                fields: (msg as any).fields || undefined,
                 thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
                 footer: { text: "Colmillo de Acero • Comunidad", icon_url: "https://colmillo.netlify.app/images/logo.png" }
             }]
@@ -215,7 +347,7 @@ export const GET = async ({ request, url }) => {
             body: JSON.stringify(payload)
         });
 
-        return new Response(JSON.stringify({ success: true, type: 'GENERAL' }), { status: 200 });
+        return new Response(JSON.stringify({ success: true, type: messageType }), { status: 200 });
     }
 
     // --- ENVÍO MENSAJE RAID (Lógica anterior refinada) ---
@@ -357,6 +489,13 @@ export const GET = async ({ request, url }) => {
       headers: { 'Content-Type': 'application/json' }
     });
     } // Closing brace for if (messageType === 'RAID')
+
+    // Fallback response for any cases not covered above
+    return new Response(JSON.stringify({ 
+      message: 'Processing complete, no specific action taken.',
+      type: messageType,
+      timestamp: new Date().toISOString()
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
   } catch (error) {
     console.error('Error in check-raids:', error);
