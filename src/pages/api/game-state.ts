@@ -47,6 +47,48 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
 
         if (existingSession) {
             console.log(`[GameState] Sesión encontrada para ${sessionId}:`, existingSession.credits, 'créditos');
+            
+            // Lógica de reseteo a las 00:00 hora server (Europe/London)
+            const guildTimezone = 'Europe/London';
+            const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: guildTimezone }));
+            const lastActiveServer = new Date(new Date(existingSession.last_active).toLocaleString('en-US', { timeZone: guildTimezone }));
+
+            // Comprobar si estamos en un día diferente al de la última actividad según la hora server
+            const isDifferentDay = 
+                nowServer.getDate() !== lastActiveServer.getDate() || 
+                nowServer.getMonth() !== lastActiveServer.getMonth() || 
+                nowServer.getFullYear() !== lastActiveServer.getFullYear();
+
+            if (isDifferentDay) {
+                console.log(`[GameState] Reseteando sesión por cambio de día (Medianoche Server). IP: ${sessionId}`);
+                
+                const resetData = {
+                    credits: 5,
+                    gold_pool: existingSession.gold_pool > 100 ? existingSession.gold_pool : 100,
+                    has_won_choker: false,
+                    spin_history: [],
+                    last_active: new Date().toISOString() // Guardamos en UTC para persistencia
+                };
+
+                const { data: updatedSession, error: updateError } = await supabase
+                    .from('game_sessions')
+                    .update(resetData)
+                    .eq('ip_hash', sessionId)
+                    .select()
+                    .single();
+
+                if (!updateError) {
+                    return new Response(JSON.stringify(updatedSession), { 
+                        status: 200,
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Cache-Control': 'no-store, max-age=0' 
+                        }
+                    });
+                }
+                console.error('[GameState] Error al resetear sesión:', updateError);
+            }
+
             return new Response(JSON.stringify(existingSession), { 
                 status: 200,
                 headers: { 
