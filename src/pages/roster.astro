@@ -276,7 +276,6 @@ if (Astro.url.searchParams.has('page')) {
     <!-- Tabla de Roster -->
     <div class="relative z-40">
       <RosterTable
-        client:load
         initialRosterData={formattedRosterData}
         raidRegistrations={raidRegistrations || []}
         lastUpdatedBy={lastUpdatedBy}
@@ -284,6 +283,7 @@ if (Astro.url.searchParams.has('page')) {
         lastUpdatedAt={lastUpdatedAt}
       />
     </div>
+
 
     <!-- Sección de Jugadores Destacados -->
     <div class="mt-6 relative z-30">

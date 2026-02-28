@@ -1,0 +1,186 @@
+---
+/**
+ * RosterTable Component
+ * Displays the guild roster with filtering, sorting, and detailed stats.
+ * Fragmented into helper utilities to reduce build complexity.
+ */
+import {
+  DEFAULT_CLASS_INFO as defaultClassInfo,
+  RACE_NAMES,
+  FACTION_NAMES,
+} from './rosterConstants';
+
+import type {
+  RosterMember,
+  RosterData,
+  ClassName,
+  Role,
+  MainAlt,
+  ProfessionCode,
+  RosterStats,
+  Member,
+} from '../../types/roster';
+
+import {
+  ROLES,
+  PROFESSIONS,
+} from '../../types/roster';
+
+import {
+  processRosterMember,
+  calculateRankDistribution,
+  calculateClassDistribution,
+  calculateStats,
+} from '../../utils/rosterComponentHelpers';
+
+// Definir las props del componente
+interface Props {
+  initialRosterData?: any[];
+  raidRegistrations?: any[];
+  lastUpdatedBy?: string;
+  globalLastUpdate?: number;
+  lastUpdatedAt?: string | null;
+}
+
+// Obtener las props
+const { 
+  initialRosterData: rosterDataFromProps = [], 
+  raidRegistrations = [],
+  lastUpdatedBy = 'Desconocido',
+  globalLastUpdate = 0,
+  lastUpdatedAt = null
+} = Astro.props;
+
+// Process members and filter out those who left
+const processedMembers = rosterDataFromProps
+  .map(processRosterMember)
+  .filter((m) => !m.guildLeave);
+
+const totalMembers = processedMembers.length;
+
+// Calculate stats using helper
+const stats = calculateStats(processedMembers as unknown as RosterMember[]);
+
+// Shortcut for common stats used in template
+const { gearScoreStats, validNotesCount } = stats;
+const averageGearScore = gearScoreStats.avg > 0 ? gearScoreStats.avg.toFixed(1) : 'N/A';
+const gearScorePercentage = gearScoreStats.avg > 0 ? Math.min(100, Math.max(0, (gearScoreStats.avg / 6.8) * 100)) : 0;
+
+// Role and Dual Role counts
+const roleStats = {
+  T: processedMembers.filter(m => m.noteValidation?.role === 'T' || m.noteValidation?.dualRole === 'T').length,
+  H: processedMembers.filter(m => m.noteValidation?.role === 'H' || m.noteValidation?.dualRole === 'H').length,
+  D: processedMembers.filter(m => m.noteValidation?.role === 'D' || m.noteValidation?.dualRole === 'D').length,
+};
+
+const dualRoleStats = {
+  TH: processedMembers.filter(m => (m.noteValidation?.role === 'T' && m.noteValidation?.dualRole === 'H') || (m.noteValidation?.role === 'H' && m.noteValidation?.dualRole === 'T')).length,
+  TD: processedMembers.filter(m => (m.noteValidation?.role === 'T' && m.noteValidation?.dualRole === 'D') || (m.noteValidation?.role === 'D' && m.noteValidation?.dualRole === 'T')).length,
+  HD: processedMembers.filter(m => (m.noteValidation?.role === 'H' && m.noteValidation?.dualRole === 'D') || (m.noteValidation?.role === 'D' && m.noteValidation?.dualRole === 'H')).length,
+};
+
+// Main/Alt counts
+const mainAltStats = processedMembers.reduce((acc, m) => {
+  const ma = m.noteValidation?.mainAlt || 'A';
+  acc[ma] = (acc[ma] || 0) + 1;
+  return acc;
+}, { M: 0, A: 0 } as Record<MainAlt, number>);
+
+// Distributions for charts/stats
+const rankDistribution = calculateRankDistribution(processedMembers);
+const classDistribution = calculateClassDistribution(processedMembers, defaultClassInfo);
+
+const getRolePercentage = (count: number) => totalMembers > 0 ? Math.round((count / totalMembers) * 100) : 0;
+
+const raceDistribution = Object.entries(processedMembers.reduce((acc, m) => {
+  const r = m.race || 'UNKNOWN';
+  acc[r] = (acc[r] || 0) + 1;
+  return acc;
+}, {} as Record<string, number>))
+  .map(([code, count]) => ({
+    name: code === 'UNKNOWN' ? 'No Censada' : RACE_NAMES[code] || code,
+    count,
+    percentage: getRolePercentage(count),
+    code,
+  }))
+  .sort((a, b) => a.name === 'No Censada' ? 1 : b.name === 'No Censada' ? -1 : b.count - a.count);
+
+const factionDistribution = Object.entries(processedMembers.reduce((acc, m) => {
+  const f = m.faction || 'UNKNOWN';
+  acc[f] = (acc[f] || 0) + 1;
+  return acc;
+}, {} as Record<string, number>))
+  .map(([code, count]) => ({
+    name: code === 'UNKNOWN' ? 'No Censada' : FACTION_NAMES[code] || code,
+    count,
+    percentage: getRolePercentage(count),
+    code,
+  }))
+  .sort((a, b) => a.name === 'No Censada' ? 1 : b.name === 'No Censada' ? -1 : b.count - a.count);
+
+const professionDistribution = (() => {
+  const counts: Record<string, number> = {};
+  let uncensored = 0;
+  processedMembers.forEach(m => {
+    const profs = m.noteValidation?.professions || [];
+    if (profs.length === 0) uncensored++;
+    else profs.forEach(p => counts[p] = (counts[p] || 0) + 1);
+  });
+  const dist = Object.entries(counts).map(([code, count]) => ({
+    name: PROFESSIONS[code as keyof typeof PROFESSIONS] || code,
+    count,
+    percentage: getRolePercentage(count),
+    code
+  })).sort((a, b) => b.count - a.count);
+  if (uncensored > 0) dist.push({ name: 'No Censada', count: uncensored, percentage: getRolePercentage(uncensored), code: 'UNKNOWN' });
+  return dist;
+})();
+
+const mainAltDistribution = [
+  { type: 'M', name: 'Main', count: mainAltStats.M, percentage: getRolePercentage(mainAltStats.M) },
+  { type: 'A', name: 'Alt', count: mainAltStats.A, percentage: getRolePercentage(mainAltStats.A) },
+];
+
+// Dual role combos for display
+const dualRoleCombos = [
+  { combo: 'TH', label: 'Tank / Healer', count: dualRoleStats.TH, color: 'bg-blue-400/20', textColor: 'text-blue-400' },
+  { combo: 'TD', label: 'Tank / DPS', count: dualRoleStats.TD, color: 'bg-purple-400/20', textColor: 'text-purple-400' },
+  { combo: 'HD', label: 'Healer / DPS', count: dualRoleStats.HD, color: 'bg-green-400/20', textColor: 'text-green-400' },
+].sort((a, b) => b.count - a.count);
+
+// Ranking and sorting
+const getRankPriority = (rank: string): number => {
+  const r = rank.toLowerCase();
+  if (r.includes('guild master')) return 0;
+  if (r.includes('administrador')) return 1;
+  if (r.includes('oficial')) return 2;
+  if (r.includes('oficial alt')) return 3;
+  if (r.includes('raider')) return 4;
+  if (r.includes('raider alt')) return 5;
+  if (r.includes('miembro')) return 6;
+  if (r.includes('alter')) return 7;
+  if (r.includes('social')) return 8;
+  return 9;
+};
+
+const sortedMembers = [...processedMembers].sort((a, b) => {
+  const pA = getRankPriority(a.rank);
+  const pB = getRankPriority(b.rank);
+  return pA !== pB ? pA - pB : a.name.localeCompare(b.name);
+});
+
+const ranks = [...new Set(processedMembers.map(m => m.rank))].sort();
+
+// Data for client script
+const rosterClientData = {
+  members: sortedMembers,
+  classInfo: defaultClassInfo,
+  totalMembers
+};
+
+const roleNames = ROLES;
+const professionNames = Object.entries(PROFESSIONS).reduce((acc, [code, name]) => {
+  acc[code] = { name, color: 'text-gray-300', bgColor: 'bg-gray-500/20' };
+  return acc;
+}, {} as any);
+---
