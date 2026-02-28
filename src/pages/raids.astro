@@ -904,7 +904,7 @@ try {
   title="Raids y Horarios" 
   description="Consulta nuestros horarios de raid, normas de loot y apúntate a los próximos eventos. Organiza tu semana de raideo con Colmillo de Acero."
 >
-  <div class="text-white">
+  <div class="animate-fade-in">
     <div class="max-w-7xl mx-auto">
       <!-- Título de la sección -->
     <div
@@ -915,7 +915,7 @@ try {
         <div
           class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
         >
-          <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>frozen-arrow</title> <path d="M29.273 22.896l1.593 0.252-0.945-1.164 0.012-0.017h-0.026l-13.872-17.076-4.264 3.134-11.224-6.487v2.104l11.552 6.678 3.535-2.587 10.094 12.463-15.852-2.514 0.51-4.446-9.839-5.694v2.196l3.626 2.097 1.388 6.633 1.083-5.204 1.592 0.92-0.62 5.284 0.019 0.003 1.425 7.753 0.667-3.645 1.245 7.298 1.773-10.45 1.347 7.328 1.269-6.937 1.105 2.248 0.998-2.040 1.175 0.186 1.376 8.297 1.3-7.874 0.799 0.126 1.531 3.931 0.922-2.379 1.129 6.14 1.099-6.008 1.047 1.466z"></path> </g></svg>
+           <i class="fas fa-dungeon text-4xl font-bold text-black"></i>
         </div>
         <div>
           <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
@@ -979,7 +979,7 @@ try {
             <div class="slider-container max-w-7xl mx-auto overflow-hidden">
               <!-- Pagination -->
               <div
-                class="slider-pagination bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+                class="slider-pagination bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md pt-6 px-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
                 id="slider-pagination"
               >
                 {
@@ -3891,14 +3891,14 @@ try {
   }
 
   .slider-pagination {
+    width: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.5rem;
-    padding-top: 2rem;
     gap: 2rem;
     position: relative;
     z-index: 10;
+    margin:0 auto;
     margin-bottom: 1rem;
     flex-wrap: wrap;
   }
@@ -4004,15 +4004,13 @@ try {
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(10px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
     }
   }
 
-  .fade-in {
+  .animate-fade-in {
     animation: fadeIn 0.5s ease-out forwards;
   }
 
