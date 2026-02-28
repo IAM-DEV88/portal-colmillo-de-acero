@@ -3,10 +3,19 @@
 interface Props {
   initialRosterData?: any[];
   raidRegistrations?: any[];
+  lastUpdatedBy?: string;
+  globalLastUpdate?: number;
+  lastUpdatedAt?: string | null;
 }
 
 // Obtener las props
-const { initialRosterData: rosterDataFromProps = [], raidRegistrations = [] } = Astro.props;
+const { 
+  initialRosterData: rosterDataFromProps = [], 
+  raidRegistrations = [],
+  lastUpdatedBy = 'Desconocido',
+  globalLastUpdate = 0,
+  lastUpdatedAt = null
+} = Astro.props;
 
 // Define default class info with TypeScript type
 const defaultClassInfo: Record<string, { name: string; color: string }> = {
@@ -86,14 +95,6 @@ import {
   calculateMainAltDistribution as calculateMainAlts,
   PROFESSION_CODES,
 } from '../../utils/rosterUtils';
-
-import rosterJson from '../../data/roster.json';
-const globalLastUpdate = rosterJson.globalLastUpdate;
-
-// Find the player who updated the roster
-const lastUpdatedBy = Object.entries(rosterJson.players).find(
-  ([_, player]: [string, any]) => player.leaderData?.lastUpdate === globalLastUpdate
-)?.[0] || 'Desconocido';
 
 type LocalProfessionCode = (typeof PROFESSION_CODES)[number];
 
@@ -2271,12 +2272,16 @@ const classList = Object.keys(rosterClassInfo) as ClassName[];
 // Función para determinar la prioridad del rango
 const getRankPriority = (rank: string): number => {
   const rankLower = rank.toLowerCase();
-  if (rankLower.includes('oficial')) return 0;
-  if (rankLower.includes('general admin')) return 1;
-  if (rankLower.includes('explorador')) return 2;
-  if (rankLower.includes('iniciado')) return 3;
-  if (rankLower.includes('aspirante')) return 4;
-  return 5;
+  if (rankLower.includes('guild master')) return 0;
+  if (rankLower.includes('administrador')) return 1;
+  if (rankLower.includes('oficial')) return 2;
+  if (rankLower.includes('oficial alt')) return 3;
+  if (rankLower.includes('raider')) return 4;
+  if (rankLower.includes('raider alt')) return 5;
+  if (rankLower.includes('miembro')) return 6;
+  if (rankLower.includes('alter')) return 7;
+  if (rankLower.includes('social')) return 8;
+  return 9;
 };
 
 // Ordenar miembros
@@ -2341,7 +2346,18 @@ function calculateRankDistribution(
   }, {});
 
   // Definir el orden de los rangos
-  const rankOrder = ['Oficial', 'General Admin', 'Explorador', 'Iniciado', 'Aspirante'];
+  const rankOrder = [
+    'Guild Master',
+    'Administrador',
+    'Oficial',
+    'Oficial Alt',
+    'Raider',
+    'Raider Alt',
+    'Miembro',
+    'Alter',
+    'Social',
+    'Silenciado',
+  ];
 
   // Calcular porcentajes y redondear a 1 decimal
   return Object.entries(rankCounts)
@@ -2582,7 +2598,13 @@ const totalRaiders = rosterData.members.filter(
           year: 'numeric', 
           hour: '2-digit', 
           minute: '2-digit' 
-        }) : 'N/A'}
+        }) : (lastUpdatedAt ? new Date(lastUpdatedAt).toLocaleString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }) : 'N/A')}
       </span>
     </div>
   </div>

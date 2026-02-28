@@ -2,9 +2,94 @@
 import Layout from '../components/layout/Layout.astro';
 import RosterTable from '../components/roster/RosterTable.astro';
 import FeaturedPlayers from '../components/roster/FeaturedPlayers.astro';
-import rosterData from '../data/roster.json';
+import rosterDataJson from '../data/roster.json';
 import { validatePublicNote } from '../utils/rosterUtils';
 import { supabase } from '../lib/supabase';
+
+// Fetch roster from Supabase (paginado para superar el límite de 1000 filas)
+async function fetchAllRosterPlayers() {
+  const CHUNK = 1000;
+  let from = 0;
+  let all: any[] = [];
+  while (true) {
+    const { data, error } = await supabase
+      .from('roster_players')
+      .select('*')
+      .range(from, from + CHUNK - 1);
+    if (error) {
+      console.error('Error loading roster chunk from Supabase:', error);
+      break;
+    }
+    const rows = data || [];
+    all = all.concat(rows);
+    if (rows.length < CHUNK) break;
+    from += CHUNK;
+  }
+  return all;
+}
+
+const rosterPlayers = await fetchAllRosterPlayers();
+const rosterError = null;
+
+// Use rosterPlayers if available, otherwise fallback to json (or empty)
+const rosterData = {
+  globalLastUpdate: rosterPlayers && rosterPlayers.length > 0
+    ? Math.max(...rosterPlayers.map((p: any) => Number(p.leader_data?.lastUpdate) || 0))
+    : (rosterDataJson?.globalLastUpdate || 0),
+  players: rosterPlayers ? 
+    rosterPlayers.reduce((acc: Record<string, any>, player: any) => {
+      acc[player.name] = {
+        class: player.class,
+        rank: player.rank,
+        publicNote: player.public_note,
+        officerNote: player.officer_note,
+        race: player.race,
+        leaderData: player.leader_data,
+        isSanctioned: player.is_sanctioned,
+        guildLeave: player.guild_leave === true
+      };
+      return acc;
+    }, {}) 
+    : (rosterDataJson?.players || {})
+};
+
+const globalLastUpdate = rosterData.globalLastUpdate;
+
+// Find the player who updated the roster (based on max timestamp or last_updated_by field)
+let lastUpdatedBy = 'Desconocido';
+let lastUpdatedAt: string | null = null;
+
+if (rosterPlayers && (rosterPlayers as any[]).length > 0) {
+    // Try to find the most recent update
+    const mostRecentUpdate = (rosterPlayers as any[]).reduce((prev: any, current: any) => {
+        const prevTime = Number(prev.leader_data?.lastUpdate) || 0;
+        const currTime = Number(current.leader_data?.lastUpdate) || 0;
+        return (prevTime > currTime) ? prev : current;
+    });
+    
+    // If we found a valid update timestamp
+    if ((Number(mostRecentUpdate.leader_data?.lastUpdate) || 0) === globalLastUpdate) {
+        lastUpdatedBy = mostRecentUpdate.name;
+        lastUpdatedAt = mostRecentUpdate.updated_at || null;
+    } else {
+        // Fallback: check last_updated_by field on the most recently updated record (by updated_at)
+        // Sort by updated_at desc
+        const lastModified = [...(rosterPlayers as any[])].sort(
+          (a: any, b: any) => new Date(b.updated_at as string).getTime() - new Date(a.updated_at as string).getTime()
+        )[0];
+        
+        if (lastModified && lastModified.last_updated_by) {
+            lastUpdatedBy = lastModified.last_updated_by;
+            lastUpdatedAt = lastModified.updated_at || null;
+        }
+    }
+} else if (rosterDataJson?.generatedBy) {
+    lastUpdatedBy = rosterDataJson.generatedBy;
+}
+
+if (rosterError) {
+  console.error('Error loading roster from Supabase:', rosterError);
+}
 
 // Definir el tipo para los miembros del roster
 interface RosterMember {
@@ -59,7 +144,9 @@ Object.entries(featuredData).forEach(([year, yearData]) => {
 
 // Asegurarse de que los datos tengan la estructura esperada
 const players = (rosterData as any).players || {};
-const formattedRosterData = Object.entries(players).map(([name, memberData]: [string, any]) => {
+const formattedRosterData = Object.entries(players)
+  .filter(([_, memberData]: [string, any]) => !memberData.guildLeave) // Filtrar jugadores que han salido
+  .map(([name, memberData]: [string, any]) => {
   const member = { ...memberData, name }; // Asegurar que el nombre esté incluido
   const lowerName = name.toLowerCase();
   const playerRecognitions = playerAllRecognitions[lowerName] || [];
@@ -188,7 +275,14 @@ if (Astro.url.searchParams.has('page')) {
   <div class="mx-auto animate-fade-in max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- Tabla de Roster -->
     <div class="relative z-40">
-      <RosterTable initialRosterData={formattedRosterData} raidRegistrations={raidRegistrations || []} />
+      <RosterTable
+        client:load
+        initialRosterData={formattedRosterData}
+        raidRegistrations={raidRegistrations || []}
+        lastUpdatedBy={lastUpdatedBy}
+        globalLastUpdate={globalLastUpdate}
+        lastUpdatedAt={lastUpdatedAt}
+      />
     </div>
 
     <!-- Sección de Jugadores Destacados -->
