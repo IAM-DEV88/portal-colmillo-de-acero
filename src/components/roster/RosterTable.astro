@@ -17,33 +17,13 @@ const {
   lastUpdatedAt = null
 } = Astro.props;
 
-// Define default class info with TypeScript type
-const defaultClassInfo: Record<string, { name: string; color: string }> = {
-  // English class names
-  'Warrior': { color: 'C79C6E', name: 'Guerrero' },
-  'Paladin': { color: 'F58CBA', name: 'Paladín' },
-  'Hunter': { color: 'ABD473', name: 'Cazador' },
-  'Rogue': { color: 'FFF569', name: 'Pícaro' },
-  'Priest': { color: 'FFFFFF', name: 'Sacerdote' },
-  'Death Knight': { color: 'C41F3B', name: 'Caballero de la Muerte' },
-  'Shaman': { color: '0070DE', name: 'Chamán' },
-  'Mage': { color: '69CCF0', name: 'Mago' },
-  'Warlock': { color: '9482C9', name: 'Brujo' },
-  'Druid': { color: 'FF7D0A', name: 'Druida' },
-  // Keep Spanish class names for backward compatibility
-  'Guerrero': { color: 'C79C6E', name: 'Guerrero' },
-  'Paladín': { color: 'F58CBA', name: 'Paladín' },
-  'Cazador': { color: 'ABD473', name: 'Cazador' },
-  'Pícaro': { color: 'FFF569', name: 'Pícaro' },
-  'Sacerdote': { color: 'FFFFFF', name: 'Sacerdote' },
-  'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
-  'Chamán': { color: '0070DE', name: 'Chamán' },
-  'Mago': { color: '69CCF0', name: 'Mago' },
-  'Brujo': { color: '9482C9', name: 'Brujo' },
-  'Druida': { color: 'FF7D0A', name: 'Druida' },
-};
+import {
+  DEFAULT_CLASS_INFO as defaultClassInfo,
+  RACE_NAMES,
+  FACTION_NAMES,
+} from './rosterConstants';
 
-// Import types and constants from roster types
+// Obtener las props
 import type {
   RosterMember,
   RosterData,
@@ -2405,25 +2385,6 @@ function calculateClassDistribution(
 const rankDistribution = calculateRankDistribution(rosterData.members);
 const classDistribution = calculateClassDistribution(rosterData.members, rosterData.classInfo);
 
-// Mappings for new stats
-const RACE_NAMES: Record<string, string> = {
-  GN: 'Gnomo',
-  HU: 'Humano',
-  NE: 'Elfo de la Noche',
-  DW: 'Enano',
-  DR: 'Draenei',
-  OR: 'Orco',
-  TA: 'Tauren',
-  UN: 'No Muerto',
-  TR: 'Trol',
-  BE: 'Elfo de Sangre',
-};
-
-const FACTION_NAMES: Record<string, string> = {
-  '1': 'Alianza',
-  '2': 'Horda',
-};
-
 // Calculate new distributions
 const raceDistribution = (() => {
   const counts = rosterData.members.reduce(
@@ -2721,24 +2682,32 @@ const totalRaiders = rosterData.members.filter(
     }
   </style>
 
+  <!-- Roster Data Config (Alternative to define:vars for large data) -->
+  <div 
+    id="roster-config-data" 
+    class="hidden" 
+    data-roster={JSON.stringify(rosterClientData)}
+    data-roles={JSON.stringify(roleNames)}
+    data-professions={JSON.stringify(professionNames)}
+    data-races={JSON.stringify(RACE_NAMES)}
+    data-factions={JSON.stringify(FACTION_NAMES)}
+    data-registrations={JSON.stringify(raidRegistrations)}
+  ></div>
+
   <!-- Script del cliente con la lógica de JavaScript -->
-  <script
-    define:vars={{
-      rosterData: JSON.stringify(rosterClientData),
-      roleNames: JSON.stringify(roleNames),
-      professionNames: JSON.stringify(professionNames),
-      raceNames: JSON.stringify(RACE_NAMES),
-      factionNames: JSON.stringify(FACTION_NAMES),
-      raidRegistrations: JSON.stringify(raidRegistrations),
-    }}
-  >
-    // Analizar los datos del roster
-    const rosterInfo = JSON.parse(rosterData);
-    const roleNamesData = JSON.parse(roleNames);
-    const professionNamesData = JSON.parse(professionNames);
-    const raceNamesData = JSON.parse(raceNames);
-    const factionNamesData = JSON.parse(factionNames);
-    const raidRegistrationsData = JSON.parse(raidRegistrations);
+  <script>
+    // Obtener los datos del roster desde los atributos de datos
+    const configData = document.getElementById('roster-config-data');
+    if (!configData) {
+      console.error('No se pudo encontrar el contenedor de datos del roster');
+    }
+    
+    const rosterInfo = configData ? JSON.parse(configData.getAttribute('data-roster') || '{}') : {};
+    const roleNamesData = configData ? JSON.parse(configData.getAttribute('data-roles') || '{}') : {};
+    const professionNamesData = configData ? JSON.parse(configData.getAttribute('data-professions') || '{}') : {};
+    const raceNamesData = configData ? JSON.parse(configData.getAttribute('data-races') || '{}') : {};
+    const factionNamesData = configData ? JSON.parse(configData.getAttribute('data-factions') || '{}') : {};
+    const raidRegistrationsData = configData ? JSON.parse(configData.getAttribute('data-registrations') || '[]') : [];
 
     // Función para inicializar tooltips
     function initTooltips() {
