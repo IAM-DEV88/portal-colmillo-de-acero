@@ -6,7 +6,7 @@ import rosterData from '../../data/roster.json';
 // Mensajes aleatorios generales
 const GENERAL_MESSAGES = [
   {
-    title: ":shield: RaidDominion",
+    title: ":shield: Addon RaidDominion",
     description: "Descrube nuestro addon para dirigir raids y cómo usarlo.",
     url: "https://colmillo.netlify.app/",
     color: 0xf59e0b // Amber
@@ -31,7 +31,7 @@ const GENERAL_MESSAGES = [
   },
   {
     title: ":game_die: ¡Ruleta Colmillo de Acero!",
-    description: "¿Quieres ganar una gargantilla? ¡Usa la ruleta y participa en el sorteo!",
+    description: "¿Quieres ganar una Gargantilla carmesí de la Reina de Sangre? ¡Juega en la ruleta y participa en el sorteo!",
     url: "https://colmillo.netlify.app/ruleta",
     color: 0xf59e0b // Amber
   }
@@ -105,12 +105,76 @@ export const GET = async ({ request, url }) => {
     }
 
     // --- ENVÍO MENSAJE GENERAL / DINÁMICO ---
-    const isGeneralMessage = ['GENERAL', 'SUMMARY', 'ROSTER', 'WEEKLY', 'SCHEDULE'].includes(messageType);
+    const isGeneralMessage = ['GENERAL', 'SUMMARY', 'ROSTER', 'WEEKLY', 'SCHEDULE', 'POLLS'].includes(messageType);
     if (isGeneralMessage) {
         const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
         const currentDay = nowServer.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
         const allSchedules = getAllRaidSchedules();
         
+        const dynamicMessages = [...GENERAL_MESSAGES];
+
+        // Conexión a Supabase para las encuestas
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+        let pollResults = [];
+        
+        if (supabaseUrl && supabaseKey) {
+            const { createClient } = await import('@supabase/supabase-js');
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            const { data } = await supabase.from('schedule_votes').select('*');
+            pollResults = data || [];
+        }
+
+        // --- 5. RESULTADOS DE ENCUESTAS ---
+        const pollFields = [];
+        
+        // Agrupar votos por respuestas (Día y Raid/Dificultad)
+        const votesByDay: Record<string, any[]> = {};
+        pollResults.forEach(v => {
+            const day = v.day_of_week || 'Sin día';
+            const raid = v.raid_name || '?';
+            const diff = v.difficulty || '?';
+            const size = v.size || '?';
+            const time = v.preferred_time || '?';
+            
+            if (!votesByDay[day]) votesByDay[day] = [];
+            votesByDay[day].push({ raid, diff, size, time });
+        });
+
+        const daysInOrderES = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+
+        daysInOrderES.forEach(day => {
+            const dayVotes = votesByDay[day];
+            if (dayVotes && dayVotes.length > 0) {
+                // Contar combinaciones
+                const counts: Record<string, number> = {};
+                dayVotes.forEach(dv => {
+                    const key = `• \`${dv.time}\` **${dv.raid}** (${dv.diff.charAt(0)}${dv.size})`;
+                    counts[key] = (counts[key] || 0) + 1;
+                });
+                
+                const summary = Object.entries(counts)
+                    .map(([text, count]) => `${text} x${count}`)
+                    .join('\n');
+
+                pollFields.push({
+                    name: `📅 ${day.charAt(0).toUpperCase() + day.slice(1)}`,
+                    value: summary,
+                    inline: true
+                });
+            }
+        });
+
+        const pollsMsg = {
+            title: "🗳️ Voto por horario",
+            description: "Preferencia de bandas y horarios de los miembros:",
+            fields: pollFields.length > 0 ? pollFields : [{ name: "Sin votos", value: "Aún no hay votos registrados.", inline: false }],
+            url: "https://colmillo.netlify.app/voto-horario",
+            color: 0x10b981,
+            type: 'POLLS'
+        };
+        dynamicMessages.push(pollsMsg);
+
         // Función para formatear el resumen de raids (Hoy o Mañana)
          const getRaidSummary = (targetDay: string, isTomorrow = false) => {
              const raids = allSchedules.filter(s => s.day_of_week === targetDay);
@@ -169,8 +233,6 @@ export const GET = async ({ request, url }) => {
                 summaryTitle = "📅 Raids de Mañana";
             }
         }
-
-        const dynamicMessages = [...GENERAL_MESSAGES];
         
         // --- 1. RESUMEN DE ROSTER POR RANGOS ---
         const players = rosterData.players || {};
@@ -233,7 +295,7 @@ export const GET = async ({ request, url }) => {
         
         const rosterMsg = {
             title: "👥 Estado del Roster",
-            description: "Distribución actual de miembros por rango y metadatos de actualización:",
+            description: "Distribución actual de miembros por rango:",
             fields: rosterFields,
             url: "https://colmillo.netlify.app/roster",
             color: 0x8b5cf6,

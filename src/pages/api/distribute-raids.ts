@@ -78,25 +78,13 @@ export const GET: APIRoute = async ({ request }) => {
       return new Response(JSON.stringify({ error: 'Error fetching registrations', details: error }), { status: 500 });
     }
 
-    // 2. Filtrar No-Guild y mover a en_revision
+    // 2. Filtrar No-Guild (SOLO LECTURA)
     const rosterPlayers = Object.keys(rosterData.players).map(p => clean(p));
-    // Identificar jugadores que NO están en roster.json
-    const nonGuildPlayers = registrations.filter(reg => !rosterPlayers.includes(clean(reg.player_name)));
-    // Identificar jugadores que SÍ están en roster.json (Pool válido)
+    // Identificar jugadores que SÍ están en roster.json (Pool válido para distribución)
     const guildPlayers = registrations.filter(reg => rosterPlayers.includes(clean(reg.player_name)));
-
-    if (nonGuildPlayers.length > 0) {
-      // Solo actualizamos a 'en_revision' si no lo están ya
-      const toUpdate = nonGuildPlayers.filter(p => p.status !== 'en_revision');
-      if (toUpdate.length > 0) {
-          console.log(`Moviendo ${toUpdate.length} jugadores no-guild a 'en_revision'...`);
-          const ids = toUpdate.map(p => p.id);
-          await supabase
-            .from('raid_registrations')
-            .update({ status: 'en_revision' })
-            .in('id', ids);
-      }
-    }
+    
+    // Los jugadores que NO están en el roster se ignoran por completo (no se toca su estado)
+    console.log(`Jugadores en Roster: ${guildPlayers.length}. Ignorando ${registrations.length - guildPlayers.length} externos.`);
 
     // 3. Parsear GS y Crear Pool Único
     const uniquePlayers = new Map<string, PlayerGS>();
@@ -391,26 +379,8 @@ export const GET: APIRoute = async ({ request }) => {
     }
 
     // 6. Aplicar Cambios Reales
-    // Estrategia:
-    // a. Marcar TODOS los registros originales del pool como 'en_espera' primero.
-    // b. Recorrer assignments y actualizar/crear.
-    
-    // Paso a: Reset
-    const allPoolIds = sortedPool.map(p => p.id); // Solo IDs principales
-    // Necesitamos TODOS los IDs de guildPlayers, no solo los del pool único.
-    const allGuildRegIds = guildPlayers.map(p => p.id);
-    
-    if (allGuildRegIds.length > 0) {
-        await supabase
-            .from('raid_registrations')
-            .update({ status: 'en_espera' }) // Reset temporal
-            .in('id', allGuildRegIds);
-    }
-
-    // Paso b: Aplicar Asignaciones
-    // Para cada asignación, buscamos si el jugador tenía un registro para ese RaidType.
-    // Si sí, actualizamos ESE registro a 'aceptado' y nuevos datos.
-    // Si no, actualizamos el registro principal (ID del pool) o creamos uno nuevo.
+    // Estrategia: Actualizar individualmente solo los registros necesarios.
+    // Sin reset masivo de 'en_espera' para no afectar a jugadores externos o registros manuales.
     
     for (const assign of assignments) {
         // Buscar registro original que coincida con RaidType (para reutilizarlo)
@@ -420,7 +390,8 @@ export const GET: APIRoute = async ({ request }) => {
         );
 
         if (existingReg) {
-            // Update
+            // Ya tiene un registro para este TIPO de raid (ej: ICC25)
+            // Lo actualizamos para que coincida con la nueva asignación
             await supabase
                 .from('raid_registrations')
                 .update({
@@ -432,9 +403,8 @@ export const GET: APIRoute = async ({ request }) => {
                 .eq('id', existingReg.id);
         } else {
             // No tenía registro para este tipo de raid.
-            // Primero verificamos si YA EXISTE un registro duplicado (por si acaso el update de en_espera no fue suficiente o hay concurrencia)
-            // Buscamos por la clave única compuesta: player_name, raid_id, day_of_week, start_time
-            const { data: duplicateCheck } = await supabase
+            // Comprobación de duplicados estricta antes de insertar
+            const { data: duplicate } = await supabase
                 .from('raid_registrations')
                 .select('id')
                 .eq('player_name', assign.playerName)
@@ -443,41 +413,83 @@ export const GET: APIRoute = async ({ request }) => {
                 .eq('start_time', assign.time)
                 .maybeSingle();
 
-            if (duplicateCheck) {
-                // Si existe, lo actualizamos a aceptado
+            if (duplicate) {
                 await supabase
                     .from('raid_registrations')
                     .update({ status: 'aceptado' })
-                    .eq('id', duplicateCheck.id);
+                    .eq('id', duplicate.id);
             } else {
-                // Si no existe, insertamos
-                const { error: insertError } = await supabase
+                const pInfo = sortedPool.find(p => p.name === assign.playerName);
+                await supabase
                     .from('raid_registrations')
                     .insert({
                         player_name: assign.playerName,
-                        player_class: sortedPool.find(p => p.name === assign.playerName)?.class,
-                        player_role: sortedPool.find(p => p.name === assign.playerName)?.role,
+                        player_class: pInfo?.class || 'Unknown',
+                        player_role: pInfo?.role || 'dps',
                         raid_id: assign.raidId,
                         day_of_week: assign.day,
                         start_time: assign.time,
                         status: 'aceptado'
                     });
-                    
-                if (insertError) console.error('Error insertando registro:', insertError);
             }
         }
     }
 
-    // Resultado
+    // 7. Notificar por Discord (Canal Privado)
+    const webhookUrl = import.meta.env.DISCORD_WEBHOOK_URL;
+    if (webhookUrl) {
+        const raidFields = raids
+            .filter(r => r.assigned.length > 0)
+            .map(r => {
+                const tanks = r.assigned.filter(p => p.role === 'tank');
+                const healers = r.assigned.filter(p => p.role === 'healer');
+                const dps = r.assigned.filter(p => p.role === 'melee' || p.role === 'ranged' || p.role === 'dps');
+                
+                // Calcular GS promedio
+                const avgGS = r.assigned.length > 0 
+                    ? Math.round(r.assigned.reduce((acc, p) => acc + p.gs, 0) / r.assigned.length) 
+                    : 0;
+
+                return {
+                    name: `⚔️ ${r.raidId} (${r.day} ${r.time})`,
+                    value: `👤 **Jugadores:** ${r.assigned.length}/${r.type === '25' ? '25' : '10'}\n` +
+                           `🛡️ **T/H/D:** ${tanks.length}T / ${healers.length}H / ${dps.length}D\n` +
+                           `📈 **GS Promedio:** ${avgGS}\n` +
+                           `👑 **Líder:** ${r.raidId.includes('ICC') ? 'Asignado' : 'Por definir'}\n` +
+                           `━━━━━━━━━━━━━━━━━━━━`,
+                    inline: false
+                };
+            });
+
+        const payload = {
+            username: "Sistema de Distribución",
+            avatar_url: "https://colmillo.netlify.app/images/logo.png",
+            embeds: [{
+                title: "✅ Distribución de Raids Completada",
+                description: `Se han procesado **${assignments.length}** asignaciones exitosas en el roster oficial.\n\n[🔗 Ver Calendario Completo en la Web](https://colmillo.netlify.app/raids)`,
+                color: 0x10b981, // Green
+                fields: raidFields,
+                timestamp: new Date().toISOString(),
+                footer: { text: "Colmillo de Acero • Gestión de Raids" }
+            }]
+        };
+
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+    }
+
+    // Resultado para el navegador
     const result = {
+        success: true,
+        assignments_count: assignments.length,
         raids: raids.map(r => ({
             id: r.raidId,
             day: r.day,
-            time: r.time,
-            count: r.assigned.length,
-            players: r.assigned.map(p => `${p.name} (${p.role} - ${p.gs})`)
-        })),
-        unassignedCount: allGuildRegIds.length - assignments.length // Aprox
+            count: r.assigned.length
+        }))
     };
 
     return new Response(JSON.stringify(result, null, 2), {

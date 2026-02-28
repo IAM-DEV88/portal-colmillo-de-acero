@@ -28,7 +28,7 @@
     "enlaces": [
       {
         "frase_cta": "🎆 ¡Año Nuevo, Vida Nueva! 🎊",
-        "url": "/voto"
+        "url": "/voto-horario"
       }
     ],
     "activo": true
@@ -62,7 +62,7 @@
     "enlaces": [
       {
         "frase_cta": "💀 ¡Fundación de la Hermandad! 🌺",
-        "url": "/voto"
+        "url": "/voto-horario"
       }
     ],
     "activo": true
@@ -96,7 +96,7 @@
     "enlaces": [
       {
         "frase_cta": "🎃 ¡Evento de Halloween! 👻",
-        "url": "/voto"
+        "url": "/voto-horario"
       }
     ],
     "activo": true
@@ -130,7 +130,7 @@
     "enlaces": [
       {
         "frase_cta": "🎄 ¡Evento de Navidad! 🎅",
-        "url": "/voto"
+        "url": "/voto-horario"
       }
     ],
     "activo": true

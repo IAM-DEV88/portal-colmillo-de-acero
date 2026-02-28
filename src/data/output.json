@@ -1,6 +1,16 @@
 {
-    "globalLastUpdate": 1771898849,
+    "globalLastUpdate": 1772233079,
     "players": {
+        "Duutb": {
+            "class": "Brujo",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Tgb": {
             "class": "Guerrero",
             "rank": "Aspirante",
@@ -63,6 +73,16 @@
         },
         "Nephsy": {
             "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Dianelliz": {
+            "class": "Sacerdote",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -301,16 +321,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Amilgoul": {
-            "class": "Brujo",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Elminitito": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -461,7 +471,7 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Magamoderna": {
+        "Sumofu": {
             "class": "Mago",
             "rank": "Aspirante",
             "publicNote": "md",
@@ -471,7 +481,17 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Sumofu": {
+        "Daryler": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Magamoderna": {
             "class": "Mago",
             "rank": "Aspirante",
             "publicNote": "md",
@@ -561,8 +581,18 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Taledrix": {
-            "class": "Cazador",
+        "Marquezf": {
+            "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Amilgoul": {
+            "class": "Brujo",
             "rank": "Aspirante",
             "publicNote": "md",
             "officerNote": "",
@@ -611,26 +641,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Arcanitenn": {
-            "class": "Guerrero",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Duut": {
-            "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Magordox": {
             "class": "Mago",
             "rank": "Aspirante",
@@ -661,16 +671,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Pinthi": {
-            "class": "Sacerdote",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "Alter Sezane",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Malganlx": {
             "class": "Brujo",
             "rank": "Aspirante",
@@ -685,16 +685,6 @@
             "class": "Sacerdote",
             "rank": "Aspirante",
             "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Patras": {
-            "class": "Brujo",
-            "rank": "Aspirante",
-            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -721,6 +711,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Arcanitenn": {
+            "class": "Guerrero",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Battlelion": {
             "class": "Guerrero",
             "rank": "Aspirante",
@@ -741,6 +741,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Duut": {
+            "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Nandoh": {
             "class": "Druida",
             "rank": "Aspirante",
@@ -752,16 +762,6 @@
             "isSanctioned": 0
         },
         "Phnx": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Crazines": {
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
@@ -801,16 +801,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Labubuperuka": {
-            "class": "Mago",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Latitisita": {
             "class": "Chamán",
             "rank": "Aspirante",
@@ -841,6 +831,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Pinthi": {
+            "class": "Sacerdote",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "Alter Sezane",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Spookkie": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -851,18 +851,18 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Feluriaan": {
-            "class": "Sacerdote",
+        "Sommeer": {
+            "class": "Pícaro",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Sommeer": {
-            "class": "Pícaro",
+        "Zuldanrak": {
+            "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
             "officerNote": "",
@@ -901,8 +901,38 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Patras": {
+            "class": "Brujo",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Senira": {
             "class": "Brujo",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Crazines": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Kosikioden": {
+            "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
             "officerNote": "",
@@ -921,10 +951,10 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Ahltea": {
-            "class": "Druida",
+        "Almigthyr": {
+            "class": "Brujo",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -962,6 +992,16 @@
             "isSanctioned": 0
         },
         "Orionxz": {
+            "class": "Pícaro",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Trakiahuesos": {
             "class": "Pícaro",
             "rank": "Aspirante",
             "publicNote": "md",
@@ -1012,6 +1052,16 @@
             "isSanctioned": 0
         },
         "Sanatork": {
+            "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Hakkiro": {
             "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
@@ -1091,10 +1141,10 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Handbreaker": {
-            "class": "Cazador",
+        "Feluriaan": {
+            "class": "Sacerdote",
             "rank": "Aspirante",
-            "publicNote": "md",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1131,16 +1181,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Saucemon": {
-            "class": "Chamán",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Whesty": {
             "class": "Sacerdote",
             "rank": "Aspirante",
@@ -1161,10 +1201,30 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Handbreaker": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Smarty": {
             "class": "Druida",
             "rank": "Aspirante",
             "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Subguion": {
+            "class": "Mago",
+            "rank": "Aspirante",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1205,16 +1265,6 @@
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
             "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Bernalsoiyo": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1281,8 +1331,8 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Zeleridad": {
-            "class": "Druida",
+        "Darkfield": {
+            "class": "Sacerdote",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -1291,10 +1341,10 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Darkfield": {
-            "class": "Sacerdote",
+        "Bernalsoiyo": {
+            "class": "Cazador",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1313,16 +1363,6 @@
         },
         "Latumbadora": {
             "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Susurradead": {
-            "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -1381,28 +1421,8 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Crazycoww": {
-            "class": "Caballero de la Muerte",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Kpillo": {
             "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Sunrack": {
-            "class": "Caballero de la Muerte",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -1421,16 +1441,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Enaneitorr": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Molenox": {
             "class": "Guerrero",
             "rank": "Aspirante",
@@ -1443,6 +1453,16 @@
         },
         "Ramsesiv": {
             "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Saucemon": {
+            "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -1471,10 +1491,10 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Deski": {
-            "class": "Chamán",
+        "Labubuperuka": {
+            "class": "Mago",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1483,6 +1503,16 @@
         },
         "Mandead": {
             "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Deski": {
+            "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -1551,6 +1581,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Susurradead": {
+            "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Tremendonene": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -1562,6 +1602,16 @@
             "isSanctioned": 0
         },
         "Doccholliday": {
+            "class": "Cazador",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Enaneitorr": {
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
@@ -1601,40 +1651,10 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Egha": {
-            "class": "Guerrero",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Elviiss": {
-            "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Gianf": {
             "class": "Pícaro",
             "rank": "Aspirante",
             "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Ocasso": {
-            "class": "Chamán",
-            "rank": "Aspirante",
-            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1741,7 +1761,17 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Aepherliz": {
+        "Agonisante": {
+            "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Ahltea": {
             "class": "Druida",
             "rank": "Aspirante",
             "publicNote": "",
@@ -1751,10 +1781,10 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Agonisante": {
-            "class": "Caballero de la Muerte",
+        "Ainsooalgon": {
+            "class": "Brujo",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "md",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -1777,16 +1807,6 @@
             "publicNote": "md",
             "officerNote": "",
             "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Alborack": {
-            "class": "Chamán",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": "DR",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -1871,6 +1891,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Amonamartth": {
+            "class": "Brujo",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Andrewb": {
             "class": "Sacerdote",
             "rank": "Aspirante",
@@ -1934,7 +1964,7 @@
         "Arizor": {
             "class": "Pícaro",
             "rank": "Aspirante",
-            "publicNote": "md",
+            "publicNote": "md5.0",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -2141,32 +2171,12 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Behomett": {
-            "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Bigcrow": {
             "class": "Pícaro",
             "rank": "Aspirante",
             "publicNote": "md2.2",
             "officerNote": "",
             "race": "NE",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Bislow": {
-            "class": "Druida",
-            "rank": "Aspirante",
-            "publicNote": "mh5.7",
-            "officerNote": "",
-            "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -2531,6 +2541,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Crazycoww": {
+            "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Creeddop": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
@@ -2721,6 +2741,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Deestiny": {
+            "class": "Mago",
+            "rank": "Aspirante",
+            "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Demonht": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
@@ -2841,16 +2871,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Dkaan": {
-            "class": "Caballero de la Muerte",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Dkinvincible": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
@@ -2871,10 +2891,20 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Dobleclic": {
-            "class": "Pícaro",
+        "Dknoxx": {
+            "class": "Caballero de la Muerte",
             "rank": "Aspirante",
-            "publicNote": "md",
+            "publicNote": "",
+            "officerNote": "",
+            "race": "HU",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Dkragnar": {
+            "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -2922,16 +2952,6 @@
             "isSanctioned": 0
         },
         "Dragonasaky": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Draiber": {
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
@@ -3041,16 +3061,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Ellafrost": {
-            "class": "Caballero de la Muerte",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Elmole": {
             "class": "Chamán",
             "rank": "Aspirante",
@@ -3063,6 +3073,16 @@
         },
         "Elratero": {
             "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Elviiss": {
+            "class": "Paladín",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -3103,6 +3123,16 @@
         },
         "Estasz": {
             "class": "Chamán",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Estrellitalu": {
+            "class": "Paladín",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -3321,16 +3351,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Ghostexr": {
-            "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Gjoner": {
             "class": "Chamán",
             "rank": "Aspirante",
@@ -3361,16 +3381,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Gooz": {
-            "class": "Caballero de la Muerte",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Gosheogorath": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -3387,6 +3397,16 @@
             "publicNote": "",
             "officerNote": "",
             "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Gotaru": {
+            "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -3447,6 +3467,16 @@
             "publicNote": "",
             "officerNote": "",
             "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Hazkkar": {
+            "class": "Guerrero",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -3611,20 +3641,10 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Isilvyl": {
-            "class": "Druida",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Ivanovaa": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
-            "publicNote": "",
+            "publicNote": "mh5.8",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -3701,16 +3721,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Juelcliff": {
-            "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Julih": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -3773,16 +3783,6 @@
         },
         "Katsuri": {
             "class": "Chamán",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Keflax": {
-            "class": "Guerrero",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -3934,7 +3934,7 @@
         "Kravensz": {
             "class": "Cazador",
             "rank": "Aspirante",
-            "publicNote": "md4.7",
+            "publicNote": "md4.9",
             "officerNote": "",
             "race": "NE",
             "guildLeave": false,
@@ -4536,7 +4536,7 @@
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -4601,16 +4601,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Nicther": {
-            "class": "Cazador",
-            "rank": "Aspirante",
-            "publicNote": "md",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Nillsy": {
             "class": "Cazador",
             "rank": "Aspirante",
@@ -4663,6 +4653,16 @@
         },
         "Nyshinoya": {
             "class": "Sacerdote",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Ocasso": {
+            "class": "Chamán",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -5161,16 +5161,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Ritenkult": {
-            "class": "Mago",
-            "rank": "Aspirante",
-            "publicNote": "md5.5",
-            "officerNote": "",
-            "race": "GN",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Rodly": {
             "class": "Paladín",
             "rank": "Aspirante",
@@ -5185,6 +5175,16 @@
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Romeodusanto": {
+            "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -5293,16 +5293,6 @@
         },
         "Sargeiras": {
             "class": "Caballero de la Muerte",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Sariphiel": {
-            "class": "Sacerdote",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -5427,6 +5417,16 @@
             "publicNote": "",
             "officerNote": "",
             "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Shiraba": {
+            "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -5601,20 +5601,20 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Swacretry": {
-            "class": "Paladín",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Sylvannass": {
             "class": "Cazador",
             "rank": "Aspirante",
             "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Taemikasuchy": {
+            "class": "Guerrero",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -5651,6 +5651,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Tawua": {
+            "class": "Guerrero",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Teelochupee": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
@@ -5676,7 +5686,7 @@
             "rank": "Aspirante",
             "publicNote": "md5.2",
             "officerNote": "",
-            "race": null,
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -5695,6 +5705,16 @@
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
             "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Thalionx": {
+            "class": "Pícaro",
+            "rank": "Aspirante",
+            "publicNote": "ad",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -5721,12 +5741,32 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Tholrath": {
+            "class": "Caballero de la Muerte",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Thonyfrost": {
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
             "publicNote": "md5.9",
             "officerNote": "",
             "race": "HU",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Thorass": {
+            "class": "Paladín",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -5753,16 +5793,6 @@
         },
         "Tilinmaximus": {
             "class": "Chamán",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Tilrah": {
-            "class": "Caballero de la Muerte",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -5831,6 +5861,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Ukraniya": {
+            "class": "Druida",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": "NE",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Umzakala": {
             "class": "Druida",
             "rank": "Aspirante",
@@ -5845,6 +5885,16 @@
             "class": "Caballero de la Muerte",
             "rank": "Aspirante",
             "publicNote": "md5.9",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Vanesiita": {
+            "class": "Druida",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -5895,6 +5945,16 @@
             "class": "Guerrero",
             "rank": "Aspirante",
             "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Voltjin": {
+            "class": "Guerrero",
+            "rank": "Aspirante",
+            "publicNote": "md5.5",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -5975,16 +6035,6 @@
             "class": "Sacerdote",
             "rank": "Aspirante",
             "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Wokerzyto": {
-            "class": "Guerrero",
-            "rank": "Aspirante",
-            "publicNote": "md5.4",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -6093,16 +6143,6 @@
         },
         "Yaretzitha": {
             "class": "Guerrero",
-            "rank": "Aspirante",
-            "publicNote": "",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Ygrish": {
-            "class": "Caballero de la Muerte",
             "rank": "Aspirante",
             "publicNote": "",
             "officerNote": "",
@@ -6221,6 +6261,26 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Zeisaz": {
+            "class": "Mago",
+            "rank": "Aspirante",
+            "publicNote": "md2.3",
+            "officerNote": "",
+            "race": "GN",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Zeleridad": {
+            "class": "Druida",
+            "rank": "Aspirante",
+            "publicNote": "",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Zesar": {
             "class": "Sacerdote",
             "rank": "Aspirante",
@@ -6265,6 +6325,16 @@
             "class": "Brujo",
             "rank": "Aspirante",
             "publicNote": "md",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Zooewar": {
+            "class": "Guerrero",
+            "rank": "Aspirante",
+            "publicNote": "",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -6531,26 +6601,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Anshina": {
-            "class": "Paladín",
-            "rank": "Iniciado",
-            "publicNote": "md6.0",
-            "officerNote": "russwell pliqui ",
-            "race": "BE",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Apuk": {
-            "class": "Druida",
-            "rank": "Iniciado",
-            "publicNote": "md6.0h6.4",
-            "officerNote": "inscriptor full",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Architecture": {
             "class": "Mago",
             "rank": "Iniciado",
@@ -6584,9 +6634,9 @@
         "Arrozconlech": {
             "class": "Druida",
             "rank": "Iniciado",
-            "publicNote": "md5.4",
+            "publicNote": "mt5.4h5.2",
             "officerNote": "",
-            "race": null,
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -6791,16 +6841,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Cdrako": {
-            "class": "Paladín",
-            "rank": "Iniciado",
-            "publicNote": "md5.9",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Chaliin": {
             "class": "Caballero de la Muerte",
             "rank": "Iniciado",
@@ -6881,16 +6921,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Comidian": {
-            "class": "Guerrero",
-            "rank": "Iniciado",
-            "publicNote": "md5.8",
-            "officerNote": "",
-            "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Connetre": {
             "class": "Druida",
             "rank": "Iniciado",
@@ -6914,7 +6944,7 @@
         "Cuberito": {
             "class": "Cazador",
             "rank": "Iniciado",
-            "publicNote": "md5.5",
+            "publicNote": "md5.6",
             "officerNote": "",
             "race": "NE",
             "guildLeave": false,
@@ -6947,16 +6977,6 @@
             "publicNote": "md6.0",
             "officerNote": "",
             "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Darkmarcel": {
-            "class": "Guerrero",
-            "rank": "Iniciado",
-            "publicNote": "mt5.5",
-            "officerNote": "",
-            "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -7031,6 +7051,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Dobleclic": {
+            "class": "Pícaro",
+            "rank": "Iniciado",
+            "publicNote": "md5.3",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Dominatrixxd": {
             "class": "Caballero de la Muerte",
             "rank": "Iniciado",
@@ -7054,7 +7084,7 @@
         "Drahico": {
             "class": "Sacerdote",
             "rank": "Iniciado",
-            "publicNote": "ad5.5",
+            "publicNote": "ad5.7",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -7131,6 +7161,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Egha": {
+            "class": "Guerrero",
+            "rank": "Iniciado",
+            "publicNote": "ad3.1",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Elbetia": {
             "class": "Mago",
             "rank": "Iniciado",
@@ -7157,16 +7197,6 @@
             "publicNote": "md5.8",
             "officerNote": "",
             "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Ephesto": {
-            "class": "Paladín",
-            "rank": "Iniciado",
-            "publicNote": "md5.8",
-            "officerNote": "",
-            "race": "DR",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -7274,7 +7304,7 @@
         "Gabiramires": {
             "class": "Caballero de la Muerte",
             "rank": "Iniciado",
-            "publicNote": "md5.1",
+            "publicNote": "md5.3",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -7471,6 +7501,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Isilvyl": {
+            "class": "Druida",
+            "rank": "Iniciado",
+            "publicNote": "mh5.8",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Iveey": {
             "class": "Mago",
             "rank": "Iniciado",
@@ -7547,16 +7587,6 @@
             "publicNote": "mt5.9",
             "officerNote": "",
             "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Jofbirtz": {
-            "class": "Guerrero",
-            "rank": "Iniciado",
-            "publicNote": "md5.1",
-            "officerNote": "",
-            "race": "HU",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -7664,7 +7694,7 @@
         "Kannan": {
             "class": "Guerrero",
             "rank": "Iniciado",
-            "publicNote": "md5.0",
+            "publicNote": "md5.4",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -7686,7 +7716,7 @@
             "rank": "Iniciado",
             "publicNote": "",
             "officerNote": "",
-            "race": null,
+            "race": "OR",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -7714,7 +7744,7 @@
         "Labetia": {
             "class": "Guerrero",
             "rank": "Iniciado",
-            "publicNote": "md5.4",
+            "publicNote": "md5.5",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -7724,7 +7754,7 @@
         "Largentha": {
             "class": "Sacerdote",
             "rank": "Iniciado",
-            "publicNote": "",
+            "publicNote": "m.d5.9",
             "officerNote": "sacer sombras, 5949 gs, no dual",
             "race": "HU",
             "guildLeave": false,
@@ -7734,7 +7764,7 @@
         "Lauri": {
             "class": "Pícaro",
             "rank": "Iniciado",
-            "publicNote": "md3.8",
+            "publicNote": "md4.0",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -7755,16 +7785,6 @@
             "class": "Brujo",
             "rank": "Iniciado",
             "publicNote": "ad5.7",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Lebantahueso": {
-            "class": "Druida",
-            "rank": "Iniciado",
-            "publicNote": "md3.5",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -7801,21 +7821,21 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Lelahel": {
+            "class": "Caballero de la Muerte",
+            "rank": "Iniciado",
+            "publicNote": "md5.0",
+            "officerNote": "",
+            "race": "DW",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Levitor": {
             "class": "Sacerdote",
             "rank": "Iniciado",
             "publicNote": "md5.4",
             "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Liyuka": {
-            "class": "Druida",
-            "rank": "Iniciado",
-            "publicNote": "",
-            "officerNote": "pollo 5.8 sin aun :(",
             "race": null,
             "guildLeave": false,
             "leaderData": {},
@@ -7991,22 +8011,22 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Mescart": {
-            "class": "Paladín",
-            "rank": "Iniciado",
-            "publicNote": "mt5.0",
-            "officerNote": "",
-            "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Metapala": {
             "class": "Paladín",
             "rank": "Iniciado",
             "publicNote": "md5.2h5.0",
             "officerNote": "",
             "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Miij": {
+            "class": "Paladín",
+            "rank": "Iniciado",
+            "publicNote": "mt4.8",
+            "officerNote": "",
+            "race": "HU",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -8027,16 +8047,6 @@
             "publicNote": "md5.9",
             "officerNote": "",
             "race": "GN",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Minoico": {
-            "class": "Druida",
-            "rank": "Iniciado",
-            "publicNote": "ah6.0",
-            "officerNote": "",
-            "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -8351,16 +8361,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Pensival": {
-            "class": "Paladín",
-            "rank": "Iniciado",
-            "publicNote": "md5.8h5.8",
-            "officerNote": "Estoy pa lo q sea",
-            "race": "BE",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Pepitalaloca": {
             "class": "Paladín",
             "rank": "Iniciado",
@@ -8561,12 +8561,12 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Rattsel": {
-            "class": "Cazador",
+        "Ratolineta": {
+            "class": "Sacerdote",
             "rank": "Iniciado",
             "publicNote": "md5.9",
-            "officerNote": "",
-            "race": "NE",
+            "officerNote": "shadow 5.9gs",
+            "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -8586,16 +8586,6 @@
             "rank": "Iniciado",
             "publicNote": "md5.1",
             "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Rhaekhar": {
-            "class": "Caballero de la Muerte",
-            "rank": "Iniciado",
-            "publicNote": "mt6.1",
-            "officerNote": "dk tank 6.1 dual frost 5.7",
             "race": null,
             "guildLeave": false,
             "leaderData": {},
@@ -8741,16 +8731,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Russwell": {
-            "class": "Druida",
-            "rank": "Iniciado",
-            "publicNote": "ad5.3",
-            "officerNote": "Anshina y Pliqui",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Rychell": {
             "class": "Chamán",
             "rank": "Iniciado",
@@ -8774,7 +8754,7 @@
         "Sacatripaxd": {
             "class": "Pícaro",
             "rank": "Iniciado",
-            "publicNote": "md4.0",
+            "publicNote": "md4.4",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -8907,16 +8887,6 @@
             "publicNote": "md6.9t6.5",
             "officerNote": "",
             "race": "DR",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Spartac": {
-            "class": "Paladín",
-            "rank": "Iniciado",
-            "publicNote": "md5.8",
-            "officerNote": "",
-            "race": "HU",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -9405,7 +9375,7 @@
             "class": "Chamán",
             "rank": "Explorador",
             "publicNote": "mh5.7",
-            "officerNote": "",
+            "officerNote": "resto 6k",
             "race": null,
             "guildLeave": false,
             "leaderData": {},
@@ -9455,7 +9425,7 @@
             "class": "Mago",
             "rank": "Explorador",
             "publicNote": "md5.8",
-            "officerNote": "",
+            "officerNote": "PVP",
             "race": "DR",
             "guildLeave": false,
             "leaderData": {},
@@ -9476,27 +9446,7 @@
             "rank": "Explorador",
             "publicNote": "md6.4",
             "officerNote": "2 Pj Nynx",
-            "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Bosakiller": {
-            "class": "Pícaro",
-            "rank": "Explorador",
-            "publicNote": "md6.0",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Buhonerokt": {
-            "class": "Druida",
-            "rank": "Explorador",
-            "publicNote": "mg5.7",
-            "officerNote": "",
-            "race": null,
+            "race": "UN",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -9505,6 +9455,16 @@
             "class": "Cazador",
             "rank": "Explorador",
             "publicNote": "ad5.9",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Cdrako": {
+            "class": "Paladín",
+            "rank": "Explorador",
+            "publicNote": "md5.9",
             "officerNote": "",
             "race": null,
             "guildLeave": false,
@@ -9597,16 +9557,6 @@
             "publicNote": "mt5.7",
             "officerNote": "",
             "race": "HU",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Drudael": {
-            "class": "Druida",
-            "rank": "Explorador",
-            "publicNote": "h5.8",
-            "officerNote": "",
-            "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -9871,16 +9821,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Javden": {
-            "class": "Brujo",
-            "rank": "Explorador",
-            "publicNote": "md5.4",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Jeringa": {
             "class": "Pícaro",
             "rank": "Explorador",
@@ -9921,6 +9861,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Jofbirtz": {
+            "class": "Guerrero",
+            "rank": "Explorador",
+            "publicNote": "md5.2",
+            "officerNote": "",
+            "race": "HU",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Jonared": {
             "class": "Druida",
             "rank": "Explorador",
@@ -9947,16 +9897,6 @@
             "publicNote": "aD5.5",
             "officerNote": "",
             "race": "DR",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Kalysi": {
-            "class": "Paladín",
-            "rank": "Explorador",
-            "publicNote": "md5.9t6.1",
-            "officerNote": "",
-            "race": null,
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -10104,7 +10044,7 @@
         "Magavaga": {
             "class": "Mago",
             "rank": "Explorador",
-            "publicNote": "ad5.7",
+            "publicNote": "ad5.8",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -10154,7 +10094,7 @@
         "Matafocas": {
             "class": "Guerrero",
             "rank": "Explorador",
-            "publicNote": "md5.3",
+            "publicNote": "md5.4",
             "officerNote": "",
             "race": "HU",
             "guildLeave": false,
@@ -10341,21 +10281,21 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Pensival": {
+            "class": "Paladín",
+            "rank": "Explorador",
+            "publicNote": "md5.8h5.8",
+            "officerNote": "Estoy pa lo q sea",
+            "race": "BE",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Pliklin": {
             "class": "Mago",
             "rank": "Explorador",
             "publicNote": "ad4.7",
             "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Pliqui": {
-            "class": "Caballero de la Muerte",
-            "rank": "Explorador",
-            "publicNote": "ad6.0",
-            "officerNote": "russwell anshina ",
             "race": null,
             "guildLeave": false,
             "leaderData": {},
@@ -10421,6 +10361,16 @@
             "leaderData": {},
             "isSanctioned": 0
         },
+        "Rattsel": {
+            "class": "Cazador",
+            "rank": "Explorador",
+            "publicNote": "md5.9",
+            "officerNote": "",
+            "race": "NE",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
         "Redaleister": {
             "class": "Brujo",
             "rank": "Explorador",
@@ -10437,6 +10387,26 @@
             "publicNote": "mt5.3",
             "officerNote": "",
             "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Rhaekhar": {
+            "class": "Caballero de la Muerte",
+            "rank": "Explorador",
+            "publicNote": "mt6.1",
+            "officerNote": "dk tank 6.1 dual frost 5.7",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Ritenkult": {
+            "class": "Mago",
+            "rank": "Explorador",
+            "publicNote": "md5.5",
+            "officerNote": "",
+            "race": "GN",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -10674,18 +10644,8 @@
         "Tuyuti": {
             "class": "Chamán",
             "rank": "Explorador",
-            "publicNote": "mh5.8",
+            "publicNote": "mh5.9",
             "officerNote": "",
-            "race": "DR",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Tyliax": {
-            "class": "Paladín",
-            "rank": "Explorador",
-            "publicNote": "mt5.4",
-            "officerNote": "Xhalok",
             "race": "DR",
             "guildLeave": false,
             "leaderData": {},
@@ -10694,9 +10654,9 @@
         "Urcis": {
             "class": "Druida",
             "rank": "Explorador",
-            "publicNote": "mt5.3",
+            "publicNote": "mt5.4",
             "officerNote": "",
-            "race": null,
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -10781,16 +10741,6 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Wolfeimer": {
-            "class": "Brujo",
-            "rank": "Explorador",
-            "publicNote": "md5.4",
-            "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Wondern": {
             "class": "Chamán",
             "rank": "Explorador",
@@ -10841,31 +10791,11 @@
             "leaderData": {},
             "isSanctioned": 0
         },
-        "Xhalok": {
-            "class": "Cazador",
-            "rank": "Explorador",
-            "publicNote": "md5.3",
-            "officerNote": "Tyliax",
-            "race": "NE",
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
         "Xhiang": {
             "class": "Pícaro",
             "rank": "Explorador",
             "publicNote": "md5.6",
             "officerNote": "",
-            "race": null,
-            "guildLeave": false,
-            "leaderData": {},
-            "isSanctioned": 0
-        },
-        "Xiaron": {
-            "class": "Sacerdote",
-            "rank": "Explorador",
-            "publicNote": "md5.6h5.0TLEN",
-            "officerNote": "Sastre / encanta  - SP / Heal",
             "race": null,
             "guildLeave": false,
             "leaderData": {},
@@ -10977,6 +10907,76 @@
             "publicNote": "ah5.9d5.3inEN",
             "officerNote": "",
             "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Anshina": {
+            "class": "Paladín",
+            "rank": "Oficial",
+            "publicNote": "md6.0",
+            "officerNote": "russwell pliqui ",
+            "race": "BE",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Bosakiller": {
+            "class": "Pícaro",
+            "rank": "Oficial",
+            "publicNote": "md6.0",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Drudael": {
+            "class": "Druida",
+            "rank": "Oficial",
+            "publicNote": "h5.8",
+            "officerNote": "",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Pliqui": {
+            "class": "Caballero de la Muerte",
+            "rank": "Oficial",
+            "publicNote": "ad6.0",
+            "officerNote": "russwell anshina ",
+            "race": null,
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Russwell": {
+            "class": "Druida",
+            "rank": "Oficial",
+            "publicNote": "ad5.3",
+            "officerNote": "Anshina y Pliqui",
+            "race": "TA",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Tyliax": {
+            "class": "Paladín",
+            "rank": "Oficial",
+            "publicNote": "mt5.4",
+            "officerNote": "Xhalok",
+            "race": "DR",
+            "guildLeave": false,
+            "leaderData": {},
+            "isSanctioned": 0
+        },
+        "Xhalok": {
+            "class": "Cazador",
+            "rank": "Oficial",
+            "publicNote": "md5.3",
+            "officerNote": "Tyliax",
+            "race": "NE",
             "guildLeave": false,
             "leaderData": {},
             "isSanctioned": 0
@@ -11511,7 +11511,7 @@
             "race": "GN",
             "guildLeave": false,
             "leaderData": {
-                "lastUpdate": 1771898849,
+                "lastUpdate": 1772233079,
                 "cores": [
                     {
                         "raid": "ICC10H ABAS",
@@ -11520,21 +11520,21 @@
                         "members": [
                             {
                                 "name": "Pomareta",
-                                "role": "Tank",
+                                "role": "tank",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": "DEATHKNIGHT"
                             },
                             {
                                 "name": "Repher",
-                                "role": "Healer",
+                                "role": "healer",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": "DRUID"
                             },
                             {
                                 "name": "Minvght",
-                                "role": "Tank",
+                                "role": "tank",
                                 "isLeader": 0,
                                 "isSanctioned": 1,
                                 "class": "PALADIN"
@@ -11542,6 +11542,12 @@
                             {
                                 "name": "Nasci",
                                 "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Anshina",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0
                             },
@@ -11599,6 +11605,845 @@
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": "PALADIN"
+                            },
+                            {
+                                "name": "Acorazado",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Pierpa",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Quemadito",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Venomouse",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Rojiriin",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Warbunker",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Ahinohaa",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Dakilia",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Wow",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Dytor",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Gabozinn",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Kispocho",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Tharlias",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Ljockerl",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Mamarcela",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Goldenntus",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Obreraa",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Hanssi",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Dinkea",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Kharitemata",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Kirye",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Muertodasco",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Kannan",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Magim",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Vinicius",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Falinruch",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Xhalok",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Rumbler",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Javden",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Sezane",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Nathassha",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Nanitas",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Xelino",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Yasvek",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Yamalube",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Leoniia",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Alborack",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Darckcrow",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Bosakiller",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Unconvivemio",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Holiest",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Dxrkcry",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Kaelim",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Kryssthall",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Neferopitou",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Taridani",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Xxtalanxx",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Pequecuerno",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Volvas",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Vitiy",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Choozen",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Hichikawa",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Keleseth",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Sargorath",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Stormgrim",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Estervina",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Azwraith",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Marleenn",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Whiteshield",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Sscarface",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Mipotasio",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Falsaalarma",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Killerfrog",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Kempach",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Senyas",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Naskee",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Emilyst",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Akleina",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Acarrillo",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Manatee",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Chubbminy",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Magrid",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Voidhammer",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Dbe",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Dretro",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Azgel",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Enfermeraxx",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Snakman",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Jhesmy",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Altek",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Matilederhos",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Retroxchill",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Rhaekhar",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Dolys",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Tigerup",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Guritur",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Estrellitalu",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Mipiylin",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Pliqui",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Ogmago",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Wonderpala",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Vacelinas",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Rassal",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Scime",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Pistacucha",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Andrewv",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Vorthrak",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Icura",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Dkcrow",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Kialibaba",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Eigthy",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Ienna",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Sallyn",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Mentoladoo",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Warrelt",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Gavennia",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Arhtur",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Trjotunheim",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Swacretry",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Goldennuts",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Soriah",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Redaleister",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Ratolineta",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Howlshade",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Driheco",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Drohico",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Nointto",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Xtraviesas",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Mesecreth",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Dkdeidara",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Pyladin",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Kkenny",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Merfatus",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Cobarts",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "DEATHKNIGHT"
+                            },
+                            {
+                                "name": "Retmat",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "PALADIN"
+                            },
+                            {
+                                "name": "Denaran",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "DRUID"
+                            },
+                            {
+                                "name": "Hardara",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "PALADIN"
+                            },
+                            {
+                                "name": "Jaitha",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "PRIEST"
                             }
                         ]
                     },
@@ -11747,7 +12592,8 @@
                                 "name": "Javden",
                                 "role": "rango",
                                 "isLeader": 0,
-                                "isSanctioned": 0
+                                "isSanctioned": 0,
+                                "class": "WARLOCK"
                             },
                             {
                                 "name": "Kannan",
@@ -11770,13 +12616,13 @@
                             },
                             {
                                 "name": "Pierpa",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0
                             },
                             {
                                 "name": "Enzocr",
-                                "role": "Melee",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 1,
                                 "class": "PALADIN"
@@ -11843,7 +12689,7 @@
                             },
                             {
                                 "name": "Estiblet",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
@@ -11888,14 +12734,14 @@
                             },
                             {
                                 "name": "Iyawollianh",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
                             },
                             {
                                 "name": "Ooxtalanxoo",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
@@ -11979,7 +12825,7 @@
                             },
                             {
                                 "name": "Sargorath",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0
                             },
@@ -12009,14 +12855,14 @@
                             },
                             {
                                 "name": "Unconvivemio",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
                             },
                             {
                                 "name": "Charmanderr",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
@@ -12069,14 +12915,14 @@
                             },
                             {
                                 "name": "Vulpys",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
                             },
                             {
                                 "name": "Neferopitou",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
@@ -12109,7 +12955,7 @@
                             },
                             {
                                 "name": "Kharinegro",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
@@ -12124,7 +12970,8 @@
                                 "name": "Alborack",
                                 "role": "healer",
                                 "isLeader": 0,
-                                "isSanctioned": 0
+                                "isSanctioned": 0,
+                                "class": "SHAMAN"
                             },
                             {
                                 "name": "Redaleister",
@@ -12140,7 +12987,7 @@
                             },
                             {
                                 "name": "Choozen",
-                                "role": "rango",
+                                "role": "melee",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": ""
@@ -12184,7 +13031,7 @@
                             },
                             {
                                 "name": "Daoud",
-                                "role": "Healer",
+                                "role": "healer",
                                 "isLeader": 0,
                                 "isSanctioned": 0
                             },
@@ -12204,7 +13051,7 @@
                             },
                             {
                                 "name": "Shinani",
-                                "role": "Tank",
+                                "role": "tank",
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": "DEATHKNIGHT"
@@ -12227,7 +13074,8 @@
                                 "name": "Swacretry",
                                 "role": "tank",
                                 "isLeader": 0,
-                                "isSanctioned": 0
+                                "isSanctioned": 0,
+                                "class": "PALADIN"
                             },
                             {
                                 "name": "Foxnico",
@@ -12277,6 +13125,498 @@
                                 "isLeader": 0,
                                 "isSanctioned": 0,
                                 "class": "SHAMAN"
+                            },
+                            {
+                                "name": "Dklor",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "DEATHKNIGHT"
+                            },
+                            {
+                                "name": "Ritenkult",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Akleina",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Rhaekhar",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Russwell",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Xhalok",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Blamkito",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Desenchanted",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Crael",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Soyundios",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Sclavito",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Yojaness",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Mochiix",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Dukissjs",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Tuyuti",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Guiito",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Eteriaz",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Pepinas",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Ciaren",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Crapter",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Debonaire",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Bronso",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Immanuelle",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Miakalyfa",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Drohico",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Kebint",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Xxoe",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Theburbujas",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Remei",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Rayahs",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Ruruchan",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Matafocas",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Pepegrillo",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Polarion",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Nakatzuga",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Rosequarzz",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Megamosh",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Warfarin",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Sterlim",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Ahyoka",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Evfilo",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Jabasacu",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Rhakehar",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Alexbryan",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Obreraa",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Soriah",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Magrid",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Darckcrow",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Magim",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Manatee",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Muertodasco",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Gabozinn",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Andrewv",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Rassal",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Pistacucha",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Dkaan",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Taridani",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Vinicius",
+                                "role": "rango",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Holiest",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Pequecuerno",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Divinedark",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Tigerup",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Pliqui",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Anshina",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Roouse",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Baldomerolor",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Pickone",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Yarechita",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Saliinas",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": ""
+                            },
+                            {
+                                "name": "Guritur",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Hanssi",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Venomouse",
+                                "role": "melee",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Driheco",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0
+                            },
+                            {
+                                "name": "Blacknoar",
+                                "role": "tank",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "PALADIN"
+                            },
+                            {
+                                "name": "Chelepaterna",
+                                "role": "healer",
+                                "isLeader": 0,
+                                "isSanctioned": 0,
+                                "class": "DRUID"
                             }
                         ]
                     },
