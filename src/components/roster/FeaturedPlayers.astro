@@ -1,4 +1,6 @@
 ---
+import { DEFAULT_CLASS_INFO } from './rosterConstants';
+
 // Definir los tipos de datos
 interface ClassInfo {
   color: string;
@@ -43,55 +45,30 @@ const {
   currentPage = 1,
 } = Astro.props as Props;
 
-// Definir la información de clases por defecto
-const defaultClassInfo: Record<string, ClassInfo> = {
-  // English class names
-  'Warrior': { color: 'C79C6E', name: 'Guerrero' },
-  'Paladin': { color: 'F58CBA', name: 'Paladín' },
-  'Hunter': { color: 'ABD473', name: 'Cazador' },
-  'Rogue': { color: 'FFF569', name: 'Pícaro' },
-  'Priest': { color: 'FFFFFF', name: 'Sacerdote' },
-  'Death Knight': { color: 'C41F3B', name: 'Caballero de la Muerte' },
-  'Shaman': { color: '0070DE', name: 'Chamán' },
-  'Mage': { color: '69CCF0', name: 'Mago' },
-  'Warlock': { color: '9482C9', name: 'Brujo' },
-  'Druid': { color: 'FF7D0A', name: 'Druida' },
-  // Keep Spanish class names for backward compatibility
-  'Guerrero': { color: 'C79C6E', name: 'Guerrero' },
-  'Paladín': { color: 'F58CBA', name: 'Paladín' },
-  'Cazador': { color: 'ABD473', name: 'Cazador' },
-  'Pícaro': { color: 'FFF569', name: 'Pícaro' },
-  'Sacerdote': { color: 'FFFFFF', name: 'Sacerdote' },
-  'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
-  'Chamán': { color: '0070DE', name: 'Chamán' },
-  'Mago': { color: '69CCF0', name: 'Mago' },
-  'Brujo': { color: '9482C9', name: 'Brujo' },
-  'Druida': { color: 'FF7D0A', name: 'Druida' },
-};
-
 // Función para normalizar los nombres de clase
 const normalizeClassName = (name: string): string => {
   if (!name) return '';
+  const trimmedName = name.trim();
   
-  // Primero intentar hacer coincidir directamente (insensible a mayúsculas/minúsculas)
-  const directMatch = Object.keys(defaultClassInfo).find(
-    key => key.toLowerCase() === name.trim().toLowerCase()
+  // First, try to find a direct match in keys
+  const directMatch = Object.keys(DEFAULT_CLASS_INFO).find(
+    (key) => key.toLowerCase() === trimmedName.toLowerCase()
   );
-  
   if (directMatch) return directMatch;
   
-  // Si no hay coincidencia directa, normalizar el nombre
-  const lowerName = name.trim().toLowerCase();
-  
-  // Caso especial para 'deathknight' (a veces viene como una sola palabra)
+  // If no direct match in keys, try to find a match in the 'name' property (Spanish)
+  const spanishMatch = Object.entries(DEFAULT_CLASS_INFO).find(
+    ([_, info]) => info.name.toLowerCase() === trimmedName.toLowerCase()
+  );
+  if (spanishMatch) return spanishMatch[0]; // Return the English key (e.g. 'Warrior')
+
+  const lowerName = trimmedName.toLowerCase();
   if (lowerName === 'deathknight' || lowerName === 'death knight') {
     return 'Death Knight';
   }
-  
-  // Para otros casos, capitalizar la primera letra de cada palabra
   return lowerName
     .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
 
@@ -209,7 +186,7 @@ const initialPlayers = featuredPlayers.slice(
 
         // Normalizar el nombre de la clase
         const normalizedClassName = normalizeClassName(playerData.class || '');
-        const classInfo = defaultClassInfo[normalizedClassName] || { color: 'FFFFFF', name: 'Desconocido' };
+        const classInfo = DEFAULT_CLASS_INFO[normalizedClassName] || { color: 'FFFFFF', name: 'Desconocido' };
         
         const classData = {
           color: classInfo.color,
@@ -411,7 +388,7 @@ const initialPlayers = featuredPlayers.slice(
     featuredPlayers,
     rosterData,
     recognitions,
-    defaultClassInfo,
+    DEFAULT_CLASS_INFO,
     itemsPerPage,
     totalPagesValue,
     safeCurrentPage,
@@ -420,7 +397,7 @@ const initialPlayers = featuredPlayers.slice(
   // Estado
   let currentPage = safeCurrentPage;
   const totalPages = totalPagesValue;
-  const classInfoData = defaultClassInfo;
+  const classInfoData = DEFAULT_CLASS_INFO;
   const recognitionsData = recognitions;
 
   // Helpers

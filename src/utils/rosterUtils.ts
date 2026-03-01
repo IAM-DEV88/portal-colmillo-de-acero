@@ -246,10 +246,17 @@ export const calculateMainAltDistribution = (members: RosterMember[]): { M: numb
   const result = { M: 0, A: 0 };
 
   for (const member of members) {
-    // Usar mainAlt directamente del miembro o de noteValidation si existe
-    const mainAlt = member.mainAlt || member.noteValidation?.mainAlt;
-    if (mainAlt === 'M' || mainAlt === 'A') {
-      result[mainAlt]++;
+    // Prioritize note validation as it's derived from the actual SNCD note
+    // If it's valid, it should be the source of truth
+    let mainAlt = (member.noteValidation as any)?.mainAlt || member.mainAlt;
+
+    if (mainAlt === 'M') {
+      result.M++;
+    } else if (mainAlt === 'A') {
+      result.A++;
+    } else {
+      // Default to Main if not specified
+      result.M++;
     }
   }
 
@@ -259,133 +266,84 @@ export const calculateMainAltDistribution = (members: RosterMember[]): { M: numb
 /**
  * Parsea un bloque de personaje según el formato SNCD
  * Formatos soportados:
- * - [M/A][T/H/D][GS][T/H/DGS][PROF1PROF2]
- * - [M/A][T/H/D] (sin GS)
- * - [M/A][T/H/D][PROF1PROF2] (sin GS)
- * - [M/A][T/H/D][GS] (sin profesiones)
- * - [M/A] (solo main/alt)
+ * - [M/A]?[T/H/D][GS][T/H/DGS]?[PROF1PROF2]?
+ * - [M/A]?[T/H/D]
+ * - [M/A]
  *
  * Ejemplos:
- * - MT6.2JCEN (Main Tanque 6.2 Joyería/Encantamiento)
- * - MT6.2H5.3ALMN (Main Tanque 6.2k, Healer 5.3k, Alquimia/Minería)
- * - MT (Solo rol)
- * - MTAL (Rol + profesiones)
- * - M (Solo main/alt)
+ * - H5.8 (Heal 5.8, Main por defecto)
+ * - MT6.2 (Main Tank 6.2)
+ * - AD5.8T5.6 (Alt DPS 5.8, Dual Tank 5.6)
+ * - M (Solo Main)
  */
 const parseCharacterBlock = (content: string): CharacterBlock | null => {
-  // Verificar que el bloque coincida con el patrón de personaje
-  const match =
-    content.match(/^([MA])([THD])(\d+(?:\.\d+)?)([THD]\d+(?:\.\d+)?)?([A-Za-z]{2,6})?/i) ||
-    content.match(/^([MA])([THD])([A-Za-z]{2,6})?/i) ||
-    content.match(/^([MA])$/i);
+  // Normalize content: remove trailing 'k' if present in gear score
+  const normalizedContent = content.trim().replace(/(\d+(?:\.\d+)?)k/i, '$1').toUpperCase();
 
-  if (!match) return null;
+  // Pattern interpretation:
+  // ^([MA])?         - Optional Main/Alt (Group 1)
+  // ([THD])          - Primary Role (Group 2)
+  // (\d+(?:\.\d+)?)  - Primary Gear Score (Group 3)
+  // ([THD]\d+(?:\.\d+)?)? - Optional Dual Role + GS (Group 4)
+  // ([A-Z]{2,4})?    - Optional Professions (Group 5)
+  // $
+  const fullMatch = normalizedContent.match(/^([MA])?([THD])(\d+(?:\.\d+)?)([THD]\d+(?:\.\d+)?)?([A-Z]{2,4})?$/);
+  
+  // Minimal match for cases like "MT", "H", "M"
+  const minimalMatch = !fullMatch ? normalizedContent.match(/^([MA])?([THD])?([A-Z]{2,4})?$/) : null;
 
-  const [, mainAlt, mainRole, gs, dualInfo, profs] = match;
+  if (!fullMatch && !minimalMatch) return null;
 
-  // Si no hay rol principal, solo se acepta si es solo M o A
-  if (!mainRole && content.length > 1) return null;
+  let mainAltStr, mainRoleStr, gsStr, dualStr, profsStr;
 
-  // Procesar gear score principal
-  let gearScore = 0;
-  if (gs) {
-    const parsedGs = parseFloat(gs);
-    if (!isNaN(parsedGs)) {
-      gearScore = parsedGs;
-    }
+  if (fullMatch) {
+    [, mainAltStr, mainRoleStr, gsStr, dualStr, profsStr] = fullMatch;
+  } else {
+    [, mainAltStr, mainRoleStr, profsStr] = minimalMatch!;
+    // If it's just "M" or "A", it's valid. If it's just "H", it's valid.
+    if (!mainAltStr && !mainRoleStr) return null;
   }
 
-  // Procesar rol dual si existe
+  // Determine Main/Alt (default to 'M' if not specified but role is present)
+  const mainAlt: MainAlt = (mainAltStr === 'A') ? 'A' : 'M';
+
+  // Primary Role
+  const mainRole: Role | undefined = mainRoleStr as Role | undefined;
+
+  // Primary Gear Score
+  const mainGearScore = gsStr ? parseFloat(gsStr) : 0;
+
+  // Dual Role and GS
   let dualRole: Role | undefined;
   let dualGearScore: number | undefined;
-  let professionsStr = '';
-
-  if (dualInfo) {
-    // Primero verificar si es un rol dual válido (T, H, D)
-    const roleOnlyMatch = dualInfo.match(/^([THD])/i);
-    if (roleOnlyMatch) {
-      // Si el resto del string después del rol no es un número, probablemente son profesiones
-      const remaining = dualInfo.substring(1);
-      if (!/^\d+(\.\d+)?$/.test(remaining)) {
-        // No es un gear score, asumir que son profesiones
-        professionsStr = dualInfo;
-      } else {
-        // Es un gear score, procesar normalmente
-        const dualMatch = dualInfo.match(/^([THD])(\d+(?:\.\d+)?)/i);
-        if (dualMatch) {
-          dualRole = dualMatch[1].toUpperCase() as Role;
-          dualGearScore = parseFloat(dualMatch[2]);
-        }
-      }
-    } else {
-      // No comienza con un rol, asumir que son profesiones
-      professionsStr = dualInfo;
+  if (dualStr) {
+    const dualMatch = dualStr.match(/([THD])(\d+(?:\.\d+)?)/);
+    if (dualMatch) {
+      dualRole = dualMatch[1] as Role;
+      dualGearScore = parseFloat(dualMatch[2]);
     }
   }
 
-  // Procesar profesiones (2 letras cada una, máximo 2)
+  // Professions
   const professions: ProfessionCode[] = [];
-  const processProfessions = (profString: string) => {
-    if (!profString) return;
-
-    for (let i = 0; i < profString.length; i += 2) {
-      const prof = profString.substring(i, i + 2).toUpperCase();
-      if (
-        PROFESSION_CODES.includes(prof as ProfessionCode) &&
-        !professions.includes(prof as ProfessionCode)
-      ) {
+  if (profsStr) {
+    for (let i = 0; i < profsStr.length; i += 2) {
+      const prof = profsStr.substring(i, i + 2);
+      if (PROFESSION_CODES.includes(prof as ProfessionCode)) {
         professions.push(prof as ProfessionCode);
-        // Solo permitir hasta 2 profesiones
         if (professions.length >= 2) break;
       }
     }
-  };
-
-  // Procesar profesiones de ambos lugares posibles
-  if (profs) processProfessions(profs);
-  if (professionsStr) processProfessions(professionsStr);
-
-  // Si no hay rol principal, solo permitir si es exactamente M o A
-  if (!mainRole) {
-    if (content.length === 1) {
-      return {
-        mainAlt: (mainAlt.toUpperCase() === 'M' ? 'M' : 'A') as 'M' | 'A',
-        mainRole: undefined,
-        mainGearScore: 0,
-        professions: [],
-      };
-    }
-    return null; // No se permite otra cosa después de M/A sin rol
   }
 
-  // Validar que el rol principal sea válido
-  const validMainRole: Role | undefined = ['T', 'H', 'D'].includes(mainRole.toUpperCase())
-    ? (mainRole.toUpperCase() as Role)
-    : undefined;
-
-  // Si el rol no es válido, rechazar el bloque
-  if (!validMainRole) {
-    return null;
-  }
-
-  // Validar que el rol dual sea válido si existe
-  const validDualRole: Role | undefined =
-    dualRole && ['T', 'H', 'D'].includes(dualRole) ? (dualRole as Role) : undefined;
-
-  // Asegurar que los tipos sean correctos
-  const result: CharacterBlock = {
-    mainAlt: (mainAlt.toUpperCase() === 'M' ? 'M' : 'A') as 'M' | 'A',
-    mainRole: validMainRole,
-    mainGearScore: gearScore,
-    dualRole: validDualRole,
-    dualGearScore: validDualRole ? dualGearScore : undefined,
+  return {
+    mainAlt,
+    mainRole,
+    mainGearScore,
+    dualRole,
+    dualGearScore,
     professions,
   };
-
-  // Permitir el mismo rol para main y dual (ej: DPS/DPS)
-  // Solo validar que los roles sean válidos, no que sean diferentes
-
-  return result;
 };
 
 /**
@@ -740,19 +698,30 @@ export const validatePublicNote = (
       continue;
     }
 
-    // Luego intentar parsear como bloque de evento - DESACTIVADO
-    // const eventBlock = parseEventBlock(block);
-    // if (eventBlock) {
-    //   blocks.push({
-    //     type: 'event',
-    //     content: block,
-    //     isValid: true,
-    //     parsedData: eventBlock
-    //   });
-    //   continue;
-    // }
+    // Luego intentar parsear como bloque de evento
+    const eventBlock = parseEventBlock(block);
+    if (eventBlock) {
+      blocks.push({
+        type: 'event',
+        content: block,
+        isValid: true,
+        parsedData: eventBlock
+      });
+      continue;
+    }
 
-    // Si no es ninguno de los dos, marcarlo como inválido
+    // Caso especial para palabras comunes que no deben invalidar la nota
+     const commonWords = ['RL', 'LFG', 'OFF'];
+     if (commonWords.includes(block.toUpperCase())) {
+       blocks.push({
+         type: 'unknown',
+         content: block,
+         isValid: true, // Mark as valid to not break the whole note
+       });
+       continue;
+     }
+
+    // Si no es ninguno de los anteriores, marcarlo como inválido
     blocks.push({
       type: 'unknown',
       content: block,
@@ -797,8 +766,7 @@ export const validatePublicNote = (
         });
       }
     } else {
-      // Intentar parsear como bloque de evento - DESACTIVADO
-      /*
+      // Intentar parsear como bloque de evento
       const eventBlock = parseEventBlock(block);
       if (eventBlock) {
         // Agregar al log de estructura con todas las propiedades requeridas
@@ -816,7 +784,6 @@ export const validatePublicNote = (
           }
         });
       }
-      */
     }
   }
 

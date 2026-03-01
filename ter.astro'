@@ -1,0 +1,1034 @@
+---
+// Definir las props del componente
+interface Props {
+  initialRosterData?: any[];
+  raidRegistrations?: any[];
+}
+
+// Obtener las props
+const { initialRosterData: rosterDataFromProps = [], raidRegistrations = [] } = Astro.props;
+
+// Define default class info with TypeScript type
+const defaultClassInfo: Record<string, { name: string; color: string }> = {
+  // English class names
+  'Warrior': { color: 'C79C6E', name: 'Guerrero' },
+  'Paladin': { color: 'F58CBA', name: 'Paladín' },
+  'Hunter': { color: 'ABD473', name: 'Cazador' },
+  'Rogue': { color: 'FFF569', name: 'Pícaro' },
+  'Priest': { color: 'FFFFFF', name: 'Sacerdote' },
+  'Death Knight': { color: 'C41F3B', name: 'Caballero de la Muerte' },
+  'Shaman': { color: '0070DE', name: 'Chamán' },
+  'Mage': { color: '69CCF0', name: 'Mago' },
+  'Warlock': { color: '9482C9', name: 'Brujo' },
+  'Druid': { color: 'FF7D0A', name: 'Druida' },
+  // Keep Spanish class names for backward compatibility
+  'Guerrero': { color: 'C79C6E', name: 'Guerrero' },
+  'Paladín': { color: 'F58CBA', name: 'Paladín' },
+  'Cazador': { color: 'ABD473', name: 'Cazador' },
+  'Pícaro': { color: 'FFF569', name: 'Pícaro' },
+  'Sacerdote': { color: 'FFFFFF', name: 'Sacerdote' },
+  'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
+  'Chamán': { color: '0070DE', name: 'Chamán' },
+  'Mago': { color: '69CCF0', name: 'Mago' },
+  'Brujo': { color: '9482C9', name: 'Brujo' },
+  'Druida': { color: 'FF7D0A', name: 'Druida' },
+};
+
+// Import types and constants from roster types
+import type {
+  RosterMember,
+  RosterData,
+  ClassInfo,
+  ClassName as ClassNameType,
+  Role as RosterRole,
+  MainAlt as RosterMainAlt,
+  ProfessionCode as RosterProfessionCode,
+  RaidCode,
+  DifficultyCode,
+  PublicNoteValidation as RosterPublicNoteValidation,
+  MainAltDistributionItem as MainAltDistItem,
+  NoteBlock,
+  Member as RosterMemberBase,
+  RosterStats as BaseRosterStats,
+  RaidInfo,
+} from '../../types/roster';
+
+// Local type extensions
+interface RosterMemberType extends RosterMemberBase {
+  leaderData?: Record<string, unknown>;
+  validation?: {
+    isValid: boolean;
+    missingFields: string[];
+  };
+}
+
+interface RosterStats extends BaseRosterStats {
+  gearScoreStats: {
+    min: number;
+    max: number;
+    avg: number;
+    total: number;
+    mainGearScore: number;
+    dualGearScore: number | null;
+  };
+}
+
+import featuredPlayersData from '../../data/featuredPlayers.json';
+
+// Usar los tipos directamente desde la importación
+
+// Import roster utilities
+import {
+  validatePublicNote as validateRosterNote,
+  calculateRoleDistribution as calculateRoleDistro,
+  calculateGearScoreStats as calculateGSStats,
+  countRaidLeaders as countLeaders,
+  calculateMainAltDistribution as calculateMainAlts,
+  PROFESSION_CODES,
+} from '../../utils/rosterUtils';
+
+import rosterJson from '../../data/roster.json';
+const globalLastUpdate = rosterJson.globalLastUpdate;
+
+// Find the player who updated the roster
+const lastUpdatedBy = Object.entries(rosterJson.players).find(
+  ([_, player]: [string, any]) => player.leaderData?.lastUpdate === globalLastUpdate
+)?.[0] || 'Desconocido';
+
+type LocalProfessionCode = (typeof PROFESSION_CODES)[number];
+
+// Variables para las estadísticas de Gear Score
+let gearScoreStats = {
+  min: 0,
+  max: 0,
+  avg: 0,
+  total: 0,
+  mainGearScore: 0,
+  dualGearScore: null as number | null,
+};
+let averageGearScore = 'N/A';
+let minGearScore = 'N/A';
+let maxGearScore = 'N/A';
+let mainGearScore = 'N/A';
+let dualGearScore = 'N/A';
+
+// Import constants
+import {
+  ROLES,
+  PROFESSIONS,
+  RAID_NAMES,
+  DIFFICULTY_NAMES,
+  DAY_NAMES,
+  RAID_CODES,
+  STATUS,
+} from '../../types/roster';
+
+// Define initial stats structure
+const initialStats: RosterStats = {
+  totalMembers: 0,
+  roleDistribution: { tank: 0, healer: 0, melee: 0, ranged: 0 },
+  gearScoreStats: {
+    min: 0,
+    max: 0,
+    avg: 0,
+    total: 0,
+  },
+  raidLeadersCount: 0,
+  mainAltDistribution: { M: 0, A: 0 },
+  professions: {},
+  validNotesCount: 0,
+};
+
+// Define raid pattern for parsing
+const raidPattern = /(.*?)(?:\s*\(([^)]+)\))?\s*\[(.*?)\](?:\s*\(([^)]+)\))?/;
+
+// Define RAIDS constant with proper typing
+const RAIDS: Array<{ code: RaidCode; name: string }> = Object.entries(RAID_NAMES).map(
+  ([code, name]) => ({
+    code: code as RaidCode,
+    name: String(name),
+  })
+);
+
+// Initialize stats with default values
+let stats: RosterStats = {
+  ...initialStats,
+  gearScoreStats: {
+    min: 0,
+    max: 0,
+    avg: 0,
+    total: 0,
+    mainGearScore: 0,
+    dualGearScore: null,
+  },
+};
+
+// Type definitions for the component
+interface RoleInfo {
+  name: string;
+  color: string;
+  icon: string;
+}
+
+// Component props interface
+export interface RosterTableProps {
+  rosterData: RosterData;
+  status?: {
+    isLoading: boolean;
+    error: string | null;
+  };
+}
+
+// Get props from Astro
+const { rosterData: initialRosterData, status = { isLoading: false, error: null } } =
+  Astro.props as RosterTableProps;
+
+// Define default roster data structure
+const defaultRosterData: RosterData = {
+  members: [],
+  classInfo: {},
+  rankInfo: {},
+  classes: [],
+  totalMembers: 0,
+  // guildInfo removed as it's not part of RosterData type
+  stats: {
+    ...initialStats,
+    totalMembers: 0,
+    raidLeadersCount: 0,
+    mainAltDistribution: { M: 0, A: 0 },
+    professions: {},
+    validNotesCount: 0,
+  },
+} as const;
+
+// Usar directamente las funciones importadas con sus alias
+
+// Process members with proper typing
+const processRosterMember = (member: any): RosterMemberType => {
+  // Handle the case where member might be in the new format with nested data
+  const memberData = member.leaderData
+    ? {
+        ...member,
+        name: member.name || '',
+        class: member.class || 'Desconocido',
+        rank:
+          member.rank &&
+          (member.rank.toLowerCase().includes('guild master') ||
+            member.rank.toLowerCase().includes('alter'))
+            ? 'Administrador'
+            : member.rank || 'Miembro',
+        publicNote: member.publicNote || '',
+        officerNote: member.officerNote || '',
+        race: member.race || '',
+        guildLeave: member.guildLeave || false,
+        level: 80, // Default level for WoW Classic
+        gearScore: 0, // Will be calculated from note validation
+      }
+    : {
+        ...member,
+        rank:
+          member.rank &&
+          (member.rank.toLowerCase().includes('guild master') ||
+            member.rank.toLowerCase().includes('alter'))
+            ? 'Administrador'
+            : member.rank || 'Miembro',
+      };
+
+  // Normalize class name - handle both uppercase and mixed case
+  const normalizeClassName = (name: string): string => {
+    if (!name) return '';
+    
+    // First, try to find a direct match in defaultClassInfo (case insensitive)
+    const directMatch = Object.keys(defaultClassInfo).find(
+      key => key.toLowerCase() === name.trim().toLowerCase()
+    );
+    
+    if (directMatch) return directMatch;
+    
+    // If no direct match, try to normalize the name
+    const lowerName = name.trim().toLowerCase();
+    
+    // Special case for 'deathknight' (sometimes comes as one word)
+    if (lowerName === 'deathknight' || lowerName === 'death knight') {
+      return 'Death Knight';
+    }
+    
+    // For other cases, capitalize first letter of each word
+    return lowerName
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  const normalizedClassName = normalizeClassName(memberData.class || '');
+  
+  // Find the class in defaultClassInfo (case insensitive)
+  const className = (Object.keys(defaultClassInfo) as (keyof typeof defaultClassInfo)[]).find(
+    key => key.toLowerCase() === normalizedClassName.toLowerCase()
+  ) || 'Desconocido';
+  
+  // Debug log for troubleshooting
+  if (memberData.class && className === 'Desconocido') {
+    console.log('Unknown class:', memberData.class, 'Normalized:', normalizedClassName);
+  }
+
+  // Ensure mainAlt is either 'M' or 'A'
+  const mainAlt =
+    memberData.mainAlt === 'main'
+      ? 'M'
+      : memberData.mainAlt === 'alt'
+        ? 'A'
+        : memberData.mainAlt || 'A';
+
+  // Validar la nota pública usando el alias importado
+  const noteValidation = validateRosterNote(
+    memberData.publicNote || '',
+    memberData.name || '',
+    memberData.officerNote || ''
+  );
+
+  // Asegurar que noteValidation cumpla con PublicNoteValidation
+  const validNoteValidation: RosterPublicNoteValidation = {
+    isValid: noteValidation.isValid || false,
+    blocks: noteValidation.blocks || [],
+    mainAlt: noteValidation.mainAlt || 'A', // Valor por defecto 'A' si no está definido
+    role: noteValidation.role,
+    dualRole: noteValidation.dualRole,
+    gearScore: noteValidation.gearScore || 0,
+    dualGearScore: noteValidation.dualGearScore,
+    professions: noteValidation.professions || [],
+    isRaidLeader: noteValidation.isRaidLeader || false,
+    hasSchedule: noteValidation.hasSchedule || false,
+    schedules: noteValidation.schedules || [],
+    error: noteValidation.error,
+    missingFields: noteValidation.missingFields || [],
+  };
+
+  // Deducir facción de la raza
+  const allianceRaces = ['HU', 'NE', 'DW', 'GN', 'DR'] as const;
+  const hordeRaces = ['OR', 'TA', 'UN', 'TR', 'BE'] as const;
+  let deducedFaction = '';
+  if (member.race) {
+    if ((allianceRaces as readonly string[]).includes(member.race)) {
+      deducedFaction = '1';
+    } else if ((hordeRaces as readonly string[]).includes(member.race)) {
+      deducedFaction = '2';
+    }
+  }
+
+  // Recopilar reconocimientos de featuredPlayers.json
+  const memberRecognitions: Array<{
+    title: string;
+    description: string;
+    date: string;
+    icon?: string;
+  }> = [];
+  const typedFeaturedData = featuredPlayersData as any;
+  const recognitionsList = typedFeaturedData.recognitions || [];
+
+  Object.entries(typedFeaturedData).forEach(([year, yearData]) => {
+    if (year === 'recognitions') return;
+
+    Object.entries(yearData as Record<string, any>).forEach(([month, monthData]) => {
+      if (monthData.featuredPlayers) {
+        (monthData.featuredPlayers || []).forEach((fp: any) => {
+          // Robust name matching
+          const fpName = String(fp.playerName || '')
+            .trim()
+            .toLowerCase();
+          const targetName = String(memberData.name || '')
+            .trim()
+            .toLowerCase();
+
+          if (fpName === targetName && fpName !== '') {
+            (fp.recognitionIndices || []).forEach((idx: number) => {
+              const rec = recognitionsList[idx];
+              if (rec) {
+                memberRecognitions.push({
+                  ...rec,
+                  date: `${year}-${month.padStart(2, '0')}-01`,
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+
+  // Ordenar por fecha descendente
+  memberRecognitions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // Create a valid RosterMember object with required properties
+  const processedMember: RosterMemberType = {
+    ...memberData,
+    name: memberData.name || 'Unknown',
+    class: className,
+    rank: memberData.rank || 'Miembro',
+    publicNote: memberData.publicNote || '',
+    officerNote: memberData.officerNote || '',
+    race: memberData.race || '',
+    guildLeave: memberData.guildLeave || false,
+    level: memberData.level || 80,
+    gearScore: noteValidation.gearScore || 0,
+    mainAlt,
+    noteValidation: validNoteValidation,
+    leaderData: member.leaderData || {},
+    validation: {
+      isValid: noteValidation.isValid,
+      missingFields: noteValidation.missingFields || [],
+    },
+    recognitions: memberRecognitions,
+    faction: deducedFaction,
+  };
+
+  return processedMember;
+};
+
+// Las funciones de cálculo ahora se importan desde rosterUtils.ts
+
+// Define the roster data with proper typing
+// Procesar los miembros del roster
+const members = rosterDataFromProps.map(processRosterMember).filter((m) => !m.guildLeave);
+const totalMembers = members.length;
+const validNotesCount = members.filter((m) => m.publicNote).length;
+
+// Utility function to get role percentage
+const getRolePercentage = (count: number, total: number = totalMembers) => {
+  return total > 0 ? Math.round((count / total) * 100) : 0;
+};
+
+// Calcular las estadísticas de Gear Score
+const updateGearScoreStats = () => {
+  try {
+    const stats = calculateGSStats(members as unknown as RosterMemberType[]);
+    gearScoreStats = stats;
+    averageGearScore = stats.avg > 0 ? stats.avg.toFixed(1) : 'N/A';
+    minGearScore = stats.min > 0 ? stats.min.toFixed(1) : 'N/A';
+    maxGearScore = stats.max > 0 ? stats.max.toFixed(1) : 'N/A';
+    mainGearScore = stats.mainGearScore > 0 ? stats.mainGearScore.toFixed(1) : 'N/A';
+    dualGearScore =
+      stats.dualGearScore !== null && stats.dualGearScore > 0
+        ? stats.dualGearScore.toFixed(1)
+        : 'N/A';
+  } catch (error) {
+    gearScoreStats = { min: 0, max: 0, avg: 0, total: 0 };
+    averageGearScore = 'N/A';
+    minGearScore = 'N/A';
+    maxGearScore = 'N/A';
+  }
+};
+
+// Ejecutar el cálculo inicial
+updateGearScoreStats();
+
+// Function to ensure roster members have all required properties
+function ensureRosterMember(member: Partial<RosterMember>): RosterMember {
+  return {
+    name: member.name || 'Unknown',
+    class: member.class || 'Guerrero',
+    rank: member.rank || 'Aspirante',
+    publicNote: member.publicNote || '',
+    officerNote: member.officerNote || '',
+    race: member.race || '',
+    faction: (() => {
+      const allianceRaces = ['HU', 'NE', 'DW', 'GN', 'DR'];
+      const hordeRaces = ['OR', 'TA', 'UN', 'TR', 'BE'];
+      if (member.race) {
+        if (allianceRaces.includes(member.race)) return '1';
+        if (hordeRaces.includes(member.race)) return '2';
+      }
+      return member.faction || '';
+    })(),
+    noteValidation: member.noteValidation || {
+      isValid: false,
+      mainAlt: 'M',
+      role: 'D',
+      gearScore: 0,
+      professions: [],
+      schedules: [],
+      missingFields: [],
+      error: 'No note provided',
+    },
+    mainAlt: member.mainAlt || 'A',
+    recognitions: Array.isArray(member.recognitions) ? member.recognitions : [],
+    ...member,
+  };
+}
+
+// Process members to ensure they have required properties
+const processedMembers = members.map((member) =>
+  ensureRosterMember(member as Partial<RosterMember>)
+);
+
+// Create the rosterData object with the expected structure
+const rosterData: RosterDataWithRankInfo = {
+  ...defaultRosterData,
+  members: processedMembers,
+  totalMembers,
+  classInfo: {
+    ...defaultClassInfo,
+  },
+  stats: {
+    ...initialStats,
+    totalMembers,
+    validNotesCount,
+    roleDistribution: calculateRoleDistro(processedMembers),
+    gearScoreStats: calculateGSStats(processedMembers),
+    raidLeadersCount: countLeaders(processedMembers),
+    mainAltDistribution: calculateMainAlts(processedMembers),
+    professions: {},
+  },
+  raids: [],
+  raidDays: {},
+  raidTimes: {},
+  rankInfo: {},
+} as unknown as RosterDataWithRankInfo;
+
+// Calculate statistics - single implementation
+const calculateStats = (members: RosterMember[]): RosterStats => {
+  if (!members.length)
+    return {
+      ...initialStats,
+      totalMembers: 0,
+      roleDistribution: {},
+      gearScoreStats: { min: 0, max: 0, avg: 0, total: 0, mainGearScore: 0, dualGearScore: null },
+      raidLeadersCount: 0,
+      mainAltDistribution: { M: 0, A: 0 },
+      professions: {},
+      validNotesCount: 0,
+    } as RosterStats;
+
+  // Initialize profession counts
+  const professions: Record<string, number> = {};
+
+  // Initialize profession counts to 0
+  PROFESSION_CODES.forEach((code) => {
+    professions[code] = 0;
+  });
+
+  // Use members directly with proper type
+  const roleDistribution = calculateRoleDistro(members);
+  const gearScoreStats = calculateGSStats(members);
+  const raidLeadersCount = countLeaders(members);
+  const mainAltDistribution = calculateMainAlts(members);
+  const validNotesCount = members.filter((m) => m.noteValidation?.isValid).length;
+
+  let totalProcessed = 0;
+  let membersWithValidNotes = 0;
+  // Initialize profession counts to 0
+  PROFESSION_CODES.forEach((code) => {
+    professions[code] = 0;
+  });
+
+  // Process each member's professions
+  for (const member of members) {
+    // Only process if the note is valid
+    if (!member.noteValidation?.isValid) {
+      continue;
+    }
+
+    membersWithValidNotes++;
+
+    // Get professions from all possible sources
+    const profSources: string[] = [];
+
+    // 1. Get professions directly from noteValidation
+    if (member.noteValidation?.professions?.length) {
+      profSources.push(...member.noteValidation.professions);
+    }
+
+    // 2. Get professions from character blocks
+    const characterBlocks = (member.noteValidation?.blocks || []).filter(
+      (b) => b.type === 'character' && b.parsedData?.professions?.length
+    );
+
+    if (characterBlocks.length > 0) {
+      characterBlocks.forEach((block) => {
+        if (block.parsedData?.professions?.length) {
+          profSources.push(...block.parsedData.professions);
+        }
+      });
+    }
+
+    // Filter and normalize profession codes
+    const allProfs: string[] = [...new Set(profSources)]
+      .filter((code): code is string => Boolean(code)) // Filter and ensure they are strings
+      .map((code) => {
+        const normalizedCode = code.trim().toUpperCase();
+        // Ensure the code has exactly 2 characters
+        return normalizedCode.length === 2 ? normalizedCode : null;
+      })
+      .filter((code): code is string => Boolean(code)) // Remove null codes after normalization
+      .filter((code): code is LocalProfessionCode => {
+        const isValid = PROFESSION_CODES.includes(code as LocalProfessionCode);
+        if (!isValid && code) {
+          console.warn(`  Unrecognized profession code: "${code}"`);
+        }
+        return isValid;
+      }) as LocalProfessionCode[]; // Ensure TypeScript knows these are valid profession codes
+
+    // Count the professions
+    allProfs.forEach((profCode) => {
+      if (profCode in professions) {
+        professions[profCode]++;
+        totalProcessed++;
+      } else {
+        console.warn(`  Unrecognized profession code: ${profCode}`);
+      }
+    });
+  }
+
+  // Verificar si hay alguna profesión con conteo > 0
+  const hasProfessions = Object.values(professions).some((count) => count > 0);
+
+  if (!hasProfessions) {
+    console.warn('No se encontraron profesiones en ninguna nota. Revisar el formato de las notas.');
+  }
+
+  // Actualizar las estadísticas globales
+  stats.validNotesCount = membersWithValidNotes;
+  stats.professions = professions;
+
+  return {
+    totalMembers: members.length,
+    roleDistribution,
+    gearScoreStats,
+    raidLeadersCount,
+    mainAltDistribution,
+    professions,
+    validNotesCount: membersWithValidNotes,
+  };
+};
+
+// mainAltStats se define más abajo con un cálculo más completo
+
+// Calcular estadísticas completas del roster
+const calculatedStats = calculateStats(rosterData.members);
+
+// Actualizar las estadísticas del roster
+stats = {
+  ...stats,
+  totalMembers: rosterData.totalMembers,
+  validNotesCount: calculatedStats.validNotesCount || 0,
+  professions: calculatedStats.professions || {},
+};
+
+// Asegurarse de que rosterData.stats tenga las estadísticas actualizadas
+rosterData.stats = {
+  ...rosterData.stats,
+  ...calculatedStats,
+};
+
+// Inicializar roleStats contando cada rol (T, H, D) independientemente de si es rol principal o dual
+// Un jugador puede contribuir a múltiples roles si tiene un rol dual
+const roleStats = {
+  T: rosterData.members.filter(
+    (member) => member.noteValidation?.role === 'T' || member.noteValidation?.dualRole === 'T'
+  ).length,
+  H: rosterData.members.filter(
+    (member) => member.noteValidation?.role === 'H' || member.noteValidation?.dualRole === 'H'
+  ).length,
+  D: rosterData.members.filter(
+    (member) => member.noteValidation?.role === 'D' || member.noteValidation?.dualRole === 'D'
+  ).length,
+};
+
+// Contar roles duales por separado
+const dualRoleStats = {
+  TH: rosterData.members.filter(
+    (member) =>
+      (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'H') ||
+      (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'T')
+  ).length,
+  TD: rosterData.members.filter(
+    (member) =>
+      (member.noteValidation?.role === 'T' && member.noteValidation?.dualRole === 'D') ||
+      (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'T')
+  ).length,
+  HD: rosterData.members.filter(
+    (member) =>
+      (member.noteValidation?.role === 'H' && member.noteValidation?.dualRole === 'D') ||
+      (member.noteValidation?.role === 'D' && member.noteValidation?.dualRole === 'H')
+  ).length,
+};
+
+// Format role distribution for display
+const formattedRoleDistribution = Object.entries(rosterData.stats.roleDistribution || {})
+  .filter(([_, count]) => count > 0)
+  .map(([role, count]) => ({
+    role,
+    count: Number(count) || 0,
+    percentage: getRolePercentage(Number(count) || 0, stats.totalMembers),
+  }));
+
+// Mapeo de roles a nombres completos y colores
+interface RoleInfo {
+  name: string;
+  color: string;
+  bgColor: string;
+}
+
+// Use the imported ROLES constant instead of redefining it
+
+// Mapeo de colores para las profesiones
+const professionColors: Record<string, string> = {
+  AL: 'bg-green-500/20 text-green-300',
+  HB: 'bg-green-500/20 text-green-300',
+  TL: 'bg-pink-500/20 text-pink-300',
+  EN: 'bg-purple-500/20 text-purple-300',
+  EG: 'bg-blue-500/20 text-blue-300',
+  JC: 'bg-yellow-500/20 text-yellow-300',
+  BS: 'bg-gray-500/20 text-gray-300',
+  IN: 'bg-indigo-500/20 text-indigo-300',
+  MN: 'bg-gray-600/20 text-gray-400',
+  SK: 'bg-orange-500/20 text-orange-300',
+  LW: 'bg-amber-500/20 text-amber-300',
+};
+
+// Mapeo de colores para las dificultades
+const difficultyColors: Record<string, string> = {
+  '10N': 'bg-blue-500/20 text-blue-300',
+  '10H': 'bg-blue-700/20 text-blue-400',
+  '25N': 'bg-purple-500/20 text-purple-300',
+  '25H': 'bg-red-500/20 text-red-300',
+};
+
+// Función para obtener el color de fondo basado en la clase del personaje
+function getClassColor(className: string): string {
+  const classColors: Record<string, string> = {
+    Guerrero: 'bg-[#C79C6E]',
+    Paladín: 'bg-[#F58CBA]',
+    Cazador: 'bg-[#ABD473]',
+    Pícaro: 'bg-[#FFF569]',
+    Sacerdote: 'bg-[#FFFFFF]',
+    'Caballero de la Muerte': 'bg-[#C41F3B]',
+    Chamán: 'bg-[#0070DE]',
+    Mago: 'bg-[#69CCF0]',
+    Brujo: 'bg-[#9482C9]',
+    Monje: 'bg-[#00FF96]',
+    Druida: 'bg-[#FF7D0A]',
+    'Cazador de demonios': 'bg-[#A330C9]',
+  };
+  return classColors[className] || 'bg-gray-500';
+}
+
+// Función para obtener el color de la profesión
+function getProfessionColor(profCode: ProfessionCode): string {
+  const professionColors = {
+    JC: { light: 'bg-yellow-500/20', dark: 'text-yellow-300' },
+    BS: { light: 'bg-gray-500/20', dark: 'text-gray-300' },
+    EN: { light: 'bg-purple-500/20', dark: 'text-purple-300' },
+    EG: { light: 'bg-blue-500/20', dark: 'text-blue-300' },
+    LW: { light: 'bg-amber-500/20', dark: 'text-amber-300' },
+    AL: { light: 'bg-green-500/20', dark: 'text-green-300' },
+    TL: { light: 'bg-pink-500/20', dark: 'text-pink-300' },
+    IN: { light: 'bg-indigo-500/20', dark: 'text-indigo-300' },
+    HB: { light: 'bg-green-500/20', dark: 'text-green-300' },
+    MN: { light: 'bg-gray-600/20', dark: 'text-gray-400' },
+    SK: { light: 'bg-orange-500/20', dark: 'text-orange-300' },
+  };
+
+  const color = professionColors[profCode] || { light: 'bg-gray-500/20', dark: 'text-gray-400' };
+  return `${color.light} ${color.dark}`;
+}
+
+// Extend RosterMemberType with additional properties
+interface MainAltDistributionItem extends DistributionItem {
+  type: 'M' | 'A';
+  name: string;
+  count: number;
+  percentage: number;
+  color?: string;
+}
+
+// Import types from the types file
+import type {
+  RosterMember as RosterMemberType,
+  PublicNoteValidation as RosterPublicNoteValidation,
+  RosterData as BaseRosterData,
+  RosterStats,
+  ClassName,
+  Role,
+  MainAlt,
+  Member,
+  PublicNoteValidation,
+} from '../../types/roster';
+
+// Define the default note validation object
+const defaultNoteValidation: PublicNoteValidation = {
+  isValid: false,
+  blocks: [],
+  isRaidLeader: false,
+  hasSchedule: false,
+  hasRaids: false,
+};
+
+// Define a type for the roster member with all required properties
+
+// Type guard to check if a member has noteValidation
+function hasNoteValidation(
+  member: RosterMember
+): member is RosterMember & { noteValidation: RosterPublicNoteValidation } {
+  return member.noteValidation !== undefined;
+}
+
+// Type for the member parameter in array methods
+type RosterDataWithRankInfo = Omit<RosterData, 'members' | 'stats' | 'rankInfo'> & {
+  members: RosterMember[];
+  stats: RosterStats;
+  rankInfo: Record<string, { name: string; order: number }>;
+  // Add missing properties from RosterData
+  classInfo: Record<string, ClassInfo>;
+  name: string;
+  order: number;
+  classes: string[];
+  totalMembers: number;
+  raids: any[];
+  raidDays: Record<string, unknown>;
+  raidTimes: Record<string, unknown>;
+};
+
+// Calculate main/alt distribution
+const calculateMainAltDistribution = (members: Member[]): { M: number; A: number } => {
+  const result = { M: 0, A: 0 };
+
+  for (const member of members) {
+    const mainAlt = member.noteValidation?.mainAlt || 'A'; // Default to 'A' if not specified
+    if (mainAlt === 'M') {
+      result.M++;
+    } else {
+      // Count as Alt if not explicitly marked as Main
+      result.A++;
+    }
+  }
+
+  return result;
+};
+
+// ==========================================
+// TIPOS Y UTILIDADES
+// ==========================================
+
+type ClassName =
+  | 'Guerrero'
+  | 'Paladín'
+  | 'Cazador'
+  | 'Pícaro'
+  | 'Sacerdote'
+  | 'Caballero de la Muerte'
+  | 'Chamán'
+  | 'Mago'
+  | 'Brujo'
+  | 'Druida';
+
+// Use imported types from roster.ts
+
+// Validar nota pública según el formato requerido
+function validatePublicNote(
+  note: string | undefined,
+  characterName: string = 'Desconocido',
+  officerNote: string = ''
+): RosterPublicNoteValidation {
+  // Usar la función importada que combina notas públicas y oficiales
+  const result = validateRosterNote(note, characterName, officerNote);
+
+  // Crear un objeto con los valores por defecto según la interfaz
+  const validated: RosterPublicNoteValidation = {
+    isValid: result.isValid || false,
+    blocks: result.blocks || [],
+    isRaidLeader: result.isRaidLeader || false,
+    hasSchedule: result.hasSchedule || false,
+    hasRaids: result.hasRaids || false,
+    missingFields: result.missingFields || [],
+    // Propiedades opcionales
+    mainAlt: result.mainAlt,
+    role: result.role,
+    dualRole: result.dualRole,
+    gearScore: result.gearScore,
+    professions: result.professions,
+    schedules: result.schedules,
+    raids: result.raids,
+    error: result.error,
+  };
+
+  return validated;
+}
+
+// Función auxiliar para validar notas (mantener para compatibilidad)
+function validateNoteLegacy(
+  note: string | undefined,
+  characterName: string = 'Desconocido'
+): RosterPublicNoteValidation {
+  const errors: string[] = [];
+  const missingFields: string[] = [];
+  const result: RosterPublicNoteValidation & { blocks?: Array<{ type: string; parsedData: any }> } =
+    {
+      isValid: false,
+      blocks: [],
+    };
+
+  if (!note?.trim()) {
+    return { ...result, error: 'La nota pública no puede estar vacía' };
+  }
+
+  const trimmedNote = note.trim();
+  const parts = trimmedNote.split(/\s+/); // Dividir por cualquier espacio en blanco
+
+  // 1. Detección de Main/Alt (M/A) - Prioridad a patrones con roles
+
+  // Patrón 1: M o A seguido de rol (ej: 'MT', 'AD', 'MH', 'AH', 'at', 'md')
+  const mainAltWithRole = trimmedNote.match(/^([MA])([THD])(?![a-zA-Z])/i);
+
+  // Patrón para notas con gear score (ej: 'AD5.9', 'at5.7')
+  const gearScorePattern = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)/i);
+
+  // Patrón para notas con profesiones (ej: 'adALHB', 'ad6.6TLBS')
+  const professionPattern = trimmedNote.match(/^([MA])([THD])(\d+(?:\.\d+)?)?([A-Za-z]{2,})/i);
+
+  // Patrón para notas de raid (ej: 'AT5.9 M20RLTOC25N')
+  const raidPatternMatch = trimmedNote.match(
+    /^([MA])([THD])(\d+(?:\.\d+)?)?(?:\s+([A-Za-z0-9]+))?/i
+  );
+
+  if (mainAltWithRole || gearScorePattern || professionPattern || raidPatternMatch) {
+    // Extraer la información del patrón coincidente
+    let mainAlt,
+      role,
+      gearScore = 0,
+      professions = [];
+    let raidInfo = null;
+
+    if (mainAltWithRole) {
+      mainAlt = mainAltWithRole[1].toUpperCase() as MainAlt;
+      role = mainAltWithRole[2].toUpperCase() as Role;
+    } else if (gearScorePattern) {
+      mainAlt = gearScorePattern[1].toUpperCase() as MainAlt;
+      role = gearScorePattern[2].toUpperCase() as Role;
+      gearScore = parseFloat(gearScorePattern[3]);
+    } else if (professionPattern) {
+      mainAlt = professionPattern[1].toUpperCase() as MainAlt;
+      role = professionPattern[2].toUpperCase() as Role;
+      if (professionPattern[3]) {
+        gearScore = parseFloat(professionPattern[3]);
+      }
+      // Extraer códigos de profesión (2 letras cada uno)
+      const profCodes = (professionPattern[4] || '').match(/[A-Za-z]{2}/g) || [];
+      professions = profCodes.map((p) => p.toUpperCase() as ProfessionCode);
+    } else if (raidPatternMatch) {
+      mainAlt = raidPatternMatch[1].toUpperCase() as MainAlt;
+      role = raidPatternMatch[2].toUpperCase() as Role;
+      if (raidPatternMatch[3]) {
+        gearScore = parseFloat(raidPatternMatch[3]);
+      }
+      // Procesar información de raid si está presente
+      if (raidPatternMatch[4]) {
+        const raidMatch = raidPatternMatch[4].match(/([A-Za-z]+)(\d+)([NH])?/i);
+        if (raidMatch) {
+          raidInfo = {
+            code: raidMatch[1].toUpperCase(),
+            difficulty: raidMatch[3] ? `${raidMatch[2]}${raidMatch[3]}` : undefined,
+            isRaidLeader: raidPattern[4].toLowerCase().includes('rl'),
+          };
+        }
+      }
+    }
+
+    // Crear el bloque de personaje
+    const characterBlock: NoteBlock = {
+      type: 'character',
+      content: trimmedNote,
+      isValid: true,
+      parsedData: {
+        mainAlt,
+        role,
+        mainRole: role,
+        mainGearScore: gearScore,
+        professions: professions,
+      },
+    };
+
+    // Crear el objeto de resultado
+    const validationResult: RosterPublicNoteValidation = {
+      isValid: true,
+      blocks: [characterBlock],
+      mainAlt,
+      role,
+      mainRole: role,
+      gearScore: gearScore,
+      professions: professions,
+      schedules: [],
+      isRaidLeader: raidInfo?.isRaidLeader || false,
+      hasSchedule: false,
+      missingFields: [],
+    };
+
+    // Si es un patrón simple (AD, AT, etc.), marcar como válido y salir
+    if (trimmedNote.length === 2 || (gearScore && trimmedNote.length <= 10)) {
+      // Asegurarse de que el bloque de personaje tenga toda la información necesaria
+      const charBlock: NoteBlock = {
+        type: 'character',
+        content: trimmedNote,
+        isValid: true,
+        parsedData: {
+          mainAlt,
+          role,
+          mainRole: role,
+          mainGearScore: 0,
+          professions: [],
+        },
+      };
+
+      // Crear el resultado final
+      const finalResult: RosterPublicNoteValidation = {
+        isValid: true,
+        blocks: [charBlock],
+        mainAlt,
+        role,
+        mainRole: role,
+        gearScore: 0,
+        professions: [],
+        schedules: [],
+        isRaidLeader: false,
+        hasSchedule: false,
+        missingFields: [],
+      };
+
+      return finalResult;
+    }
+
+    // Actualizar el resultado actual
+    Object.assign(result, validationResult);
+  } else {
+    // Si no coincide el primer patrón, intentar con el patrón de dos letras
+    const twoLetterPattern = trimmedNote.match(/^([a-zA-Z]{2})(?:\s|$)/i);
+    if (twoLetterPattern) {
+      const code = twoLetterPattern[1].toUpperCase();
+
+      // Verificar si el código es un patrón de rol (primera letra M/A, segunda T/H/D)
+      const roleMatch = code.match(/^([MA])([THD])$/i);
+      if (roleMatch) {
+        const mainAlt = roleMatch[1].toUpperCase() as MainAlt;
+        const role = roleMatch[2].toUpperCase() as Role;
+
+        const charBlock: NoteBlock = {
+          type: 'character',
+          content: code,
+          isValid: true,
+          parsedData: {
+            mainAlt,
+            role,
+            mainRole: role,
+            mainGearScore: 0,
+            professions: [],
+          },
+        };
+
+        return {
+          isValid: true,
+          blocks: [charBlock],
+          mainAlt,
+          role,
+          mainRole: role,
+          gearScore: 0,
+          profession

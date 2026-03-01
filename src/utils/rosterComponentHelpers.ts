@@ -70,11 +70,21 @@ export const processRosterMember = (member: any): RosterMemberType => {
   // Normalize class name
   const normalizeClassName = (name: string): string => {
     if (!name) return '';
+    const trimmedName = name.trim();
+    
+    // First, try to find a direct match in keys
     const directMatch = Object.keys(DEFAULT_CLASS_INFO).find(
-      (key) => key.toLowerCase() === name.trim().toLowerCase()
+      (key) => key.toLowerCase() === trimmedName.toLowerCase()
     );
     if (directMatch) return directMatch;
-    const lowerName = name.trim().toLowerCase();
+    
+    // If no direct match in keys, try to find a match in the 'name' property (Spanish)
+    const spanishMatch = Object.entries(DEFAULT_CLASS_INFO).find(
+      ([_, info]) => info.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+    if (spanishMatch) return spanishMatch[0]; // Return the English key (e.g. 'Warrior')
+
+    const lowerName = trimmedName.toLowerCase();
     if (lowerName === 'deathknight' || lowerName === 'death knight') {
       return 'Death Knight';
     }
@@ -90,8 +100,13 @@ export const processRosterMember = (member: any): RosterMemberType => {
       (key) => key.toLowerCase() === normalizedClassName.toLowerCase()
     ) || 'Desconocido';
 
+  const rawMainAlt = memberData.mainAlt || memberData.main_alt || '';
   const mainAlt =
-    memberData.mainAlt === 'main' ? 'M' : memberData.mainAlt === 'alt' ? 'A' : memberData.mainAlt || 'A';
+    rawMainAlt === 'M' || rawMainAlt.toLowerCase() === 'main' 
+      ? 'M' 
+      : rawMainAlt === 'A' || rawMainAlt.toLowerCase() === 'alt' 
+        ? 'A' 
+        : '';
 
   // Validar la nota pública
   const noteValidation = validateRosterNote(
@@ -103,7 +118,7 @@ export const processRosterMember = (member: any): RosterMemberType => {
   const validNoteValidation: PublicNoteValidation = {
     isValid: noteValidation.isValid || false,
     blocks: noteValidation.blocks || [],
-    mainAlt: noteValidation.mainAlt || 'A',
+    mainAlt: noteValidation.mainAlt || mainAlt || 'M', // Use mainAlt as fallback, default to M
     role: noteValidation.role,
     dualRole: noteValidation.dualRole,
     gearScore: noteValidation.gearScore || 0,
@@ -169,7 +184,7 @@ export const processRosterMember = (member: any): RosterMemberType => {
     guildLeave: memberData.guildLeave || false,
     level: memberData.level || 80,
     gearScore: noteValidation.gearScore || 0,
-    mainAlt,
+    mainAlt: noteValidation.mainAlt || mainAlt || 'M', // Prioritize note validation
     noteValidation: validNoteValidation,
     leaderData: memberData.leaderData || {},
     validation: {
@@ -273,7 +288,7 @@ export function calculateClassDistribution(
   return Object.entries(classCounts)
     .filter(([className]) => className && classInfo[className])
     .map(([className, count]) => ({
-      name: className,
+      name: classInfo[className].name, // Use display name (Spanish)
       count: count as number,
       color: classInfo[className].color || 'FFFFFF',
     }));
@@ -406,7 +421,9 @@ export function calculateProfessionDistribution(members: any[] = []): Array<{ na
     if (professions.length === 0) {
       uncensoredCount++;
     } else {
-      professions.forEach((prof: string) => {
+      // Ensure unique professions per member to avoid double counting
+      const uniqueProfs = [...new Set(professions)];
+      uniqueProfs.forEach((prof: string) => {
         counts[prof] = (counts[prof] || 0) + 1;
       });
     }

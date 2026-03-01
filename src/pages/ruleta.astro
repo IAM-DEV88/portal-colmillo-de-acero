@@ -1,4 +1,4 @@
-﻿﻿---
+﻿---
 import Layout from '../components/layout/Layout.astro';
 ---
 
@@ -281,7 +281,6 @@ import Layout from '../components/layout/Layout.astro';
             });
             if (res.ok) {
                 const data = await res.json();
-                console.log("Estado recibido:", data);
                 credits = data.credits;
                 goldPool = data.gold_pool;
                 hasWonChoker = data.has_won_choker;
@@ -289,8 +288,6 @@ import Layout from '../components/layout/Layout.astro';
                     spinHistory.length = 0;
                     data.spin_history.forEach(s => spinHistory.push(s));
                 }
-                
-                console.log("Sesión cargada para IP:", data.ip_hash);
                 
                 // Actualizar UI inmediatamente
                 const creditsEl = document.getElementById('credits-display');

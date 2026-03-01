@@ -2,6 +2,7 @@
 // RosterTable.astro
 // Componente principal para mostrar el roster de la hermandad.
 // Refactorizado para reducir la carga de Vite/Astro y solucionar errores de build.
+// Estilo y distribución restaurados del commit 10856bfac457b24c38a64b14f8a5ab6ec7277bc8.
 
 import {
   DEFAULT_CLASS_INFO,
@@ -100,130 +101,1075 @@ const maxGearScore = stats.gearScoreStats.max > 0 ? stats.gearScoreStats.max.toF
 // Rangos únicos para el filtro
 const ranks = [...new Set(processedMembers.map((m) => m.rank))].sort((a, b) => getRankPriority(a) - getRankPriority(b));
 
+// Calcular estadísticas de roles duales (server-side para la vista inicial)
+const roleStats = {
+  T: processedMembers.filter(m => m.noteValidation?.role === 'T' || m.noteValidation?.dualRole === 'T').length,
+  H: processedMembers.filter(m => m.noteValidation?.role === 'H' || m.noteValidation?.dualRole === 'H').length,
+  D: processedMembers.filter(m => m.noteValidation?.role === 'D' || m.noteValidation?.dualRole === 'D').length,
+};
+
+const dualRoleStats = {
+  TH: processedMembers.filter(m => (m.noteValidation?.role === 'T' && m.noteValidation?.dualRole === 'H') || (m.noteValidation?.role === 'H' && m.noteValidation?.dualRole === 'T')).length,
+  TD: processedMembers.filter(m => (m.noteValidation?.role === 'T' && m.noteValidation?.dualRole === 'D') || (m.noteValidation?.role === 'D' && m.noteValidation?.dualRole === 'T')).length,
+  HD: processedMembers.filter(m => (m.noteValidation?.role === 'H' && m.noteValidation?.dualRole === 'D') || (m.noteValidation?.role === 'D' && m.noteValidation?.dualRole === 'H')).length,
+};
+
 ---
 
 <div class="roster-component">
+  <!-- Título de la sección -->
+  <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6">
+    <div class="flex items-center space-x-4">
+      <div
+        class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
+      >
+        <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+            id="SVGRepo_tracerCarrier"
+            stroke-linecap="round"
+            stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+            <title>cracked-helm</title>
+            <path
+              d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"
+            ></path>
+          </g></svg
+        >
+      </div>
+      <div>
+        <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
+          Roster de la <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
+            >Hermandad</span
+          >
+        </span>
+        <span
+          class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+        >
+          <span class="self-end"> Reglas de la Hermandad </span>
+          <a
+            href="#reglas-hermandad"
+            class="inline-flex items-center text-amber-300/60 hover:text-amber-300 transition-colors"
+            title="Reglas de la Hermandad"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </a>
+        </span>
+      </div>
+    </div>
+    <div class="flex items-center text-[10px] text-amber-300/40 bg-gray-900/40 px-3 py-1.5 rounded-full border border-amber-900/30 shadow-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1.5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span class="font-medium tracking-wide">
+        Actualizado por <span class="text-amber-300 font-semibold">{lastUpdatedBy}</span>: {globalLastUpdate ? new Date(globalLastUpdate * 1000).toLocaleString('es-ES', { 
+          day: '2-digit', 
+          month: '2-digit', 
+          year: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }) : 'N/A'}
+      </span>
+    </div>
+  </div>
+
   <style>
-    /* Estilos base del componente */
+    /* Estilos para el modal */
     #member-modal {
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+      transition:
+        opacity 0.2s ease-in-out,
+        visibility 0.2s ease-in-out;
     }
+
     #member-modal.show {
       opacity: 1;
       visibility: visible;
     }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(31, 41, 55, 0.5); border-radius: 3px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.3); border-radius: 3px; }
-    select { -webkit-appearance: none; appearance: none; }
+
+    #member-modal .modal-content {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Estilos para los tooltips */
+    .tooltip-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Estilos para los contenedores de select personalizados */
+    .select-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .select-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 0.75rem;
+      transform: translateY(-50%);
+      width: 1em;
+      height: 1em;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Ocultar la flecha predeterminada en todos los navegadores */
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      padding-right: 2rem !important;
+      background-image: none !important;
+    }
+
+    /* Para IE11 */
+    select::-ms-expand {
+      display: none;
+    }
+
+    .tooltip-container:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .tooltip {
+      transform: translateY(-5px);
+      transition: all 0.2s ease-in-out;
+      box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Estilos para los dropdowns */
+    select option {
+      background-color: #1a202c; /* Fondo oscuro */
+      color: #e2e8f0; /* Texto claro */
+      padding: 0.5rem;
+    }
+
+    select:focus option:checked {
+      background-color: #4a5568; /* Color de fondo para la opci├│n seleccionada */
+      color: white;
+    }
+
+    /* Estilo para el hover en las opciones */
+    select option:hover {
+      background-color: #4a5568 !important;
+    }
+
+    /* Custom scrollbar for boss stats */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(245, 158, 11, 0.3);
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(245, 158, 11, 0.5);
+    }
   </style>
 
-  <!-- Título y Header -->
+  <!-- Contenedor Principal del Roster -->
+  <div
+    id="roster-container"
+    class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 mb-20 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+  >
+    <!-- Grid de miembros -->
+    <div
+      id="roster-grid"
+      class="grid grid-cols-2 gap-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+    >
+      <!-- Los miembros se cargarán dinámicamente -->
+    </div>
+
+    <!-- Filtros y Ordenamiento -->
+    <div class="filters-container mt-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
+        <!-- Buscador -->
+        <div class="w-full">
+          <label for="search" class="block text-xs font-medium text-text-muted/80 mb-1">
+            Buscar nombre
+          </label>
+          <div class="relative">
+            <input
+              type="text"
+              id="search"
+              placeholder="Nombre..."
+              class="w-full bg-transparent border border-amber-500/10 rounded-md px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 placeholder-text-muted/50 transition-all duration-200"
+            />
+          </div>
+        </div>
+
+        <!-- Filtro de Clase -->
+        <div class="w-full">
+          <label for="class-filter" class="block text-xs font-medium text-text-muted/80 mb-1">
+            Clase
+          </label>
+          <div class="relative">
+            <select
+              id="class-filter"
+              class="w-full appearance-none bg-transparent border border-amber-500/10 rounded-md px-3 py-1.5 pr-8 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all duration-200"
+            >
+              <option value="">Todas las clases</option>
+              {Object.entries(DEFAULT_CLASS_INFO).map(([key, info]) => (
+                <option value={key} style={`color: #${info.color}`}>
+                  {info.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <!-- Filtro de Rango -->
+        <div class="w-full">
+          <label for="rank-filter" class="block text-xs font-medium text-text-muted/80 mb-1">
+            Rango
+          </label>
+          <div class="select-wrapper">
+            <select
+              id="rank-filter"
+              class="w-full bg-transparent border border-amber-500/10 rounded-md px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all duration-200"
+            >
+              <option value="">Todos los rangos</option>
+              {ranks.map((rank) => (
+                <option value={rank} class="text-white">
+                  {rank}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <!-- Botones de Ordenamiento -->
+        <div class="flex gap-2 flex-col">
+          <button
+            id="sort-name"
+            class="sort-button px-3 py-1.5 text-xs rounded-md bg-amber-900/30 border border-amber-700/50 text-amber-100 hover:bg-amber-800/40 transition-all duration-200 flex items-center gap-1.5"
+            data-sort="name"
+            data-direction="asc"
+          >
+            <span>Personaje</span>
+            <span class="sort-indicator text-amber-400">↑</span>
+          </button>
+          <button
+            id="sort-details"
+            class="sort-button px-3 py-1.5 text-xs rounded-md bg-amber-900/30 border border-amber-700/50 text-amber-100 hover:bg-amber-800/40 transition-all duration-200 flex items-center gap-1.5"
+            data-sort="publicNote"
+          >
+            <span>Detalles</span>
+            <span class="sort-indicator text-amber-400">↑</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Paginación -->
+      <div id="pagination-container" class="mt-6 border-t border-amber-900/20 pt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div id="page-info" class="text-sm text-amber-200/70"></div>
+        <div class="flex items-center gap-2">
+          <button
+            id="prev-button"
+            class="w-9 h-9 flex items-center justify-center rounded-md border border-amber-700/50 bg-amber-900/20 text-amber-200 hover:bg-amber-800/40 disabled:opacity-40 transition-all duration-200"
+            disabled
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <button
+            id="next-button"
+            class="w-9 h-9 flex items-center justify-center rounded-md border border-amber-700/50 bg-amber-900/20 text-amber-200 hover:bg-amber-800/40 transition-all duration-200"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas del Roster Superiores -->
   <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6">
     <div class="flex items-center space-x-4">
-      <div class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg transform -rotate-2">
-        <svg class="w-8 h-8 text-black" viewBox="0 0 32 32"><path fill="currentColor" d="M27.745 9.605c-2.737-4.441-7.647-7.397-11.759-8.808-1.394 0.445-2.781 1.056-4.12 1.823l5.301 4.128-1.447 1.463 5.196 3.968-9.746-3.045 1.995-1.925-5.295-1.681c-1.311 1.189-2.512 2.553-3.546 4.078 2.827 7.594 2.827 9.077 0 16.671 7.648 5.84 15.714 6.117 23.422 0-2.313-7.594-2.313-9.076 0-16.671zM23.884 17.982c-1.965-0.982-3.885-1.598-5.787-1.841-0.751 4.757-0.732 9.514 0.155 14.271h-3.73c1.153-4.768 0.981-9.535 0.143-14.303-1.956 0.217-3.908 0.839-5.884 1.873v-4.45c4.971-1.398 10.449-0.936 15.103 0v4.45z"/></svg>
+      <div
+        class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
+      >
+        <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          ><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+            id="SVGRepo_tracerCarrier"
+            stroke-linecap="round"
+            stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+            <title>droplet-splash</title>
+            <path
+              d="M25.163 19.626c1.694 0.806 2.733 1.824 2.733 2.944 0 2.584-5.398 4.67-12.062 4.67s-12.062-2.085-12.062-4.67c0-1.12 1.039-2.138 2.733-2.944-3.211 1.041-5.284 2.617-5.284 4.365 0 3.13 6.54 5.685 14.613 5.685s14.613-2.555 14.613-5.685c0-1.748-2.073-3.325-5.284-4.365zM15.833 25.92c4.383 0 7.944-1.396 7.944-3.096 0-0.955-1.152-1.77-2.915-2.335 0.932 0.439 1.531 0.961 1.531 1.573 0 1.403-2.941 2.538-6.559 2.538s-6.559-1.135-6.559-2.538c0-0.613 0.598-1.134 1.531-1.574-1.763 0.565-2.915 1.38-2.915 2.335 0 1.7 3.561 3.096 7.944 3.096zM15.505 5.624c0 0.001 0 0.002 0 0.003 0-0.001 0-0.002 0-0.003l-0 0zM15.688 23.007c2.78 0 5.186-2.144 6.45-5.289-0.4 0.434-0.792 0.687-1.13 0.713-1.016 0.079-1.426-1.868-1.239-4.903-0.412 0.861-0.887 1.397-1.385 1.397-1.425 0-2.603-3.993-2.879-9.297-0.276 5.304-1.453 9.297-2.879 9.297-0.354 0-0.706-0.263-1.020-0.713 0.081 2.619-0.306 4.292-1.239 4.219-0.338-0.026-0.73-0.279-1.13-0.713 1.264 3.145 3.67 5.289 6.45 5.289zM16.968 2.756c0 0.84-0.681 1.52-1.52 1.52s-1.52-0.681-1.52-1.52c0-0.84 0.681-1.52 1.52-1.52s1.52 0.681 1.52 1.52z"
+            ></path>
+          </g></svg
+        >
       </div>
       <div>
-        <h2 class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
-          Roster de la <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">Hermandad</span>
-        </h2>
-        <p class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px]">Actualizado: {globalLastUpdate ? new Date(globalLastUpdate * 1000).toLocaleDateString() : 'Recientemente'}</p>
+        <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
+          Estadísticas del <span
+            class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
+            >Roster</span
+          >
+        </span>
+        <span
+          class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
+        >
+          <span class="self-end"> Composición de la hermandad </span>
+        </span>
       </div>
     </div>
   </div>
 
-  <!-- Estadísticas Superiores -->
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 bg-gray-900/40 p-4 rounded-lg border border-amber-600/30">
-    <!-- Total Miembros -->
-    <div class="bg-gray-800/50 p-3 rounded border border-amber-600/20">
-      <p class="text-xs text-amber-300/70 uppercase">Miembros</p>
-      <p class="text-2xl font-bold text-white">{processedMembers.length}</p>
-      <div class="flex gap-2 mt-1 text-[10px]">
-        <span class="text-blue-300">M: {stats.mainAltDistribution.M}</span>
-        <span class="text-purple-300">A: {stats.mainAltDistribution.A}</span>
+  <div
+    class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-20 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+    x-data
+  >
+    <!-- Total de Miembros y Mains/Alts -->
+    <div
+      x-data="{ expanded: false }"
+      class="relative group"
+      :class="{ 'z-50': expanded, 'z-0': !expanded }"
+      x-cloak
+    >
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/50 to-gray-800/60 backdrop-blur-sm border border-amber-600/40 rounded-md p-2 hover:border-amber-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-amber-500/20 rounded-md flex items-center justify-center">
+            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-amber-300/90 uppercase tracking-wide"
+              >
+                Miembros
+              </div>
+              <span class="text-xl font-bold text-amber-200 italic">{processedMembers.length}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-amber-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-amber-600/40 rounded-md p-3 shadow-lg"
+      >
+        <div class="grid grid-cols-2 gap-2">
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{stats.mainAltDistribution.M}</p>
+            <p class="text-[10px] text-amber-300/90 font-medium uppercase">Mains</p>
+          </div>
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{stats.mainAltDistribution.A}</p>
+            <p class="text-[10px] text-amber-300/90 font-medium uppercase">Alts</p>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- GS Promedio -->
-    <div class="bg-gray-800/50 p-3 rounded border border-green-600/20">
-      <p class="text-xs text-green-300/70 uppercase">Avg GearScore</p>
-      <p class="text-2xl font-bold text-white">{averageGearScore}</p>
-      <p class="text-[10px] text-gray-400">Min: {minGearScore} / Max: {maxGearScore}</p>
-    </div>
-    <!-- Roles -->
-    <div class="bg-gray-800/50 p-3 rounded border border-blue-600/20">
-      <p class="text-xs text-blue-300/70 uppercase">Distribución Roles</p>
-      <div class="flex gap-3 mt-1">
-        <span class="text-sm font-bold text-blue-400">T: {stats.roleDistribution.tank || 0}</span>
-        <span class="text-sm font-bold text-green-400">H: {stats.roleDistribution.healer || 0}</span>
-        <span class="text-sm font-bold text-red-400">D: {(stats.roleDistribution.melee || 0) + (stats.roleDistribution.ranged || 0)}</span>
+
+    <!-- Distribución de Roles -->
+    <div
+      x-data="{ expanded: false }"
+      class="relative group"
+      :class="{ 'z-50': expanded, 'z-0': !expanded }"
+      x-cloak
+    >
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md p-2 hover:border-blue-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-blue-500/20 rounded-md flex items-center justify-center">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-blue-300/90 uppercase tracking-wide"
+              >
+                Roles
+              </div>
+              <span class="text-xl font-bold text-blue-200 italic">
+                {roleStats.T + roleStats.H + roleStats.D}
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-blue-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-blue-600/40 rounded-md p-3 shadow-lg"
+      >
+        <div class="grid grid-cols-3 gap-2">
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{roleStats.T}</p>
+            <p class="text-[10px] text-blue-300/90 font-medium uppercase">Tanks</p>
+          </div>
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{roleStats.H}</p>
+            <p class="text-[10px] text-green-300/90 font-medium uppercase">Healers</p>
+          </div>
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{roleStats.D}</p>
+            <p class="text-[10px] text-red-300/90 font-medium uppercase">DPS</p>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- Líderes -->
-    <div class="bg-gray-800/50 p-3 rounded border border-purple-600/20">
-      <p class="text-xs text-purple-300/70 uppercase">Raid Leaders</p>
-      <p class="text-2xl font-bold text-white">{stats.raidLeadersCount}</p>
-    </div>
-  </div>
 
-  <!-- Contenedor Principal del Roster -->
-  <div id="roster-container" class="bg-gray-900/40 border border-amber-600/30 rounded-lg p-6 mb-10">
-    
-    <!-- Filtros -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-      <input type="text" id="search" placeholder="Buscar jugador..." class="bg-gray-800 border border-amber-900/50 rounded px-3 py-2 text-sm text-white focus:ring-1 focus:ring-amber-500" />
-      <select id="class-filter" class="bg-gray-800 border border-amber-900/50 rounded px-3 py-2 text-sm text-white">
-        <option value="">Todas las clases</option>
-        {Object.entries(DEFAULT_CLASS_INFO).map(([key, info]) => <option value={key}>{info.name}</option>)}
-      </select>
-      <select id="rank-filter" class="bg-gray-800 border border-amber-900/50 rounded px-3 py-2 text-sm text-white">
-        <option value="">Todos los rangos</option>
-        {ranks.map(rank => <option value={rank}>{rank}</option>)}
-      </select>
+    <!-- Roles Duales -->
+    <div
+      x-data="{ expanded: false }"
+      class="relative group"
+      :class="{ 'z-50': expanded, 'z-0': !expanded }"
+      x-cloak
+    >
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md p-2 hover:border-purple-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-purple-500/20 rounded-md flex items-center justify-center">
+            <svg
+              class="w-5 h-5 text-purple-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-purple-300/90 uppercase tracking-wide"
+              >
+                Duales
+              </div>
+              <span class="text-xl font-bold text-purple-200 italic">
+                {dualRoleStats.TH + dualRoleStats.TD + dualRoleStats.HD}
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-purple-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-purple-600/40 rounded-md p-3 shadow-lg"
+      >
+        <div class="grid grid-cols-3 gap-2">
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{dualRoleStats.TH}</p>
+            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
+              Tank<br />Healer
+            </p>
+          </div>
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{dualRoleStats.TD}</p>
+            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
+              Tank<br />DPS
+            </p>
+          </div>
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{dualRoleStats.HD}</p>
+            <p class="text-[10px] text-purple-300/90 font-medium uppercase leading-tight">
+              Healer<br />DPS
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Grid de Miembros -->
-    <div id="roster-grid" class="grid grid-cols-2 lg:grid-cols-3 gap-3">
-      <!-- Se llena via JS -->
+    <!-- Gear Score -->
+    <div
+      x-data="{ expanded: false }"
+      class="relative group"
+      :class="{ 'z-50': expanded, 'z-0': !expanded }"
+      x-cloak
+    >
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-green-600/40 rounded-md p-2 hover:border-green-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-green-500/20 rounded-md flex items-center justify-center">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-green-300/90 uppercase tracking-wide"
+              >
+                GearScore
+              </div>
+              <span class="text-xl font-bold text-green-200 italic">
+                {averageGearScore}
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-green-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-green-600/40 rounded-md p-3 shadow-lg"
+      >
+        <div class="grid grid-cols-2 gap-2">
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{minGearScore}</p>
+            <p class="text-[10px] text-green-300/90 font-medium uppercase">Mínimo</p>
+          </div>
+          <div class="text-center bg-gray-700/60 rounded p-1.5">
+            <p class="text-lg font-bold text-white">{maxGearScore}</p>
+            <p class="text-[10px] text-green-300/90 font-medium uppercase">Máximo</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Paginación -->
-    <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-800">
-      <div id="page-info" class="text-sm text-amber-200/50"></div>
-      <div class="flex gap-2">
-        <button id="prev-button" class="px-3 py-1 bg-gray-800 border border-amber-900/30 rounded disabled:opacity-30">Anterior</button>
-        <button id="next-button" class="px-3 py-1 bg-gray-800 border border-amber-900/30 rounded disabled:opacity-30">Siguiente</button>
+    <!-- Clases -->
+    <div
+      x-data="{ expanded: false }"
+      class="relative group"
+      :class="{ 'z-50': expanded, 'z-0': !expanded }"
+      x-cloak
+    >
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-cyan-600/40 rounded-md p-2 hover:border-cyan-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-cyan-500/20 rounded-md flex items-center justify-center">
+            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-cyan-300/90 uppercase tracking-wide"
+              >
+                Clases
+              </div>
+              <span class="text-xl font-bold text-cyan-200 italic">{classDistribution.length}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-cyan-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-cyan-600/40 rounded-md p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {classDistribution.sort((a, b) => b.count - a.count).map((item) => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium" style={`color: #${item.color}`}>{item.name}</span>
+                <div class="w-14 md:w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full" style={`background-color: #${item.color}; width: ${Math.round((item.count / processedMembers.length) * 100)}%`} />
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold" style={`color: #${item.color}`}>{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{Math.round((item.count / processedMembers.length) * 100)}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Rangos -->
+    <div
+      x-data="{ expanded: false }"
+      class="relative group"
+      :class="{ 'z-50': expanded, 'z-0': !expanded }"
+      x-cloak
+    >
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-indigo-600/40 rounded-md p-2 hover:border-indigo-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-indigo-500/20 rounded-md flex items-center justify-center">
+            <svg
+              class="w-5 h-5 text-indigo-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-indigo-300/90 uppercase tracking-wide"
+              >
+                Rangos
+              </div>
+              <span class="text-xl font-bold text-indigo-200 italic">{rankDistribution.length}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-indigo-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-indigo-600/40 rounded-md p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {rankDistribution.map((item) => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-[10px] md:text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-14 md:w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-indigo-500" style={`width: ${item.percentage}%`} />
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-indigo-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Profesiones -->
+    <div x-data="{ expanded: false }" class="relative group" x-cloak>
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-emerald-600/40 rounded-md p-2 hover:border-emerald-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-emerald-500/20 rounded-md flex items-center justify-center">
+            <svg
+              class="w-5 h-5 text-emerald-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-emerald-300/90 uppercase tracking-wide"
+              >
+                Profesiones
+              </div>
+              <span class="text-xl font-bold text-emerald-200 italic">
+                {professionDistribution.filter((i) => i.name !== 'No Censada').length}
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-emerald-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-emerald-600/40 rounded-md p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {professionDistribution.map((item) => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-14 md:w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-emerald-500" style={`width: ${item.percentage}%`} />
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-emerald-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Razas -->
+    <div x-data="{ expanded: false }" class="relative group" x-cloak>
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-orange-600/40 rounded-md p-2 hover:border-orange-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-orange-500/20 rounded-md flex items-center justify-center">
+            <svg
+              class="w-5 h-5 text-orange-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-orange-300/90 uppercase tracking-wide"
+              >
+                Razas
+              </div>
+              <span class="text-xl font-bold text-orange-200 italic">
+                {raceDistribution.filter((i) => i.name !== 'No Censada').length}
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-orange-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-orange-600/40 rounded-md p-3 shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
+      >
+        <div class="space-y-2">
+          {raceDistribution.map((item) => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-14 md:w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-orange-500" style={`width: ${item.percentage}%`} />
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-orange-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Facción -->
+    <div
+      x-data="{ expanded: false }"
+      class="relative group"
+      :class="{ 'z-50': expanded, 'z-0': !expanded }"
+      x-cloak
+    >
+      <div
+        @click="expanded = !expanded"
+        class="cursor-pointer bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-rose-600/40 rounded-md p-2 hover:border-rose-500/60 transition-all duration-200"
+      >
+        <div class="flex items-center justify-around">
+          <div class="w-8 h-8 bg-rose-500/20 rounded-md flex items-center justify-center">
+            <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-7h.01M9 16h.01"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="text-center">
+              <div
+                class="text-[10px] md:text-xs font-medium text-rose-300/90 uppercase tracking-wide"
+              >
+                Facciones
+              </div>
+              <span class="text-xl font-bold text-rose-200 italic">
+                {factionDistribution.filter((i) => i.name !== 'No Censada').length}
+              </span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div
+              class="w-4 h-4 text-rose-400/70 transform transition-transform duration-200 ml-auto"
+              :class="{'rotate-180': expanded}"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        x-show="expanded"
+        x-collapse
+        class="absolute z-10 w-full mt-1 bg-gray-800/95 backdrop-blur-sm border border-rose-600/40 rounded-md p-3 shadow-lg"
+      >
+        <div class="space-y-2">
+          {factionDistribution.map((item) => (
+            <div class="flex items-center justify-between bg-gray-700/40 rounded p-1.5 px-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-gray-200">{item.name}</span>
+                <div class="w-14 md:w-24 h-1 bg-gray-600 rounded-full mt-1 overflow-hidden">
+                  <div class="h-full bg-rose-500" style={`width: ${item.percentage}%`} />
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-rose-300">{item.count}</span>
+                <span class="text-[10px] text-gray-400 ml-1">{item.percentage}%</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div id="member-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4">
-  <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" id="modal-backdrop"></div>
-  <div class="relative bg-gray-800 border border-amber-600/30 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar p-6">
-    <div class="flex justify-between items-start mb-6">
-      <div class="flex items-center gap-4">
-        <div id="modal-class-icon" class="w-16 h-16 rounded border border-gray-700"></div>
-        <div>
-          <h3 id="modal-character-name" class="text-2xl font-bold italic"></h3>
-          <p id="modal-header-rank" class="text-amber-400 text-xs uppercase font-bold tracking-wider"></p>
+
+  <!-- Modal de Detalles -->
+<div id="member-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4" x-data="{ activeTab: 'general' }">
+  <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity duration-200" id="modal-backdrop"></div>
+  <div class="relative transform overflow-hidden rounded-md bg-gray-800 border border-amber-600/30 text-left shadow-xl transition-all w-full max-w-2xl">
+    <!-- Header -->
+    <div class="bg-gray-900/50 px-4 py-3 sm:px-6 border-b border-amber-600/20 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div id="modal-class-icon" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center"></div>
+        <div class="flex flex-col">
+          <span class="text-lg font-bold leading-tight" id="modal-character-name"></span>
+          <span id="modal-header-rank" class="text-xs uppercase text-white font-bold"></span>
         </div>
       </div>
-      <button id="close-modal" class="text-gray-400 hover:text-white">✕</button>
+      <button type="button" id="close-modal" class="text-gray-400 hover:text-white">✕</button>
     </div>
-    
-    <div class="space-y-6">
-      <div id="modal-tags" class="flex flex-wrap gap-2"></div>
-      <div class="bg-gray-900/50 p-4 rounded border border-gray-700/30">
-        <p class="text-xs text-gray-500 uppercase mb-2">Nota Pública</p>
-        <p id="modal-note" class="text-sm text-gray-300 italic"></p>
+
+    <!-- Content -->
+    <div class="px-4 py-5 sm:p-6">
+      <!-- Tabs -->
+      <div class="flex border-b border-gray-700/50 mb-4 overflow-x-auto custom-scrollbar">
+        <button 
+          @click="activeTab = 'general'" 
+          :class="activeTab === 'general' ? 'text-amber-400 border-amber-500' : 'text-gray-400 border-transparent'"
+          class="px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 whitespace-nowrap"
+        >General</button>
+        <button 
+          @click="activeTab = 'recognitions'" 
+          :class="activeTab === 'recognitions' ? 'text-amber-400 border-amber-500' : 'text-gray-400 border-transparent'"
+          class="px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
+          id="tab-recognitions"
+        >Reconocimientos <span id="badge-recognitions" class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300">0</span></button>
+        <button 
+          @click="activeTab = 'raids'" 
+          :class="activeTab === 'raids' ? 'text-amber-400 border-amber-500' : 'text-gray-400 border-transparent'"
+          class="px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap"
+          id="tab-raids"
+        >Raids <span id="badge-raids" class="hidden px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300">0</span></button>
       </div>
-      <div id="modal-extra-info" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div id="recognitions-container" class="space-y-2"></div>
-        <div id="raids-container" class="space-y-2"></div>
+
+      <!-- Panes -->
+      <div x-show="activeTab === 'general'" class="space-y-4">
+        <div id="modal-tags" class="flex flex-wrap gap-2"></div>
+        <div class="mt-4">
+          <span class="text-sm text-gray-400 block mb-1">Nota Pública</span>
+          <p id="modal-note" class="text-sm text-gray-300 bg-gray-900/50 p-3 rounded-md border border-gray-700/30 italic"></p>
+        </div>
+      </div>
+
+      <div x-show="activeTab === 'recognitions'" class="space-y-4" style="display:none">
+        <div class="bg-gray-900/50 p-4 rounded-md border border-amber-800/30">
+          <h4 class="text-sm font-semibold text-amber-300 mb-3 border-b border-amber-900/50 pb-1">Reconocimientos Especiales</h4>
+          <div id="recognitions-container" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <div x-show="activeTab === 'raids'" class="space-y-4" style="display:none">
+        <div class="bg-gray-900/50 p-4 rounded-md border border-amber-800/30">
+          <h4 class="text-sm font-semibold text-amber-300 mb-3 border-b border-amber-900/50 pb-1">Participación en Raids</h4>
+          <div id="raids-container" class="space-y-3"></div>
+        </div>
       </div>
     </div>
   </div>

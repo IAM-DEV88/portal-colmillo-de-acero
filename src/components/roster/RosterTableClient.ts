@@ -1,5 +1,5 @@
-
 // RosterTableClient.ts - Lógica del cliente para el componente RosterTable
+// Restaurado para soportar el estilo y distribución del commit 10856bfac457b24c38a64b14f8a5ab6ec7277bc8.
 
 export function initRosterTable() {
     // Obtener los datos del roster desde los atributos de datos
@@ -16,28 +16,6 @@ export function initRosterTable() {
     const factionNamesData = configData ? JSON.parse(configData.getAttribute('data-factions') || '{}') : {};
     const raidRegistrationsData = configData ? JSON.parse(configData.getAttribute('data-registrations') || '[]') : [];
 
-    // Función para inicializar tooltips
-    function initTooltips() {
-      document.querySelectorAll('.tooltip-container').forEach((container) => {
-        const tooltip = container.querySelector('.tooltip') as HTMLElement;
-        if (!tooltip) return;
-
-        const updatePosition = () => {
-          const rect = container.getBoundingClientRect();
-          const tooltipRect = tooltip.getBoundingClientRect();
-          const left = rect.left + rect.width / 2 - tooltipRect.width / 2;
-          const adjustedLeft = Math.max(10, Math.min(window.innerWidth - tooltipRect.width - 10, left));
-          tooltip.style.left = `${adjustedLeft}px`;
-        };
-
-        container.addEventListener('mouseenter', updatePosition);
-        window.addEventListener('resize', updatePosition);
-      });
-    }
-
-    // Inicializar tooltips
-    initTooltips();
-
     // Obtener elementos del DOM
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const classFilter = document.getElementById('class-filter') as HTMLSelectElement;
@@ -49,7 +27,7 @@ export function initRosterTable() {
     const sortButtons = document.querySelectorAll('.sort-button');
 
     let currentPage = 1;
-    let itemsPerPage = 6; 
+    let itemsPerPage = 9; 
     let allMembers = [];
     let filteredMembers = [];
     let sortConfig = { key: 'name', direction: 'asc' };
@@ -58,14 +36,6 @@ export function initRosterTable() {
     const modal = document.getElementById('member-modal');
     const closeModalX = document.getElementById('close-modal');
     const modalBackdrop = document.getElementById('modal-backdrop');
-
-    // Modal content elements
-    const modalName = document.getElementById('modal-character-name');
-    const modalRank = document.getElementById('modal-header-rank');
-    const modalNote = document.getElementById('modal-note');
-    const modalTags = document.getElementById('modal-tags');
-    const modalClassIcon = document.getElementById('modal-class-icon');
-
 
     // Function to update recognitions display
     function updateRecognitionsDisplay(member) {
@@ -94,19 +64,33 @@ export function initRosterTable() {
           html += '<div class="space-y-2">';
           Object.entries(groupedRecs).forEach(([title, recs]: [string, any]) => {
             const firstRec = recs[0];
+            const dateRange = recs.length > 1 
+              ? `${recs[recs.length - 1].dateStr} - ${firstRec.dateStr}`
+              : firstRec.dateStr;
+
             html += `
-              <div class="p-2 bg-gray-800/40 rounded border border-gray-700/30">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-xs font-bold text-amber-200">${title}</span>
-                  <span class="text-[10px] text-gray-500">${firstRec.dateStr}</span>
+              <div class="bg-gray-800/40 p-2 rounded-md border border-amber-600/20 hover:border-amber-500/40 transition-colors text-sm">
+                <div class="flex justify-between items-center">
+                  <span class="font-medium text-amber-300">${title}</span>
+                  <span class="text-xs text-gray-400 bg-gray-700/50 px-1.5 py-0.5 rounded">${recs.length}x</span>
                 </div>
-                <p class="text-[10px] text-gray-400 italic leading-tight">${firstRec.description}</p>
+                <div class="flex justify-between items-center mt-1">
+                  <span class="text-xs text-gray-400">${dateRange}</span>
+                  ${firstRec.achievement ? `
+                    <span class="text-xs text-amber-200/70 flex items-center gap-1">
+                      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      ${firstRec.achievement}
+                    </span>
+                  ` : ''}
+                </div>
               </div>
             `;
           });
           html += '</div>';
         } else {
-          html = '<p class="text-xs text-gray-500 text-center py-4 italic">Sin reconocimientos registrados</p>';
+          html = '<div class="text-center py-3"><p class="text-sm text-gray-400">No hay reconocimientos registrados</p></div>';
         }
         container.innerHTML = html;
         
@@ -142,26 +126,38 @@ export function initRosterTable() {
         }
 
         if (allCores.length > 0) {
-          html += '<div class="grid grid-cols-1 gap-2">';
+          html += '<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">';
           allCores.forEach(core => {
+            // Determine day for URL
+            let dayParam = '';
+            if (core.schedule) {
+              const parts = core.schedule.split(' ');
+              if (parts.length > 0) {
+                dayParam = parts[0].toLowerCase()
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '');
+              }
+            }
+            
+            const raidUrl = `/raids?raid-id=${encodeURIComponent(core.raid)}&day=${encodeURIComponent(dayParam)}`;
+
             html += `
-              <div class="p-2 bg-gray-800/40 rounded border border-amber-900/20 flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-amber-100">${core.raid || 'Raid'}</span>
-                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Líder</span>
+              <a href="${raidUrl}" class="block group bg-gray-800/40 p-3 rounded-md border border-amber-600/20 hover:border-amber-500/40 hover:bg-gray-800/60 transition-all duration-200">
+                <div class="flex flex-col mb-1">
+                  <span class="font-bold text-amber-300 text-sm group-hover:text-amber-200 transition-colors">${core.raid}</span>
                 </div>
-                <div class="flex items-center gap-1.5 text-[10px] text-gray-400">
-                  <svg class="w-3 h-3 text-amber-500/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-2 mt-1 text-xs text-gray-300 group-hover:text-gray-200">
+                  <svg class="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
-                  <span>${core.schedule || 'Horario no especificado'}</span>
+                  <span>${core.schedule}</span>
                 </div>
-              </div>
+              </a>
             `;
           });
           html += '</div>';
         } else {
-          html = '<p class="text-xs text-gray-500 text-center py-4 italic">No se encontraron registros de liderazgo en raids</p>';
+          html = '<div class="text-center py-6"><p class="text-sm text-gray-500 italic">No hay registros de participación en raids</p></div>';
         }
         container.innerHTML = html;
 
@@ -176,87 +172,164 @@ export function initRosterTable() {
         }
     }
 
-    // Modal tabs switching
-    (window as any).switchModalTab = function(tabId) {
-        document.querySelectorAll('.modal-tab').forEach(tab => {
-          tab.classList.remove('text-amber-400', 'border-amber-500');
-          tab.classList.add('text-gray-400', 'border-transparent');
-        });
-        const selectedTab = document.getElementById(`tab-${tabId}`);
-        if (selectedTab) {
-          selectedTab.classList.remove('text-gray-400', 'border-transparent');
-          selectedTab.classList.add('text-amber-400', 'border-amber-500');
-        }
-        document.querySelectorAll('.modal-pane').forEach(pane => pane.classList.add('hidden'));
-        document.getElementById(`pane-${tabId}`)?.classList.remove('hidden');
-    };
-
     // Open modal
-    (window as any).openMemberModal = function(member) {
+    (window as any).openMemberModal = function(memberData) {
         if (!modal) return;
         
+        let member;
+        if (typeof memberData === 'string') {
+          // Find member by name in allMembers
+          member = allMembers.find(m => m.name === memberData);
+        } else {
+          // memberData is already an object
+          member = memberData;
+        }
+
+        if (!member) {
+          console.error('No se pudo encontrar la información del miembro:', memberData);
+          return;
+        }
+
+        const modalName = document.getElementById('modal-character-name');
+        const modalRank = document.getElementById('modal-header-rank');
+        const modalNote = document.getElementById('modal-note');
+        const modalTags = document.getElementById('modal-tags');
+        const modalClassIcon = document.getElementById('modal-class-icon');
+
         if (modalName) modalName.textContent = member.name;
         
         if (modalRank) {
           modalRank.textContent = member.rank;
-          modalRank.className = `text-xs uppercase font-bold ${
-            member.rank.toLowerCase().includes('admin') ? 'text-amber-400' :
-            member.rank.toLowerCase().includes('oficial') ? 'text-blue-400' :
-            'text-gray-400'
-          }`;
         }
 
         if (modalClassIcon) {
           const classData = rosterInfo.classInfo[member.class] || { color: 'FFFFFF', name: member.class };
-          modalClassIcon.style.backgroundColor = `#${classData.color}`;
-          modalClassIcon.innerHTML = `<img src="/images/avatars/class_${classData.name}.jpg" class="w-full h-full rounded-md object-cover border border-black/20" onerror="this.src='/images/avatars/default.png'" />`;
+          modalClassIcon.innerHTML = `
+            <div class="relative flex-shrink-0">
+              <img src="/images/avatars/class_${classData.name}.jpg" class="w-12 h-12 rounded-md shadow-lg border border-gray-700/50 object-cover" onerror="this.src='/images/avatars/default.png'" />
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-md border-2 border-gray-900" style="background-color: #${classData.color}"></div>
+            </div>
+          `;
           
           if (modalName) modalName.style.color = `#${classData.color}`;
         }
 
-
-        const noteEl = document.getElementById('modal-note');
-        if (noteEl) noteEl.textContent = member.publicNote || 'Sin nota pública';
+        if (modalNote) modalNote.textContent = member.publicNote || 'Sin nota pública';
 
         // Update tags
-        const tagsContainer = document.getElementById('modal-tags');
-        if (tagsContainer) {
-          let tagsHtml = '';
+        if (modalTags) {
+          modalTags.innerHTML = '';
+          let formattedInfo = [];
+
+          if (member.faction) {
+            const factionCode = member.faction;
+            formattedInfo.push({
+              label: (factionCode === '1' ? '🛡️ ' : '⚔️ ') + (factionNamesData[factionCode] || ''),
+              class: factionCode === '1' ? 'bg-blue-500/10 border-blue-500/40 text-blue-300' : 'bg-red-500/10 border-red-500/40 text-red-300',
+            });
+          }
+
+          if (member.race) {
+            const raceColors = {
+              GN: 'bg-pink-500/10 border-pink-500/40 text-pink-300',
+              HU: 'bg-blue-500/10 border-blue-500/40 text-blue-300',
+              NE: 'bg-purple-500/10 border-purple-500/40 text-purple-300',
+              DW: 'bg-amber-500/10 border-amber-500/40 text-amber-300',
+              DR: 'bg-cyan-500/10 border-cyan-500/40 text-cyan-300',
+              OR: 'bg-green-500/10 border-green-500/40 text-green-300',
+              TA: 'bg-yellow-500/10 border-yellow-500/40 text-yellow-300',
+              UN: 'bg-gray-500/10 border-gray-500/40 text-gray-300',
+              TR: 'bg-orange-500/10 border-orange-500/40 text-orange-300',
+              BE: 'bg-red-500/10 border-red-500/40 text-red-300',
+            };
+            formattedInfo.push({
+              label: raceNamesData[member.race] || member.race,
+              class: raceColors[member.race] || 'bg-gray-500/10 border-gray-500/40 text-gray-300',
+            });
+          }
+
           const nv = member.noteValidation;
-          if (nv?.isValid) {
+          if (nv) {
             if (nv.mainAlt) {
-              const isMain = nv.mainAlt === 'M';
-              tagsHtml += `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isMain ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'}">${isMain ? 'MAIN' : 'ALT'}</span>`;
-            }
-            if (nv.gearScore) {
-              tagsHtml += `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">${nv.gearScore}k GS</span>`;
+              formattedInfo.push({
+                label: nv.mainAlt === 'M' ? 'Main' : 'Alt',
+                class: nv.mainAlt === 'M' ? 'bg-blue-500/10 border-blue-500/40 text-blue-300 hover:bg-blue-500/20 transition-all' : 'bg-purple-500/10 border-purple-500/40 text-purple-300 hover:bg-purple-500/20 transition-all',
+              });
             }
             if (nv.role) {
-              const roleInfo = roleNamesData[nv.role] || { name: nv.role, color: 'text-gray-300', bgColor: 'bg-gray-500/20' };
-              tagsHtml += `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${roleInfo.bgColor} ${roleInfo.color} border border-current opacity-70">${roleInfo.name}</span>`;
+              const roleName = roleNamesData[nv.role]?.name || nv.role;
+              formattedInfo.push({
+                label: roleName,
+                class: nv.role === 'T' ? 'bg-blue-500/10 border-blue-500/40 text-blue-200 hover:bg-blue-500/20 transition-all' : nv.role === 'H' ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/20 transition-all' : 'bg-rose-500/10 border-rose-500/40 text-rose-200 hover:bg-rose-500/20 transition-all',
+              });
+            }
+            if (nv.gearScore) {
+              formattedInfo.push({
+                label: `GS ${nv.gearScore}k`,
+                class: 'bg-amber-500/10 border-amber-500/40 text-amber-200 hover:bg-amber-500/20 transition-all',
+              });
+            }
+            
+            // Dual Role support
+            if (nv.dualRole && nv.dualRole !== nv.role) {
+              const dualRoleName = roleNamesData[nv.dualRole]?.name || nv.dualRole;
+              formattedInfo.push({
+                label: `Dual ${dualRoleName}`,
+                class: 'bg-yellow-500/10 border-yellow-500/40 text-yellow-200 hover:bg-yellow-500/20 transition-all',
+              });
+              if (nv.dualGearScore) {
+                formattedInfo.push({
+                  label: `GS ${nv.dualGearScore}k`,
+                  class: 'bg-amber-500/10 border-amber-500/40 text-amber-200 hover:bg-amber-500/20 transition-all',
+                });
+              }
+            }
+
+            if (nv.professions && nv.professions.length > 0) {
+              // Ensure unique professions using Set
+              const uniqueProfs = [...new Set(nv.professions)];
+              uniqueProfs.forEach(profCode => {
+                const prof = professionNamesData[profCode] || { name: profCode };
+                formattedInfo.push({
+                  label: prof.name,
+                  class: 'bg-indigo-500/10 border-indigo-500/40 text-indigo-200 hover:bg-indigo-500/20 transition-all',
+                });
+              });
             }
           }
-          tagsContainer.innerHTML = tagsHtml;
+
+          formattedInfo.forEach(tag => {
+            const span = document.createElement('span');
+            span.className = `inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${tag.class}`;
+            span.textContent = tag.label;
+            modalTags.appendChild(span);
+          });
         }
 
         updateRecognitionsDisplay(member);
         updateRaidsDisplay(member);
-        (window as any).switchModalTab('general');
+        
+        // Reset tab to general (using Alpine.js internal state)
+        if ((modal as any)?.__x?.$data) {
+          (modal as any).__x.$data.activeTab = 'general';
+        }
         
         modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.add('show'), 10);
         document.body.style.overflow = 'hidden';
     };
 
     if (closeModalX) closeModalX.onclick = () => {
-        modal?.classList.add('hidden');
+        modal?.classList.remove('show');
+        setTimeout(() => modal?.classList.add('hidden'), 200);
         document.body.style.overflow = '';
     };
 
     if (modalBackdrop) modalBackdrop.onclick = () => {
-        modal?.classList.add('hidden');
+        modal?.classList.remove('show');
+        setTimeout(() => modal?.classList.add('hidden'), 200);
         document.body.style.overflow = '';
     };
-
 
     function updateItemsPerPage() {
         itemsPerPage = window.innerWidth < 768 ? 10 : 9;
@@ -308,6 +381,20 @@ export function initRosterTable() {
               sortConfig.key = sortKey;
               sortConfig.direction = 'asc';
             }
+
+            // Update button styles
+            sortButtons.forEach(btn => {
+              btn.classList.remove('bg-amber-900/50', 'border-amber-500/50');
+              btn.classList.add('bg-amber-900/30', 'border-amber-700/50');
+              const indicator = btn.querySelector('.sort-indicator');
+              if (indicator) indicator.textContent = '↑';
+            });
+
+            button.classList.remove('bg-amber-900/30', 'border-amber-700/50');
+            button.classList.add('bg-amber-900/50', 'border-amber-500/50');
+            const indicator = button.querySelector('.sort-indicator');
+            if (indicator) indicator.textContent = sortConfig.direction === 'asc' ? '↑' : '↓';
+
             sortMembers();
             updateTable();
             updatePaginationInfo();
@@ -359,11 +446,11 @@ export function initRosterTable() {
             return `
               <div class="group bg-gradient-to-br from-gray-900/60 to-gray-800/50 backdrop-blur-sm rounded-md p-1 sm:p-4 transition-all duration-300 overflow-hidden cursor-pointer hover:bg-gray-800/60 hover:shadow-lg hover:shadow-amber-900/20 relative" 
                    style="border: 1px solid #${classData.color}66;"
-                   onclick='window.openMemberModal(${JSON.stringify(member).replace(/'/g, '&#39;')})'>
+                   onclick="window.openMemberModal('${member.name.replace(/'/g, "\\'")}')">
                 <div class="absolute top-0 left-0 w-1 h-full opacity-50" style="background-color: #${classData.color};"></div>
                 <div class="absolute top-1 right-1 flex flex-col gap-0.5 sm:flex-row sm:gap-1 z-10">
-                  ${raidCount > 0 ? `<div class="px-1.5 py-0.5 rounded text-[9px] sm:text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1"><span>${raidCount}</span></div>` : ''}
-                  ${recCount > 0 ? `<div class="px-1.5 py-0.5 rounded text-[9px] sm:text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1"><span>${recCount}</span></div>` : ''}
+                  ${raidCount > 0 ? `<div class="px-1.5 py-0.5 rounded text-[9px] sm:text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1" title="${raidCount} Raids Activas"><span>${raidCount}</span></div>` : ''}
+                  ${recCount > 0 ? `<div class="px-1.5 py-0.5 rounded text-[9px] sm:text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1" title="${recCount} Reconocimientos"><span>${recCount}</span></div>` : ''}
                 </div>
                 <div class="flex flex-col items-start pl-2">
                   <div class="flex items-center gap-1 sm:gap-2">
@@ -410,5 +497,9 @@ export function initRosterTable() {
 
 // Ejecutar cuando el DOM esté listo
 if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', initRosterTable);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRosterTable);
+  } else {
+    initRosterTable();
+  }
 }

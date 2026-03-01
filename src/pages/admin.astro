@@ -81,14 +81,15 @@ let registrations = [];
 let isLoading = true;
 
 // Handle POST requests
+let formData: FormData | null = null;
 if (Astro.request.method === 'POST') {
   try {
-    const formData = await Astro.request.formData();
+    formData = await Astro.request.formData();
     
     // Check if it's a Lua upload
     const file = formData.get('lua_file') as File;
     
-    if (file) {
+    if (file && file.size > 0) {
         if (file.name.endsWith('.lua')) {
             console.log('Processing Lua upload...');
             
@@ -188,8 +189,7 @@ const userRole = Astro.cookies.get('admin_role')?.value || 'admin'; // 'admin' o
 
 if (!session) {
   // If form was submitted
-  if (Astro.request.method === 'POST') {
-    const formData = await Astro.request.formData();
+  if (Astro.request.method === 'POST' && formData) {
     const password = formData.get('password');
     const currentAdminPassword = isDev && !ADMIN_PASSWORD ? devPassword : ADMIN_PASSWORD;
 

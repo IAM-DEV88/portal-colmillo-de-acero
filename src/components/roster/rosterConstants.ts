@@ -11,16 +11,6 @@ export const DEFAULT_CLASS_INFO: Record<string, { name: string; color: string }>
   'Mage': { color: '69CCF0', name: 'Mago' },
   'Warlock': { color: '9482C9', name: 'Brujo' },
   'Druid': { color: 'FF7D0A', name: 'Druida' },
-  'Guerrero': { color: 'C79C6E', name: 'Guerrero' },
-  'Paladín': { color: 'F58CBA', name: 'Paladín' },
-  'Cazador': { color: 'ABD473', name: 'Cazador' },
-  'Pícaro': { color: 'FFF569', name: 'Pícaro' },
-  'Sacerdote': { color: 'FFFFFF', name: 'Sacerdote' },
-  'Caballero de la Muerte': { color: 'C41F3B', name: 'Caballero de la Muerte' },
-  'Chamán': { color: '0070DE', name: 'Chamán' },
-  'Mago': { color: '69CCF0', name: 'Mago' },
-  'Brujo': { color: '9482C9', name: 'Brujo' },
-  'Druida': { color: 'FF7D0A', name: 'Druida' },
 };
 
 export const RACE_NAMES: Record<string, string> = {
