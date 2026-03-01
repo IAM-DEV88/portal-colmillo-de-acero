@@ -3,58 +3,14 @@
 import Layout from '../components/layout/Layout.astro';
 import { supabase } from '../lib/supabase';
 import { getRaidName, normalizeRaidName } from '../lib/raids';
+import { rosterService } from '../services/rosterService';
 
-// Import roster data and utils
-import rosterDataJson from '../data/roster.json';
+// Import roster utils
 import { validatePublicNote } from '../utils/rosterUtils';
 
-// Fetch roster from Supabase (paginado para superar el límite de 1000 filas)
-async function fetchAllRosterPlayers() {
-  const CHUNK = 1000;
-  let from = 0;
-  let all: any[] = [];
-  while (true) {
-    const { data, error } = await supabase
-      .from('roster_players')
-      .select('*')
-      .range(from, from + CHUNK - 1);
-    if (error) {
-      console.error('Error loading roster chunk from Supabase:', error);
-      break;
-    }
-    const rows = data || [];
-    all = all.concat(rows);
-    if (rows.length < CHUNK) break;
-    from += CHUNK;
-  }
-  return all;
-}
-
-const rosterPlayers = await fetchAllRosterPlayers();
+// Use rosterService to fetch data with caching
+const rosterData = await rosterService.getFormattedRoster();
 const rosterError = null;
-
-// Use rosterPlayers if available, otherwise fallback to json (or empty)
-const rosterData = {
-  players: rosterPlayers ? 
-    rosterPlayers.reduce((acc, player) => {
-      acc[player.name] = {
-        class: player.class,
-        rank: player.rank,
-        publicNote: player.public_note,
-        officerNote: player.officer_note,
-        race: player.race,
-        leaderData: player.leader_data,
-        isSanctioned: player.is_sanctioned,
-        guildLeave: player.guild_leave === true
-      };
-      return acc;
-    }, {}) 
-    : (rosterDataJson?.players || {})
-};
-
-if (rosterError) {
-  console.error('Error loading roster from Supabase:', rosterError);
-}
 
 // Define a default raid structure for when we only have a name
 const createRaidFromName = (name: string, id: string = '', gs: number = 5000): any => {
