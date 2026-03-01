@@ -650,16 +650,16 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                               
                               <div class="flex-1">
                                 <div class="flex items-center justify-between mb-1.5">
-                                  <div class="flex items-center space-x-3">
+                                  <div class="flex items-center flex-col space-3">
                                     <h3 class="text-xl font-black tracking-tight text-white group-hover:text-amber-400 transition-colors">
                                       {raidDisplayName}
                                     </h3>
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-700/50 text-gray-400 border border-gray-600/30">
-                                      {raid.schedules.length} {raid.schedules.length === 1 ? 'HORARIO' : 'HORARIOS'}
+                                      {raid.schedules.length === 1 ? 'HORARIO' : 'HORARIOS'}: {raid.schedules.length}
                                     </span>
                                   </div>
 
-                                  <div class="flex items-center space-x-2">
+                                  <div class="flex items-center flex-col space-y-2">
                                     <button
                                       type="button"
                                       @click.stop={`copyInviteCommand(${JSON.stringify(
@@ -688,7 +688,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                       <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                       </svg>
-                                      Copiar Todo
+                                        Solicitudes
                                     </button>
                                     
                                     <button
@@ -700,7 +700,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                       <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                       </svg>
-                                      {eligibleCount} Elegibles
+                                      {eligibleCount} Hermandad
                                     </button>
 
                                     {userRole === 'admin' && (
@@ -848,9 +848,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                           <table class="min-w-full divide-y divide-white/5">
                                             <thead class="bg-black/20">
                                               <tr>
-                                                <th scope="col" class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Jugador</th>
-                                                <th scope="col" class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Especialidad</th>
-                                                <th scope="col" class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Estado</th>
+                                                <th scope="col" class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Jugador / Info</th>
                                                 <th scope="col" class="px-6 py-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest">Gestión</th>
                                               </tr>
                                             </thead>
@@ -859,61 +857,63 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                             <tbody class="divide-y divide-white/5 bg-gray-800/20" x-show="tab === 'supabase'">
                                               {schedule.registrations.length === 0 ? (
                                                 <tr>
-                                                  <td colspan="4" class="px-6 py-12 text-center text-xs text-gray-500 font-medium italic">
+                                                  <td colspan="2" class="px-6 py-12 text-center text-xs text-gray-500 font-medium italic">
                                                     No hay solicitudes externas registradas.
                                                   </td>
                                                 </tr>
                                               ) : (
                                                 schedule.registrations.map((reg) => (
                                                   <tr class="registration-card hover:bg-white/5 transition-colors group/row">
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                      {userRole === 'admin' ? (
-                                                        <button
-                                                          type="button"
-                                                          onclick={`openEditModal(${JSON.stringify(reg)})`}
-                                                          class="text-left group/name flex items-center space-x-2"
-                                                        >
-                                                          <div class="text-sm font-bold text-white group-hover/name:text-amber-400 transition-colors">
-                                                            {reg.player_name}
-                                                          </div>
-                                                          <svg class="w-3 h-3 text-gray-600 opacity-0 group-hover/name:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                          </svg>
-                                                        </button>
-                                                      ) : (
-                                                        <div class="text-sm font-bold text-white">
-                                                          {reg.player_name}
+                                                    <td class="px-6 py-4">
+                                                      <div class="flex flex-col space-y-2">
+                                                        <div class="flex items-center justify-between">
+                                                          {userRole === 'admin' ? (
+                                                            <button
+                                                              type="button"
+                                                              onclick={`openEditModal(${JSON.stringify(reg)})`}
+                                                              class="text-left group/name flex items-center space-x-2"
+                                                            >
+                                                              <div class="text-sm font-bold text-white group-hover/name:text-amber-400 transition-colors">
+                                                                {reg.player_name}
+                                                              </div>
+                                                              <svg class="w-3 h-3 text-gray-600 opacity-0 group-hover/name:opacity-100 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                              </svg>
+                                                            </button>
+                                                          ) : (
+                                                            <div class="text-sm font-bold text-white">
+                                                              {reg.player_name}
+                                                            </div>
+                                                          )}
                                                         </div>
-                                                      )}
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                      <div class="flex items-center space-x-2">
-                                                        <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter bg-gray-700/50 text-gray-300 border border-white/5">
-                                                          {reg.player_class}
-                                                        </span>
-                                                        <span class="text-[10px] text-gray-500 font-bold uppercase">
-                                                          {reg.player_role}
-                                                        </span>
+
+                                                        <div class="flex items-center space-x-2">
+                                                          <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter bg-gray-700/50 text-gray-300 border border-white/5">
+                                                            {reg.player_class}
+                                                          </span>
+                                                          <span class="text-[9px] text-gray-500 font-bold uppercase">
+                                                            {reg.player_role}
+                                                          </span>
+                                                        </div>
+                                                        
+                                                          <span
+                                                            class={`status-badge inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter border ${
+                                                              reg.status === 'aceptado'
+                                                                ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]'
+                                                                : reg.status === 'en_espera'
+                                                                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]'
+                                                                  : 'bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]'
+                                                            }`}
+                                                          >
+                                                            {reg.status === 'en_revision'
+                                                              ? 'Revisión'
+                                                              : reg.status === 'aceptado'
+                                                                ? 'Aceptado'
+                                                                : reg.status === 'en_espera'
+                                                                  ? 'Espera'
+                                                                  : reg.status}
+                                                          </span>
                                                       </div>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                      <span
-                                                        class={`status-badge inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${
-                                                          reg.status === 'aceptado'
-                                                            ? 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]'
-                                                            : reg.status === 'en_espera'
-                                                              ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]'
-                                                              : 'bg-blue-500/10 text-blue-400 border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]'
-                                                        }`}
-                                                      >
-                                                        {reg.status === 'en_revision'
-                                                          ? 'Revisión'
-                                                          : reg.status === 'aceptado'
-                                                            ? 'Aceptado'
-                                                            : reg.status === 'en_espera'
-                                                              ? 'En Espera'
-                                                              : reg.status}
-                                                      </span>
                                                     </td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-right">
                                                       <div class="flex justify-end space-x-1.5 opacity-60 group-hover/row:opacity-100 transition-opacity">
@@ -961,28 +961,20 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                               {schedule.core_members && schedule.core_members.length > 0 ? (
                                                 schedule.core_members.map((member) => (
                                                   <tr class="hover:bg-indigo-500/10 transition-colors border-l-2 border-indigo-500/50">
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                      <div class="flex items-center space-x-2">
-                                                        <div class="text-sm font-black text-white">{member.name}</div>
-                                                        {member.isLeader === 1 && (
-                                                          <span class="px-1.5 py-0.5 text-[8px] font-black bg-amber-500/20 text-amber-400 rounded border border-amber-500/30 tracking-widest uppercase shadow-[0_0_8px_rgba(245,158,11,0.2)]">Líder</span>
-                                                        )}
+                                                    <td class="px-6 py-4">
+                                                      <div class="flex flex-col space-y-1">
+                                                        <div class="flex items-center space-x-2">
+                                                          <div class="text-sm font-black text-white">{member.name}</div>
+                                                        </div>
+                                                        <div class="flex items-center space-x-2">
+                                                          <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter bg-indigo-500/10 text-indigo-300 border border-indigo-500/10">
+                                                            {member.class || '---'}
+                                                          </span>
+                                                          <span class="text-[9px] text-gray-500 font-bold uppercase">
+                                                            {member.role || '---'}
+                                                          </span>
+                                                        </div>
                                                       </div>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                      <div class="flex items-center space-x-2">
-                                                        <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter bg-indigo-500/10 text-indigo-300 border border-indigo-500/10">
-                                                          {member.class || '---'}
-                                                        </span>
-                                                        <span class="text-[10px] text-gray-500 font-bold uppercase">
-                                                          {member.role || '---'}
-                                                        </span>
-                                                      </div>
-                                                    </td>
-                                                    <td class="px-6 py-4 whitespace-nowrap">
-                                                      <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                                                        Roster Core
-                                                      </span>
                                                     </td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                       <span class="text-gray-600 text-[10px] font-bold uppercase tracking-tight italic">Sincronizado</span>
@@ -991,7 +983,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                                 ))
                                               ) : (
                                                 <tr>
-                                                  <td colspan="4" class="px-6 py-12 text-center text-xs text-gray-500 font-medium italic">
+                                                  <td colspan="2" class="px-6 py-12 text-center text-xs text-gray-500 font-medium italic">
                                                     No hay miembros del core definidos.
                                                   </td>
                                                 </tr>
