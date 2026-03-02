@@ -1,7 +1,13 @@
 export const prerender = false;
 
-import { getUpcomingRaids, GUILD_TIMEZONE, getRaidRosterForScheduleWithExternal, getAllRaidSchedules } from '../../utils/raidUtils';
-import rosterData from '../../data/roster.json';
+import {
+  getUpcomingRaids,
+  GUILD_TIMEZONE,
+  getAllRaidSchedules,
+  getRaidRosterForScheduleWithExternal,
+} from '../../utils/raidUtils';
+import { rosterService } from '../../services/rosterService';
+import { supabase } from '../../lib/supabase';
 
 // Mensajes aleatorios generales
 const GENERAL_MESSAGES = [
@@ -175,67 +181,27 @@ export const GET = async ({ request, url }) => {
         };
         dynamicMessages.push(pollsMsg);
 
-        // Función para formatear el resumen de raids (Hoy o Mañana)
-         const getRaidSummary = (targetDay: string, isTomorrow = false) => {
-             const raids = allSchedules.filter(s => s.day_of_week === targetDay);
-             if (raids.length === 0) return null;
+        // --- 0. Utilidades de normalización de días ---
+        const normalizeDay = (day: string): string =>
+          day
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace('miércoles', 'miercoles')
+            .replace('sábado', 'sabado');
 
-             // Ordenar raids por hora (00:00 se trata como 24:00 para que vaya al final)
-             raids.sort((a, b) => {
-                 const timeA = a.start_time === '00:00' ? '24:00' : a.start_time;
-                 const timeB = b.start_time === '00:00' ? '24:00' : b.start_time;
-                 return timeA.localeCompare(timeB);
-             });
- 
-             let summary = `**Raids de ${isTomorrow ? 'Mañana' : 'Hoy'} (${targetDay.charAt(0).toUpperCase() + targetDay.slice(1)}):**\n`;
-             raids.forEach(r => {
-                 const [h, m] = r.start_time.split(':').map(Number);
-                 const raidDate = new Date(nowServer);
-                 
-                 // Si la hora es 00:00, la tratamos como el final del día objetivo
-                 if (h === 0 && m === 0) {
-                     raidDate.setHours(24, 0, 0, 0);
-                 } else {
-                     raidDate.setHours(h, m, 0, 0);
-                 }
-
-                 if (isTomorrow) raidDate.setDate(raidDate.getDate() + 1);
- 
-                 const diffMs = raidDate.getTime() - nowServer.getTime();
-                 const totalMinutes = Math.floor(diffMs / 60000);
-                
-                let timeInfo = "";
-                if (diffMs < 0) {
-                    timeInfo = "*(Ya finalizada o en curso)*";
-                } else {
-                    const hrs = Math.floor(totalMinutes / 60);
-                    const mins = totalMinutes % 60;
-                    timeInfo = hrs > 0 ? `(en ${hrs}h ${mins}m)` : `(en ${mins}m)`;
-                }
-
-                summary += `• **${r.raid_name}** - ${r.start_time} ${timeInfo} | Líder: ${r.leader}\n`;
-            });
-            return summary;
-        };
-
-        // Intentar obtener resumen de hoy, si no hay o ya pasaron todas, intentar mañana
-        let raidSummaryText = getRaidSummary(currentDay);
-        let summaryTitle = "📅 Próximas Raids";
-        
-        // Si no hay raids hoy, buscar mañana
-        if (!raidSummaryText || !raidSummaryText.includes("(en")) {
-            const tomorrow = new Date(nowServer);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowDay = tomorrow.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
-            const tomorrowSummary = getRaidSummary(tomorrowDay, true);
-            if (tomorrowSummary) {
-                raidSummaryText = tomorrowSummary;
-                summaryTitle = "📅 Raids de Mañana";
-            }
-        }
+        const currentDayNormalized = normalizeDay(currentDay);
+        const tomorrowDate = new Date(nowServer);
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        const tomorrowDayRaw = tomorrowDate
+          .toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE })
+          .toLowerCase();
+        const tomorrowDayNormalized = normalizeDay(tomorrowDayRaw);
         
         // --- 1. RESUMEN DE ROSTER POR RANGOS ---
-        const players = rosterData.players || {};
+        // Usar la misma lógica centralizada que en `roster.astro`/`raids.astro`
+        const rosterFormattedData = await rosterService.getFormattedRoster();
+        const players = (rosterFormattedData as any).players || {};
         const activePlayers = Object.values(players).filter((p: any) => !p.guildLeave);
         const totalMembers = activePlayers.length;
         const rankCounts: Record<string, number> = {};
@@ -245,13 +211,16 @@ export const GET = async ({ request, url }) => {
             rankCounts[rank] = (rankCounts[rank] || 0) + 1;
         });
 
-        // Metadatos de actualización
-        const globalLastUpdate = (rosterData as any).globalLastUpdate;
-        const lastUpdatedBy = Object.entries(players).find(
-            ([_, player]: [string, any]) => player.leaderData?.lastUpdate === globalLastUpdate
-        )?.[0] || 'Desconocido';
-        
-        const lastUpdateDate = globalLastUpdate ? new Date(globalLastUpdate * 1000) : null;
+        // Metadatos de actualización: reutilizar la lógica ya validada del servicio
+        const globalLastUpdate = rosterFormattedData.globalLastUpdate;
+        const lastUpdatedBy = rosterFormattedData.lastUpdatedBy || 'Desconocido';
+        const lastUpdatedAt = rosterFormattedData.lastUpdatedAt || null;
+
+        const lastUpdateDate = lastUpdatedAt
+          ? new Date(lastUpdatedAt)
+          : globalLastUpdate
+          ? new Date(globalLastUpdate * 1000)
+          : null;
         const formattedDate = lastUpdateDate 
             ? lastUpdateDate.toLocaleString('es-ES', { 
                 day: '2-digit', 
@@ -303,69 +272,201 @@ export const GET = async ({ request, url }) => {
         };
         dynamicMessages.push(rosterMsg);
 
-        // --- 2. RESUMEN SEMANAL DE RAIDS ---
-        const dayCounts: Record<string, number> = {
-            'lunes': 0, 'martes': 0, 'miercoles': 0, 'jueves': 0, 'viernes': 0, 'sabado': 0, 'domingo': 0
-        };
-        allSchedules.forEach(s => {
-            if (dayCounts[s.day_of_week] !== undefined) dayCounts[s.day_of_week]++;
-        });
+        // --- 2. RESUMEN SEMANAL DE RAIDS (Supabase como fuente y días en columnas) ---
         const daysInOrder = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
-        let weeklySummary = `**Actividad de la Hermandad:**\n\n`;
-        daysInOrder.forEach(day => {
-            const count = dayCounts[day];
-            if (count > 0) weeklySummary += `• **${day.charAt(0).toUpperCase() + day.slice(1)}:** ${count} ${count === 1 ? 'raid' : 'raids'}\n`;
-        });
+
+        // Leer directamente de Supabase los registros aceptados
+        const { data: weeklyRegistrations, error: weeklyError } = await supabase
+          .from('raid_registrations')
+          .select('raid_id, day_of_week, start_time, status')
+          .eq('status', 'aceptado');
+
+        const weeklyFields: any[] = [];
+
+        if (!weeklyError && weeklyRegistrations && weeklyRegistrations.length > 0) {
+          // Agrupar por (raid_id, day_of_week, start_time)
+          const slotsMap = new Map<string, { raidId: string; day: string; time: string; count: number }>();
+
+          weeklyRegistrations.forEach((reg: any) => {
+            const rawDay = (reg.day_of_week || '').toString().toLowerCase();
+            const normalizedDay = rawDay
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace('miércoles', 'miercoles')
+              .replace('sábado', 'sabado');
+
+            const time = (reg.start_time || '').toString().padStart(5, '0').substring(0, 5);
+            const raidId = (reg.raid_id || '').toString().toUpperCase().trim();
+
+            if (!raidId || !normalizedDay || !time) return;
+
+            const key = `${raidId}-${normalizedDay}-${time}`;
+            if (!slotsMap.has(key)) {
+              slotsMap.set(key, { raidId, day: normalizedDay, time, count: 0 });
+            }
+            const slot = slotsMap.get(key)!;
+            slot.count += 1;
+          });
+
+          for (const day of daysInOrder) {
+            const daySlots = Array.from(slotsMap.values())
+              .filter((s) => s.day === day)
+              .sort((a, b) => {
+                const [ah, am] = a.time.split(':').map(Number);
+                const [bh, bm] = b.time.split(':').map(Number);
+                let aMinutes = ah * 60 + am;
+                let bMinutes = bh * 60 + bm;
+                // Tratar 00:00 como final del día para orden (después de 23:00)
+                if (aMinutes === 0) aMinutes = 24 * 60;
+                if (bMinutes === 0) bMinutes = 24 * 60;
+                return aMinutes - bMinutes;
+              });
+
+            if (daySlots.length === 0) continue;
+
+            const linesForDay: string[] = [];
+
+            daySlots.forEach((slot) => {
+              const playersLabel =
+                slot.count > 0
+                  ? `${slot.count} jugador${slot.count === 1 ? '' : 'es'} confirmados`
+                  : 'sin jugadores confirmados aún';
+
+              linesForDay.push(`• \`${slot.time}\` **${slot.raidId}** — ${playersLabel}`);
+            });
+
+            weeklyFields.push({
+              name: `📅 ${day.charAt(0).toUpperCase() + day.slice(1)}`,
+              value: linesForDay.join('\n'),
+              inline: true,
+            });
+          }
+        }
+
+        // Campo extra con CTA si hay al menos un día con contenido
+        if (weeklyFields.length > 0) {
+          weeklyFields.push({
+            name: 'ℹ️ Registro',
+            value:
+              '📌 *Apúntate en las listas de invitación en la web para asegurar tu plaza: https://colmillo.netlify.app/raids*',
+            inline: false,
+          });
+        }
 
         const weeklyMsg = {
             title: "⚔️ Actividad Semanal",
-            description: weeklySummary,
+            description: weeklyFields.length > 0
+              ? "Resumen de raids confirmadas esta semana:"
+              : "No hay raids programadas esta semana. Revisa el calendario y apúntate cuando se abran nuevas bandas.",
             url: "https://colmillo.netlify.app/raids",
             color: 0xef4444,
-            type: 'WEEKLY'
+            type: 'WEEKLY',
+            fields: weeklyFields.length > 0 ? weeklyFields : undefined,
         };
         dynamicMessages.push(weeklyMsg);
 
-        // --- 3. HORARIO SEMANAL DETALLADO ---
-        const scheduleByDay: Record<string, string[]> = {};
-        allSchedules.forEach(s => {
-            if (!scheduleByDay[s.day_of_week]) scheduleByDay[s.day_of_week] = [];
-            scheduleByDay[s.day_of_week].push(`\`${s.start_time}\` **${s.raid_name}**`);
-        });
+        // --- 3. RESUMEN DE RAIDS HOY/MAÑANA (Supabase + columnas) ---
+        const summaryFields: any[] = [];
 
-        const scheduleFields: any[] = [];
-        daysInOrder.forEach(day => {
-            const raids = scheduleByDay[day];
-            if (raids && raids.length > 0) {
-                scheduleFields.push({
-                    name: `📅 ${day.charAt(0).toUpperCase() + day.slice(1)}`,
-                    value: raids.join('\n'),
-                    inline: true
+        try {
+          const { data: summaryRegs, error: summaryError } = await supabase
+            .from('raid_registrations')
+            .select('raid_id, day_of_week, start_time, status')
+            .in('status', ['aceptado', 'en_revision', 'en_espera']);
+
+          if (!summaryError && summaryRegs && summaryRegs.length > 0) {
+            // Agrupar por (raid_id, day, time)
+            type Slot = { raidId: string; day: string; time: string };
+            const slotsMap = new Map<string, Slot>();
+
+            summaryRegs.forEach((reg: any) => {
+              const day = normalizeDay((reg.day_of_week || '').toString());
+              const time = (reg.start_time || '').toString().padStart(5, '0').substring(0, 5);
+              const raidId = (reg.raid_id || '').toString().toUpperCase().trim();
+              if (!raidId || !day || !time) return;
+
+              const key = `${raidId}-${day}-${time}`;
+              if (!slotsMap.has(key)) {
+                slotsMap.set(key, { raidId, day, time });
+              }
+            });
+
+            const targets = [
+              { key: currentDayNormalized, label: 'Hoy' },
+              { key: tomorrowDayNormalized, label: 'Mañana' },
+            ];
+
+            for (const target of targets) {
+              const daySlots = Array.from(slotsMap.values())
+                .filter((s) => s.day === target.key)
+                .sort((a, b) => {
+                  const [ah, am] = a.time.split(':').map(Number);
+                  const [bh, bm] = b.time.split(':').map(Number);
+                  let aMinutes = ah * 60 + am;
+                  let bMinutes = bh * 60 + bm;
+                  if (aMinutes === 0) aMinutes = 24 * 60;
+                  if (bMinutes === 0) bMinutes = 24 * 60;
+                  return aMinutes - bMinutes;
                 });
-            }
-        });
 
-        const scheduleMsg = {
-            title: "🗓️ Horario Semanal de Raids",
-            description: "Resumen de las bandas programadas para esta semana:",
-            fields: scheduleFields,
+              if (daySlots.length === 0) continue;
+
+              const linesForDay: string[] = [];
+
+              daySlots.forEach((slot) => {
+                // Calcular tiempo restante respecto a nowServer
+                const [h, m] = slot.time.split(':').map(Number);
+                const raidDate = new Date(nowServer);
+                if (target.key === tomorrowDayNormalized) {
+                  raidDate.setDate(raidDate.getDate() + 1);
+                }
+                if (h === 0 && m === 0) {
+                  raidDate.setHours(24, 0, 0, 0);
+                } else {
+                  raidDate.setHours(h, m, 0, 0);
+                }
+
+                const diffMs = raidDate.getTime() - nowServer.getTime();
+                const totalMinutes = Math.floor(diffMs / 60000);
+
+                let timeInfo = '';
+                if (diffMs < 0) {
+                  timeInfo = '*(ya finalizada o en curso)*';
+                } else {
+                  const hrs = Math.floor(totalMinutes / 60);
+                  const mins = totalMinutes % 60;
+                  timeInfo = hrs > 0 ? `(en ${hrs}h ${mins}m)` : `(en ${mins}m)`;
+                }
+
+                linesForDay.push(`• \`${slot.time}\` **${slot.raidId}** ${timeInfo}`);
+              });
+
+              const prettyDay =
+                target.key === currentDayNormalized
+                  ? currentDay
+                  : tomorrowDayRaw;
+
+              summaryFields.push({
+                name: `${target.label} (${prettyDay.charAt(0).toUpperCase() + prettyDay.slice(1)})`,
+                value: linesForDay.join('\n'),
+                inline: true,
+              });
+            }
+          }
+        } catch (e) {
+          console.error('Error building SUMMARY from Supabase:', e);
+        }
+
+        if (summaryFields.length > 0) {
+          const summaryMsg = {
+            title: "📅 Próximas Raids",
+            description: "Raids programadas para hoy y mañana:",
             url: "https://colmillo.netlify.app/raids",
-            color: 0x3b82f6,
-            type: 'SCHEDULE'
-        };
-        dynamicMessages.push(scheduleMsg);
-        
-        // --- 4. RESUMEN DE RAIDS HOY/MAÑANA ---
-        let summaryMsg = null;
-        if (raidSummaryText) {
-            summaryMsg = {
-                title: summaryTitle,
-                description: raidSummaryText,
-                url: "https://colmillo.netlify.app/raids",
-                color: 0xff0000,
-                type: 'SUMMARY'
-            };
-            dynamicMessages.push(summaryMsg);
+            color: 0xff0000,
+            type: 'SUMMARY',
+            fields: summaryFields,
+          };
+          dynamicMessages.push(summaryMsg);
         }
 
         // Selección del mensaje (Test específico o aleatorio)
@@ -377,36 +478,30 @@ export const GET = async ({ request, url }) => {
         }
         
         const payload = {
-            username: "Portal Web Colmillo de Acero",
-            avatar_url: "https://colmillo.netlify.app/images/logo.png",
-            content: isTest ? ":loudspeaker: **【 TEST MENSAJE GENERAL 】**" : undefined,
-            embeds: [{
-                title: msg.title,
-                description: msg.description,
-                url: msg.url,
-                color: msg.color,
-                fields: (msg as any).fields || undefined,
-                thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
-                footer: { text: "Colmillo de Acero • Comunidad", icon_url: "https://colmillo.netlify.app/images/logo.png" }
-            }]
+          username: "Portal Web Colmillo de Acero",
+          avatar_url: "https://colmillo.netlify.app/images/logo.png",
+          content: isTest ? ":loudspeaker: **【 TEST MENSAJE GENERAL 】**" : undefined,
+          embeds: [
+            {
+              title: msg.title,
+              description: msg.description,
+              url: msg.url,
+              color: msg.color,
+              fields: (msg as any).fields || undefined,
+              thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
+              footer: {
+                text: "Colmillo de Acero • Comunidad",
+                icon_url: "https://colmillo.netlify.app/images/logo.png",
+              },
+            },
+          ],
         };
 
-        // Primero el mensaje del enlace solo para que genere metadata
+        // Enviar solo la card visual (embed), sin mensaje previo con enlace
         await fetch(webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                username: "Portal Web Colmillo de Acero",
-                avatar_url: "https://colmillo.netlify.app/images/logo.png",
-                content: `:link: [Ir a la Web](${msg.url})` 
-            })
-        });
-
-        // Luego la card visual (embed)
-        await fetch(webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
         });
 
         return new Response(JSON.stringify({ success: true, type: messageType }), { status: 200 });
