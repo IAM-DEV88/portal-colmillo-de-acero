@@ -8,60 +8,13 @@ import { rosterService } from '../services/rosterService';
 
 // Use rosterService to fetch data with caching
 const rosterFormattedData = await rosterService.getFormattedRoster();
-const rosterData = rosterFormattedData; // Mantener compatibilidad de nombre si es necesario
+const rosterData = rosterFormattedData; 
 const rosterError = null;
 
 const globalLastUpdate = rosterFormattedData.globalLastUpdate;
-const playersList = Object.values(rosterFormattedData.players || {});
-
-// Find the player who updated the roster (based on max timestamp or last_updated_by field)
-let lastUpdatedBy = 'Desconocido';
-let lastUpdatedAt: string | null = null;
-
-if (playersList.length > 0) {
-    // Try to find the most recent update
-    const mostRecentUpdate = playersList.reduce((prev: any, current: any) => {
-        const prevTime = Number(prev.leaderData?.lastUpdate) || 0;
-        const currTime = Number(current.leaderData?.lastUpdate) || 0;
-        return (prevTime > currTime) ? prev : current;
-    });
-    
-    // If we found a valid update timestamp
-    if ((Number(mostRecentUpdate.leaderData?.lastUpdate) || 0) === globalLastUpdate) {
-        // En formattedData el nombre está en la key del objeto, pero aquí hemos perdido la referencia al nombre original si no está dentro del objeto value.
-        // rosterService.getFormattedRoster devuelve { players: { "Nombre": { ...data } } }
-        // Necesitamos recuperar el nombre.
-        // Vamos a re-hacer la lógica iterando sobre las entries.
-    }
-}
-
-// Re-implementación correcta para obtener metadata de actualización
-const rosterEntries = Object.entries(rosterFormattedData.players || {});
-
-if (rosterEntries.length > 0) {
-    let maxTime = 0;
-    let mostRecentPlayer = '';
-    let mostRecentDate = null;
-
-    rosterEntries.forEach(([name, data]: [string, any]) => {
-        const leaderUpdate = Number(data.leaderData?.lastUpdate) || 0;
-        // Nota: rosterService ya no devuelve updated_at en el objeto formateado players, 
-        // solo los campos procesados. Si necesitamos updated_at crudo, deberíamos exponerlo en el servicio o inferirlo.
-        // Asumiremos leaderData.lastUpdate como fuente principal.
-        
-        if (leaderUpdate > maxTime) {
-            maxTime = leaderUpdate;
-            mostRecentPlayer = name;
-            // Convert timestamp to ISO string if needed, or null
-            mostRecentDate = new Date(leaderUpdate).toISOString();
-        }
-    });
-
-    if (maxTime > 0) {
-        lastUpdatedBy = mostRecentPlayer;
-        lastUpdatedAt = mostRecentDate;
-    }
-}
+const lastUpdatedBy = rosterFormattedData.lastUpdatedBy || 'Desconocido';
+const lastUpdatedAt = rosterFormattedData.lastUpdatedAt || null;
+const totalCount = rosterFormattedData.totalCount || 0;
 
 if (rosterError) {
   console.error('Error loading roster from Supabase:', rosterError);
@@ -239,6 +192,7 @@ if (Astro.url.searchParams.has('page')) {
         lastUpdatedBy={lastUpdatedBy}
         globalLastUpdate={globalLastUpdate}
         lastUpdatedAt={lastUpdatedAt}
+        totalMembersCount={totalCount}
       />
     </div>
 

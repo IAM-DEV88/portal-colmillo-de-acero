@@ -17,14 +17,11 @@ export const rosterService = {
     
     // Return cached data if valid
     if (cache.roster && (now - cache.lastFetched < cache.ttl)) {
-      console.log('Returning cached roster data');
       return cache.roster;
     }
 
     console.log('Fetching fresh roster data from Supabase');
     
-    // Optimized fetching: select only needed fields instead of '*'
-    // and use a larger page size if possible, or keep the chunk logic but centralized here
     const CHUNK = 1000;
     let from = 0;
     let all: any[] = [];
@@ -34,7 +31,7 @@ export const rosterService = {
       while (hasMore) {
         const { data, error } = await supabase
           .from('roster_players')
-          .select('name, class, rank, public_note, officer_note, race, leader_data, is_sanctioned, guild_leave, updated_at')
+          .select('name, class, rank, public_note, officer_note, race, leader_data, is_sanctioned, guild_leave, updated_at, last_updated_by')
           .range(from, from + CHUNK - 1);
           
         if (error) {
@@ -58,8 +55,7 @@ export const rosterService = {
       
       return all;
     } catch (error) {
-      console.error('Failed to fetch roster from Supabase, falling back to JSON if available', error);
-      // Fallback logic could be handled here or by the consumer
+      console.error('Failed to fetch roster from Supabase', error);
       return null;
     }
   },
@@ -70,42 +66,70 @@ export const rosterService = {
   async getFormattedRoster() {
     try {
       const players = await this.getAllPlayers();
-    
-      // Calculate global last update from the data itself if available
-      const globalLastUpdate = players && players.length > 0
-      ? Math.max(...players.map((p: any) => {
-          const leaderDataUpdate = Number(p.leader_data?.lastUpdate) || 0;
-          const rowUpdate = p.updated_at ? new Date(p.updated_at).getTime() : 0;
-          return Math.max(leaderDataUpdate, rowUpdate);
-        }))
-      : (rosterDataJson?.globalLastUpdate || 0);
+      
+      if (!players) throw new Error('No players found');
 
-    const playersMap = players ? 
-        players.reduce((acc: Record<string, any>, player: any) => {
-          acc[player.name] = {
-            class: player.class,
-            rank: player.rank,
-            publicNote: player.public_note, // Mapping snake_case to camelCase
-            officerNote: player.officer_note,
-            race: player.race,
-            leaderData: player.leader_data,
-            isSanctioned: player.is_sanctioned,
-            guildLeave: player.guild_leave === true
-          };
-          return acc;
-        }, {}) 
-        : (rosterDataJson?.players || {});
+      // Calculate global last update
+      let globalLastUpdate = 0;
+      let lastUpdatedBy = 'Desconocido';
+      let lastUpdatedAt = null;
+
+      players.forEach((p: any) => {
+        // Usar EXCLUSIVAMENTE leader_data.lastUpdate para la fecha global de actualización
+        // ya que representa la sincronización real desde el juego.
+        // updated_at de la DB puede cambiar por ediciones menores y distorsionar el autor real del roster.
+        let leaderUpdate = Number(p.leader_data?.lastUpdate) || 0;
+        
+        // Normalizar: Lua suele dar segundos, JS milisegundos.
+        // Si el número es muy grande (> año 2286), asumimos que son ms y convertimos a s.
+        if (leaderUpdate > 10000000000) leaderUpdate = Math.floor(leaderUpdate / 1000);
+
+        if (leaderUpdate > globalLastUpdate) {
+           globalLastUpdate = leaderUpdate;
+           // El autor es el jugador cuyo leader_data tiene el timestamp más reciente (el generador del Lua)
+           lastUpdatedBy = p.last_updated_by || p.name || 'Desconocido';
+           lastUpdatedAt = new Date(leaderUpdate * 1000).toISOString();
+         }
+      });
+
+      const activePlayers = (players || []).filter((p: any) => p.guild_leave !== true);
+
+      const playersMap = activePlayers.reduce((acc: Record<string, any>, player: any) => {
+        acc[player.name] = {
+          name: player.name,
+          class: player.class,
+          rank: player.rank,
+          publicNote: player.public_note,
+          officerNote: player.officer_note,
+          race: player.race,
+          leaderData: player.leader_data,
+          isSanctioned: player.is_sanctioned,
+          guildLeave: false,
+          updatedAt: player.updated_at,
+          lastUpdatedBy: player.last_updated_by
+        };
+        return acc;
+      }, {});
 
       return {
         globalLastUpdate,
+        lastUpdatedBy,
+        lastUpdatedAt,
+        totalCount: activePlayers.length,
         players: playersMap
       };
     } catch (error) {
       console.error('Error in getFormattedRoster:', error);
-      // Fallback to JSON file on error
+      const fallbackPlayers = Object.entries(rosterDataJson?.players || {})
+        .filter(([_, data]: [string, any]) => !data.guildLeave)
+        .reduce((acc, [name, data]) => ({ ...acc, [name]: data }), {});
+
       return {
         globalLastUpdate: rosterDataJson?.globalLastUpdate || 0,
-        players: rosterDataJson?.players || {}
+        lastUpdatedBy: 'Sistema',
+        lastUpdatedAt: null,
+        totalCount: Object.keys(fallbackPlayers).length,
+        players: fallbackPlayers
       };
     }
   },

@@ -162,12 +162,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         guild_leave: false,
         leader_data: finalLeaderData,
         is_sanctioned: pData.isSanctioned || false,
-        last_updated_by: name === generatedBy && incomingLastUpdate >= (Number(existing?.leader_data?.lastUpdate) || 0)
-          ? generatedBy
-          : (existing?.last_updated_by || null),
-        updated_at: name === generatedBy && incomingLastUpdate >= (Number(existing?.leader_data?.lastUpdate) || 0)
-          ? new Date().toISOString()
-          : (existing?.updated_at || new Date().toISOString())
+        // Al realizar una subida de Lua, todos los jugadores se marcan con el autor y fecha de esta actualización global
+        last_updated_by: generatedBy,
+        updated_at: new Date().toISOString()
       });
     }
 

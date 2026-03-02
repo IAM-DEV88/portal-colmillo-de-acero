@@ -39,6 +39,7 @@ interface Props {
   lastUpdatedBy?: string;
   globalLastUpdate?: number;
   lastUpdatedAt?: string | null;
+  totalMembersCount?: number;
 }
 
 // Obtener las props
@@ -47,7 +48,8 @@ const {
   raidRegistrations = [],
   lastUpdatedBy = 'Desconocido',
   globalLastUpdate = 0,
-  lastUpdatedAt = null
+  lastUpdatedAt = null,
+  totalMembersCount = 0
 } = Astro.props;
 
 // 1. Procesar miembros (Server-side)
@@ -477,7 +479,7 @@ const dualRoleStats = {
               >
                 Miembros
               </div>
-              <span class="text-xl font-bold text-amber-200 italic">{processedMembers.length}</span>
+              <span class="text-xl font-bold text-amber-200 italic">{totalMembersCount || processedMembers.length}</span>
             </div>
           </div>
           <div class="text-right">
