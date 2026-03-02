@@ -1,47 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
-import { spawn } from 'child_process';
-import path from 'path';
-
-// Helper to run python script
-function runPythonScript(luaContent: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    const scriptPath = path.join(process.cwd(), 'src', 'scripts', 'process_lua.py');
-    const pythonProcess = spawn('python', [scriptPath]);
-    
-    let stdoutData = '';
-    let stderrData = '';
-
-    // Write Lua content to stdin
-    pythonProcess.stdin.write(luaContent);
-    pythonProcess.stdin.end();
-
-    pythonProcess.stdout.on('data', (data) => {
-      stdoutData += data.toString();
-    });
-
-    pythonProcess.stderr.on('data', (data) => {
-      stderrData += data.toString();
-    });
-
-    pythonProcess.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(`Python script exited with code ${code}: ${stderrData}`));
-        return;
-      }
-      try {
-        const result = JSON.parse(stdoutData);
-        if (result.error) {
-          reject(new Error(result.error));
-        } else {
-          resolve(result);
-        }
-      } catch (e) {
-        reject(new Error(`Failed to parse Python output: ${e.message}\nOutput: ${stdoutData}`));
-      }
-    });
-  });
-}
+import { parseLuaRoster } from '../../../utils/luaParser';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   // Check authentication
@@ -66,13 +25,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     const textContent = await file.text();
     
-    // 1. Process Lua file with Python
-    let parsedData;
-    try {
-      parsedData = await runPythonScript(textContent);
-    } catch (e) {
-      return new Response(JSON.stringify({ error: `Error procesando Lua: ${e.message}` }), {
-        status: 500,
+    // 1. Process Lua file with native JS parser (ported from Python)
+    const parsedData = parseLuaRoster(textContent) as any;
+    if (parsedData.error) {
+      return new Response(JSON.stringify({ error: `Error procesando Lua: ${parsedData.error}` }), {
+        status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
