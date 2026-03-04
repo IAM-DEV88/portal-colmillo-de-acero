@@ -1,4 +1,4 @@
-import rosterData from '../data/roster.json';
+import { rosterService } from '../services/rosterService';
 import { supabase } from '../lib/supabase';
 
 // Configuración de la zona horaria de la hermandad (ajustar según corresponda)
@@ -34,12 +34,13 @@ export function getGuildTime(): Date {
 }
 
 /**
- * Parsea los horarios de raid desde el roster.json
+ * Obtiene todos los horarios de raid consultando Supabase dinámicamente
  */
-export function getAllRaidSchedules(): RaidSchedule[] {
+export async function getAllRaidSchedules(): Promise<RaidSchedule[]> {
   const schedules: RaidSchedule[] = [];
   const seenSchedules = new Set<string>();
 
+  const rosterData = await rosterService.getFormattedRoster();
   if (!rosterData || !rosterData.players) return [];
 
   Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
@@ -65,7 +66,6 @@ export function getAllRaidSchedules(): RaidSchedule[] {
 
       // Clave única para evitar duplicados si varios miembros tienen el mismo core listado
       // Usamos raid + dia + hora + lider (para distinguir diferentes grupos)
-      // Pero roster.json suele agrupar por lider. Aquí 'playerName' es el lider.
       const key = `${core.raid}-${normalizedDay}-${normalizedTime}-${playerName}`;
 
       if (!seenSchedules.has(key)) {
@@ -89,16 +89,16 @@ export function getAllRaidSchedules(): RaidSchedule[] {
  * @param minutesAhead Minutos a futuro para buscar (ej: 30) - Si es null, busca la más cercana sin límite
  * @param windowMinutes Ventana de tolerancia en minutos (ej: 5)
  */
-export function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes: number = 5): RaidSchedule[] {
+export async function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes: number = 5): Promise<RaidSchedule[]> {
   const now = getGuildTime();
-  const allSchedules = getAllRaidSchedules();
-  
+  const allSchedules = await getAllRaidSchedules();
+
   if (minutesAhead === null) {
     // Buscar la raid futura más cercana
     // 1. Convertir todo a fechas comparables
     const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
     const todayIndex = now.getDay();
-    
+
     let nearestDiff = Infinity;
     let nearestRaids: RaidSchedule[] = [];
 
@@ -108,23 +108,23 @@ export function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes
       if (schedDayIndex === -1) return;
 
       const [h, m] = schedule.start_time.split(':').map(Number);
-      
+
       // Si la hora es 00:00, la tratamos como el final del día (minuto 1440)
       const schedTimeMinutes = (h === 0 && m === 0) ? 24 * 60 : h * 60 + m;
-      
+
       let dayDiff = schedDayIndex - todayIndex;
       if (dayDiff < 0) dayDiff += 7; // Es en la próxima semana
-      
+
       // Si es hoy pero la hora ya pasó, es la próxima semana
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
-      
+
       if (dayDiff === 0 && schedTimeMinutes < nowMinutes) {
         dayDiff = 7;
       }
 
       // Diferencia total en minutos
       const totalDiffMinutes = (dayDiff * 24 * 60) + (schedTimeMinutes - nowMinutes);
-      
+
       if (totalDiffMinutes < nearestDiff) {
         nearestDiff = totalDiffMinutes;
         nearestRaids = [schedule];
@@ -138,14 +138,14 @@ export function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes
 
   // Comportamiento original: ventana de tiempo fija
   const targetTime = new Date(now.getTime() + minutesAhead * 60000);
-  
+
   // Obtener día de la semana y hora objetivo en formato compatible
   const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
   const targetDay = days[targetTime.getDay()];
-  
+
   const targetHour = targetTime.getHours();
   const targetMinute = targetTime.getMinutes();
-  
+
   // Convertir hora objetivo a minutos desde medianoche para comparación fácil
   const targetTimeMinutes = targetHour * 60 + targetMinute;
   const windowStart = targetTimeMinutes - windowMinutes;
@@ -156,17 +156,9 @@ export function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes
     // Pero si el calendario dice "Jueves 00:00", el aviso debe dispararse cuando el targetTime es Viernes 00:00.
     const [h, m] = schedule.start_time.split(':').map(Number);
     const scheduleTimeMinutes = h * 60 + m;
-    
-    // Calcular el día efectivo de la raid según la hora
-    // Si la hora es 00:00, el targetDay debería ser el día SIGUIENTE al que figura en el schedule
+
+    // No aplicamos desplazamiento para 00:00, respetamos el día programado
     let effectiveDay = schedule.day_of_week;
-    if (h === 0 && m === 0) {
-      const daysOrder = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
-      const dayIndex = daysOrder.indexOf(schedule.day_of_week);
-      if (dayIndex !== -1) {
-        effectiveDay = daysOrder[(dayIndex + 1) % 7];
-      }
-    }
 
     // 1. Coincidir día efectivo
     if (effectiveDay !== targetDay) return false;
@@ -263,13 +255,14 @@ function toEsClass(enOrEs?: string): string | undefined {
   return enOrEs;
 }
 
-export function getRaidRosterForSchedule(schedule: RaidSchedule): {
+export async function getRaidRosterForSchedule(schedule: RaidSchedule): Promise<{
   leaderClass?: string;
   tank: Array<{ name: string; class?: string }>;
   healer: Array<{ name: string; class?: string }>;
   melee: Array<{ name: string; class?: string }>;
   ranged: Array<{ name: string; class?: string }>;
-} {
+}> {
+  const rosterData = await rosterService.getFormattedRoster();
   const leader = schedule.leader;
   const leaderNode: any = (rosterData as any)?.players?.[leader];
   const leaderClass = leaderNode?.class;
@@ -289,23 +282,23 @@ export function getRaidRosterForSchedule(schedule: RaidSchedule): {
     }
   }
 
-  const result = { 
-    tank: [] as Array<{ name: string; class?: string }>, 
-    healer: [] as Array<{ name: string; class?: string }>, 
-    melee: [] as Array<{ name: string; class?: string }>, 
-    ranged: [] as Array<{ name: string; class?: string }>, 
-    leaderClass: leaderClass as string | undefined 
+  const result = {
+    tank: [] as Array<{ name: string; class?: string }>,
+    healer: [] as Array<{ name: string; class?: string }>,
+    melee: [] as Array<{ name: string; class?: string }>,
+    ranged: [] as Array<{ name: string; class?: string }>,
+    leaderClass: leaderClass as string | undefined
   };
 
   for (const m of members) {
     const name: string = m.name;
     const rosterEntry: any = (rosterData as any)?.players?.[name];
-    
+
     // Si existe en roster, chequear guildLeave
     if (rosterEntry && rosterEntry.guildLeave === true) continue;
-    
+
     // Si no existe en roster, lo incluimos igual (para ser fiel a raids)
-    
+
     const memberClass = m.class && m.class.length ? toEsClass(m.class) : rosterEntry?.class;
     let role = normRole(m.role);
     if (!role) {
@@ -329,37 +322,39 @@ export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedul
   ranged: Array<{ name: string; class?: string }>;
   sanctioned: Array<{ name: string; class?: string }>;
 }> {
-  const result = { 
-    tank: [] as Array<{ name: string; class?: string }>, 
-    healer: [] as Array<{ name: string; class?: string }>, 
-    melee: [] as Array<{ name: string; class?: string }>, 
-    ranged: [] as Array<{ name: string; class?: string }>, 
+  const rosterData = await rosterService.getFormattedRoster();
+
+  const result = {
+    tank: [] as Array<{ name: string; class?: string }>,
+    healer: [] as Array<{ name: string; class?: string }>,
+    melee: [] as Array<{ name: string; class?: string }>,
+    ranged: [] as Array<{ name: string; class?: string }>,
     sanctioned: [] as Array<{ name: string; class?: string }>,
-    leaderClass: undefined as string | undefined 
+    leaderClass: undefined as string | undefined
   };
-  
+
   const seen = new Set<string>();
 
   // Función para verificar si un jugador está sancionado en CUALQUIER parte del roster
   const isGlobalSanctioned = (playerName: string): boolean => {
-    if (!rosterData || !(rosterData as any).players) return false;
-    
+    if (!rosterData || !rosterData.players) return false;
+
     const lowerName = playerName.toLowerCase().trim();
-    
-    // 1. Verificar guildLeave en su propia ficha
-    const selfData = (rosterData as any).players[playerName] || 
-                     Object.entries((rosterData as any).players).find(([k]) => k.toLowerCase().trim() === lowerName)?.[1];
-    
-    if (selfData && selfData.guildLeave === true) return true;
+
+    // 1. Verificar isSanctioned o guildLeave en su propia ficha
+    const selfData = (rosterData as any).players[playerName] ||
+      Object.entries((rosterData as any).players).find(([k]) => k.toLowerCase().trim() === lowerName)?.[1];
+
+    if (selfData && (selfData.isSanctioned === 1 || selfData.guildLeave === true)) return true;
 
     // 2. Recorrer todos los líderes para ver sus cores y miembros buscando isSanctioned: 1
     return Object.values((rosterData as any).players).some((player: any) => {
       const cores = player.leaderData?.cores;
       if (!cores || !Array.isArray(cores)) return false;
-      
+
       return cores.some((core: any) => {
         if (!core.members || !Array.isArray(core.members)) return false;
-        return core.members.some((m: any) => 
+        return core.members.some((m: any) =>
           m.name?.toLowerCase().trim() === lowerName && m.isSanctioned === 1
         );
       });
@@ -382,10 +377,10 @@ export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedul
         const regRaidId = (reg.raid_id || '').toUpperCase().trim();
         const regTime = (reg.start_time || '').toString().padStart(5, '0').substring(0, 5);
         const regDay = (reg.day_of_week || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        
+
         return (regRaidId === targetRaidId || regRaidId.includes(targetRaidId) || targetRaidId.includes(regRaidId)) &&
-               regTime === targetTime &&
-               regDay === schedule.day_of_week;
+          regTime === targetTime &&
+          regDay === schedule.day_of_week;
       });
     }
   } catch (e) {
@@ -393,8 +388,8 @@ export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedul
   }
 
   // 2. Procesar Roster (Official Cores)
-  if (rosterData && (rosterData as any).players) {
-    Object.entries((rosterData as any).players).forEach(([playerName, member]: [string, any]) => {
+  if (rosterData && rosterData.players) {
+    Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
       const leaderData = member.leaderData;
       if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
 
@@ -423,11 +418,11 @@ export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedul
         if (raidMatch && normalizedDay === schedule.day_of_week && normalizedTime === schedule.start_time) {
           // Es el core correcto. Añadir al líder.
           if (!seen.has(playerName.toLowerCase())) {
-              const sanctioned = isGlobalSanctioned(playerName);
-              addPlayerToResult(playerName, member.class, 'DPS', result, seen, sanctioned);
-              if (playerName.toLowerCase() === schedule.leader.toLowerCase()) {
-                result.leaderClass = member.class;
-              }
+            const sanctioned = isGlobalSanctioned(playerName);
+            addPlayerToResult(playerName, member.class, 'DPS', result, seen, sanctioned);
+            if (playerName.toLowerCase() === schedule.leader.toLowerCase()) {
+              result.leaderClass = member.class;
+            }
           }
 
           // Añadir a los miembros del core
@@ -450,9 +445,9 @@ export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedul
     if (!name || seen.has(name.toLowerCase())) return;
 
     // Buscar en el roster con trim para evitar problemas de espacios
-    const mRosterKey = Object.keys((rosterData as any).players).find(k => k.trim().toLowerCase() === name.toLowerCase());
+    const mRosterKey = Object.keys(rosterData.players).find(k => k.trim().toLowerCase() === name.toLowerCase());
     const mRoster: any = mRosterKey ? (rosterData as any).players[mRosterKey] : null;
-    
+
     const sanctioned = isGlobalSanctioned(name);
     addPlayerToResult(name, reg.player_class || mRoster?.class, reg.player_role, result, seen, sanctioned);
   });
@@ -462,7 +457,7 @@ export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedul
 
 function addPlayerToResult(name: string, pClass: string, pRole: string, result: any, seen: Set<string>, sanctioned: boolean = false) {
   const normalizedClass = toEsClass(pClass);
-  
+
   if (sanctioned) {
     result.sanctioned.push({ name, class: normalizedClass });
     seen.add(name.toLowerCase());

@@ -1,5 +1,5 @@
 // src/lib/raids.ts
-// Dinámico: Los nombres de las raids se extraen de roster.json (leaderData)
+// Dinámico: Los nombres de las raids se extraen de Supabase (leaderData)
 
 export const raidDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
 
@@ -10,7 +10,7 @@ export const raidTimes = ['18:00', '19:00', '20:00', '21:00', '22:00', '23:00', 
  */
 export function getRaidName(raidId: string | number): string {
   if (!raidId) return 'Raid Desconocida';
-  
+
   // Si es un string y no parece un ID numérico, probablemente ya es el nombre
   if (typeof raidId === 'string' && isNaN(Number(raidId))) {
     return raidId;
@@ -35,25 +35,25 @@ export function getRaidName(raidId: string | number): string {
  */
 export function normalizeRaidName(name: string): string {
   if (!name) return 'Otras';
-  
+
   // Normalizar a mayúsculas y quitar espacios extras para la comparación
   const upperName = name.toUpperCase().trim().replace(/\s+/g, ' ');
   const compactName = upperName.replace(/\s+/g, '');
-  
+
   // ICC
   if (compactName.includes('ICC')) {
     if (compactName.includes('10')) return 'ICC 10';
     if (compactName.includes('25')) return 'ICC 25';
     return 'ICC';
   }
-  
+
   // RS / SAGRARIO
   if (compactName.includes('RS') || compactName.includes('SAGRARIO') || compactName.includes('RUBY')) {
     if (compactName.includes('10')) return 'RS 10';
     if (compactName.includes('25')) return 'RS 25';
     return 'RS';
   }
-  
+
   // TOC
   if (compactName.includes('TOC') || compactName.includes('PRUEBA') || compactName.includes('CRUZADO')) {
     if (compactName.includes('10')) return 'TOC 10';

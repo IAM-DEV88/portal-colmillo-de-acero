@@ -111,13 +111,11 @@ async function fetchAllRosterPlayers() {
 const rosterPlayers = await fetchAllRosterPlayers();
 const rosterError = null;
 
-import rosterDataJson from '../data/roster.json';
-
-// Use rosterPlayers if available, otherwise fallback to json (or empty)
+// Use rosterPlayers if available
 const rosterData = {
   globalLastUpdate: rosterPlayers && rosterPlayers.length > 0
     ? Math.max(...rosterPlayers.map((p: any) => Number(p.leader_data?.lastUpdate) || 0))
-    : (rosterDataJson?.globalLastUpdate || 0),
+    : 0,
   players: rosterPlayers ? 
     rosterPlayers.reduce((acc: Record<string, any>, player: any) => {
       acc[player.name] = {
@@ -132,7 +130,7 @@ const rosterData = {
       };
       return acc;
     }, {}) 
-    : (rosterDataJson?.players || {})
+    : {}
 };
 
 if (rosterError) {
@@ -166,8 +164,6 @@ if (rosterPlayers && rosterPlayers.length > 0) {
             lastUpdatedBy = lastModified.last_updated_by;
         }
     }
-} else if (rosterDataJson?.generatedBy) {
-    lastUpdatedBy = rosterDataJson.generatedBy;
 }
 
 import { validatePublicNote } from '../utils/rosterUtils';
@@ -181,7 +177,7 @@ const createRaidFromName = (name: string, gs: number = 5000): Raid => {
   else if (nameLower.includes('lk')) image = '/images/raids/icclk.jpg';
 
   return {
-    id: name, // El ID es ahora el nombre
+    id: name.toUpperCase(), // El ID es ahora el nombre en mayúsculas para consistencia
     name,
     image,
     description: 'Raid oficial de la hermandad.',
@@ -190,7 +186,7 @@ const createRaidFromName = (name: string, gs: number = 5000): Raid => {
   };
 };
 
-// Create a list of all possible raids exclusively from roster.json leaderData
+// Create a list of all possible raids exclusively from Supabase leaderData
 const allAvailableRaids: Raid[] = [];
 const seenRaids = new Set<string>();
 
@@ -202,7 +198,7 @@ if (rosterData && rosterData.players) {
     leaderData.cores.forEach((core) => {
       if (!core.raid) return;
 
-      const coreRaidKey = core.raid; // Usar el nombre original para evitar filtrado excesivo
+      const coreRaidKey = core.raid.toUpperCase(); // Normalizar para evitar duplicados por casing
       if (!seenRaids.has(coreRaidKey)) {
         seenRaids.add(coreRaidKey);
         allAvailableRaids.push(createRaidFromName(core.raid, core.gs || 5000));
@@ -317,7 +313,7 @@ function getSortedSchedules(schedules) {
 
   return schedules
     .filter((schedule) => {
-      // Show all schedules that come from roster.json (official cores)
+      // Show all schedules that come from Supabase (official cores)
       // or those that have accepted players
       if (schedule.is_official_core) return true;
       
@@ -514,58 +510,7 @@ try {
       );
     }
 
-    try {
-      console.log('Attempting to insert into Supabase...');
 
-      // Prepare the data to insert
-      const insertData = {
-        player_name: registrationData.player_name,
-        player_class: registrationData.player_class,
-        player_role: registrationData.player_role,
-        raid_role: registrationData.raid_role,
-        day_of_week: registrationData.day_of_week,
-        start_time: registrationData.start_time,
-        raid_id: parseInt(registrationData.raid_id) || 0,
-        status: 'en_revision',
-        created_at: new Date().toISOString(),
-      };
-
-      console.log('Data to insert:', insertData);
-
-      // Insert into Supabase
-      const { data: result, error } = await supabase
-        .from('raid_registrations')
-        .insert([insertData])
-        .select();
-
-      if (error) {
-        console.error('Supabase error details:', error);
-        throw error;
-      }
-
-      // Redirect to prevent form resubmission
-      return new Response(
-        JSON.stringify({
-          success: true,
-          data: result[0],
-        }),
-        {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-    } catch (error) {
-      console.error('Error saving registration:', error);
-      return new Response(
-        JSON.stringify({
-          error: 'Error al guardar el registro',
-          details: error.message,
-        }),
-        { status: 500 }
-      );
-    }
   }
 
   // Mapeo de días de la semana a números para ordenar
@@ -655,7 +600,7 @@ try {
   // Create a map to group schedules by their unique key (raid_id-day_of_week-start_time)
   const schedulesMap = new Map();
 
-  // 1. First, process data from roster.json (Primary source for cores)
+  // 1. First, process data from Supabase (Primary source for cores)
   if (rosterData && rosterData.players) {
     Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
       const leaderData = member.leaderData;
@@ -664,8 +609,8 @@ try {
       leaderData.cores.forEach((core) => {
         if (!core.raid || !core.schedule) return;
 
-        // Buscar coincidencia exacta por nombre original
-        const raid = allAvailableRaids.find((r) => r.name === core.raid);
+        // Buscar coincidencia exacta por nombre original (insensible a mayúsculas)
+        const raid = allAvailableRaids.find((r) => r.id === core.raid.toUpperCase());
 
         if (!raid) return;
 
@@ -716,7 +661,7 @@ try {
           note: member.publicNote || '',
           achievements: member.reconocimientos || 0,
           raids_count: member.raidsCompletadas || 0,
-          is_guild_member: member.guildLeave === false,
+          is_guild_member: member.guildLeave !== true,
           guild_leave: member.guildLeave === true,
           is_sanctioned: member.isSanctioned === 1 || member.isSanctioned === true || member.guildLeave === true,
         });
@@ -759,7 +704,7 @@ try {
                 note: rosterPlayer?.publicNote || '',
                 achievements: rosterPlayer?.reconocimientos || 0,
                 raids_count: rosterPlayer?.raidsCompletadas || 0,
-                is_guild_member: rosterPlayer ? rosterPlayer.guildLeave === false : false,
+                is_guild_member: rosterPlayer ? rosterPlayer.guildLeave !== true : true,
                 guild_leave: rosterPlayer?.guildLeave === true,
                 is_sanctioned: m.isSanctioned === 1 || m.isSanctioned === true || rosterPlayer?.isSanctioned === 1 || rosterPlayer?.isSanctioned === true || rosterPlayer?.guildLeave === true,
               });
@@ -787,8 +732,20 @@ try {
     const normalizedTime = reg.start_time.toString().padStart(5, '0');
 
     // Ahora buscamos la raid por su ID que es su nombre (normalizado a mayúsculas)
-    const raid = allAvailableRaids.find((r) => r.id.toUpperCase() === reg.raid_id.toUpperCase());
-    if (!raid) return;
+    let raid = allAvailableRaids.find((r) => r.id.toUpperCase() === reg.raid_id.toUpperCase());
+    if (!raid) {
+      raid = createRaidFromName(reg.raid_id.toUpperCase(), 5000);
+      allAvailableRaids.push(raid);
+      seenRaids.add(raid.id.toUpperCase());
+
+      raidEligibleMembers[raid.id] = parsedMembers.filter(
+        (m) =>
+          (m.gearScore >= raid.minGearScore || (m.dualGearScore && m.dualGearScore >= raid.minGearScore)) &&
+          !m.guild_leave &&
+          m.is_guild_member
+      );
+      raidEligibleMembersRange[raid.id] = raidEligibleMembers[raid.id];
+    }
 
     // Create a consistent key with normalized values
     const key = `${reg.raid_id.toUpperCase()}-${normalizedDay}-${normalizedTime}`;
@@ -829,7 +786,7 @@ try {
           note: rosterPlayer?.publicNote || '',
           achievements: rosterPlayer?.reconocimientos || 0,
           raids_count: rosterPlayer?.raidsCompletadas || 0,
-          is_guild_member: rosterPlayer ? rosterPlayer.guildLeave === false : false,
+          is_guild_member: rosterPlayer ? rosterPlayer.guildLeave !== true : true,
           guild_leave: rosterPlayer?.guildLeave === true,
           is_sanctioned: rosterPlayer?.isSanctioned === 1 || rosterPlayer?.isSanctioned === true || rosterPlayer?.guildLeave === true,
           from_supabase: true,
@@ -1060,7 +1017,7 @@ try {
                 {
                   allAvailableRaids
                     .filter((raid) =>
-                      raidSchedules.some((schedule) => schedule.raid_id === raid.id)
+                      raidSchedules.some((schedule) => schedule.raid_id.toUpperCase() === raid.id.toUpperCase())
                     )
                     .map((raid, index) => {
                       const raidSchedulesForRaid = raidSchedules.filter(
@@ -1112,7 +1069,7 @@ try {
                   allAvailableRaids
                     .filter((raid) => {
                       // Only include raids that have at least one schedule
-                      return raidSchedules.some((schedule) => schedule.raid_id === raid.id);
+                      return raidSchedules.some((schedule) => schedule.raid_id.toUpperCase() === raid.id.toUpperCase());
                     })
                     .map((raid, index) => {
                       const raidSchedulesForRaid = raidSchedules.filter(
@@ -1452,7 +1409,7 @@ try {
                                                   {!schedulePlayers.some(p => p.raid_role === 'lider') && (
                                                     <div class="bg-yellow-900/30 border border-yellow-500/50 p-2 rounded-md mt-2">
                                                       <p class="text-yellow-300 text-xs font-medium">⚠️ ADVERTENCIA</p>
-                                                      <p class="text-yellow-200 text-xs">Esta raid no tiene líderes asignados en roster.json.</p>
+                                                      <p class="text-yellow-200 text-xs text-center mt-2">Esta raid {schedule.is_official_core ? 'es un Core Oficial sin asistentes anotados' : 'no tiene líderes asignados'}.</p>
                                                     </div>
                                                   )}
                                                   
@@ -1876,8 +1833,8 @@ try {
             const daySchedules = raidSchedules
               .filter((s) => normalizeDay(s.day_of_week) === targetDay)
               .filter((s) => {
-                // Only show schedules that have at least one raid leader
-                return s.players.some(p => p.raid_role === 'lider' && (p.is_guild_member || p.from_supabase));
+                // Show schedules that have at least one raid leader OR contain players from external registration
+                return s.players.some(p => p.raid_role === 'lider' && (p.is_guild_member || p.from_supabase)) || s.players.some(p => p.from_supabase);
               })
               .sort((a, b) => {
                 // Extract time part (remove 'ST' if present)

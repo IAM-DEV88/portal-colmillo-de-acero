@@ -493,7 +493,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                       }
                     });
 
-                    // Add information from roster.json cores
+                    // Add information from Supabase cores
                     if (rosterData && rosterData.players) {
                       Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
                         const leaderData = member.leaderData;
@@ -956,7 +956,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                               )}
                                             </tbody>
 
-                                            {/* TAB 2: Miembros del Core (Confirmados en roster.json) */}
+                                            {/* TAB 2: Miembros del Core (Confirmados en Supabase) */}
                                             <tbody class="divide-y divide-white/5 bg-indigo-500/5" x-show="tab === 'roster'" x-cloak>
                                               {schedule.core_members && schedule.core_members.length > 0 ? (
                                                 schedule.core_members.map((member) => (

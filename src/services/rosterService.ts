@@ -1,5 +1,4 @@
 import { supabase } from '../lib/supabase';
-import rosterDataJson from '../data/roster.json';
 
 // Simple in-memory cache
 const cache = {
@@ -14,14 +13,14 @@ export const rosterService = {
    */
   async getAllPlayers() {
     const now = Date.now();
-    
+
     // Return cached data if valid
     if (cache.roster && (now - cache.lastFetched < cache.ttl)) {
       return cache.roster;
     }
 
     console.log('Fetching fresh roster data from Supabase');
-    
+
     const CHUNK = 1000;
     let from = 0;
     let all: any[] = [];
@@ -33,7 +32,7 @@ export const rosterService = {
           .from('roster_players')
           .select('name, class, rank, public_note, officer_note, race, leader_data, is_sanctioned, guild_leave, updated_at, last_updated_by')
           .range(from, from + CHUNK - 1);
-          
+
         if (error) {
           console.error('Error fetching roster chunk:', error);
           throw error;
@@ -52,7 +51,7 @@ export const rosterService = {
       // Update cache
       cache.roster = all;
       cache.lastFetched = now;
-      
+
       return all;
     } catch (error) {
       console.error('Failed to fetch roster from Supabase', error);
@@ -66,7 +65,7 @@ export const rosterService = {
   async getFormattedRoster() {
     try {
       const players = await this.getAllPlayers();
-      
+
       if (!players) throw new Error('No players found');
 
       // Calculate global last update
@@ -79,17 +78,17 @@ export const rosterService = {
         // ya que representa la sincronización real desde el juego.
         // updated_at de la DB puede cambiar por ediciones menores y distorsionar el autor real del roster.
         let leaderUpdate = Number(p.leader_data?.lastUpdate) || 0;
-        
+
         // Normalizar: Lua suele dar segundos, JS milisegundos.
         // Si el número es muy grande (> año 2286), asumimos que son ms y convertimos a s.
         if (leaderUpdate > 10000000000) leaderUpdate = Math.floor(leaderUpdate / 1000);
 
         if (leaderUpdate > globalLastUpdate) {
-           globalLastUpdate = leaderUpdate;
-           // El autor es el jugador cuyo leader_data tiene el timestamp más reciente (el generador del Lua)
-           lastUpdatedBy = p.last_updated_by || p.name || 'Desconocido';
-           lastUpdatedAt = new Date(leaderUpdate * 1000).toISOString();
-         }
+          globalLastUpdate = leaderUpdate;
+          // El autor es el jugador cuyo leader_data tiene el timestamp más reciente (el generador del Lua)
+          lastUpdatedBy = p.last_updated_by || p.name || 'Desconocido';
+          lastUpdatedAt = new Date(leaderUpdate * 1000).toISOString();
+        }
       });
 
       const activePlayers = (players || []).filter((p: any) => p.guild_leave !== true);
@@ -120,16 +119,12 @@ export const rosterService = {
       };
     } catch (error) {
       console.error('Error in getFormattedRoster:', error);
-      const fallbackPlayers = Object.entries(rosterDataJson?.players || {})
-        .filter(([_, data]: [string, any]) => !data.guildLeave)
-        .reduce((acc, [name, data]) => ({ ...acc, [name]: data }), {});
-
       return {
-        globalLastUpdate: rosterDataJson?.globalLastUpdate || 0,
-        lastUpdatedBy: 'Sistema',
+        globalLastUpdate: 0,
+        lastUpdatedBy: 'Error',
         lastUpdatedAt: null,
-        totalCount: Object.keys(fallbackPlayers).length,
-        players: fallbackPlayers
+        totalCount: 0,
+        players: {}
       };
     }
   },
