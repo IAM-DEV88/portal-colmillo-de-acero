@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabase } from '../../../lib/supabase';
 import { parseLuaRoster } from '../../../utils/luaParser';
+import { rosterService } from '../../../services/rosterService';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   // Check authentication
@@ -15,7 +16,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    
+
     if (!file) {
       return new Response(JSON.stringify({ error: 'No se proporcionó archivo' }), {
         status: 400,
@@ -24,7 +25,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     const textContent = await file.text();
-    
+
     // 1. Process Lua file with native JS parser (ported from Python)
     const parsedData = parseLuaRoster(textContent) as any;
     if (parsedData.error) {
@@ -65,7 +66,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }
       return all;
     }
-    
+
     const existingPlayers = await fetchAllExistingPlayers();
 
     const existingMap = new Map(existingPlayers?.map(p => [p.name, p]) || []);
@@ -80,32 +81,32 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // A. Players present in Lua -> Update info, set guild_leave = false
     for (const [name, data] of Object.entries(newPlayers)) {
       const pData = data as any;
-      
+
       // Merge leaderData logic
       // The Python script only returns leaderData for the 'generatedBy' player.
       // For everyone else, pData.leaderData is empty.
       // We must preserve existing leaderData for everyone EXCEPT the current generator (if they are updating their own data)
       // OR if we want to support multiple officers uploading data, we need to handle it carefully.
-      
+
       // The logic should be:
       // 1. Get existing leaderData from DB (default to {})
       // 2. If this player is the 'generatedBy' user, we OVERWRITE their specific entry or the whole object?
       //    Wait, the previous JSON structure (roster.json) seemed to store leaderData directly under the player object:
       //    player: { leaderData: { lastUpdate: ..., cores: [...] } }
       //    It seems it was 1:1. Each player has THEIR OWN leaderData if they are a leader.
-      
+
       //    If 'generatedBy' is "OfficerA", then "OfficerA" gets their leaderData updated with the Lua content.
       //    "OfficerB" should keep their EXISTING leaderData in the DB.
-      
+
       const existing = existingMap.get(name);
       let finalLeaderData = existing?.leader_data || {};
       if (name === generatedBy) {
-          const existingLeaderLastUpdate = Number(existing?.leader_data?.lastUpdate) || 0;
-          if (incomingLastUpdate >= existingLeaderLastUpdate) {
-            finalLeaderData = pData.leaderData;
-          }
+        const existingLeaderLastUpdate = Number(existing?.leader_data?.lastUpdate) || 0;
+        if (incomingLastUpdate >= existingLeaderLastUpdate) {
+          finalLeaderData = pData.leaderData;
+        }
       }
-      
+
       // If the player is NOT the generator, we keep their existing leaderData (finalLeaderData = existing.leader_data)
       // The Python script returns empty object for them, so we ignore pData.leaderData for them.
 
@@ -130,12 +131,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     if (existingPlayers) {
       for (const p of existingPlayers) {
         if (!newPlayers[p.name] && !p.guild_leave) {
-           updates.push({
-             name: p.name,
-             guild_leave: true,
-             leader_data: {}, // Clear leader data for left players (as per list2.py)
-             updated_at: new Date().toISOString()
-           });
+          updates.push({
+            name: p.name,
+            guild_leave: true,
+            leader_data: {}, // Clear leader data for left players (as per list2.py)
+            updated_at: new Date().toISOString()
+          });
         }
       }
     }
@@ -152,8 +153,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     }
 
-    return new Response(JSON.stringify({ 
-      success: true, 
+    // 5. Invalidate the server-side cache so pages reflect changes immediately
+    rosterService.invalidateCache();
+
+    return new Response(JSON.stringify({
+      success: true,
       message: `Procesado correctamente. ${updates.length} jugadores actualizados/insertados.`,
       stats: {
         total: updates.length,
@@ -167,7 +171,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       headers: { 'Content-Type': 'application/json' }
     });
 
-  } catch (e) {
+  } catch (e: any) {
     return new Response(JSON.stringify({ error: `Error interno: ${e.message}` }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
