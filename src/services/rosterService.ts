@@ -11,11 +11,11 @@ export const rosterService = {
   /**
    * Fetches all roster players with caching and optimized pagination
    */
-  async getAllPlayers() {
+  async getAllPlayers(forceFresh = false) {
     const now = Date.now();
 
-    // Return cached data if valid
-    if (cache.roster && (now - cache.lastFetched < cache.ttl)) {
+    // Return cached data if valid and not forcing fresh
+    if (!forceFresh && cache.roster && (now - cache.lastFetched < cache.ttl)) {
       return cache.roster;
     }
 
@@ -62,9 +62,9 @@ export const rosterService = {
   /**
    * Get formatted roster data ready for UI consumption
    */
-  async getFormattedRoster() {
+  async getFormattedRoster(forceFresh = false) {
     try {
-      const players = await this.getAllPlayers();
+      const players = await this.getAllPlayers(forceFresh);
 
       if (!players) throw new Error('No players found');
 

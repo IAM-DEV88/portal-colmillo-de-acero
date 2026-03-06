@@ -82,7 +82,7 @@ export const GET = async ({ url }: { url: URL }) => {
     if (isTest) {
       messageType = testType?.toUpperCase() || (Math.random() < 0.5 ? 'RAID' : 'GENERAL');
       if (messageType === 'RAID') {
-        upcomingRaids = await getUpcomingRaids(null);
+        upcomingRaids = await getUpcomingRaids(null, 5, true); // Force fresh
         if (upcomingRaids.length === 0) {
           upcomingRaids = [{
             raid_name: 'ICC25N',
@@ -95,7 +95,7 @@ export const GET = async ({ url }: { url: URL }) => {
     } else {
       const now = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
       const minutes = now.getMinutes();
-      upcomingRaids = await getUpcomingRaids(30, 15);
+      upcomingRaids = await getUpcomingRaids(30, 15, true); // Force fresh
 
       if (upcomingRaids.length > 0) {
         messageType = 'RAID';
@@ -167,7 +167,7 @@ export const GET = async ({ url }: { url: URL }) => {
       }
 
       // 2. Roster
-      const rosterFormattedData = await rosterService.getFormattedRoster();
+      const rosterFormattedData = await rosterService.getFormattedRoster(true); // Always fresh for Discord notifications
       const players = (rosterFormattedData as any).players || {};
       const activePlayers = Object.values(players).filter((p: any) => !p.guildLeave);
       const rankCounts: Record<string, number> = {};

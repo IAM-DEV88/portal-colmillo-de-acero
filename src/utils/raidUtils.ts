@@ -36,11 +36,11 @@ export function getGuildTime(): Date {
 /**
  * Obtiene todos los horarios de raid consultando Supabase dinámicamente
  */
-export async function getAllRaidSchedules(): Promise<RaidSchedule[]> {
+export async function getAllRaidSchedules(forceFresh = false): Promise<RaidSchedule[]> {
   const schedules: RaidSchedule[] = [];
   const seenSchedules = new Set<string>();
 
-  const rosterData = await rosterService.getFormattedRoster();
+  const rosterData = await rosterService.getFormattedRoster(forceFresh);
   if (!rosterData || !rosterData.players) return [];
 
   Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
@@ -89,9 +89,9 @@ export async function getAllRaidSchedules(): Promise<RaidSchedule[]> {
  * @param minutesAhead Minutos a futuro para buscar (ej: 30) - Si es null, busca la más cercana sin límite
  * @param windowMinutes Ventana de tolerancia en minutos (ej: 5)
  */
-export async function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes: number = 5): Promise<RaidSchedule[]> {
+export async function getUpcomingRaids(minutesAhead: number | null = 30, windowMinutes: number = 5, forceFresh = false): Promise<RaidSchedule[]> {
   const now = getGuildTime();
-  const allSchedules = await getAllRaidSchedules();
+  const allSchedules = await getAllRaidSchedules(forceFresh);
 
   if (minutesAhead === null) {
     // Buscar la raid futura más cercana
@@ -255,14 +255,14 @@ function toEsClass(enOrEs?: string): string | undefined {
   return enOrEs;
 }
 
-export async function getRaidRosterForSchedule(schedule: RaidSchedule): Promise<{
+export async function getRaidRosterForSchedule(schedule: RaidSchedule, forceFresh = false): Promise<{
   leaderClass?: string;
   tank: Array<{ name: string; class?: string }>;
   healer: Array<{ name: string; class?: string }>;
   melee: Array<{ name: string; class?: string }>;
   ranged: Array<{ name: string; class?: string }>;
 }> {
-  const rosterData = await rosterService.getFormattedRoster();
+  const rosterData = await rosterService.getFormattedRoster(forceFresh);
   const leader = schedule.leader;
   const leaderNode: any = (rosterData as any)?.players?.[leader];
   const leaderClass = leaderNode?.class;
@@ -314,7 +314,7 @@ export async function getRaidRosterForSchedule(schedule: RaidSchedule): Promise<
   return result;
 }
 
-export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedule): Promise<{
+export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedule, forceFresh = false): Promise<{
   leaderClass?: string;
   tank: Array<{ name: string; class?: string }>;
   healer: Array<{ name: string; class?: string }>;
@@ -322,7 +322,7 @@ export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedul
   ranged: Array<{ name: string; class?: string }>;
   sanctioned: Array<{ name: string; class?: string }>;
 }> {
-  const rosterData = await rosterService.getFormattedRoster();
+  const rosterData = await rosterService.getFormattedRoster(forceFresh);
 
   const result = {
     tank: [] as Array<{ name: string; class?: string }>,

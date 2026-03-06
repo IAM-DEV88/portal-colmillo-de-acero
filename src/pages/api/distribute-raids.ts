@@ -57,7 +57,7 @@ export const GET: APIRoute = async ({ request }) => {
     try {
         console.log('--- Iniciando Distribución Automática de Raids ---');
 
-        const rosterResult = await rosterService.getFormattedRoster();
+        const rosterResult = await rosterService.getFormattedRoster(true); // Force fresh for distribution
         const rosterDataPlayers = rosterResult.players || {};
 
         const { data: registrations, error } = await supabase
