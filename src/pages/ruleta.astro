@@ -1,12 +1,13 @@
 ﻿---
 import Layout from '../components/layout/Layout.astro';
+const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 ---
 
 <Layout 
   title="Ruleta de la Fortuna" 
   description="¡Prueba tu suerte en la Ruleta de la Fortuna! Gana premios exclusivos, oro y objetos en el juego diariamente."
 >
-      <main class="relative z-10 flex flex-col items-center">
+      <main class="relative z-10 flex flex-col items-center" data-paypal-id={PAYPAL_CLIENT_ID}>
       
       <!-- Paytable Toggle (Mobile) / Visible (Desktop) -->
       <!-- Keeping Paytable at top or moving to bottom? User didn't specify, but implies main game UI first. -->
@@ -879,8 +880,9 @@ import Layout from '../components/layout/Layout.astro';
       
       // Load PayPal Script if needed
       if (!window.paypal) {
+          const clientId = document.querySelector('main')?.dataset.paypalId || 'sb';
           const script = document.createElement('script');
-          script.src = "https://www.paypal.com/sdk/js?client-id=sb&currency=USD"; // SANDBOX ID
+          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
           script.onload = () => renderPayPalButtons(option);
           document.body.appendChild(script);
       } else {
@@ -904,13 +906,28 @@ import Layout from '../components/layout/Layout.astro';
                     }]
                 });
             },
-            onApprove: (data, actions) => {
-                return actions.order.capture().then(function(details) {
-                    closeBuyModal();
-                    addCredits(option.turns); // Uses existing addCredits which adds turns and pool
-                    sendPaymentWebhook(details, option);
-                    alert(`¡Pago Exitoso! Se han añadido ${option.turns} turnos.`);
-                });
+            onApprove: async (data, actions) => {
+                const orderID = data.orderID;
+                try {
+                    const response = await fetch('/api/paypal/verify-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ orderID, option })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        closeBuyModal();
+                        addCredits(option.turns); 
+                        alert(`¡Pago Exitoso! Se han añadido ${option.turns} turnos.`);
+                    } else {
+                        throw new Error(result.error || 'Error al verificar el pago');
+                    }
+                } catch (err) {
+                    console.error('Error de verificación:', err);
+                    alert(`Error: ${err.message}`);
+                }
             },
             onError: (err) => {
                 console.error('PayPal Error:', err);
@@ -925,30 +942,8 @@ import Layout from '../components/layout/Layout.astro';
     }
     
     async function sendPaymentWebhook(details, option) {
-        const payload = {
-            embeds: [{
-                title: "💰 NUEVA COMPRA DE TURNOS",
-                color: 0x00ff00,
-                fields: [
-                    { name: "Usuario", value: (details.payer.name.given_name || '') + ' ' + (details.payer.name.surname || ''), inline: true },
-                    { name: "Paquete", value: option.label, inline: true },
-                    { name: "Monto", value: `$${option.price} USD`, inline: true },
-                    { name: "Estado", value: "✅ APROBADO (PayPal)", inline: false },
-                    { name: "ID Transacción", value: details.id, inline: false }
-                ],
-                timestamp: new Date().toISOString()
-            }]
-        };
-
-        try {
-            await fetch('/api/discord-webhook?type=admin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-        } catch (e) {
-            console.error("Error sending payment webhook", e);
-        }
+        // Esta función ya no se usa desde el cliente para compras de PayPal
+        // porque la validación ocurre en el servidor
     }
 
 
