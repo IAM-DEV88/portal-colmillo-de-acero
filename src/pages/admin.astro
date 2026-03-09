@@ -667,16 +667,12 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
                                           raid.schedules.flatMap(schedule => [
                                             ...(schedule.core_members || []).map(m => {
                                               const role = m.role?.toLowerCase() || '';
-                                              const className = m.class?.toLowerCase() || '';
-                                              const isRanged = className.includes('mage') || className.includes('warlock') || className.includes('hunter') || (className.includes('druid') && !role.includes('tank')) || (className.includes('priest') && !role.includes('heal')) || (className.includes('shaman') && !role.includes('heal'));
-                                              const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : (isRanged ? 'R' : 'M');
+                                              const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : '';
                                               return prefix + m.name;
                                             }),
                                             ...schedule.registrations.map(r => {
                                               const role = r.player_role?.toLowerCase() || '';
-                                              const className = r.player_class?.toLowerCase() || '';
-                                              const isRanged = className.includes('mage') || className.includes('warlock') || className.includes('hunter') || (className.includes('druid') && !role.includes('tank')) || (className.includes('priest') && !role.includes('heal')) || (className.includes('shaman') && !role.includes('heal'));
-                                              const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : (isRanged ? 'R' : 'M');
+                                              const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : '';
                                               return prefix + r.player_name;
                                             })
                                           ])
@@ -1628,9 +1624,7 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
         // Collect all names for the "Copy All" button
         const allPlayerNames = members.map(m => {
           const role = m.role?.toLowerCase() || '';
-          const className = m.class?.toLowerCase() || '';
-          const isRanged = className.includes('mage') || className.includes('warlock') || className.includes('hunter') || (className.includes('druid') && !role.includes('tank')) || (className.includes('priest') && !role.includes('heal')) || (className.includes('shaman') && !role.includes('heal'));
-          const prefix = role.includes('tank') ? 'T' : role.includes('heal') ? 'H' : (isRanged ? 'R' : 'M');
+          const prefix = role.includes('t') || role.includes('tank') ? 'T' : (role.includes('h') || role.includes('heal') ? 'H' : '');
           return prefix + m.name;
         });
 
