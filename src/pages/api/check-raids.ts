@@ -111,13 +111,13 @@ export const GET = async ({ url }: { url: URL }) => {
         if (dayVotes && dayVotes.length > 0) {
           const counts: Record<string, number> = {};
           dayVotes.forEach(dv => {
-            const key = `• \`${dv.time}\`\n**${dv.raid}** (${dv.diff?.charAt(0)}${dv.size})`;
+            const key = `• \`${dv.time}\` **${dv.raid}** (${dv.diff?.charAt(0)}${dv.size})`;
             counts[key] = (counts[key] || 0) + 1;
           });
           pollFields.push({
             name: `📅 ${day.charAt(0).toUpperCase() + day.slice(1)}`,
             value: Object.entries(counts).map(([text, count]) => `${text} x${count}`).join('\n'),
-            inline: true
+            inline: false
           });
         }
       });
@@ -215,10 +215,10 @@ export const GET = async ({ url }: { url: URL }) => {
           weeklyFields.push({
             name: `📅 ${day.charAt(0).toUpperCase() + day.slice(1)}`,
             value: daySlots.map(s => {
-              const gsText = s.minGS ? ` — \`${s.minGS} GS\`` : '';
-              return `• \`${s.time}\`\n[**${s.raidId}**](https://colmillo.netlify.app/raids?raid-id=${encodeURIComponent(s.raidId)}&day=${encodeURIComponent(s.day)})\n${gsText}\n(${s.count} registrados)\n`;
+              const gsText = s.minGS ? ` Min. \`${s.minGS} \`` : '';
+              return `• \`${s.time}\` [**${s.raidId}**](https://colmillo.netlify.app/raids?raid-id=${encodeURIComponent(s.raidId)}&day=${encodeURIComponent(s.day)})${gsText} (${s.count} registrados)${s.isOfficial ? ' [CORE]' : ''}`;
             }).join('\n'),
-            inline: true
+            inline: false
           });
         }
       }
@@ -245,17 +245,17 @@ export const GET = async ({ url }: { url: URL }) => {
           summaryFields.push({
             name: `${target.label} (${target.raw.charAt(0).toUpperCase() + target.raw.slice(1)})`,
             value: daySlots.map(s => {
-              const gsText = s.minGS ? ` — \`${s.minGS} GS\`` : '';
-              return `• \`${s.time}\` **${s.raidId}**${gsText}`;
+              const gsText = s.minGS ? ` Min. GS \`${s.minGS}\`` : '';
+              return `• \`${s.time}\` [**${s.raidId}**](https://colmillo.netlify.app/raids?raid-id=${encodeURIComponent(s.raidId)}&day=${encodeURIComponent(s.day)})${gsText} (${s.count} registrados)`;
             }).join('\n'),
-            inline: true
+            inline: false
           });
         }
       });
       if (summaryFields.length > 0) {
         dynamicMessages.push({
           title: "📅 Próximas Raids",
-          description: "Para asegurar el éxito en nuestras raids, es crucial cumplir con los siguientes requisitos mínimos.\n* **Gearscore**: Debes estar por encima del gearscore requerido para la banda.\n* **Equipamiento**: Asegúrate de que tu equipamiento esté devidamente engemado y encantado.\n* **Piezas PVP**: No se permite el uso de ninguna pieza de equipamiento PVP",
+          description: "Para asegurar el éxito en nuestras raids es crucial cumplir con los siguientes requisitos mínimos:\n* **Gearscore**: Debes estar por encima del gearscore requerido para la banda.\n* **Equipamiento**: Asegúrate de que tu equipamiento esté devidamente engemado y encantado.\n* **Piezas PVE**: No se permite el uso de ninguna pieza de equipamiento PVP",
           fields: summaryFields,
           url: "https://colmillo.netlify.app/raids",
           color: 0xff0000,
@@ -332,15 +332,14 @@ export const GET = async ({ url }: { url: URL }) => {
           color: 0xff0000,
           thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
           fields: [
-            { name: ":alarm_clock: Hora de Inicio", value: raid.start_time, inline: true },
-            { name: ":calendar: Día", value: raid.day_of_week.charAt(0).toUpperCase() + raid.day_of_week.slice(1), inline: true },
-            { name: ":guard: Líder", value: leaderInfo, inline: true },
-            { name: ":shield: Tanques", value: tanksList, inline: true },
-            { name: ":herb: Sanadores", value: healersList, inline: true },
-            { name: "\u200b", value: "\u200b", inline: true },
-            { name: ":crossed_swords: Cuerpo a Cuerpo", value: meleeList, inline: true },
-            { name: ":bow_and_arrow: A Distancia", value: rangedList, inline: true },
-            { name: ":no_entry: Sancionados", value: sanctionedList, inline: true }
+            { name: ":alarm_clock: Inicio", value: `\`${raid.start_time}\``, inline: true },
+            { name: ":calendar: Día", value: `\`${raid.day_of_week.charAt(0).toUpperCase() + raid.day_of_week.slice(1)}\``, inline: true },
+            { name: ":guard: Líder", value: `**${leaderInfo}**`, inline: true },
+            { name: ":shield: Tanques", value: tanksList, inline: false },
+            { name: ":herb: Sanadores", value: healersList, inline: false },
+            { name: ":crossed_swords: Cuerpo a Cuerpo", value: meleeList, inline: false },
+            { name: ":bow_and_arrow: A Distancia", value: rangedList, inline: false },
+            { name: ":no_entry: Sancionados", value: sanctionedList, inline: false }
           ],
           footer: {
             text: "Sistema de Notificaciones RaidDominion",
