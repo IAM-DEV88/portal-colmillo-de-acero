@@ -30,7 +30,7 @@ const GENERAL_MESSAGES = [
     color: 0x10b981 // Green
   },
   {
-    title: ":people_holding_hands: ¡Únete a Colmillo de Acero!",
+    title: "🤝 ¡Únete a Colmillo de Acero!",
     description: "¿Buscas una hermandad comprometida? Revisa nuestras normas y roster. ¡Te estamos esperando!",
     url: "https://colmillo.netlify.app/roster",
     color: 0x8b5cf6 // Violet
