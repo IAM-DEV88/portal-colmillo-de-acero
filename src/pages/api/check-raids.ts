@@ -155,7 +155,7 @@ export const GET = async ({ url }: { url: URL }) => {
 
       dynamicMessages.push({
         title: "🤝 **¡Únete a Colmillo de Acero!**",
-        description: "¿Buscas una hermandad comprometida?\n\n**Colmillo de Acero** recluta jugadores de todo nivel para complementar cores 5.6k+ de raideo diario.\n* Horarios de raid desde las 18:00 hora server en adelante\n* Explora mucho más en nuestro [portal web](https://colmillo.netlify.app/).\n* :game_die: ¿Quieres ganar una Gargantilla carmesí de la Reina de Sangre? ¡Juega en la [ruleta](https://colmillo.netlify.app/ruleta) y participa!\n\n👥 Estado del Roster",
+        description: "¿Buscas una hermandad comprometida?\n\n**Colmillo de Acero** recluta jugadores de todo nivel para complementar cores 5.6k+ de raideo diario.\n* WISP función y GS al Administrador/Oficial en linea para subir de rango y actualizar su nota.\n* Rangos superiores podran participar en [raideos](https://colmillo.netlify.app/raids), sorteos, [ruletas](https://colmillo.netlify.app/ruleta) y mostrar detalles de sus personajes en la web.\n* Horarios de raid desde las 18:00 hora server en adelante.\n* Unete a nuestra comunidad en [Whatsapp](https://chat.whatsapp.com/Ek9BcgjvzrCAcyRRvWL72g)\n* Explora mucho más en nuestro [portal web](https://colmillo.netlify.app/).\n\n👥 Estado del Roster",
         fields: rosterFields,
         url: "https://colmillo.netlify.app/roster",
         color: 0x8b5cf6,
@@ -332,14 +332,15 @@ export const GET = async ({ url }: { url: URL }) => {
           color: 0xff0000,
           thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
           fields: [
-            { name: ":alarm_clock: Inicio", value: `\`${raid.start_time}\``, inline: true },
+            { name: ":alarm_clock: Hora de Inicio", value: `\`${raid.start_time}\``, inline: true },
             { name: ":calendar: Día", value: `\`${raid.day_of_week.charAt(0).toUpperCase() + raid.day_of_week.slice(1)}\``, inline: true },
             { name: ":guard: Líder", value: `**${leaderInfo}**`, inline: true },
-            { name: ":shield: Tanques", value: tanksList, inline: false },
-            { name: ":herb: Sanadores", value: healersList, inline: false },
-            { name: ":crossed_swords: Cuerpo a Cuerpo", value: meleeList, inline: false },
-            { name: ":bow_and_arrow: A Distancia", value: rangedList, inline: false },
-            { name: ":no_entry: Sancionados", value: sanctionedList, inline: false }
+            { name: ":shield: Tanques", value: tanksList, inline: true },
+            { name: ":herb: Sanadores", value: healersList, inline: true },
+            { name: "\u200b", value: "\u200b", inline: true },
+            { name: ":crossed_swords: Cuerpo a Cuerpo", value: meleeList, inline: true },
+            { name: ":bow_and_arrow: A Distancia", value: rangedList, inline: true },
+            { name: ":no_entry: Sancionados", value: sanctionedList, inline: true }
           ],
           footer: {
             text: "Sistema de Notificaciones RaidDominion",
