@@ -9,40 +9,7 @@ import {
 import { rosterService } from '../../services/rosterService';
 import { supabase } from '../../lib/supabase';
 
-// Mensajes aleatorios generales
-const GENERAL_MESSAGES = [
-  {
-    title: ":shield: Addon RaidDominion",
-    description: "Descrube nuestro addon para dirigir raids y cómo usarlo.",
-    url: "https://colmillo.netlify.app/",
-    color: 0xf59e0b // Amber
-  },
-  {
-    title: ":calendar: Calendario de Raids",
-    description: "No te pierdas ninguna raid. Consulta nuestros horarios y apúntate en el sistema.",
-    url: "https://colmillo.netlify.app/raids",
-    color: 0x3b82f6 // Blue
-  },
-  {
-    title: ":scroll: Guias de Raideo",
-    description: "Encuentra información detallada sobre cómo jugar y participar en raids.",
-    url: "https://colmillo.netlify.app/guides",
-    color: 0x10b981 // Green
-  },
-  {
-    title: "🤝 ¡Únete a Colmillo de Acero!",
-    description: "¿Buscas una hermandad comprometida? Revisa nuestras normas y roster. ¡Te estamos esperando!",
-    url: "https://colmillo.netlify.app/roster",
-    color: 0x8b5cf6 // Violet
-  },
-  {
-    title: ":game_die: ¡Ruleta Colmillo de Acero!",
-    description: "¿Quieres ganar una Gargantilla carmesí de la Reina de Sangre? ¡Juega en la ruleta y participa en el sorteo!",
-    url: "https://colmillo.netlify.app/ruleta",
-    color: 0xf59e0b // Amber
-  }
-];
-
+// Días de la semana en orden para el reporte semanal
 const DAYS_IN_ORDER = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
 function normalizeDay(d: string): string {
@@ -120,7 +87,7 @@ export const GET = async ({ url }: { url: URL }) => {
       const tomorrowDayRaw = tomorrowDate.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
       const tomorrowDayNormalized = normalizeDay(tomorrowDayRaw);
 
-      const dynamicMessages: any[] = [...GENERAL_MESSAGES];
+      const dynamicMessages: any[] = [];
 
       // 1. Encuestas
       let pollResults: any[] = [];
@@ -144,7 +111,7 @@ export const GET = async ({ url }: { url: URL }) => {
         if (dayVotes && dayVotes.length > 0) {
           const counts: Record<string, number> = {};
           dayVotes.forEach(dv => {
-            const key = `• \`${dv.time}\` **${dv.raid}** (${dv.diff?.charAt(0)}${dv.size})`;
+            const key = `• \`${dv.time}\`\n**${dv.raid}** (${dv.diff?.charAt(0)}${dv.size})`;
             counts[key] = (counts[key] || 0) + 1;
           });
           pollFields.push({
@@ -157,8 +124,8 @@ export const GET = async ({ url }: { url: URL }) => {
 
       if (pollFields.length > 0 || messageType === 'POLLS') {
         dynamicMessages.push({
-          title: "🗳️ Voto por horario",
-          description: "Preferencia de bandas y horarios:",
+          title: "🗳️ ¡Ayuda a la hermandad!",
+          description: "Contribuye a planificar y ejecutar nuestros raideos de manera más eficiente.\n* Deja tu voto por la banda y horario que más prefieras [*aquí*](https://colmillo.netlify.app/voto-horario)\n* Además, encuentra información detallada sobre las mecánicas de raids en nuestra [*sección de guías*](https://colmillo.netlify.app/guides).\n\n📊 **Resultados de la encuesta**:",
           fields: pollFields.length > 0 ? pollFields : [{ name: "Sin votos", value: "Aún no hay votos.", inline: false }],
           url: "https://colmillo.netlify.app/voto-horario",
           color: 0x10b981,
@@ -187,7 +154,8 @@ export const GET = async ({ url }: { url: URL }) => {
       });
 
       dynamicMessages.push({
-        title: "👥 Estado del Roster",
+        title: "🤝 **¡Únete a Colmillo de Acero!**",
+        description: "¿Buscas una hermandad comprometida?\n\n**Colmillo de Acero** recluta jugadores de todo nivel para complementar cores 5.6k+ de raideo diario.\n* Horarios de raid desde las 18:00 hora server en adelante\n* Explora mucho más en nuestro [portal web](https://colmillo.netlify.app/).\n* :game_die: ¿Quieres ganar una Gargantilla carmesí de la Reina de Sangre? ¡Juega en la [ruleta](https://colmillo.netlify.app/ruleta) y participa!\n\n👥 Estado del Roster",
         fields: rosterFields,
         url: "https://colmillo.netlify.app/roster",
         color: 0x8b5cf6,
@@ -195,7 +163,7 @@ export const GET = async ({ url }: { url: URL }) => {
       });
 
       // 3. Weekly / Summary logic
-      const slotsMap = new Map<string, { raidId: string; day: string; time: string; count: number; isOfficial?: boolean }>();
+      const slotsMap = new Map<string, { raidId: string; day: string; time: string; count: number; isOfficial?: boolean; minGS?: number }>();
 
       // Fetch Cores
       Object.values(players).forEach((member: any) => {
@@ -208,9 +176,15 @@ export const GET = async ({ url }: { url: URL }) => {
             if (!dayMatch) return;
             const day = getShiftedDay(dayMatch[1], time);
             const raidId = core.raid.toUpperCase().trim();
+            const minGS = core.gs || 0;
             const key = `${raidId}-${day}-${time}`;
-            if (!slotsMap.has(key)) slotsMap.set(key, { raidId, day, time, count: 0, isOfficial: true });
-            else slotsMap.get(key)!.isOfficial = true;
+            
+            if (!slotsMap.has(key)) {
+              slotsMap.set(key, { raidId, day, time, count: 0, isOfficial: true, minGS });
+            } else {
+              slotsMap.get(key)!.isOfficial = true;
+              if (minGS > 0) slotsMap.get(key)!.minGS = minGS;
+            }
           });
         }
       });
@@ -227,6 +201,9 @@ export const GET = async ({ url }: { url: URL }) => {
       });
 
       // Build WEEKLY
+      const currentMonth = nowServer.toLocaleDateString('es-ES', { month: 'long', timeZone: GUILD_TIMEZONE });
+      const seasonTitle = `Temporada ${currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)} ${nowServer.getFullYear()}`;
+
       const weeklyFields: any[] = [];
       for (const day of DAYS_IN_ORDER) {
         const daySlots = Array.from(slotsMap.values()).filter(s => s.day === day).sort((a, b) => {
@@ -237,15 +214,19 @@ export const GET = async ({ url }: { url: URL }) => {
         if (daySlots.length > 0) {
           weeklyFields.push({
             name: `📅 ${day.charAt(0).toUpperCase() + day.slice(1)}`,
-            value: daySlots.map(s => `• \`${s.time}\` **${s.raidId}** (${s.count} registrados)${s.isOfficial ? ' [CORE]' : ''}`).join('\n'),
+            value: daySlots.map(s => {
+              const gsText = s.minGS ? ` — \`${s.minGS} GS\`` : '';
+              return `• \`${s.time}\`\n[**${s.raidId}**](https://colmillo.netlify.app/raids?raid-id=${encodeURIComponent(s.raidId)}&day=${encodeURIComponent(s.day)})\n${gsText}\n(${s.count} registrados)\n`;
+            }).join('\n'),
             inline: true
           });
         }
       }
       if (weeklyFields.length > 0) {
         dynamicMessages.push({
-          title: "⚔️ Actividad Semanal",
-          fields: [...weeklyFields, { name: 'ℹ️ Registro', value: '📌 https://colmillo.netlify.app/raids', inline: false }],
+          title: `⚔️ Horario de Raideo Semanal - ${seasonTitle}`,
+          description: "Oficiales y rangos superiores gestionan los **horarios de raideo** de **Colmillo de Acero**\n* Es **importante consultar horarios** de raideo directamente en [**nuestra web**](https://colmillo.netlify.app/raids/)\n* Llevamos registros para **tener en cuenta a los jugadores mas comprometidos** y sancionar a quienes no aportan nada.\n* Garantizamos la invitación a **quienes se hayan registrado en nuestra web**, incluso si no son miembros de la hermandad.\n* El **Rango Oficial** es otorgado a **quienes arman y dirigen bandas** y concede **acceso** inmediato a **opciones avanzadas** del addon **RaidDominion** para dirigir raids.",
+          fields: weeklyFields,
           url: "https://colmillo.netlify.app/raids",
           color: 0xef4444,
           type: 'WEEKLY'
@@ -263,7 +244,10 @@ export const GET = async ({ url }: { url: URL }) => {
         if (daySlots.length > 0) {
           summaryFields.push({
             name: `${target.label} (${target.raw.charAt(0).toUpperCase() + target.raw.slice(1)})`,
-            value: daySlots.map(s => `• \`${s.time}\` **${s.raidId}**`).join('\n'),
+            value: daySlots.map(s => {
+              const gsText = s.minGS ? ` — \`${s.minGS} GS\`` : '';
+              return `• \`${s.time}\` **${s.raidId}**${gsText}`;
+            }).join('\n'),
             inline: true
           });
         }
@@ -271,6 +255,7 @@ export const GET = async ({ url }: { url: URL }) => {
       if (summaryFields.length > 0) {
         dynamicMessages.push({
           title: "📅 Próximas Raids",
+          description: "Para asegurar el éxito en nuestras raids, es crucial cumplir con los siguientes requisitos mínimos.\n* **Gearscore**: Debes estar por encima del gearscore requerido para la banda.\n* **Equipamiento**: Asegúrate de que tu equipamiento esté devidamente engemado y encantado.\n* **Piezas PVP**: No se permite el uso de ninguna pieza de equipamiento PVP",
           fields: summaryFields,
           url: "https://colmillo.netlify.app/raids",
           color: 0xff0000,
