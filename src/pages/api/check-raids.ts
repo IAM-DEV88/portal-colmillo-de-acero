@@ -79,10 +79,18 @@ export const GET = async ({ url }: { url: URL }) => {
 
     if (isGeneralMessage) {
       const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
-      const currentDay = nowServer.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
+      
+      // Ajuste de sesión: Si son menos de las 4 AM, consideramos que aún es el "día de raideo" anterior
+      // para que las raids de las 00:00 se muestren como "Mañana" durante la noche anterior.
+      const sessionDate = new Date(nowServer);
+      if (nowServer.getHours() < 4) {
+        sessionDate.setDate(sessionDate.getDate() - 1);
+      }
+
+      const currentDay = sessionDate.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
       const currentDayNormalized = normalizeDay(currentDay);
 
-      const tomorrowDate = new Date(nowServer);
+      const tomorrowDate = new Date(sessionDate);
       tomorrowDate.setDate(tomorrowDate.getDate() + 1);
       const tomorrowDayRaw = tomorrowDate.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
       const tomorrowDayNormalized = normalizeDay(tomorrowDayRaw);
