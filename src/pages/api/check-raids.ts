@@ -263,8 +263,25 @@ export const GET = async ({ url }: { url: URL }) => {
         });
       }
 
+      // 4. Evitar mensajes repetidos (Lógica de Persistencia en Supabase)
+      let lastMsgType = '';
+      try {
+          const { data } = await supabase.from('config').select('value').eq('key', 'last_discord_msg_type').single();
+          lastMsgType = data?.value || '';
+      } catch (e) {
+          console.error('Error fetching last message type:', e);
+      }
+
+      // Filtrar mensajes para no repetir el último enviado (si hay más de uno disponible)
+      const availableMessages = dynamicMessages.length > 1 
+        ? dynamicMessages.filter(m => m.type !== lastMsgType)
+        : dynamicMessages;
+
       // Choose Message
-      let msg = isTest && testType ? dynamicMessages.find(m => m.type === messageType) : dynamicMessages[Math.floor(Math.random() * dynamicMessages.length)];
+      let msg = isTest && testType 
+        ? dynamicMessages.find(m => m.type === messageType) 
+        : availableMessages[Math.floor(Math.random() * availableMessages.length)];
+      
       if (!msg) msg = dynamicMessages[0];
 
       await fetch(webhookUrl, {
@@ -284,6 +301,12 @@ export const GET = async ({ url }: { url: URL }) => {
           }]
         })
       });
+
+      // Guardar el tipo de mensaje enviado para la próxima ejecución
+      if (!isTest && msg.type) {
+          await supabase.from('config').upsert({ key: 'last_discord_msg_type', value: msg.type }, { onConflict: 'key' });
+      }
+
       return new Response(JSON.stringify({ success: true, type: msg.type }), { status: 200 });
     }
 
