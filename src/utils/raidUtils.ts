@@ -152,20 +152,29 @@ export async function getUpcomingRaids(minutesAhead: number | null = 30, windowM
   const windowEnd = targetTimeMinutes + windowMinutes;
 
   return allSchedules.filter(schedule => {
-    // Para raids a las 00:00, tratarlas como el final del día (técnicamente el inicio del día siguiente)
-    // Pero si el calendario dice "Jueves 00:00", el aviso debe dispararse cuando el targetTime es Viernes 00:00.
     const [h, m] = schedule.start_time.split(':').map(Number);
     const scheduleTimeMinutes = h * 60 + m;
 
-    // No aplicamos desplazamiento para 00:00, respetamos el día programado
+    // Para raids a las 00:00, tratarlas como el final del día (24:00)
+    // Esto significa que si el calendario dice "Lunes 00:00", 
+    // en realidad se refiere a la medianoche entre Lunes y Martes.
+    // Por lo tanto, debe dispararse cuando el targetTime es Martes 00:00.
+    
     let effectiveDay = schedule.day_of_week;
+    let effectiveTimeMinutes = scheduleTimeMinutes;
+
+    if (h === 0 && m === 0) {
+      // Es una raid de medianoche. Desplazamos el día objetivo al siguiente.
+      const dayIndex = days.indexOf(schedule.day_of_week);
+      effectiveDay = days[(dayIndex + 1) % 7];
+      effectiveTimeMinutes = 0; // Sigue siendo las 00:00 pero del día siguiente
+    }
 
     // 1. Coincidir día efectivo
     if (effectiveDay !== targetDay) return false;
 
     // 2. Coincidir hora dentro de la ventana
-    // Si h=0, ya sabemos que coincide con el inicio del día efectivo (targetDay)
-    return scheduleTimeMinutes >= windowStart && scheduleTimeMinutes <= windowEnd;
+    return effectiveTimeMinutes >= windowStart && effectiveTimeMinutes <= windowEnd;
   });
 }
 

@@ -387,7 +387,7 @@ export const GET = async ({ url }: { url: URL }) => {
         body: JSON.stringify({
           username: "Portal Web Colmillo de Acero",
           avatar_url: "https://colmillo.netlify.app/images/logo.png",
-          content: isTest ? ":loudspeaker: **【 TEST AVISO RAID 】**" : ":loudspeaker: **【 AVISO DE RAID PRÓXIMA 】** <@&1336049966465454153>",
+          content: isTest ? ":loudspeaker: **【 TEST AVISO RAID 】**" : ":loudspeaker: **【 AVISO DE RAID PRÓXIMA 】** @everyone",
           embeds
         })
       });
