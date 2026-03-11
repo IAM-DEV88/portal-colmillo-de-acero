@@ -57,6 +57,10 @@
   );
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 /* Base Styles */
 html,
 body {

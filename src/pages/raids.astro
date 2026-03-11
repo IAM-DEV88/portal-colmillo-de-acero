@@ -258,33 +258,13 @@ const parsedMembers = Object.entries(rosterData.players).map(([playerName, membe
 });
 
 // Calculate eligible members for each raid
-// 1. All eligible members (Min GS only) - For schedule specific view
 const raidEligibleMembers = {};
-// 2. Range filtered members (Min GS <= GS < Next Raid Min GS) - For general raid view
-const raidEligibleMembersRange = {};
 
 allAvailableRaids.forEach((raid, index) => {
   // All eligible (Min GS) - Check both main and dual GS
   raidEligibleMembers[raid.id] = parsedMembers.filter(
     (m) =>
       (m.gearScore >= raid.minGearScore || (m.dualGearScore && m.dualGearScore >= raid.minGearScore)) &&
-      !m.guild_leave &&
-      m.is_guild_member
-  );
-
-  // Range filtered
-  const minGs = raid.minGearScore;
-  // Find the next raid that has a strictly higher GS requirement
-  const nextTierRaid = allAvailableRaids
-    .slice()
-    .sort((a, b) => a.minGearScore - b.minGearScore)
-    .find((r) => r.minGearScore > minGs);
-  const maxGs = nextTierRaid ? nextTierRaid.minGearScore : Infinity;
-
-  raidEligibleMembersRange[raid.id] = parsedMembers.filter(
-    (m) =>
-      ((m.gearScore >= minGs && m.gearScore < maxGs) ||
-      (m.dualGearScore && m.dualGearScore >= minGs && m.dualGearScore < maxGs)) &&
       !m.guild_leave &&
       m.is_guild_member
   );
@@ -744,7 +724,6 @@ try {
           !m.guild_leave &&
           m.is_guild_member
       );
-      raidEligibleMembersRange[raid.id] = raidEligibleMembers[raid.id];
     }
 
     // Create a consistent key with normalized values
@@ -1107,22 +1086,21 @@ try {
                                 <div class="bottom-0 left-0 right-0 p-4 pb-0">
                                   <div class="flex justify-between items-end">
                                     <div>
-                                      <h3 class="text-xl font-bold text-white italic">{raid.name}</h3>
-                                      {raid.rules && (
-                                          <button
-                                            data-raid-name={raid.name}
-                                            data-raid-rules={raid.rules}
-                                            data-raid-gs={raid.minGearScore}
-                                            onclick="window.openRaidRulesModal(this)"
-                                            class="mt-2 px-3 py-1 bg-amber-700 hover:bg-amber-600 text-white text-xs font-medium rounded-full transition-colors duration-200 flex items-center gap-1"
-                                          >
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            Ver Reglas
-                                          </button>
-                                        )}
-                                      <p class="text-xs text-gray-300 flex items-center">
+                                      <div class="flex items-center gap-3">
+                                        <h3 class="text-xl font-bold text-white italic">{raid.name}</h3>
+                                        <a
+                                          href={`/rules#${raid.id.toUpperCase()}`}
+                                          class="text-[10px] md:text-xs bg-red-600/30 hover:bg-red-600/40 text-red-300 px-2.5 py-1 rounded flex items-center transition-colors border border-red-500/30 font-bold uppercase tracking-wider"
+                                          title="Ver reglas de esta banda"
+                                        >
+                                          <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                          </svg>
+                                          Reglas
+                                        </a>
+                                      </div>
+                                      
+                                      <p class="text-xs text-gray-300 flex items-center mt-1">
                                         <svg
                                           class="w-3 h-3 mr-1 text-amber-400"
                                           fill="none"
@@ -1533,33 +1511,6 @@ try {
                               </div>
 
                               {/* Action button */}
-                              {/* Eligible Roster Members Button */}
-                              <div class="mx-2 mb-2">
-                                  <button
-                                    onclick={`openRosterModal('${raid.id}')`}
-                                    class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 rounded-md px-3 py-2 text-sm font-medium transition-colors flex items-center justify-between group"
-                                  >
-                                    <div class="flex items-center">
-                                      <svg
-                                        class="w-4 h-4 mr-2"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2"
-                                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                                        />
-                                      </svg>
-                                      <span>Personajes de la hermandad en etapa {raid.name}</span>
-                                    </div>
-                                    <span class="bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded text-xs group-hover:bg-indigo-500/30 border border-indigo-500/20">
-                                      {raidEligibleMembersRange[raid.id]?.length || 0}
-                                    </span>
-                                  </button>
-                                </div>
                             </div>
                           </div>
                         </div>
@@ -1860,75 +1811,40 @@ try {
                 <div class="p-2 space-y-2 flex-grow min-h-[100px]">
                   {daySchedules.length > 0 ? (
                     daySchedules.map((schedule) => {
-                      // Get raid leaders from roster only
-                      const raidLeadersFromRoster = schedule.players.filter(p => 
-                        p.raid_role === 'lider' && p.is_guild_member
-                      );
+                      const leaders = schedule.players
+                        .filter(p => p.raid_role === 'lider' && p.is_guild_member)
+                        .map(l => l.name);
+                      const leadersText = leaders.length > 0 ? ` (Líder: ${leaders.join(', ')})` : '';
                       
                       return (
-                      <div class="group relative bg-gray-900/60 hover:bg-gray-800 p-3 rounded border-l-2 border-amber-500 transition-all duration-200 cursor-default shadow-sm hover:shadow-md">
-                        
-                        <div class="mb-2">
-                          <button 
-                            onclick={`window.navigateToRaid('${schedule.raid_id}', '${normalizeDay(schedule.day_of_week)}')`}
-                            class="text-left text-sm text-white font-semibold leading-tight whitespace-normal break-words hover:text-amber-400 transition-colors focus:outline-none focus:text-amber-400 w-full"
-                          >
-                            {schedule.raid_name}
-                          </button>
+                      <div 
+                        class="group relative bg-gray-900/60 hover:bg-gray-800 p-3 pt-5 pb-3 rounded border-l-2 border-amber-500 transition-all duration-200 cursor-default shadow-sm hover:shadow-md"
+                      >
+                        {/* Floating Time Badge (Top Left) */}
+                        <div class="absolute -top-2 left-2 z-10">
+                          <span class="bg-amber-800 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-lg border border-amber-400 uppercase tracking-tighter ring-1 ring-amber-600/20">
+                            {schedule.start_time}
+                          </span>
                         </div>
-                        
-                        {raidLeadersFromRoster.length > 0 && (
-                          <div class="mt-1 flex flex-wrap items-center gap-2">
-                            <span class="text-[10px] text-gray-400">Líder{raidLeadersFromRoster.length > 1 ? 'es' : ''}:</span>
-                            {raidLeadersFromRoster.map((leader, index) => (
-                              <button
-                                key={index}
-                                onclick={`openRaidLeadersModal([{name: '${leader.name}', is_leader: true, is_guild_member: true, class: '${leader.class}', role: '${leader.role}'}], '${schedule.raid_name}', '${schedule.start_time}')`}
-                                class="flex items-center text-[10px] text-amber-400 hover:text-amber-300 transition-colors bg-amber-900/20 px-2 py-0.5 rounded-full hover:bg-amber-800/30"
-                              >
-                                <svg
-                                  class="w-2.5 h-2.5 mr-1"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                                  />
-                                </svg>
-                                {leader.name}
-                              </button>
-                            ))}
+
+                        {/* Floating GearScore Badge (Top Right) */}
+                        <div class="absolute -top-2 right-2 z-10">
+                          <span class="bg-red-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow-lg border border-red-500 uppercase tracking-tighter ring-1 ring-red-400/20">
+                            {allAvailableRaids.find((r) => r.id === schedule.raid_id)?.minGearScore} GS
+                          </span>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-2 overflow-hidden">
+                          <div class="marquee-container flex-grow">
+                            <button 
+                              onclick={`window.navigateToRaid('${schedule.raid_id}', '${normalizeDay(schedule.day_of_week)}')`}
+                              class="marquee-text text-left text-xs text-white font-bold hover:text-amber-400 transition-colors focus:outline-none w-full"
+                              title={`${schedule.raid_name}${leadersText}`}
+                              onmouseenter="this.scrollWidth > this.clientWidth ? this.classList.add('is-overflowing') : null"
+                            >
+                              {schedule.raid_name}
+                            </button>
                           </div>
-                        )}
-                        
-                        <div class="mb-2 pb-2 border-b border-gray-700/50 flex justify-between items-center text-[10px]">
-                          <span class="text-gray-500">
-                            {(() => {
-                              const validPlayersCount = schedule.players.filter(p => 
-                                (['aceptado', 'accepted', 'confirmed'].includes(p.status) || 
-                                 ['aceptado', 'accepted', 'confirmed'].includes(p.raid_status) || 
-                                 ['aceptado', 'accepted', 'confirmed'].includes(p.registration_status) || 
-                                 schedule.is_official_core) && 
-                                (p.is_guild_member || p.from_supabase)
-                              ).length;
-                              return `${validPlayersCount} jugador${validPlayersCount !== 1 ? 'es' : ''}`;
-                            })()}
-                          </span>
-                        </div>
-                        <div class="flex flex-col justify-between items-center">
-                          <span class="text-xs font-bold text-amber-400 flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            {schedule.start_time} hora server
-                          </span>
-                          <span class="text-xs text-red-400 font-bold whitespace-nowrap bg-red-900/20 px-2 py-0.5 rounded-full">
-                            {allAvailableRaids.find((r) => r.id === schedule.raid_id)?.minGearScore} GS Min.
-                          </span>
                         </div>
                       </div>
                     );
@@ -3430,11 +3346,10 @@ try {
 </script>
 
 <script
-  define:vars={{ raidEligibleMembers, raidEligibleMembersRange, raids: JSON.stringify(allAvailableRaids) }}
+  define:vars={{ raidEligibleMembers, raids: JSON.stringify(allAvailableRaids) }}
 >
   // Pass server-side data to client
   window.raidEligibleMembers = raidEligibleMembers;
-  window.raidEligibleMembersRange = raidEligibleMembersRange;
   const wotlkRaids = JSON.parse(raids);
   window.wotlkRaids = wotlkRaids;
 
@@ -3451,11 +3366,8 @@ try {
       raidName = raid ? raid.name : `Raid ${raidId}`;
     }
 
-    // Determine which list to use based on context
-    // If day/time provided (Schedule context) -> Use ALL eligible members (Min GS only)
-    // If NO day/time (General context) -> Use RANGE filtered members (Min GS <= GS < Next Raid Min GS)
-    const membersList =
-      day && time ? window.raidEligibleMembers[raidId] : window.raidEligibleMembersRange[raidId];
+  // Determine which list to use based on context
+    const membersList = window.raidEligibleMembers[raidId];
 
     if (!modal || !content || !membersList) return;
 
@@ -3992,6 +3904,23 @@ try {
 
   .pagination-dot:not(.active):hover {
     background: #6b7280;
+  }
+
+  /* Animación de marquesina para títulos largos */
+  .marquee-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .marquee-text {
+    display: inline-block;
+    white-space: nowrap;
+    transition: transform 2s linear;
+  }
+
+  .group:hover .marquee-text.is-overflowing {
+    transform: translateX(calc(-100% + 100% - 1rem));
   }
 
   @media (min-width: 768px) {
