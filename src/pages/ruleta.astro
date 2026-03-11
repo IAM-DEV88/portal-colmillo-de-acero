@@ -573,7 +573,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 
       if (type === 'pool') {
         amount = goldPool; 
-        claimText = `RECLAMO DE POZO: ${amount.toLocaleString()} ORO`;
+        claimText = `* ${amount.toLocaleString()} ORO`;
         subText = "¡La suerte te sonríe!";
         
         // Reset Pool
@@ -681,7 +681,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
         {
             const payload = {
                 username: "Portal Web Colmillo de Acero",
-                content: `🔥 **¡EL POZO HA SIDO RECLAMADO!**\nUn jugador ha obtenido el siguiente premio:\nTipo: [${type.toUpperCase()}](https://colmillo.netlify.app/ruleta/)\n${claimText}\n🏆 ¡Felicidades al ganador!\n\n📩 Para reclamar el premio:
+                content: `🔥 **¡EL POZO HA SIDO RECLAMADO!**\nUn jugador ha obtenido el siguiente premio:\n${claimText}\n🏆 ¡Felicidades al ganador!\n\n📩 Para reclamar el premio:
 Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/Ek9BcgjvzrCAcyRRvWL72g).`
             };
 
