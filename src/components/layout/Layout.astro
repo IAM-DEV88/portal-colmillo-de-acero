@@ -109,7 +109,14 @@ const socialImageURL = new URL(image, Astro.url);
         outline: 2px solid var(--color-accent);
         outline-offset: 2px;
       }
-    </style>
+.mobileShow { display: none; }
+.mobileHide { display: block; }
+
+@media (max-width: 768px) {
+  .mobileShow { display: block; }
+  .mobileHide { display: none; }
+}
+</style>
   </head>
   <body class="overflow-x-hidden w-full relative min-h-screen">
     <!-- Background Image with fixed positioning -->
@@ -119,7 +126,63 @@ const socialImageURL = new URL(image, Astro.url);
     <!-- Content wrapper with hardware acceleration -->
     <div class="relative z-10 min-h-screen">
       <Navigation />
-      <main class="min-h-screen relative z-10 mt-28 pb-4 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Banner de Anuncios Responsivo con Aislamiento de Iframe */}
+      <center class="mt-28 mb-4 px-4 overflow-hidden"> 
+        <div class="mobileShow">
+          <iframe 
+            srcdoc={`
+              <html>
+                <body style="margin:0; padding:0; display:flex; justify-content:center;">
+                  <script type="text/javascript">
+                    atOptions = {
+                      'key' : 'bc3afce27a408298cd40496786edc9ca',
+                      'format' : 'iframe',
+                      'height' : 50,
+                      'width' : 320,
+                      'params' : {}
+                    };
+                  </script>
+                  <script type="text/javascript" src="https://www.highperformanceformat.com/bc3afce27a408298cd40496786edc9ca/invoke.js"></script>
+                </body>
+              </html>
+            `}
+            width="320"
+            height="50"
+            frameborder="0"
+            scrolling="no"
+            style="border:none; overflow:hidden;"
+          ></iframe>
+        </div>
+
+        <div class="mobileHide">
+          <iframe 
+            srcdoc={`
+              <html>
+                <body style="margin:0; padding:0; display:flex; justify-content:center;">
+                  <script type="text/javascript">
+                    atOptions = {
+                      'key' : '93c2b6087ec5ee18108cbc64fb95d610',
+                      'format' : 'iframe',
+                      'height' : 90,
+                      'width' : 728,
+                      'params' : {}
+                    };
+                  </script>
+                  <script type="text/javascript" src="https://www.highperformanceformat.com/93c2b6087ec5ee18108cbc64fb95d610/invoke.js"></script>
+                </body>
+              </html>
+            `}
+            width="728"
+            height="90"
+            frameborder="0"
+            scrolling="no"
+            style="border:none; overflow:hidden;"
+          ></iframe>
+        </div>
+      </center>
+
+      <main class="min-h-screen relative z-10 pb-4 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <slot />
       </main>
       
