@@ -12,14 +12,15 @@ export interface RaidRule {
 
 export const GENERAL_RULES = [
   "PRIORIDAD DE LOTEO: MAIN > DUAL.",
-  "Un ítem y una marca por main (excepto tanques), sin limite por dual.",
-  "Arma y sostener cuentan como ítem (Solo exentas armas de LK).",
   "Armas 2.6 pueden ser loteadas por tanques.",
   "Todos los TOP son cerrados.",
   "Si en algún top no necesitan el ítem o no cumplen la regla para lotear, pasará al siguiente en el top.",
-  "Reservados: Sangres, Fragmentos, Items no ligados y Saros no se lotean.",
+  "Se rollea 20 min antes del ligado. Al dar Raid Off en orden de obtención.",
+  "Puntualidad, consumibles, encantamientos y gemas al día.",
   "Mala mecánica -10 en dados.",
-  "Sin frascos durante heroica -20 en dados.",
+  "AFK/OFF/PVP o no respetar pull/mecánicas = Sin botín/Expulsión.",
+  "DPS/Healer/Tank con bajo rendimiento = Sin botín/Expulsión.",
+  "No Discord/Desconexión = Sin botín/Expulsión.",
 ];
 
 export const RAID_RULES: RaidRule[] = [
@@ -38,6 +39,9 @@ export const RAID_RULES: RaidRule[] = [
     alias: ["ICC25N POR LK"],
     title: "ICC 25 N",
     specificRules: [
+      "Un ítem y una marca por main (excepto tanques), sin limite por dual.",
+  "Arma y sostener cuentan como ítem (Solo exentas armas de LK).",
+  "Reservados: Sangres, Fragmentos, Items no ligados y Saros no se lotean.",
     ],
     lootRules: [
         { item: "MARCAS", requirement: "Debe linkear 1 T10 engemado/encantado." },
@@ -88,6 +92,10 @@ export const RAID_RULES: RaidRule[] = [
     raidId: "ICC25H",
     title: "ICC 25 H",
     specificRules: [
+  "Sin frascos -20 en dados.",
+      "Un ítem y una marca por main (excepto tanques), sin limite por dual.",
+  "Arma y sostener cuentan como ítem (Solo exentas armas de LK).",
+  "Reservados: Sangres, Fragmentos, Items no ligados y Saros no se lotean.",
     ],
     lootRules: [
         { item: "ABACO", requirement: "Todos los Healers." },
@@ -108,6 +116,104 @@ export const RAID_RULES: RaidRule[] = [
     alias: ["ICC 10N POR LK"],
     title: "ICC 10 N",
     specificRules: [
+    ]
+  },
+  {
+    raidId: "GUILD",
+    title: "Hermandad",
+    specificRules: [],
+  }
+];
+
+export const BOE_PRICES = [
+  { item: "Gargantilla carmesí de la Reina de Sangre", price: "15000g" },
+  { item: "Escarpines de Muerte inminente", price: "5000g" },
+  { item: "Exterminadora de pesadillas", price: "4000g" },
+  { item: "Brazales frágiles de la Dama", price: "3600g" },
+  { item: "Ojo gélido de Tuétano", price: "3600g" },
+  { item: "Sandalias de Consagración", price: "3100g" },
+  { item: "Hombreras de placas de behemoth enfurecido", price: "3000g" },
+  { item: "Saco de maravillas de Ikfirus", price: "2100g" },
+  { item: "Collar de la suerte de Woodin", price: "2100g" },
+  { item: "Yelmo de acero de titanes templado", price: "1800g" },
+  { item: "Caparazón de reyes olvidados", price: "1200g" },
+  { item: "Anillo de tendones podridos", price: "1100g" },
+  { item: "Bolsa glacial", price: "800g" },
+  { item: "Armadura de pierna de escama de hielo", price: "800g" },
+  { item: "Hombreras de cadáver tieso", price: "800g" },
+  { item: "Campana de Je'Tze", price: "700g" },
+  { item: "Guardapolvo ensangrentado del profesor", price: "600g" },
+  { item: "Hilo de hechizo luminoso", price: "500g" },
+  { item: "Sortija de hueso de presagista", price: "400g" },
+  { item: "Brazales del guardián de la cripta", price: "300g" },
+  { item: "Cinturón de nova de sangre", price: "290g" },
+  { item: "Rifle de balas de plata de Rowan", price: "190g" },
+  { item: "Bufas de solidaridad de Wapach", price: "160g" },
+  { item: "Aguijón supernumerario de Namlak", price: "130g" },
+  { item: "Leotardos de talismanes dudosos", price: "130g" },
+  { item: "Sello de Edward el Extraño", price: "90g" },
+  { item: "Bolsa de tejido de Escarcha", price: "70g" },
+  { item: "Cinturón del noble solitario", price: "70g" },
+];
+
+export const FARM_PRICES = [
+  { item: "Pelaje ártico", price: "5800g", unit: "Stack" },
+  { item: "Tejido de hechizos", price: "1800g", unit: "Stack" },
+  { item: "Dragontina helada", price: "1800g", unit: "Stack" },
+  { item: "Gema Epica", price: "1800g", unit: "Stack" },
+  { item: "Cristal abisal", price: "1500g", unit: "Stack" },
+  { item: "Loto de escarcha", price: "1400g", unit: "Stack" },
+  { item: "Fragmento onírico", price: "1400g", unit: "Stack" },
+  { item: "Vida, Sombra, Aire, Fuego, Orbe Congelado", price: "1300g", unit: "Stack" },
+  { item: "Calcedonia", price: "700g", unit: "Stack" },
+  { item: "Cardopresto", price: "600g", unit: "Stack" },
+  { item: "Seda de araña tejehielo", price: "400g", unit: "Stack" },
+  { item: "Mena de titanio", price: "200g", unit: "Stack" },
+  { item: "Flor exánime", price: "200g", unit: "Stack" },
+];
+
+export const GUILD_RULES = [
+  {
+    title: "Código de Nota",
+    rules: [
+      "WISP función y gear score al General Admin u Oficial en línea para subir de rango.",
+      "Así garantizan su participación en raids, ruletas y sorteos."
+    ]
+  },
+  {
+    title: "Baúl de Sorteos",
+    rules: [
+      "Se realizan sorteos aleatorios para recompensar a los jugadores en línea.",
+      "Se reciben donaciones para mantener el baúl funcionando."
+    ]
+  },
+  {
+    title: "Farm lvl 74+",
+    rules: [
+      "Materiales e items lvl 74+ como orbes congelados, fragmento onírico, consumibles, etc.",
+      "Se reciben donaciones para mantener el baúl funcionando."
+    ]
+  },
+  {
+    title: "Reconocimientos",
+    rules: [
+      "Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos mensualmente.",
+      "Se anima a todos los miembros a liderar actividades y eventos."
+    ]
+  },
+  {
+    title: "Baúl de Equipamiento",
+    rules: [
+      "Acceso instantáneo a los elementos del baúl de equipamiento.",
+      "Solicitar al GM en el servidor de Discord kMK2ZRRCza."
+    ]
+  },
+  {
+    title: "Respeto",
+    rules: [
+      "Respeto y cooperación entre todos los miembros.",
+      "No se tolerará el racismo, discriminación o acoso de ningún tipo.",
+      "Mantener un ambiente sano y de respeto mutuo."
     ]
   }
 ];

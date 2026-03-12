@@ -1081,10 +1081,10 @@ try {
                             <div class="group/raid relative bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 overflow-hidden">
                               
                               {/* Botón Flotante de Reglas */}
-                              <div class="absolute right-10 top-6 z-20 transition-transform">
+                              <div class="absolute right-4 top-6 z-20 transition-transform">
                                 <a
                                   href={`/rules#${raid.id.toUpperCase()}`}
-                                  class="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg shadow-2xl border-l border-y border-red-400 font-black uppercase tracking-tighter text-[10px] transform transition-all"
+                                  class="flex items-center gap-2 bg-amber-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg shadow-2xl border-l border-y border-red-400 font-black uppercase tracking-tighter text-[10px] transform transition-all"
                                   title="Ver reglas de esta banda"
                                 >
                                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1816,26 +1816,19 @@ try {
                 <div class="p-2 space-y-2 flex-grow min-h-[100px]">
                   {daySchedules.length > 0 ? (
                     daySchedules.map((schedule) => {
-                      const leaders = schedule.players
-                        .filter(p => p.raid_role === 'lider' && p.is_guild_member)
-                        .map(l => l.name);
-                      const leadersText = leaders.length > 0 ? ` (Líder: ${leaders.join(', ')})` : '';
+                      const raidLeadersFromRoster = schedule.players.filter(p => 
+                        p.raid_role === 'lider' && p.is_guild_member
+                      );
                       
                       return (
                       <div 
-                        class="group relative bg-gray-900/60 hover:bg-gray-800 p-3 pt-5 pb-3 rounded border-l-2 border-amber-500 transition-all duration-200 cursor-default shadow-sm hover:shadow-md"
+                        x-data="{ open: false }"
+                        class="group relative bg-gray-900/60 hover:bg-gray-800 p-3 rounded border-l-2 border-amber-500 transition-all duration-200 cursor-default shadow-sm hover:shadow-md"
                       >
-                        {/* Floating Time Badge (Top Left) */}
-                        <div class="absolute -top-2 left-2 z-10">
-                          <span class="bg-amber-800 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-lg border border-amber-400 uppercase tracking-tighter ring-1 ring-amber-600/20">
-                            {schedule.start_time}
-                          </span>
-                        </div>
-
-                        {/* Floating GearScore Badge (Top Right) */}
+                        {/* Floating Time Badge (Top Right) */}
                         <div class="absolute -top-2 right-2 z-10">
-                          <span class="bg-red-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow-lg border border-red-500 uppercase tracking-tighter ring-1 ring-red-400/20">
-                            {allAvailableRaids.find((r) => r.id === schedule.raid_id)?.minGearScore} GS
+                          <span class="bg-amber-800 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-lg text-shadow border border-amber-400 uppercase tracking-tighter ring-1 ring-amber-600/20 [text-shadow:_1px_2px_4px_#000,_-1px_-1px_4px_#000,_1px_-1px_4px_#000,_-1px_2px_4px_#000]">
+                            {schedule.start_time}
                           </span>
                         </div>
 
@@ -1844,11 +1837,79 @@ try {
                             <button 
                               onclick={`window.navigateToRaid('${schedule.raid_id}', '${normalizeDay(schedule.day_of_week)}')`}
                               class="marquee-text text-left text-xs text-white font-bold hover:text-amber-400 transition-colors focus:outline-none w-full"
-                              title={`${schedule.raid_name}${leadersText}`}
+                              title={schedule.raid_name}
                               onmouseenter="this.scrollWidth > this.clientWidth ? this.classList.add('is-overflowing') : null"
                             >
                               {schedule.raid_name}
                             </button>
+                          </div>
+
+                          <button 
+                            @click="open = !open"
+                            class="text-amber-500/50 hover:text-amber-400 transition-transform duration-300 focus:outline-none shrink-0"
+                            :class="open ? 'rotate-180' : ''"
+                            title="Más información"
+                          >
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                        </div>
+
+                        <div x-show="open" x-collapse x-cloak>
+                          <div class="pt-2 mt-2 border-t border-gray-700/30">
+                            {/* GearScore Info */}
+                            <div class="mb-2 flex items-center justify-between bg-red-950/20 rounded px-2 py-1 border border-red-900/20">
+                              <span class="text-[9px] text-gray-400 uppercase font-bold">GS Mín.:</span>
+                              <span class="text-[10px] text-red-400 font-black uppercase tracking-wider">
+                                {allAvailableRaids.find((r) => r.id === schedule.raid_id)?.minGearScore}
+                              </span>
+                            </div>
+
+                            {/* Leaders Info */}
+                            {raidLeadersFromRoster.length > 0 && (
+                              <div class="mb-3 flex flex-wrap items-center gap-2">
+                                <span class="text-[10px] text-gray-400">Líder{raidLeadersFromRoster.length > 1 ? 'es' : ''}:</span>
+                                {raidLeadersFromRoster.map((leader, index) => (
+                                  <span
+                                    key={index}
+                                    class="flex items-center text-[10px] text-amber-400 bg-amber-900/20 px-2 py-0.5 rounded-full border border-amber-800/20"
+                                  >
+                                    <svg
+                                      class="w-2.5 h-2.5 mr-1"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                                      />
+                                    </svg>
+                                    {leader.name}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            
+                            {/* Players Info */}
+                            <div class="mb-1 flex justify-between items-center text-[10px]">
+                              <span class="text-gray-500 uppercase font-bold">Inscritos:</span>
+                              <span class="text-indigo-300 font-black">
+                                {(() => {
+                                  const validPlayersCount = schedule.players.filter(p => 
+                                    (['aceptado', 'accepted', 'confirmed'].includes(p.status) || 
+                                    ['aceptado', 'accepted', 'confirmed'].includes(p.raid_status) || 
+                                    ['aceptado', 'accepted', 'confirmed'].includes(p.registration_status) || 
+                                    schedule.is_official_core) && 
+                                    (p.is_guild_member || p.from_supabase)
+                                  ).length;
+                                  return `${validPlayersCount}`;
+                                })()}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1877,202 +1938,6 @@ try {
     
   </div>
 
-  {/* Raid Rules Section */}
-  <div class="max-w-7xl mx-auto mt-20">
-    <!-- Título de la sección -->
-    <div
-      id="reglas-hermandad"
-      class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6"
-    >
-      <div class="flex items-center space-x-4">
-        <div
-          class="w-12 h-12 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-lg shadow-amber-900/20 transform -rotate-2 hover:rotate-0 transition-transform duration-300"
-        >
-          <svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="204:15"><g id="SVGRepo_bgCarrier" stroke-width="0" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="204:15"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="204:62"></g><g id="SVGRepo_iconCarrier" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="207:71"> <title>scroll-unfurled</title> <path d="M26.693 23.878h-4.43l-0.042-0.076c0.016-2.709 1.069-5.48 3.069-7.666 1.495-1.633 2.623-3.783 3.202-5.918l-2.573-1.556 2.388-0.431-2.706-1.61 3.253-0.552c-0.326-2.442-1.8-4.25-4.828-4.25-2.955 0.574-11.374 0.749-15.729 0.185-0.552-0.18-1.108-0.285-1.651-0.304-0.004-0.001-0.008-0.002-0.012-0.003 0.002 0.001 0.005 0.002 0.007 0.003-1.416-0.047-2.738 0.501-3.647 1.882-1.263 1.919 0.082 5.213 3.046 5.213 0.167 0 0.32-0.009 0.46-0.026v0.023h3.702c-0.56 2.257-1.949 4.767-3.557 7.296-0.135 0.212-0.266 0.429-0.393 0.649l2.177 2.23-3.511 0.588c-2.042 5.364-1.711 11.361 3.013 11.361v-0l0.489 0.003v0.007h5.349v-0.010h14.097c4.25 0 4.833-7.039-1.171-7.039zM14.134 27.263c-0-0.029-0.001-0.059-0.002-0.089 0.001 0.030 0.002 0.059 0.002 0.089zM13.997 26.144c0.001 0.004 0.001 0.007 0.002 0.011-0.001-0.004-0.001-0.007-0.002-0.011-0.168-0.741-0.649-1.358-1.278-1.755h0c0.629 0.398 1.11 1.015 1.278 1.755zM14.128 27.071c-0.001-0.030-0.003-0.060-0.005-0.090 0.002 0.030 0.004 0.060 0.005 0.090zM14.114 26.871c-0.003-0.030-0.006-0.060-0.009-0.090 0.003 0.030 0.006 0.060 0.009 0.090zM14.090 26.662c-0.004-0.029-0.008-0.058-0.012-0.087 0.005 0.029 0.008 0.058 0.012 0.087zM14.055 26.439c-0.005-0.025-0.008-0.050-0.013-0.076 0.005 0.026 0.009 0.051 0.013 0.076zM7.393 8.433c0.876-0.746-0.036-2.509-1.085-3.976h3.617c0.605 1.167 0.667 2.514 0.358 3.976h-2.89zM10.181 24.754c1.618-0.538 3.452 0.49 3.816 2.094 0.062 0.274 0.102 0.533 0.122 0.778 0.002-0.026 0.004-0.052 0.005-0.078-0.040 0.579-0.212 1.061-0.488 1.459h-0.032c-0.031 0.044-0.063 0.087-0.096 0.128l0.050-0.022c-0.463 0.605-1.173 1.009-2.018 1.27h-0.878l0.043-0.019c-0.925-0-1.988-0.087-1.988-0.087 1.373-0.022 1.964-0.603 2.19-1.269-0.978 0.355-2.020-0.284-2.348-1.227-0.443-1.273 0.391-2.618 1.622-3.027zM14.132 27.362c-0.001 0.029-0.001 0.058-0.002 0.086 0.001-0.028 0.001-0.057 0.002-0.086zM13.563 29.108c0.025-0.033 0.049-0.066 0.073-0.099-0.023 0.034-0.048 0.067-0.073 0.099z" data-astro-source-file="C:/Users/Usuario/Desktop/_DEV/GUILD-PORTAL/src/pages/roster.astro" data-astro-source-loc="209:16"></path> </g></svg>
-        </div>
-        <div>
-          <span class="text-sm md:text-3xl font-black text-white uppercase tracking-tighter italic">
-            Reglas de <span
-              class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 pr-1"
-              >Raid</span
-            >
-          </span>
-          <span
-            class="text-amber-300/60 font-medium tracking-widest uppercase text-[10px] flex items-center space-x-1"
-          >
-                        <span class="self-end"> Código de conducta y normas </span>
-
-          </span>
-        </div>
-      </div>
-    </div>
-    <div
-      class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-2xl p-4 shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
-    >
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-        <div class="flex items-center space-x-4">
-          <a
-            href="https://discord.gg/BwdpNV9sky"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
-          >
-            <svg class="w-5 h-5 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.1 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.8 8.18 1.8 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.891.077.077 0 00-.041.1c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.84 19.84 0 005.99-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.946-2.419 2.157-2.419 1.21 0 2.175 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.953-2.419 2.157-2.419 1.21 0 2.175 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"
-              ></path>
-            </svg>
-            Discord
-          </a>
-          <a
-            href="https://chat.whatsapp.com/BahYOaTMZfHIwYQGey3G91"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
-          >
-            <svg class="w-5 h-5 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.471-.148-.67.15-.197.297-.767.963-.94 1.16-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.795-1.484-1.781-1.66-2.075-.173-.297-.018-.458.13-.606.136-.135.298-.354.446-.531.149-.174.198-.298.298-.497.099-.198.05-.367-.025-.531-.075-.174-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.508-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.79.359-.272.3-1.04 1.016-1.04 2.477s1.065 2.873 1.213 3.074c.149.198 2.096 3.2 5.076 4.49.703.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.005-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.214-3.741.982.998-3.648-.235-.372a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.29A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.549 4.142 1.595 5.945L0 24l6.335-1.652a11.882 11.882 0 005.723 1.464h.006c6.553 0 11.89-5.336 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
-              ></path>
-            </svg>
-            WhatsApp
-          </a>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Normas de Conducta */}
-        <div
-          class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden p-4"
-        >
-          <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
-            <svg
-              class="w-5 h-5 text-red-400 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              ></path>
-            </svg>
-            Normas de Conducta
-          </h3>
-          <ul class="space-y-2 text-gray-300">
-            <li class="flex items-start">
-              <span class="text-red-400 mr-2">•</span>
-              <span>AFK/OFF sin avisar = Sin botín/Expulsión</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-red-400 mr-2">•</span>
-              <span>No respetar pulls/mecánicas = Sin botín/Expulsión</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-red-400 mr-2">•</span>
-              <span>DPS/Healer/Tank con bajo rendimiento = Expulsión</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-red-400 mr-2">•</span>
-              <span>PVP no permitido = Expulsión</span>
-            </li>
-          </ul>
-        </div>
-
-        {/* Sistema de Botín */}
-        <div
-          class="bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-purple-600/40 rounded-md hover:border-purple-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 overflow-hidden p-4"
-        >
-          <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
-            <svg
-              class="w-5 h-5 text-amber-400 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
-            Sistema de Botín
-          </h3>
-          <ul class="space-y-2 text-gray-300">
-            <li class="flex items-start">
-              <span class="text-amber-400 mr-2">•</span>
-              <span>No Discord = No botín</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-amber-400 mr-2">•</span>
-              <span>Desconexión = Sin botín</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-amber-400 mr-2">•</span>
-              <span>Se rollea 20 minutos antes del ligado del ítem</span>
-            </li>
-            <li class="flex items-start">
-              <span class="text-amber-400 mr-2">•</span>
-              <span>Al dar Raid Off se cierran los rolls en el orden de obtención</span>
-            </li>
-          </ul>
-        </div>
-
-        {/* Requisitos Generales */}
-        <div
-          class="md:col-span-2 bg-gradient-to-br from-gray-900/80 to-gray-800/60 backdrop-blur-sm border border-blue-600/40 rounded-md hover:border-blue-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden p-4"
-        >
-          <h3 class="text-lg font-semibold text-white mb-3 flex items-center">
-            <svg
-              class="w-5 h-5 text-blue-400 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-              ></path>
-            </svg>
-            Requisitos Generales
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h4 class="font-medium text-blue-300 mb-2">Asistencia</h4>
-              <ul class="space-y-1 text-gray-300">
-                <li class="flex items-start">
-                  <span class="text-blue-400 mr-2">•</span>
-                  <span>Puntualidad requerida</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-blue-400 mr-2">•</span>
-                  <span>Avisar con anticipación si no podrás asistir</span>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 class="font-medium text-blue-300 mb-2">Equipamiento</h4>
-              <ul class="space-y-1 text-gray-300">
-                <li class="flex items-start">
-                  <span class="text-blue-400 mr-2">•</span>
-                  <span>Consumibles necesarios</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-blue-400 mr-2">•</span>
-                  <span>Encantamientos y gemas al día</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <Fragment slot="modals">
     <RaidRulesModal />
