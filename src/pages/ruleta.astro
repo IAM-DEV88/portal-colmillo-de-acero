@@ -573,7 +573,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 
       if (type === 'pool') {
         amount = goldPool; 
-        claimText = `* ${amount.toLocaleString()} ORO`;
+        claimText = `TIQUET GANADOR DE ${amount.toLocaleString()} ORO`;
         subText = "¡La suerte te sonríe!";
         
         // Reset Pool
@@ -663,7 +663,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
             const formData = new FormData();
             const payload = {
                 username: "Portal Web Colmillo de Acero",
-                content: `**NUEVO RECLAMO DE PREMIO**\nUsuario: IP ${userIP}\nTipo: [${type.toUpperCase()}](https://colmillo.netlify.app/ruleta/)\nDetalle: ${claimText}\nCódigo: \`${uniqueCode}\``
+                content: `**NUEVO RECLAMO DE PREMIO**\nUsuario: IP ${userIP}\nDetalle: ${claimText}\nCódigo: \`${uniqueCode}\``
             };
             formData.append('payload_json', JSON.stringify(payload));
             formData.append('file', blob, filename);
@@ -681,7 +681,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
         {
             const payload = {
                 username: "Portal Web Colmillo de Acero",
-                content: `🔥 **¡EL POZO HA SIDO RECLAMADO!**\nUn jugador ha obtenido el siguiente premio:\n${claimText}\n🏆 ¡Felicidades al ganador!\n\n📩 Para reclamar el premio:
+                content: `🔥 **¡EL POZO HA SIDO RECLAMADO!**\nUn jugador ha obtenido:\n${claimText}\n🏆 ¡Felicidades al ganador!\n\n📩 Para reclamar el premio:
 Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/Ek9BcgjvzrCAcyRRvWL72g).`
             };
 
@@ -708,7 +708,7 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
                     alert('Ticket descargado. Hubo un problema enviando a Discord automáticamente, por favor súbelo manualmente.');
                     window.open('https://discord.gg/Rq5Y54kh', '_blank');
                 } else {
-                    alert('¡Felicidades! Ticket descargado y enviado a Discord exitosamente.');
+                    alert('¡Felicidades! Ticket notificado en Discord exitosamente.\nSigue las instrucciones en Discord para reclamar tu premio.');
                 }
             } catch (err) {
                 console.error('Error general en envío:', err);

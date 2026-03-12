@@ -1078,7 +1078,22 @@ try {
                       return (
                         <div class="swiper-slide px-6">
                           <div class="w-full" data-raid-id={raid.id}>
-                            <div class="bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 overflow-hidden">
+                            <div class="group/raid relative bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-amber-800/10 backdrop-blur-sm border border-amber-600/30 rounded-md shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 overflow-hidden">
+                              
+                              {/* Botón Flotante de Reglas */}
+                              <div class="absolute right-10 top-6 z-20 transition-transform">
+                                <a
+                                  href={`/rules#${raid.id.toUpperCase()}`}
+                                  class="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg shadow-2xl border-l border-y border-red-400 font-black uppercase tracking-tighter text-[10px] transform transition-all"
+                                  title="Ver reglas de esta banda"
+                                >
+                                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                  </svg>
+                                  <span>Reglas</span>
+                                </a>
+                              </div>
+
                               {/* Header with raid image and basic info */}
                               <div class="relative">
                                 
@@ -1088,16 +1103,6 @@ try {
                                     <div>
                                       <div class="flex items-center gap-3">
                                         <h3 class="text-xl font-bold text-white italic">{raid.name}</h3>
-                                        <a
-                                          href={`/rules#${raid.id.toUpperCase()}`}
-                                          class="text-[10px] md:text-xs bg-red-600/30 hover:bg-red-600/40 text-red-300 px-2.5 py-1 rounded flex items-center transition-colors border border-red-500/30 font-bold uppercase tracking-wider"
-                                          title="Ver reglas de esta banda"
-                                        >
-                                          <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                          </svg>
-                                          Reglas
-                                        </a>
                                       </div>
                                       
                                       <p class="text-xs text-gray-300 flex items-center mt-1">
