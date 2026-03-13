@@ -174,7 +174,7 @@ const hiddenOfficersRaw = configData?.value ? JSON.parse(configData.value) : [];
 const hiddenOfficers = hiddenOfficersRaw.map((name: string) => name.toLowerCase().trim());
 
 // Normalización de Raid ID
-const normalizeRaidId = (id: string) => (id || '').toUpperCase().replace(/\s+/g, '').trim();
+const normalizeRaidId = (id: string) => (id || '').toUpperCase().replace(/\s+/g, ' ').trim();
 
 // Define a default raid structure for when we only have a name
 const createRaidFromName = (name: string, gs: number = 5000): Raid => {
@@ -382,7 +382,7 @@ if (Astro.request.method === 'POST') {
         player_role: formDataObj.player_role?.toString() || '',
         day_of_week: formDataObj.day_of_week?.toString() || '',
         start_time: formDataObj.start_time?.toString() || '',
-        raid_id: formDataObj.raid_id?.toString().toUpperCase() || '',
+        raid_id: formDataObj.raid_id?.toString().toUpperCase().replace(/\s+/g, ' ').trim() || '',
       };
 
       console.log('Processed registration data:', registrationData);

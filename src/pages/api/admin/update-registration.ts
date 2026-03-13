@@ -32,12 +32,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     }
 
-    // Parse raid_id to integer if present
-    const parsedRaidId =
-      raid_id !== undefined && raid_id !== null && raid_id !== ''
-        ? parseInt(String(raid_id), 10)
-        : null;
-
     // Define baseData with explicit type to allow dynamic property assignment
     const baseData: Record<string, any> = {
       player_name,
@@ -48,9 +42,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       status,
     };
 
-    // Only include raid_id if it's a valid number
-    if (parsedRaidId !== null && !isNaN(parsedRaidId)) {
-      baseData.raid_id = parsedRaidId;
+    // If raid_id is provided, include it
+    if (raid_id !== undefined && raid_id !== null && raid_id !== '') {
+      // Si es un nombre de raid (string), lo normalizamos para consistencia (preservando espacios)
+      if (isNaN(Number(raid_id))) {
+        baseData.raid_id = String(raid_id).toUpperCase().replace(/\s+/g, ' ').trim();
+      } else {
+        baseData.raid_id = parseInt(String(raid_id), 10);
+      }
     }
 
     let result;

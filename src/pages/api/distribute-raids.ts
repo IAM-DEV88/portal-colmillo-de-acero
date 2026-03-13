@@ -29,13 +29,13 @@ const DEFAULT_GS = 5000;
 
 // Helper to get Min GS dynamically from roster data
 const getMinGS = (raidId: string, rosterDataPlayers: Record<string, any>): number => {
-    const upper = raidId.toUpperCase().replace(/\s+/g, '');
+    const upper = raidId.toUpperCase().replace(/\s+/g, ' ').trim();
 
     for (const playerName in rosterDataPlayers) {
         const player = rosterDataPlayers[playerName];
         if (player.leaderData && player.leaderData.cores) {
             for (const core of player.leaderData.cores) {
-                const coreRaid = (core.raid || '').toUpperCase().replace(/\s+/g, '');
+                const coreRaid = (core.raid || '').toUpperCase().replace(/\s+/g, ' ').trim();
                 if (coreRaid === upper || coreRaid.includes(upper) || upper.includes(coreRaid)) {
                     if (core.gs) {
                         return typeof core.gs === 'number' ? core.gs : parseInt(core.gs);
@@ -155,7 +155,7 @@ export const GET: APIRoute = async ({ request }) => {
                     if (parts.length >= 2) {
                         const day = clean(parts[0]);
                         const time = parts[1];
-                        const raidIdUpper = raidId.toUpperCase().replace(/\s+/g, '');
+                        const raidIdUpper = raidId.toUpperCase().replace(/\s+/g, ' ').trim();
                         const key = `${raidIdUpper}|${day}|${time}`;
 
                         if (!raidsMap.has(key)) {
@@ -185,7 +185,7 @@ export const GET: APIRoute = async ({ request }) => {
         }
 
         guildPlayersRegs.forEach(reg => {
-            const raidIdUpper = reg.raid_id.toUpperCase().replace(/\s+/g, '');
+            const raidIdUpper = reg.raid_id.toUpperCase().replace(/\s+/g, ' ').trim();
             const key = `${raidIdUpper}|${clean(reg.day_of_week)}|${reg.start_time}`;
 
             if (!raidsMap.has(key)) {
@@ -222,7 +222,7 @@ export const GET: APIRoute = async ({ request }) => {
         const playerSaves = new Map<string, Set<string>>();
 
         const getRaidType = (id: string) => {
-            const upper = id.toUpperCase().replace(/\s+/g, '');
+            const upper = id.toUpperCase().replace(/\s+/g, ' ').trim();
             if (upper.includes('ICC10H')) return 'ICC10H';
             if (upper.includes('ICC10N')) return 'ICC10N';
             if (upper.includes('ICC25H')) return 'ICC25H';
@@ -291,10 +291,10 @@ export const GET: APIRoute = async ({ request }) => {
                 for (const player of roleCandidates) {
                     // 1. PRIMERO: Intentar asignar al jugador a la banda que él solicitó originalmente (si hay cupo)
                     const originalReg = player.originalRegistration;
-                    const originalRaidKey = `${originalReg.raid_id.toUpperCase().replace(/\s+/g, '')}|${clean(originalReg.day_of_week)}|${originalReg.start_time}`;
+                    const originalRaidKey = `${originalReg.raid_id.toUpperCase().replace(/\s+/g, ' ').trim()}|${clean(originalReg.day_of_week)}|${originalReg.start_time}`;
                     
                     const originalRaid = familyRaids.find(r => {
-                        const rKey = `${r.raidId.toUpperCase().replace(/\s+/g, '')}|${clean(r.day)}|${r.time}`;
+                        const rKey = `${r.raidId.toUpperCase().replace(/\s+/g, ' ').trim()}|${clean(r.day)}|${r.time}`;
                         return rKey === originalRaidKey;
                     });
 
@@ -334,7 +334,7 @@ export const GET: APIRoute = async ({ request }) => {
                         const raid = familyRaids[i];
                         
                         // Saltar si es la misma que ya intentamos
-                        const rKey = `${raid.raidId.toUpperCase().replace(/\s+/g, '')}|${clean(raid.day)}|${raid.time}`;
+                        const rKey = `${raid.raidId.toUpperCase().replace(/\s+/g, ' ').trim()}|${clean(raid.day)}|${raid.time}`;
                         if (rKey === originalRaidKey) continue;
 
                         let currentCount = 0;
