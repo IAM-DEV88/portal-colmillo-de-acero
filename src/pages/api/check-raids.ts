@@ -173,8 +173,21 @@ export const GET = async ({ url }: { url: URL }) => {
       // 3. Weekly / Summary logic
       const slotsMap = new Map<string, { raidId: string; day: string; time: string; count: number; isOfficial?: boolean; minGS?: number }>();
 
+      // Obtener oficiales ocultos de la configuración
+      let hiddenOfficers: string[] = [];
+      try {
+        const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_officers').maybeSingle();
+        const hiddenOfficersRaw: string[] = configData?.value ? JSON.parse(configData.value) : [];
+        hiddenOfficers = hiddenOfficersRaw.map(name => name.toLowerCase().trim());
+      } catch (e) {
+        console.error('Error fetching hidden officers:', e);
+      }
+
       // Fetch Cores
-      Object.values(players).forEach((member: any) => {
+      Object.entries(players).forEach(([playerName, member]: [string, any]) => {
+        // Filtrar oficiales ocultos (Insensible a mayúsculas)
+        if (!playerName || hiddenOfficers.includes(playerName.toLowerCase().trim())) return;
+
         if (member.leaderData?.cores) {
           member.leaderData.cores.forEach((core: any) => {
             const timeMatch = String(core.schedule).match(/(\d{1,2}:\d{2})/);
@@ -183,12 +196,12 @@ export const GET = async ({ url }: { url: URL }) => {
             const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
             if (!dayMatch) return;
             const day = getShiftedDay(dayMatch[1], time);
-            const raidId = core.raid.toUpperCase().trim();
+            const normalizedRaidId = core.raid.toUpperCase().trim().replace(/\s+/g, '');
             const minGS = core.gs || 0;
-            const key = `${raidId}-${day}-${time}`;
+            const key = `${normalizedRaidId}-${day}-${time}`;
             
             if (!slotsMap.has(key)) {
-              slotsMap.set(key, { raidId, day, time, count: 0, isOfficial: true, minGS });
+              slotsMap.set(key, { raidId: core.raid, day, time, count: 0, isOfficial: true, minGS });
             } else {
               slotsMap.get(key)!.isOfficial = true;
               if (minGS > 0) slotsMap.get(key)!.minGS = minGS;
@@ -202,9 +215,10 @@ export const GET = async ({ url }: { url: URL }) => {
       (regs || []).forEach(reg => {
         const time = (reg.start_time || '').toString().padStart(5, '0').substring(0, 5);
         const day = getShiftedDay(reg.day_of_week || '', time);
-        const raidId = (reg.raid_id || '').toString().toUpperCase().trim();
-        const key = `${raidId}-${day}-${time}`;
-        if (!slotsMap.has(key)) slotsMap.set(key, { raidId, day, time, count: 0 });
+        const originalRaidId = (reg.raid_id || '').toString();
+        const normalizedRaidId = originalRaidId.toUpperCase().trim().replace(/\s+/g, '');
+        const key = `${normalizedRaidId}-${day}-${time}`;
+        if (!slotsMap.has(key)) slotsMap.set(key, { raidId: originalRaidId, day, time, count: 0 });
         if (reg.status === 'aceptado') slotsMap.get(key)!.count += 1;
       });
 

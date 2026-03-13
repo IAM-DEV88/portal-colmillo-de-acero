@@ -29,13 +29,13 @@ const DEFAULT_GS = 5000;
 
 // Helper to get Min GS dynamically from roster data
 const getMinGS = (raidId: string, rosterDataPlayers: Record<string, any>): number => {
-    const upper = raidId.toUpperCase();
+    const upper = raidId.toUpperCase().replace(/\s+/g, '');
 
     for (const playerName in rosterDataPlayers) {
         const player = rosterDataPlayers[playerName];
         if (player.leaderData && player.leaderData.cores) {
             for (const core of player.leaderData.cores) {
-                const coreRaid = (core.raid || '').toUpperCase();
+                const coreRaid = (core.raid || '').toUpperCase().replace(/\s+/g, '');
                 if (coreRaid === upper || coreRaid.includes(upper) || upper.includes(coreRaid)) {
                     if (core.gs) {
                         return typeof core.gs === 'number' ? core.gs : parseInt(core.gs);
@@ -45,10 +45,11 @@ const getMinGS = (raidId: string, rosterDataPlayers: Record<string, any>): numbe
         }
     }
 
-    if (upper.includes('ICC10H ABAS')) return 5800;
-    if (upper.includes('ICC25N POR LK')) return 5600;
-    if (upper.includes('SR25N') || upper.includes('SAGRARIO')) return 5600;
-    if (upper.includes('ICC25N')) return 5400;
+    if (upper.includes('ICC25H')) return 6000;
+    if (upper.includes('ICC10H')) return 5800;
+    if (upper.includes('ICC25N')) return 5000;
+    if (upper.includes('SR25') || upper.includes('SAGRARIO')) return 5800;
+    if (upper.includes('ICC10N')) return 5500;
 
     return DEFAULT_GS;
 };
@@ -69,65 +70,78 @@ export const GET: APIRoute = async ({ request }) => {
             return new Response(JSON.stringify({ error: 'Error fetching registrations', details: error }), { status: 500 });
         }
 
-        const rosterPlayersCleanedNames = Object.keys(rosterDataPlayers).map(p => clean(p));
-        const guildPlayers = registrations.filter(reg => rosterPlayersCleanedNames.includes(clean(reg.player_name)));
+        // Identificar jugadores de hermandad vs externos
+        const guildPlayersRegs = registrations.filter(reg => {
+            const cleanName = clean(reg.player_name);
+            const rosterKey = Object.keys(rosterDataPlayers).find(k => clean(k) === cleanName);
+            // Solo es de hermandad si está en el roster Y NO ha marcado guild_leave
+            // El rosterService.getFormattedRoster ya filtra los que tienen guild_leave: true
+            return rosterKey !== undefined;
+        });
+        
+        const externalPlayersRegs = registrations.filter(reg => !guildPlayersRegs.includes(reg));
 
-        console.log(`Jugadores en Roster: ${guildPlayers.length}. Ignorando ${registrations.length - guildPlayers.length} externos.`);
+        // Poner externos en espera inmediatamente
+        if (externalPlayersRegs.length > 0) {
+            await supabase.from('raid_registrations')
+                .update({ status: 'en_espera' })
+                .in('id', externalPlayersRegs.map(r => r.id));
+        }
 
-        const uniquePlayers = new Map<string, PlayerGS>();
+        console.log(`Registros de Hermandad: ${guildPlayersRegs.length}. Externos (en espera): ${externalPlayersRegs.length}.`);
 
-        guildPlayers.forEach(reg => {
+        const playerPool: PlayerGS[] = [];
+
+        guildPlayersRegs.forEach(reg => {
             const name = reg.player_name;
             const cleanName = clean(name);
 
-            if (!uniquePlayers.has(cleanName)) {
-                const rosterKey = Object.keys(rosterDataPlayers).find(k => clean(k) === cleanName);
-                if (rosterKey) {
-                    const playerData = (rosterDataPlayers as any)[rosterKey];
-                    const note = playerData.publicNote || '';
-                    const role = reg.player_role ? clean(reg.player_role) : 'dps';
+            const rosterKey = Object.keys(rosterDataPlayers).find(k => clean(k) === cleanName);
+            if (rosterKey) {
+                const playerData = (rosterDataPlayers as any)[rosterKey];
+                const note = playerData.publicNote || '';
+                const role = reg.player_role ? clean(reg.player_role) : 'dps';
 
-                    let gs = 0;
-                    const n = note.toLowerCase();
-                    let match;
+                let gs = 0;
+                const n = note.toLowerCase();
+                let match;
 
-                    if (role.includes('tank')) {
-                        match = n.match(/t(\d+(\.\d+)?)/) || n.match(/mt(\d+(\.\d+)?)/);
-                    } else if (role.includes('heal')) {
-                        match = n.match(/h(\d+(\.\d+)?)/) || n.match(/mh(\d+(\.\d+)?)/);
-                    } else {
-                        match = n.match(/d(\d+(\.\d+)?)/) || n.match(/md(\d+(\.\d+)?)/) || n.match(/ad(\d+(\.\d+)?)/);
-                    }
-
-                    if (match) {
-                        gs = parseFloat(match[1]) * 1000;
-                    } else {
-                        const numbers = n.match(/(\d+(\.\d+)?)/g);
-                        if (numbers) {
-                            gs = Math.max(...numbers.map(num => parseFloat(num))) * 1000;
-                        }
-                    }
-
-                    let distRole = 'dps';
-                    if (role.includes('tank')) distRole = 'tank';
-                    else if (role.includes('heal')) distRole = 'healer';
-                    else if (role.includes('melee')) distRole = 'melee';
-                    else distRole = 'ranged';
-
-                    uniquePlayers.set(cleanName, {
-                        id: reg.id,
-                        name: rosterKey,
-                        gs,
-                        role: distRole,
-                        class: reg.player_class,
-                        originalRegistration: reg
-                    });
+                if (role.includes('tank')) {
+                    match = n.match(/t(\d+(\.\d+)?)/) || n.match(/mt(\d+(\.\d+)?)/);
+                } else if (role.includes('heal')) {
+                    match = n.match(/h(\d+(\.\d+)?)/) || n.match(/mh(\d+(\.\d+)?)/);
+                } else {
+                    match = n.match(/d(\d+(\.\d+)?)/) || n.match(/md(\d+(\.\d+)?)/) || n.match(/ad(\d+(\.\d+)?)/);
                 }
+
+                if (match) {
+                    gs = parseFloat(match[1]) * 1000;
+                } else {
+                    const numbers = n.match(/(\d+(\.\d+)?)/g);
+                    if (numbers) {
+                        gs = Math.max(...numbers.map(num => parseFloat(num))) * 1000;
+                    }
+                }
+
+                let distRole = 'dps';
+                if (role.includes('tank')) distRole = 'tank';
+                else if (role.includes('heal')) distRole = 'healer';
+                else if (role.includes('melee')) distRole = 'melee';
+                else distRole = 'ranged';
+
+                playerPool.push({
+                    id: reg.id,
+                    name: rosterKey,
+                    gs,
+                    role: distRole,
+                    class: reg.player_class,
+                    originalRegistration: reg
+                });
             }
         });
 
-        const sortedPool = Array.from(uniquePlayers.values()).sort((a, b) => b.gs - a.gs);
-        console.log(`Pool de Jugadores Únicos: ${sortedPool.length}`);
+        const sortedPool = playerPool.sort((a, b) => b.gs - a.gs);
+        console.log(`Pool de Inscripciones de Hermandad: ${sortedPool.length}`);
 
         const raidsMap = new Map<string, RaidInstance>();
 
@@ -141,7 +155,7 @@ export const GET: APIRoute = async ({ request }) => {
                     if (parts.length >= 2) {
                         const day = clean(parts[0]);
                         const time = parts[1];
-                        const raidIdUpper = raidId.toUpperCase();
+                        const raidIdUpper = raidId.toUpperCase().replace(/\s+/g, '');
                         const key = `${raidIdUpper}|${day}|${time}`;
 
                         if (!raidsMap.has(key)) {
@@ -170,22 +184,18 @@ export const GET: APIRoute = async ({ request }) => {
             }
         }
 
-        guildPlayers.forEach(reg => {
-            const raidIdUpper = reg.raid_id.toUpperCase();
+        guildPlayersRegs.forEach(reg => {
+            const raidIdUpper = reg.raid_id.toUpperCase().replace(/\s+/g, '');
             const key = `${raidIdUpper}|${clean(reg.day_of_week)}|${reg.start_time}`;
 
             if (!raidsMap.has(key)) {
-                if (raidIdUpper.includes('ICC25N') && !raidIdUpper.includes('POR LK')) {
-                    const cleanDay = clean(reg.day_of_week);
-                    if (['miercoles', 'jueves'].includes(cleanDay)) return;
-                }
-
+                // Prioridad según el día (Miércoles en adelante)
+                const dayOrder = ['miercoles', 'jueves', 'viernes', 'sabado', 'domingo', 'lunes', 'martes'];
+                const cleanDay = clean(reg.day_of_week);
                 let priority = 2;
-                if (raidIdUpper.includes('ICC10H ABAS') ||
-                    raidIdUpper.includes('ICC25N POR LK') ||
-                    raidIdUpper.includes('SR25N')) {
-                    if (['miercoles', 'jueves'].includes(clean(reg.day_of_week))) priority = 1;
-                }
+                
+                // Bandas core suelen ser miercoles/jueves/sabado
+                if (['miercoles', 'jueves'].includes(cleanDay)) priority = 1;
 
                 raidsMap.set(key, {
                     raidId: reg.raid_id,
@@ -201,42 +211,76 @@ export const GET: APIRoute = async ({ request }) => {
         const raids = Array.from(raidsMap.values()).sort((a, b) => {
             if (a.priority !== b.priority) return a.priority - b.priority;
             if (a.type !== b.type) return b.type === '25' ? 1 : -1;
-            const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
-            const dayA = days.indexOf(clean(a.day));
-            const dayB = days.indexOf(clean(b.day));
+            
+            const dayOrder = ['miercoles', 'jueves', 'viernes', 'sabado', 'domingo', 'lunes', 'martes'];
+            const dayA = dayOrder.indexOf(clean(a.day));
+            const dayB = dayOrder.indexOf(clean(b.day));
             if (dayA !== dayB) return dayA - dayB;
             return a.time.localeCompare(b.time);
         });
 
         const playerSaves = new Map<string, Set<string>>();
-        const assignments: any[] = [];
-
-        const raidsByFamily = new Map<string, RaidInstance[]>();
-        for (const raid of raids) {
-            const family = raid.raidId.toUpperCase();
-            if (!raidsByFamily.has(family)) raidsByFamily.set(family, []);
-            raidsByFamily.get(family)?.push(raid);
-        }
 
         const getRaidType = (id: string) => {
-            const upper = id.toUpperCase();
-            if (upper.includes('ICC10')) return 'ICC10';
-            if (upper.includes('ICC25')) return 'ICC25';
+            const upper = id.toUpperCase().replace(/\s+/g, '');
+            if (upper.includes('ICC10H')) return 'ICC10H';
+            if (upper.includes('ICC10N')) return 'ICC10N';
+            if (upper.includes('ICC25H')) return 'ICC25H';
+            if (upper.includes('ICC25N')) return 'ICC25N';
             if (upper.includes('SR25') || upper.includes('SAGRARIO')) return 'SR25';
             return id;
         };
 
-        for (const [family, familyRaids] of raidsByFamily.entries()) {
-            const raidType = getRaidType(family);
-            const minGS = getMinGS(family, rosterDataPlayers);
-            const candidates = sortedPool.filter(p => p.gs >= minGS);
+        const assignments: any[] = [];
+        const assignedPlayerIds = new Set<number>(); // Track IDs of registrations that were accepted
+
+        // Agrupar bandas por familia (ej: todos los ICC25N)
+        const raidsByFamily = new Map<string, RaidInstance[]>();
+        for (const raid of raids) {
+            const family = getRaidType(raid.raidId);
+            if (!raidsByFamily.has(family)) raidsByFamily.set(family, []);
+            raidsByFamily.get(family)?.push(raid);
+        }
+
+        // Definir orden de procesamiento por exigencia de GS (Mayor a Menor)
+        const familyPriorityOrder = [
+            'ICC25H',
+            'ICC10H',
+            'SR25',
+            'ICC25N',
+            'ICC10N'
+        ];
+
+        const sortedFamilies = Array.from(raidsByFamily.keys()).sort((a, b) => {
+            const indexA = familyPriorityOrder.findIndex(f => a.includes(f));
+            const indexB = familyPriorityOrder.findIndex(f => b.includes(f));
+            
+            // Si no está en la lista, prioridad baja
+            const pA = indexA === -1 ? 99 : indexA;
+            const pB = indexB === -1 ? 99 : indexB;
+            
+            return pA - pB;
+        });
+
+        // Procesar cada familia de banda en orden de exigencia
+        for (const family of sortedFamilies) {
+            const familyRaids = raidsByFamily.get(family)!;
+            const raidType = family;
+            
+            // Candidatos del roster oficial que cumplen el GS mínimo para esta familia
+            const minGSRequired = getMinGS(familyRaids[0].raidId, rosterDataPlayers);
+            const candidates = sortedPool.filter(p => p.gs >= minGSRequired);
+            
             const is25 = familyRaids[0].type === '25';
             const caps = is25
                 ? { tank: 2, healer: 5, melee: 9, ranged: 9 }
                 : { tank: 2, healer: 2, melee: 3, ranged: 3 };
 
             const roles = ['tank', 'healer', 'melee', 'ranged'];
+            
             for (const role of roles) {
+                // Candidatos para este rol específico que no tengan save de esta banda todavía
+                // IMPORTANTE: Un jugador puede ir a varias bandas distintas (ej: ICC25 y SR25)
                 const roleCandidates = candidates.filter(p => {
                     let pRole = p.role;
                     if (pRole === 'rango') pRole = 'ranged';
@@ -245,8 +289,54 @@ export const GET: APIRoute = async ({ request }) => {
                 });
 
                 for (const player of roleCandidates) {
+                    // 1. PRIMERO: Intentar asignar al jugador a la banda que él solicitó originalmente (si hay cupo)
+                    const originalReg = player.originalRegistration;
+                    const originalRaidKey = `${originalReg.raid_id.toUpperCase().replace(/\s+/g, '')}|${clean(originalReg.day_of_week)}|${originalReg.start_time}`;
+                    
+                    const originalRaid = familyRaids.find(r => {
+                        const rKey = `${r.raidId.toUpperCase().replace(/\s+/g, '')}|${clean(r.day)}|${r.time}`;
+                        return rKey === originalRaidKey;
+                    });
+
+                    let assigned = false;
+
+                    if (originalRaid) {
+                        let currentCount = 0;
+                        if (role === 'tank') currentCount = originalRaid.assigned.filter(p => p.role === 'tank').length;
+                        else if (role === 'healer') currentCount = originalRaid.assigned.filter(p => p.role === 'healer').length;
+                        else if (role === 'melee') currentCount = originalRaid.assigned.filter(p => p.role === 'melee').length;
+                        else if (role === 'ranged') currentCount = originalRaid.assigned.filter(p => p.role === 'ranged' || p.role === 'rango').length;
+
+                        const maxCap = (role === 'tank') ? caps.tank : (role === 'healer') ? caps.healer : (role === 'melee') ? caps.melee : caps.ranged;
+
+                        if (currentCount < maxCap) {
+                            originalRaid.assigned.push(player);
+                            if (!playerSaves.has(player.name)) playerSaves.set(player.name, new Set());
+                            playerSaves.get(player.name)?.add(raidType);
+                            
+                            assignedPlayerIds.add(player.id);
+                            assignments.push({
+                                playerId: player.id,
+                                playerName: player.name,
+                                raidId: originalRaid.raidId,
+                                day: originalRaid.day,
+                                time: originalRaid.time,
+                                raidType
+                            });
+                            assigned = true;
+                        }
+                    }
+
+                    if (assigned) continue;
+
+                    // 2. SEGUNDO: Si su banda pedida está llena o no existe en esta familia, intentar en CUALQUIER OTRA banda de la misma familia
                     for (let i = 0; i < familyRaids.length; i++) {
                         const raid = familyRaids[i];
+                        
+                        // Saltar si es la misma que ya intentamos
+                        const rKey = `${raid.raidId.toUpperCase().replace(/\s+/g, '')}|${clean(raid.day)}|${raid.time}`;
+                        if (rKey === originalRaidKey) continue;
+
                         let currentCount = 0;
                         if (role === 'tank') currentCount = raid.assigned.filter(p => p.role === 'tank').length;
                         else if (role === 'healer') currentCount = raid.assigned.filter(p => p.role === 'healer').length;
@@ -259,6 +349,8 @@ export const GET: APIRoute = async ({ request }) => {
                             raid.assigned.push(player);
                             if (!playerSaves.has(player.name)) playerSaves.set(player.name, new Set());
                             playerSaves.get(player.name)?.add(raidType);
+                            
+                            assignedPlayerIds.add(player.id);
                             assignments.push({
                                 playerId: player.id,
                                 playerName: player.name,
@@ -267,26 +359,32 @@ export const GET: APIRoute = async ({ request }) => {
                                 time: raid.time,
                                 raidType
                             });
-                            break;
+                            break; // Jugador asignado, pasar al siguiente candidato
                         }
                     }
                 }
             }
         }
 
+        // Actualizar estados en la base de datos
+        // 1. Marcar los asignados como 'aceptado' y moverlos al día/hora correspondiente
         for (const assign of assignments) {
-            const existingReg = guildPlayers.find(r => clean(r.player_name) === clean(assign.playerName) && getRaidType(r.raid_id) === assign.raidType);
-            if (existingReg) {
-                await supabase.from('raid_registrations').update({ status: 'aceptado', raid_id: assign.raidId, day_of_week: assign.day, start_time: assign.time }).eq('id', existingReg.id);
-            } else {
-                const { data: duplicate } = await supabase.from('raid_registrations').select('id').eq('player_name', assign.playerName).eq('raid_id', assign.raidId).eq('day_of_week', assign.day).eq('start_time', assign.time).maybeSingle();
-                if (duplicate) {
-                    await supabase.from('raid_registrations').update({ status: 'aceptado' }).eq('id', duplicate.id);
-                } else {
-                    const pInfo = sortedPool.find(p => p.name === assign.playerName);
-                    await supabase.from('raid_registrations').insert({ player_name: assign.playerName, player_class: pInfo?.class || 'Unknown', player_role: pInfo?.role || 'dps', raid_id: assign.raidId, day_of_week: assign.day, start_time: assign.time, status: 'aceptado' });
-                }
-            }
+            await supabase.from('raid_registrations')
+                .update({ 
+                    status: 'aceptado', 
+                    raid_id: assign.raidId, 
+                    day_of_week: assign.day, 
+                    start_time: assign.time 
+                })
+                .eq('id', assign.playerId);
+        }
+
+        // 2. Marcar como 'en_espera' a los jugadores de hermandad que no pudieron ser asignados
+        const unassignedGuildRegs = guildPlayersRegs.filter(reg => !assignedPlayerIds.has(reg.id));
+        if (unassignedGuildRegs.length > 0) {
+            await supabase.from('raid_registrations')
+                .update({ status: 'en_espera' })
+                .in('id', unassignedGuildRegs.map(r => r.id));
         }
 
         const webhookUrl = import.meta.env.DISCORD_WEBHOOK_URL;
@@ -308,7 +406,7 @@ export const GET: APIRoute = async ({ request }) => {
                 avatar_url: "https://colmillo.netlify.app/images/logo.png",
                 embeds: [{
                     title: "✅ Distribución de Raids Completada",
-                    description: `Se han procesado **${assignments.length}** asignaciones exitosas en el roster oficial.\n\n[🔗 Ver Calendario Completo en la Web](https://colmillo.netlify.app/raids)`,
+                    description: `Se han procesado **${assignments.length}** asignaciones exitosas.\n⚠️ **En Espera:** ${registrations.length - assignments.length} (Externos o sin cupo).\n\n[🔗 Ver Calendario Completo en la Web](https://colmillo.netlify.app/raids)`,
                     color: 0x10b981,
                     fields: raidFields,
                     timestamp: new Date().toISOString(),

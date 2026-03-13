@@ -23,7 +23,6 @@ import {
 } from './rosterUtils';
 
 import { DEFAULT_CLASS_INFO } from '../components/roster/rosterConstants';
-import featuredPlayersData from '../data/featuredPlayers.json';
 
 // Local type extensions
 export interface RosterMemberType extends RosterMember {
@@ -143,36 +142,6 @@ export const processRosterMember = (member: any): RosterMemberType => {
     }
   }
 
-  // Recopilar reconocimientos
-  const memberRecognitions: any[] = [];
-  const typedFeaturedData = featuredPlayersData as any;
-  const recognitionsList = typedFeaturedData.recognitions || [];
-
-  Object.entries(typedFeaturedData).forEach(([year, yearData]) => {
-    if (year === 'recognitions') return;
-    Object.entries(yearData as Record<string, any>).forEach(([month, monthData]) => {
-      if (monthData.featuredPlayers) {
-        (monthData.featuredPlayers || []).forEach((fp: any) => {
-          const fpName = String(fp.playerName || '').trim().toLowerCase();
-          const targetName = String(memberData.name || '').trim().toLowerCase();
-          if (fpName === targetName && fpName !== '') {
-            (fp.recognitionIndices || []).forEach((idx: number) => {
-              const rec = recognitionsList[idx];
-              if (rec) {
-                memberRecognitions.push({
-                  ...rec,
-                  date: `${year}-${month.padStart(2, '0')}-01`,
-                });
-              }
-            });
-          }
-        });
-      }
-    });
-  });
-
-  memberRecognitions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
   return {
     ...memberData,
     name: memberData.name || 'Unknown',
@@ -191,7 +160,7 @@ export const processRosterMember = (member: any): RosterMemberType => {
       isValid: noteValidation.isValid,
       missingFields: noteValidation.missingFields || [],
     },
-    recognitions: memberRecognitions,
+    recognitions: [],
     faction: deducedFaction,
   } as RosterMemberType;
 };

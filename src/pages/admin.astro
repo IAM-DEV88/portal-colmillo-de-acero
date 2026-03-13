@@ -12,6 +12,20 @@ import { validatePublicNote } from '../utils/rosterUtils';
 const rosterData = await rosterService.getFormattedRoster();
 const rosterError = null;
 
+// Fetch hidden officers config
+const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_officers').maybeSingle();
+const hiddenOfficers = configData?.value ? JSON.parse(configData.value) : [];
+
+// Identify all officers (players with leaderData.cores)
+const officers = Object.values(rosterData.players || {})
+  .filter((p: any) => p.leaderData && p.leaderData.cores && p.leaderData.cores.length > 0)
+  .map((p: any) => ({
+    name: p.name,
+    class: p.class,
+    isHidden: hiddenOfficers.includes(p.name)
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
 // Define a default raid structure for when we only have a name
 const createRaidFromName = (name: string, id: string = '', gs: number = 5000): any => {
   const nameLower = name.toLowerCase();
@@ -412,6 +426,58 @@ console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not se
               Sube el archivo <code>RaidDominion-main.lua</code> para actualizar la base de datos de jugadores y cores.
             </p>
           </div>
+
+          {/* Hidden Officers Section */}
+          {userRole === 'admin' && (
+            <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-md border border-gray-700/50 shadow-xl mt-6">
+              <h2 class="text-xl font-bold text-white mb-4">Visibilidad de Raids por Oficial</h2>
+              <p class="text-sm text-gray-400 mb-6">
+                Selecciona los oficiales cuyas bandas <strong>no deben mostrarse</strong> en el tablero público de horarios.
+              </p>
+              
+              <form 
+                action="/api/admin/update-config" 
+                method="POST"
+                x-data={`{ 
+                  hidden: ${JSON.stringify(hiddenOfficers)},
+                  updateValue() {
+                    const checkboxes = document.querySelectorAll('.officer-toggle:checked');
+                    this.hidden = Array.from(checkboxes).map(cb => cb.value);
+                  }
+                }`}
+              >
+                <input type="hidden" name="key" value="hidden_officers" />
+                <input type="hidden" name="value" :value="JSON.stringify(hidden)" />
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar mb-6">
+                  {officers.map(officer => (
+                    <label class="flex items-center space-x-3 p-3 bg-gray-900/40 rounded-lg border border-white/5 cursor-pointer hover:bg-white/5 transition-all group">
+                      <input 
+                        type="checkbox" 
+                        class="officer-toggle w-5 h-5 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-amber-500/50"
+                        value={officer.name}
+                        checked={officer.isHidden}
+                        @change="updateValue()"
+                      />
+                      <div class="flex flex-col">
+                        <span class="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">{officer.name}</span>
+                        <span class="text-[10px] text-gray-500 font-medium uppercase tracking-tight">{officer.class}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+
+                <div class="flex justify-end">
+                  <button
+                    type="submit"
+                    class="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-md shadow-lg shadow-amber-900/20 text-sm font-black uppercase tracking-widest transition-all active:scale-95"
+                  >
+                    Guardar Cambios
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
 
           {isLoading ? (
             <div class="flex justify-center items-center h-64">

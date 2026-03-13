@@ -43,7 +43,15 @@ export async function getAllRaidSchedules(forceFresh = false): Promise<RaidSched
   const rosterData = await rosterService.getFormattedRoster(forceFresh);
   if (!rosterData || !rosterData.players) return [];
 
+  // Obtener oficiales ocultos de la configuración
+  const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_officers').maybeSingle();
+  const hiddenOfficersRaw: string[] = configData?.value ? JSON.parse(configData.value) : [];
+  const hiddenOfficers = hiddenOfficersRaw.map(name => name.toLowerCase().trim());
+
   Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
+    // Filtrar oficiales ocultos (Insensible a mayúsculas)
+    if (!playerName || hiddenOfficers.includes(playerName.toLowerCase().trim())) return;
+
     const leaderData = member.leaderData;
     if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
 
