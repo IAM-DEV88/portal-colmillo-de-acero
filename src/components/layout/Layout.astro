@@ -87,9 +87,6 @@ const socialImageURL = new URL(image, Astro.url);
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <!-- Script de Publicidad Externo Adicional (Social Bar / In-Page Push) -->
-    <script type="text/javascript" src="https://pl28913422.effectivegatecpm.com/a8/c5/0d/a8c50da8602fc7be65009128a0a3afbd.js" is:inline></script>
-
     <!-- Hide Astro dev toolbar in development -->
     {import.meta.env.DEV && (
       <style>
@@ -131,7 +128,7 @@ const socialImageURL = new URL(image, Astro.url);
       <Navigation />
       
       {/* Banner de Anuncios Responsivo con Aislamiento de Iframe */}
-      <div class="mt-28 mb-4 px-4 overflow-hidden relative z-10 flex flex-col items-center"> 
+      <center class="mt-28 mb-4 px-4 overflow-hidden"> 
         <div class="mobileShow">
           <iframe 
             srcdoc={`
@@ -183,14 +180,14 @@ const socialImageURL = new URL(image, Astro.url);
             style="border:none; overflow:hidden;"
           ></iframe>
         </div>
-      </div>
+      </center>
 
       <main class="min-h-screen relative z-10 pb-4 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <slot />
       </main>
 
       {/* Nuevo Banner de Apoyo a la Comunidad antes del Footer */}
-      <div class="mb-12 px-4 overflow-hidden relative z-10 flex flex-col items-center">
+      <center class="mb-12 px-4 overflow-hidden relative z-10">
         <div class="max-w-3xl mx-auto mb-4 p-4 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-blue-900/20 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl">
           <p class="text-amber-200/90 text-xs md:text-sm font-bold uppercase tracking-widest italic flex items-center justify-center gap-3">
             <svg class="w-5 h-5 text-amber-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
@@ -254,7 +251,7 @@ const socialImageURL = new URL(image, Astro.url);
             style="border:none; overflow:hidden;"
           ></iframe>
         </div>
-      </div>
+      </center>
       
       <!-- {/* Floating Action Button - Only show on home page */}
       {Astro.url.pathname === '/' && (
