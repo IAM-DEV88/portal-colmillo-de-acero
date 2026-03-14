@@ -87,6 +87,9 @@ const socialImageURL = new URL(image, Astro.url);
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
+    <!-- Script de Publicidad Externo Adicional (Social Bar / In-Page Push) -->
+    <script type="text/javascript" src="https://pl28913422.effectivegatecpm.com/a8/c5/0d/a8c50da8602fc7be65009128a0a3afbd.js" is:inline></script>
+
     <!-- Hide Astro dev toolbar in development -->
     {import.meta.env.DEV && (
       <style>
@@ -128,7 +131,7 @@ const socialImageURL = new URL(image, Astro.url);
       <Navigation />
       
       {/* Banner de Anuncios Responsivo con Aislamiento de Iframe */}
-      <center class="mt-28 mb-4 px-4 overflow-hidden"> 
+      <div class="mt-28 mb-4 px-4 overflow-hidden relative z-10 flex flex-col items-center"> 
         <div class="mobileShow">
           <iframe 
             srcdoc={`
@@ -180,11 +183,78 @@ const socialImageURL = new URL(image, Astro.url);
             style="border:none; overflow:hidden;"
           ></iframe>
         </div>
-      </center>
+      </div>
 
       <main class="min-h-screen relative z-10 pb-4 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <slot />
       </main>
+
+      {/* Nuevo Banner de Apoyo a la Comunidad antes del Footer */}
+      <div class="mb-12 px-4 overflow-hidden relative z-10 flex flex-col items-center">
+        <div class="max-w-3xl mx-auto mb-4 p-4 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-blue-900/20 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl">
+          <p class="text-amber-200/90 text-xs md:text-sm font-bold uppercase tracking-widest italic flex items-center justify-center gap-3">
+            <svg class="w-5 h-5 text-amber-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+            </svg>
+            Con un solo clic en la publicidad, ayudas enormemente a mantener viva nuestra comunidad. ¡Gracias!
+            <svg class="w-5 h-5 text-amber-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+            </svg>
+          </p>
+        </div>
+
+        <div class="mobileShow">
+          <iframe 
+            srcdoc={`
+              <html>
+                <body style="margin:0; padding:0; display:flex; justify-content:center;">
+                  <script type="text/javascript">
+                    atOptions = {
+                      'key' : 'bc3afce27a408298cd40496786edc9ca',
+                      'format' : 'iframe',
+                      'height' : 50,
+                      'width' : 320,
+                      'params' : {}
+                    };
+                  </script>
+                  <script type="text/javascript" src="https://www.highperformanceformat.com/bc3afce27a408298cd40496786edc9ca/invoke.js"></script>
+                </body>
+              </html>
+            `}
+            width="320"
+            height="50"
+            frameborder="0"
+            scrolling="no"
+            style="border:none; overflow:hidden;"
+          ></iframe>
+        </div>
+
+        <div class="mobileHide">
+          <iframe 
+            srcdoc={`
+              <html>
+                <body style="margin:0; padding:0; display:flex; justify-content:center;">
+                  <script type="text/javascript">
+                    atOptions = {
+                      'key' : '93c2b6087ec5ee18108cbc64fb95d610',
+                      'format' : 'iframe',
+                      'height' : 90,
+                      'width' : 728,
+                      'params' : {}
+                    };
+                  </script>
+                  <script type="text/javascript" src="https://www.highperformanceformat.com/93c2b6087ec5ee18108cbc64fb95d610/invoke.js"></script>
+                </body>
+              </html>
+            `}
+            width="728"
+            height="90"
+            frameborder="0"
+            scrolling="no"
+            style="border:none; overflow:hidden;"
+          ></iframe>
+        </div>
+      </div>
       
       <!-- {/* Floating Action Button - Only show on home page */}
       {Astro.url.pathname === '/' && (
