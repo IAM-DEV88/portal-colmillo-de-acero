@@ -1,6 +1,7 @@
 ---
 import Layout from '../components/layout/Layout.astro';
 import { supabase } from '../lib/supabase';
+import ShareButton from '../components/guides/ShareButton.astro';
 
 // Categorías solicitadas
 const categories = ["Mecánicas", "Especialización", "Profesiones", "Leveo"];
@@ -320,14 +321,15 @@ votesData?.forEach(v => {
                   {guide.description}
                 </p>
 
-                <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5 gap-3">
                   <a
                     href={guide.href}
-                    class={`inline-flex items-center px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest ${classes.btnBg} ${classes.btnText} ${classes.btnHoverBg} group-hover:text-white transition-all`}
+                    class={`flex-grow inline-flex items-center justify-center px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest ${classes.btnBg} ${classes.btnText} ${classes.btnHoverBg} group-hover:text-white transition-all`}
                   >
                     Leer Guía
                     <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                   </a>
+                  <ShareButton url={`https://portal.colmillo.com${guide.href}`} variant="compact" />
                 </div>
               </div>
             </div>

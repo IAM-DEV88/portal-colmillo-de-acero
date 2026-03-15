@@ -1,5 +1,6 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
+import ShareButton from '../../components/guides/ShareButton.astro';
 ---
 
 <Layout 
@@ -8,8 +9,8 @@ import Layout from '../../components/layout/Layout.astro';
 >
   <main class="">
     <div class="max-w-5xl mx-auto">
-      <!-- Botón Volver -->
-      <div class="mb-8 flex items-center">
+      <!-- Botón Volver y Compartir -->
+      <div class="mb-8 flex items-center justify-between gap-4">
         <a 
           href="/guides?category=Mecánicas" 
           class="flex items-center gap-3 px-5 py-2.5 rounded-lg bg-gray-900/60 border border-white/5 text-gray-400 hover:text-amber-400 hover:border-amber-500/30 transition-all text-[10px] font-black uppercase tracking-[0.2em] no-underline group backdrop-blur-md shadow-lg"
@@ -17,6 +18,7 @@ import Layout from '../../components/layout/Layout.astro';
           <i class="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
           Volver al Portal
         </a>
+        <ShareButton variant="full" />
       </div>
 
       <!-- Header -->
