@@ -1,0 +1,95 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import WoWCharacterPanel from '../../components/guides/WoWCharacterPanel.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+const guideId = 'brujo-afliccion-335a';
+
+const specData = {
+  specName: "Aflicción",
+  className: "Brujo",
+  classColor: "purple", // Warlock purple
+  stats: [
+    { 
+      label: "Índice de Golpe (Hit)", 
+      value: "11% (289 pts)", 
+      detail: "Con el talento 'Supresión' (3/3), necesitas un 11% para alcanzar el cap de hechizos contra jefes (17%)." 
+    },
+    { 
+      label: "Celeridad (Haste)", 
+      value: "1100 - 1300", 
+      detail: "Tu estadística secundaria más importante. Aumenta la velocidad de tus DoTs y reduce el tiempo de casteo de tus hechizos principales." 
+    },
+    { 
+      label: "Crítico", 
+      value: "Media", 
+      detail: "Útil para 'Ocaso' y daños explosivos ocasionales, pero escala menos que la Celeridad para Aflicción." 
+    },
+    { 
+      label: "Poder con Hechizos (SP)", 
+      value: "Máximo posible", 
+      detail: "Escala masivamente con tus DoTs. Nunca es suficiente SP para un Brujo Aflicción." 
+    }
+  ],
+  bisItems: [
+    { slot: "Cabeza", name: "Caperuza de tejedor de muerte santificada", source: "ICC 25H - Set T10", quality: "epic", id: 51242, icon: "inv_helmet_152" },
+    { slot: "Cuello", name: "Amuleto de la elegía silenciosa", source: "ICC 25H - Lady Susurramuerte", quality: "epic", id: 50658, icon: "inv_jewelry_necklace_43" },
+    { slot: "Hombros", name: "Hombreras de tejedor de muerte santificadas", source: "ICC 25H - Set T10", quality: "epic", id: 51244, icon: "inv_shoulder_120" },
+    { slot: "Espalda", name: "Capa de invierno real", source: "ICC 25H - Barco", quality: "epic", id: 50628, icon: "item_icecrowncloakb" },
+    { slot: "Pecho", name: "Toga de tejedor de muerte santificada", source: "ICC 25H - Set T10", quality: "epic", id: 51240, icon: "inv_chest_cloth_52" },
+    { slot: "Muñeca", name: "Brazales de noche eterna", source: "ICC 25H - Tuétano", quality: "epic", id: 50601, icon: "inv_bracer_37" },
+    { slot: "Manos", name: "Guantes de tejedor de muerte santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51241, icon: "inv_gauntlets_82" },
+    { slot: "Cintura", name: "Cordón de la reina de sangre", source: "ICC 25H - Reina Lana'thel", quality: "epic", id: 50706, icon: "inv_belt_61" },
+    { slot: "Piernas", name: "Pantalones de tejedor de muerte santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51243, icon: "inv_pants_cloth_33" },
+    { slot: "Pies", name: "Botas de crecimiento vacilante", source: "ICC 25H - Carapútrea", quality: "epic", id: 50664, icon: "inv_boots_cloth_24" },
+    { slot: "Anillo 1", name: "Sortija Cinérea de sabiduría infinita", source: "Reputación Veredicto Cinéreo", quality: "epic", id: 50398, icon: "inv_jewelry_ring_84" },
+    { slot: "Anillo 2", name: "Bucle del Gran Traidor", source: "ICC 25H - Tuétano", quality: "epic", id: 50614, icon: "inv_jewelry_ring_82" },
+    { slot: "Abalorio 1", name: "Filacteria del exánime innombrable", source: "ICC 25H - Sindragosa", quality: "epic", id: 50365, icon: "inv_jewelry_trinket_03" },
+    { slot: "Abalorio 2", name: "Escama Crepuscular carbonizada", source: "RS 25H - Halion", quality: "epic", id: 54588, icon: "inv_misc_rubysanctum2" },
+    { slot: "Arma 1H", name: "Oleada de sangre, hoja de agonía de Kel'Thuzad", source: "ICC 25H - Lich King", quality: "epic", id: 50732, icon: "inv_sword_150" },
+    { slot: "Off-hand", name: "Reloj de sol del anochecer eterno", source: "ICC 25H - Sindragosa", quality: "epic", id: 50719, icon: "inv_offhand_item_04" },
+    { slot: "Varita", name: "Varita de pesadilla de seda", source: "ICC 25H - Carapútrea", quality: "epic", id: 50635, icon: "inv_wand_30" }
+  ],
+  gems: [
+    { type: "meta", name: "Diamante de llama de cielo caótico", stat: "+21 Índice de golpe crítico y 3% Daño crítico aumentado", id: 41285, icon: "inv_misc_gem_diamond_07" },
+    { type: "red", name: "Rubí cardeno rúnico", stat: "+23 Poder con Hechizos", id: 40113, icon: "inv_misc_gem_ruby_01" },
+    { type: "orange", name: "Ametrino temerario", stat: "+12 Poder con Hechizos y +10 Celeridad", id: 40155, icon: "inv_misc_gem_topaz_02" },
+    { type: "blue", name: "Piedra de terror purificada", stat: "+12 Poder con Hechizos y +10 Espíritu", id: 40133, icon: "inv_misc_gem_ebonshadow_02" }
+  ],
+  enchants: [
+    { slot: "Arma", name: "Poder con hechizos poderoso", stat: "+63 Poder con Hechizos", id: 44467, icon: "spell_holy_greaterblessingofkings" },
+    { slot: "Cabeza", name: "Arcanum de misterios ardientes", stat: "+30 Poder con Hechizos y +20 Crítico", id: 59959, icon: "inv_misc_armorkit_28" },
+    { slot: "Hombros", name: "Inscripción de la tormenta superior", stat: "+24 Poder con Hechizos y +15 Crítico", id: 59936, icon: "ability_shaman_lavaburst" },
+    { slot: "Pecho", name: "Estadísticas potentes", stat: "+10 a todas las estadísticas", id: 60662, icon: "spell_holy_greaterblessingofkings" }
+  ],
+  rotation: [
+    { name: "Haunt (Poseer)", description: "Mantén este debuff al 100% de tiempo. Aumenta el daño de todos tus DoTs.", priority: 1 },
+    { name: "Inestable / Corrupción / Maldición de Agonía", description: "Mantén todos tus DoTs activos. Corrupción se refresca con Poseer.", priority: 2 },
+    { name: "Drenar Alma (Fase Execute)", description: "Cuando el jefe esté por debajo del 25% de vida, Drenar Alma se convierte en tu principal fuente de daño.", priority: 3 },
+    { name: "Descarga de Sombras / Llama de Sombras", description: "Usa Descarga de Sombras como relleno. Llama de Sombras solo si estás a rango de melé.", priority: 4 },
+    { name: "Life Tap (Transfusión)", description: "Mantén el buff de 'Transfusión de vida' activo para un aumento de SP extra.", priority: 5 }
+  ]
+};
+---
+
+<Layout 
+  title="Guía Brujo Aflicción 3.3.5a " 
+  description="Guía del Brujo Aflicción para WotLK 3.3.5a. Equipo BIS, caps de celeridad, gemas y rotación de DoTs."
+>
+  <div>
+    <WoWCharacterPanel {...specData}>
+      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_shadow_deathcoil.jpg" alt="Affli" class="w-full h-full object-cover" />
+    </WoWCharacterPanel>
+
+    <div class="mt-4">
+      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
+      <GuideInteractions guide_id={guideId} />
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .text-purple-400 { color: #9482C9; }
+  .border-purple-500\/30 { border-color: rgba(148, 130, 201, 0.3); }
+  .bg-purple-500\/10 { background-color: rgba(148, 130, 201, 0.1); }
+</style>

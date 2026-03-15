@@ -1,0 +1,95 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import WoWCharacterPanel from '../../components/guides/WoWCharacterPanel.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+const guideId = 'druida-restauracion-335a';
+
+const specData = {
+  specName: "Restauración",
+  className: "Druida",
+  classColor: "orange", // Druid orange
+  stats: [
+    { 
+      label: "Poder con Hechizos (SP)", 
+      value: "Máximo posible", 
+      detail: "Tu estadística más importante. Aumenta la sanación de todos tus hechizos, especialmente tus HoTs (sanación en el tiempo)." 
+    },
+    { 
+      label: "Celeridad (Haste)", 
+      value: "856 (Soft Cap)", 
+      detail: "Con el bonus de 4 piezas del T10 y talentos, 856 de celeridad reduce el GCD de Recrecimiento y Nutrir a 1 segundo." 
+    },
+    { 
+      label: "Espíritu (Spirit)", 
+      value: "Alto", 
+      detail: "Proporciona regeneración de maná constante y se convierte en Poder con Hechizos gracias al talento 'Forma de Árbol de vida'." 
+    },
+    { 
+      label: "Crítico", 
+      value: "Secundario", 
+      detail: "Útil para Nutrir y Recrecimiento, pero menos prioritario que el SP y la Celeridad para un estilo de juego basado en HoTs." 
+    }
+  ],
+  bisItems: [
+    { slot: "Cabeza", name: "Cubrecabeza de tejeascuas santificado", source: "ICC 25H - Set T10", quality: "epic", id: 51297, icon: "inv_helmet_153" },
+    { slot: "Cuello", name: "Amuleto de la elegía silenciosa", source: "ICC 25H - Lady Susurramuerte", quality: "epic", id: 50658, icon: "inv_jewelry_necklace_43" },
+    { slot: "Hombros", name: "Manto de tejeascuas santificado", source: "ICC 25H - Set T10", quality: "epic", id: 51299, icon: "inv_shoulder_121" },
+    { slot: "Espalda", name: "Capa de invierno real", source: "ICC 25H - Barco", quality: "epic", id: 50628, icon: "item_icecrowncloakb" },
+    { slot: "Pecho", name: "Vestiduras de tejeascuas santificadas", source: "ICC 25H - Set T10", quality: "epic", id: 51295, icon: "inv_chest_leather_24" },
+    { slot: "Muñeca", name: "Brazales de noche eterna", source: "ICC 25H - Tuétano", quality: "epic", id: 50601, icon: "inv_bracer_37" },
+    { slot: "Manos", name: "Guantes de tejeascuas santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51296, icon: "inv_gauntlets_83" },
+    { slot: "Cintura", name: "Cordón de la reina de sangre", source: "ICC 25H - Reina Lana'thel", quality: "epic", id: 50706, icon: "inv_belt_61" },
+    { slot: "Piernas", name: "Pantalones de tejeascuas santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51298, icon: "inv_pants_leather_23" },
+    { slot: "Pies", name: "Botas de crecimiento vacilante", source: "ICC 25H - Panzachancro", quality: "epic", id: 50664, icon: "inv_boots_cloth_24" },
+    { slot: "Anillo 1", name: "Sortija Cinérea de sabiduría infinita", source: "Reputación Veredicto Cinéreo", quality: "epic", id: 50398, icon: "inv_jewelry_ring_84" },
+    { slot: "Anillo 2", name: "Memoria de Malygos", source: "ICC 25H - Sindragosa", quality: "epic", id: 50636, icon: "inv_jewelry_ring_82" },
+    { slot: "Abalorio 1", name: "Ábaco de Althor", source: "ICC 25H - Barco", quality: "epic", id: 50359, icon: "inv_jewelry_trinket_02" },
+    { slot: "Abalorio 2", name: "Escama Crepuscular resplandeciente", source: "RS 25H - Halion", quality: "epic", id: 54589, icon: "inv_misc_rubysanctum4" },
+    { slot: "Arma 1H", name: "Trauma", source: "ICC 25H - Carapútrea", quality: "epic", id: 50605, icon: "inv_mace_115" },
+    { slot: "Mano izquierda", name: "Reloj de sol del anochecer eterno", source: "ICC 25H - Sindragosa", quality: "epic", id: 50719, icon: "inv_offhand_item_04" },
+    { slot: "Ídolo", name: "Ídolo del crecimiento exuberante", source: "Emblemas de Escarcha", quality: "epic", id: 50454, icon: "inv_misc_idol_02" }
+  ],
+  gems: [
+    { type: "meta", name: "Diamante de llama de cielo de ascuas", stat: "+25 Poder con Hechizos y 2% Maná máximo", id: 41401, icon: "inv_misc_gem_diamond_07" },
+    { type: "red", name: "Rubí cardeno rúnico", stat: "+23 Poder con Hechizos", id: 40113, icon: "inv_misc_gem_ruby_01" },
+    { type: "orange", name: "Ametrino temerario", stat: "+12 Poder con Hechizos y +10 Celeridad", id: 40155, icon: "inv_misc_gem_topaz_02" },
+    { type: "blue", name: "Piedra de terror purificada", stat: "+12 Poder con Hechizos y +10 Espíritu", id: 40133, icon: "inv_misc_gem_ebonshadow_02" }
+  ],
+  enchants: [
+    { slot: "Arma", name: "Poder con hechizos poderoso", stat: "+63 Poder con Hechizos", id: 44467, icon: "spell_holy_greaterblessingofkings" },
+    { slot: "Cabeza", name: "Arcanum de misterios luminosos", stat: "+30 Poder con Hechizos y +10 regeneración de maná", id: 59960, icon: "inv_misc_armorkit_28" },
+    { slot: "Hombros", name: "Inscripción del risco superior", stat: "+24 Poder con Hechizos y +8 regeneración de maná", id: 59937, icon: "ability_shaman_lavaburst" },
+    { slot: "Pecho", name: "Estadísticas potentes", stat: "+10 a todas las estadísticas", id: 60662, icon: "spell_holy_greaterblessingofkings" }
+  ],
+  rotation: [
+    { name: "Crecimiento Salvaje", description: "Úsalo siempre que el CD esté disponible si hay daño en banda. Tu HoT de área más potente.", priority: 1 },
+    { name: "Rejuvenecimiento", description: "Mantén este HoT en tantos objetivos como sea posible antes de que reciban daño.", priority: 2 },
+    { name: "Flor de Vida", description: "Úsalo principalmente en el tanque para mantener la sanación constante y recuperar maná al expirar.", priority: 3 },
+    { name: "Nutrir", description: "Tu hechizo de sanación directa rápido. Úsalo para levantar vidas bajas si los HoTs no son suficientes.", priority: 4 },
+    { name: "Alivio Prematuro", description: "Consumir un Rejuvenecimiento o Crecimiento para una sanación instantánea crítica.", priority: 5 }
+  ]
+};
+---
+
+<Layout 
+  title="Guía Druida Restauración 3.3.5a " 
+  description="Guía del Druida Healer (Restauración) para WotLK 3.3.5a. Equipo BIS, caps de celeridad, gemas y rotación de HoTs."
+>
+  <div>
+    <WoWCharacterPanel {...specData}>
+      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_nature_healingtouch.jpg" alt="Resto" class="w-full h-full object-cover" />
+    </WoWCharacterPanel>
+
+    <div class="mt-4">
+      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
+      <GuideInteractions guide_id={guideId} />
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .text-orange-400 { color: #FF7D0A; }
+  .border-orange-500\/30 { border-color: rgba(255, 125, 10, 0.3); }
+  .bg-orange-500\/10 { background-color: rgba(255, 125, 10, 0.1); }
+</style>

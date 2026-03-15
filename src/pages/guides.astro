@@ -1,170 +1,358 @@
 ---
 import Layout from '../components/layout/Layout.astro';
+import { supabase } from '../lib/supabase';
+
+// Categorías solicitadas
+const categories = ["Mecánicas", "Especialización", "Profesiones", "Leveo"];
+
+// Mapeo de colores a clases reales de Tailwind para evitar problemas con JIT
+const colorClasses: Record<string, any> = {
+  blue: {
+    border: "border-blue-900/30",
+    hoverBorder: "hover:border-blue-800/50",
+    shadow: "hover:shadow-blue-500/5",
+    iconBg: "bg-blue-500/10",
+    iconBorder: "border-blue-500/20",
+    iconText: "text-blue-400",
+    btnBg: "bg-blue-500/10",
+    btnText: "text-blue-400",
+    btnHoverBg: "group-hover:bg-blue-500"
+  },
+  red: {
+    border: "border-red-900/30",
+    hoverBorder: "hover:border-red-800/50",
+    shadow: "hover:shadow-red-500/5",
+    iconBg: "bg-red-500/10",
+    iconBorder: "border-red-500/20",
+    iconText: "text-red-400",
+    btnBg: "bg-red-500/10",
+    btnText: "text-red-400",
+    btnHoverBg: "group-hover:bg-red-500"
+  },
+  purple: {
+    border: "border-purple-900/30",
+    hoverBorder: "hover:border-purple-800/50",
+    shadow: "hover:shadow-purple-500/5",
+    iconBg: "bg-purple-500/10",
+    iconBorder: "border-purple-500/20",
+    iconText: "text-purple-400",
+    btnBg: "bg-purple-500/10",
+    btnText: "text-purple-400",
+    btnHoverBg: "group-hover:bg-purple-500"
+  },
+  amber: {
+    border: "border-amber-900/30",
+    hoverBorder: "hover:border-amber-800/50",
+    shadow: "hover:shadow-amber-500/5",
+    iconBg: "bg-amber-500/10",
+    iconBorder: "border-amber-500/20",
+    iconText: "text-amber-400",
+    btnBg: "bg-amber-500/10",
+    btnText: "text-amber-400",
+    btnHoverBg: "group-hover:bg-amber-500"
+  },
+  pink: {
+    border: "border-pink-900/30",
+    hoverBorder: "hover:border-pink-800/50",
+    shadow: "hover:shadow-pink-500/5",
+    iconBg: "bg-pink-500/10",
+    iconBorder: "border-pink-500/20",
+    iconText: "text-pink-400",
+    btnBg: "bg-pink-500/10",
+    btnText: "text-pink-400",
+    btnHoverBg: "group-hover:bg-pink-500"
+  },
+  orange: {
+    border: "border-orange-900/30",
+    hoverBorder: "hover:border-orange-800/50",
+    shadow: "hover:shadow-orange-500/5",
+    iconBg: "bg-orange-500/10",
+    iconBorder: "border-orange-500/20",
+    iconText: "text-orange-400",
+    btnBg: "bg-orange-500/10",
+    btnText: "text-orange-400",
+    btnHoverBg: "group-hover:bg-orange-500"
+  },
+  yellow: {
+    border: "border-yellow-900/30",
+    hoverBorder: "hover:border-yellow-800/50",
+    shadow: "hover:shadow-yellow-500/5",
+    iconBg: "bg-yellow-500/10",
+    iconBorder: "border-yellow-500/20",
+    iconText: "text-yellow-400",
+    btnBg: "bg-yellow-500/10",
+    btnText: "text-yellow-400",
+    btnHoverBg: "group-hover:bg-yellow-500"
+  },
+  // Para Guerrero usamos un tono café/naranja (amber/orange) ya que brown no es estándar
+  warrior: {
+    border: "border-orange-900/30",
+    hoverBorder: "hover:border-orange-800/50",
+    shadow: "hover:shadow-orange-500/5",
+    iconBg: "bg-orange-500/10",
+    iconBorder: "border-orange-500/20",
+    iconText: "text-orange-400",
+    btnBg: "bg-orange-500/10",
+    btnText: "text-orange-400",
+    btnHoverBg: "group-hover:bg-orange-500"
+  }
+};
+
+// Guías estáticas (se podrían mover a un JSON si crecen mucho)
+const staticGuides = [
+  {
+    id: "icc-heroico",
+    title: "ICC 25 Heroico - Mecánicas",
+    category: "Mecánicas",
+    description: "Guía completa de las mecánicas de ICC 25 Heroico con navegación por tiempo",
+    href: "/guides/icc-heroico",
+    icon: "fa-skull",
+    color: "blue"
+  },
+  {
+    id: "halion-rs",
+    title: "Halion - Sagrario Rubí",
+    category: "Mecánicas",
+    description: "Colección de guías visuales y estrategias para el encuentro de Halion 25H/N",
+    href: "/guides/halion-rs",
+    icon: "fa-dragon",
+    color: "red"
+  },
+  {
+    id: "toc",
+    title: "Prueba del Cruzado (ToC)",
+    category: "Mecánicas",
+    description: "Guía completa de todos los encuentros de ToC 25H/N",
+    href: "/guides/toc",
+    icon: "fa-shield-alt",
+    color: "purple"
+  },
+  {
+    id: "nota-publica",
+    title: "Guía de Nota Pública",
+    category: "Leveo",
+    description: "Aprende a configurar tu nota pública para participar en el sistema de raids",
+    href: "/guides/nota-publica",
+    icon: "fa-file-alt",
+    color: "amber"
+  },
+  {
+    id: "paladin-retribucion-335a",
+    title: "Paladín Retribución 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Paladín Retribución para WotLK. Equipo BIS, gemas, encantamientos y rotación para ICC 25 Heroico.",
+    href: "/guides/paladin-retribucion-335a",
+    icon: "fa-hammer",
+    color: "pink"
+  },
+  {
+    id: "paladin-proteccion-335a",
+    title: "Paladín Protección 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Paladín Tanque para WotLK. Equipo BIS, cap de defensa, gemas, encantamientos y rotación 96969.",
+    href: "/guides/paladin-proteccion-335a",
+    icon: "fa-shield-alt",
+    color: "pink"
+  },
+  {
+    id: "druida-restauracion-335a",
+    title: "Druida Restauración 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Druida Healer. Equipo BIS, caps de celeridad, gemas y rotación de HoTs.",
+    href: "/guides/druida-restauracion-335a",
+    icon: "fa-leaf",
+    color: "orange"
+  },
+  {
+    id: "druida-equilibrio-335a",
+    title: "Druida Equilibrio 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Druida Cásterr (Pollo). Equipo BIS, caps de celeridad y rotación de Eclipses.",
+    href: "/guides/druida-equilibrio-335a",
+    icon: "fa-moon",
+    color: "orange"
+  },
+  {
+    id: "brujo-afliccion-335a",
+    title: "Brujo Aflicción 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Brujo Aflicción. Equipo BIS, caps de celeridad y rotación de DoTs.",
+    href: "/guides/brujo-afliccion-335a",
+    icon: "fa-ghost",
+    color: "purple"
+  },
+  {
+    id: "brujo-demonologia-335a",
+    title: "Brujo Demonología 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Brujo Buff (Demo). Equipo BIS, gemas de SP y rotación de Metamorfosis.",
+    href: "/guides/brujo-demonologia-335a",
+    icon: "fa-fire-alt",
+    color: "purple"
+  },
+  {
+    id: "guerrero-furia-335a",
+    title: "Guerrero Furia 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Guerrero Furia. Equipo BIS, cap de ArP (100%) y rotación explosiva.",
+    href: "/guides/guerrero-furia-335a",
+    icon: "fa-fire",
+    color: "warrior"
+  },
+  {
+    id: "guerrero-proteccion-335a",
+    title: "Guerrero Protección 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Guerrero Tanque. Equipo BIS, cap de defensa y rotación de mitigación.",
+    href: "/guides/guerrero-proteccion-335a",
+    icon: "fa-shield-alt",
+    color: "warrior"
+  },
+  {
+    id: "chaman-restauracion-335a",
+    title: "Chamán Restauración 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Chamán Healer. Equipo BIS, cap de celeridad y sanación de banda.",
+    href: "/guides/chaman-restauracion-335a",
+    icon: "fa-water",
+    color: "blue"
+  },
+  {
+    id: "chaman-mejora-335a",
+    title: "Chamán Mejora 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Chamán Melé. Equipo BIS, cap de celeridad y rotación de Vorágine.",
+    href: "/guides/chaman-mejora-335a",
+    icon: "fa-bolt",
+    color: "blue"
+  },
+  {
+    id: "picaro-combate-335a",
+    title: "Pícaro Combate 3.3.5a",
+    category: "Especialización",
+    description: "Guía del Pícaro Combate. Equipo BIS, cap de ArP (100%) y rotación de remates.",
+    href: "/guides/picaro-combate-335a",
+    icon: "fa-khanda",
+    color: "yellow"
+  }
+];
+
+// Obtener votos de Supabase
+const { data: votesData } = await supabase.from('guide_votes').select('guide_id');
+const votesCount: Record<string, number> = {};
+votesData?.forEach(v => {
+  votesCount[v.guide_id] = (votesCount[v.guide_id] || 0) + 1;
+});
 ---
 
 <Layout 
   title="Guías de Raid y Addons" 
   description="Domina el contenido PvE de WoW 3.3.5a con nuestras guías detalladas. Estrategias para ICC, Halion, configuración de addons y notas públicas."
 >
-  <!-- Main Container -->
-  <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
+  <main 
+    class="" 
+    x-data="{ 
+      activeCategory: 'Mecánicas',
+      init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+        if (category) {
+          this.activeCategory = category;
+        }
+      }
+    }"
+  >
+    <div class="max-w-6xl mx-auto">
       <!-- Header -->
       <header class="text-center mb-12 animate-fade-in">
-        <h1
-          class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-title tracking-wider"
-        >
-          GUÍAS
+        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-title tracking-wider uppercase">
+          Portal de Guías
         </h1>
-        <div
-          class="w-48 h-0.5 bg-gradient-to-r from-amber-900/0 via-amber-500/80 to-amber-900/0 mx-auto my-6"
-        >
-        </div>
+        <p class="text-gray-400 mt-2 text-sm max-w-lg mx-auto italic">
+          Aprende, domina y comparte tus conocimientos con la comunidad de Colmillo de Acero.
+        </p>
+        <div class="w-48 h-0.5 bg-gradient-to-r from-amber-900/0 via-amber-500/80 to-amber-900/0 mx-auto my-6"></div>
       </header>
 
+      <!-- Category Navigation -->
+      <div class="flex flex-wrap justify-center gap-3 mb-12">
+        {categories.map(cat => (
+          <button
+            @click={`activeCategory = '${cat}'`}
+            class="px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all border-2"
+            :class={`activeCategory === '${cat}' ? 'bg-amber-600 border-amber-500 text-white shadow-lg shadow-amber-900/40 scale-105' : 'bg-gray-900/40 border-white/5 text-gray-500 hover:text-gray-300 hover:border-white/10'`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       <!-- Guides Grid -->
-      <div class="grid gap-6">
-        <!-- Guía de ICC Heroico -->
-        <a
-          href="/guides/icc-heroico"
-          class="relative group bg-gray-900/60 backdrop-blur-sm border border-blue-900/30 rounded-md p-6 transition-all duration-300 hover:border-blue-800/50 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5 overflow-hidden animate-fade-in opacity-0"
-          style="animation-delay: 0.3s;"
-        >
-          <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-          <div class="relative z-10">
-            <div class="flex items-start justify-between">
-              <div>
-                <h2
-                  class="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors"
-                >
-                  <i class="fas fa-skull text-blue-400 mr-2"></i>
-                  ICC 25 Heroico - Mecánicas
-                </h2>
-                <p class="text-blue-100/70 text-sm">
-                  Guía completa de las mecánicas de ICC 25 Heroico con navegación por tiempo
-                </p>
-              </div>
-              <span
-                class="text-blue-400 text-2xl ml-4 group-hover:translate-x-1 transition-transform"
-                >→</span
-              >
-            </div>
-            <div class="mt-5 pt-4 border-t border-blue-900/20">
-              <span
-                class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20 transition-colors"
-              >
-                Ver Guía Completa
-              </span>
-            </div>
-          </div>
-        </a>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {staticGuides.map(guide => {
+          const classes = colorClasses[guide.color] || colorClasses.blue;
+          return (
+            <div 
+              x-show={`activeCategory === '${guide.category}'`}
+              x-transition:enter="transition ease-out duration-300"
+              x-transition:enter-start="opacity-0 transform translate-y-4"
+              x-transition:enter-end="opacity-100 transform translate-y-0"
+              class={`relative group bg-gray-900/60 backdrop-blur-sm border ${classes.border} rounded-lg p-6 transition-all duration-300 ${classes.hoverBorder} ${classes.shadow} hover:-translate-y-1 overflow-hidden`}
+            >
+              <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+              
+              <div class="relative z-10 flex flex-col h-full">
+                <div class="flex items-start justify-between mb-4">
+                  <div class={`p-3 rounded-lg ${classes.iconBg} border ${classes.iconBorder}`}>
+                    <i class={`fas ${guide.icon} ${classes.iconText} text-xl`}></i>
+                  </div>
+                  <div class="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-md border border-white/5">
+                    <i class="fas fa-heart text-red-500 text-[10px]"></i>
+                    <span class="text-[10px] font-bold text-gray-300">{votesCount[guide.id] || 0}</span>
+                  </div>
+                </div>
 
-        <!-- Guía de Halion (Sagrario Rubí) -->
-        <a
-          href="/guides/halion-rs"
-          class="relative group bg-gray-900/60 backdrop-blur-sm border border-red-900/30 rounded-md p-6 transition-all duration-300 hover:border-red-800/50 hover:shadow-lg hover:shadow-red-500/5 hover:-translate-y-0.5 overflow-hidden animate-fade-in opacity-0"
-          style="animation-delay: 0.4s;"
-        >
-          <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-          <div class="relative z-10">
-            <div class="flex items-start justify-between">
-              <div>
-                <h2
-                  class="text-xl font-bold text-white mb-3 group-hover:text-red-300 transition-colors"
-                >
-                  <i class="fas fa-dragon text-red-400 mr-2"></i>
-                  Halion - Sagrario Rubí
+                <h2 class="text-lg font-bold text-white mb-3 group-hover:text-amber-400 transition-colors leading-tight">
+                  {guide.title}
                 </h2>
-                <p class="text-red-100/70 text-sm">
-                  Colección de guías visuales y estrategias para el encuentro de Halion 25H/N
+                
+                <p class="text-gray-400 text-xs leading-relaxed mb-6 flex-grow">
+                  {guide.description}
                 </p>
-              </div>
-              <span
-                class="text-red-400 text-2xl ml-4 group-hover:translate-x-1 transition-transform"
-                >→</span
-              >
-            </div>
-            <div class="mt-5 pt-4 border-t border-red-900/20">
-              <span
-                class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-red-500/10 text-red-400 group-hover:bg-red-500/20 transition-colors"
-              >
-                Ver Videos
-              </span>
-            </div>
-          </div>
-        </a>
 
-        <!-- Guía de Prueba del Cruzado (ToC) -->
-        <a
-          href="/guides/toc"
-          class="relative group bg-gray-900/60 backdrop-blur-sm border border-purple-900/30 rounded-md p-6 transition-all duration-300 hover:border-purple-800/50 hover:shadow-lg hover:shadow-purple-500/5 hover:-translate-y-0.5 overflow-hidden animate-fade-in opacity-0"
-          style="animation-delay: 0.5s;"
-        >
-          <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-          <div class="relative z-10">
-            <div class="flex items-start justify-between">
-              <div>
-                <h2
-                  class="text-xl font-bold text-white mb-3 group-hover:text-purple-300 transition-colors"
-                >
-                  <i class="fas fa-shield-alt text-purple-400 mr-2"></i>
-                  Prueba del Cruzado (ToC)
-                </h2>
-                <p class="text-purple-100/70 text-sm">
-                  Guía completa de todos los encuentros de ToC 25H/N
-                </p>
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                  <a
+                    href={guide.href}
+                    class={`inline-flex items-center px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest ${classes.btnBg} ${classes.btnText} ${classes.btnHoverBg} group-hover:text-white transition-all`}
+                  >
+                    Leer Guía
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                  </a>
+                </div>
               </div>
-              <span
-                class="text-purple-400 text-2xl ml-4 group-hover:translate-x-1 transition-transform"
-                >→</span
-              >
             </div>
-            <div class="mt-5 pt-4 border-t border-purple-900/20">
-              <span
-                class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20 transition-colors"
-              >
-                Ver Guía
-              </span>
-            </div>
-          </div>
-        </a>
+          );
+        })}
 
-        <!-- Guía de Nota Pública -->
-        <a
-          href="/guides/nota-publica"
-          class="relative group bg-gray-900/60 backdrop-blur-sm border border-amber-900/30 rounded-md p-6 transition-all duration-300 hover:border-amber-800/50 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5 overflow-hidden animate-fade-in opacity-0"
-          style="animation-delay: 0.2s;"
-        >
-          <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-          <div class="relative z-10">
-            <div class="flex items-start justify-between">
-              <div>
-                <h2
-                  class="text-xl font-bold text-white mb-3 group-hover:text-amber-300 transition-colors"
-                >
-                  <i class="fas fa-file-alt text-amber-400 mr-2"></i>
-                  Guía de Nota Pública
-                </h2>
-                <p class="text-amber-100/70 text-sm">
-                  Aprende a configurar tu nota pública para participar en el sistema de raids de la
-                  hermandad
-                </p>
-              </div>
-              <span
-                class="text-amber-400 text-2xl ml-4 group-hover:translate-x-1 transition-transform"
-                >→</span
-              >
-            </div>
-            <div class="mt-5 pt-4 border-t border-amber-900/20">
-              <span
-                class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 transition-colors"
-              >
-                Ver Guía Completa
-              </span>
-            </div>
+        {/* Placeholder for empty categories */}
+        {categories.map(cat => (
+          <div 
+            x-show={`activeCategory === '${cat}' && ${staticGuides.filter(g => g.category === cat).length === 0}`}
+            class="col-span-full py-20 text-center bg-gray-900/20 rounded-lg border border-dashed border-white/10"
+          >
+            <i class="fas fa-folder-open text-gray-700 text-4xl mb-4"></i>
+            <p class="text-gray-500 font-medium tracking-wide">Aún no hay guías en la categoría {cat}.</p>
+            <p class="text-gray-600 text-xs mt-1">¡Pronto añadiremos nuevo contenido!</p>
           </div>
-        </a>
+        ))}
       </div>
     </div>
   </main>
 </Layout>
+
+<style>
+  .bg-grid-pattern {
+    background-image: radial-gradient(circle, #ffffff 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+</style>

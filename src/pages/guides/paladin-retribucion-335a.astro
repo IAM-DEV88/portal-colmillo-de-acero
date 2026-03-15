@@ -1,0 +1,97 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import WoWCharacterPanel from '../../components/guides/WoWCharacterPanel.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+const guideId = 'paladin-retribucion-335a';
+
+const specData = {
+  specName: "Retribución",
+  className: "Paladín",
+  classColor: "pink", // Paladin pink
+  stats: [
+    { 
+      label: "Índice de Golpe (Hit)", 
+      value: "8% (263 pts)", 
+      detail: "Prioridad #1. Necesitas un 8% para no fallar golpes blancos ni habilidades especiales contra jefes de nivel 83." 
+    },
+    { 
+      label: "Pericia (Expertise)", 
+      value: "26 (214 pts)", 
+      detail: "Prioridad #2. Reduce la probabilidad de que el jefe esquive tus ataques. Con el talento 'Sello de pureza' necesitas menos equipo." 
+    },
+    { 
+      label: "Fuerza (Strength)", 
+      value: "Máximo posible", 
+      detail: "Tu estadística principal. Escala con 'Fuerza divina' y proporciona Poder de Ataque. No tiene límite (cap)." 
+    },
+    { 
+      label: "Crítico / Celeridad", 
+      value: "Equilibrio BIS", 
+      detail: "El crítico es vital para el daño de hechizos y ataques. La celeridad reduce el tiempo de reutilización global y aumenta ataques blancos." 
+    }
+  ],
+  bisItems: [
+    { slot: "Cabeza", name: "Casco juraluz santificado", source: "ICC 25H - Set T10", quality: "epic", id: 51277, icon: "inv_helmet_154" },
+    { slot: "Cuello", name: "Penacho de Penumbra", source: "RS 25H - Halion", quality: "epic", id: 54581, icon: "item_icecrownnecka" },
+    { slot: "Hombros", name: "Hombreras de placas juraluz santificadas", source: "ICC 25H - Set T10", quality: "epic", id: 51279, icon: "inv_shoulder_121" },
+    { slot: "Espalda", name: "Capa de ocaso desgarrada", source: "RS 25H - Halion", quality: "epic", id: 54583, icon: "item_icecrowncloakd" },
+    { slot: "Pecho", name: "Placa de batalla juraluz santificada", source: "ICC 25H - Set T10", quality: "epic", id: 51275, icon: "inv_chest_plate_27" },
+    { slot: "Muñeca", name: "Braciles de juicio de luz", source: "ICC 25H - Barco", quality: "epic", id: 50659, icon: "inv_bracer_37" },
+    { slot: "Manos", name: "Guanteletes juraluz santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51276, icon: "inv_gauntlets_84" },
+    { slot: "Cintura", name: "Cincho suturado de Astilla", source: "ICC 25H - Panzachancro", quality: "epic", id: 50620, icon: "inv_belt_61" },
+    { slot: "Piernas", name: "Quijotes juraluz santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51278, icon: "inv_pants_plate_31" },
+    { slot: "Pies", name: "Grévias de hueso de escarcha", source: "ICC 25H - Tuétano", quality: "epic", id: 50639, icon: "inv_boots_plate_12" },
+    { slot: "Anillo 1", name: "Sortija Cinérea de venganza infinita", source: "Reputación Veredicto Cinéreo", quality: "epic", id: 50402, icon: "inv_jewelry_ring_84" },
+    { slot: "Anillo 2", name: "Sello de muchas bocas", source: "ICC 25H - Carapútrea", quality: "epic", id: 50644, icon: "inv_jewelry_ring_82" },
+    { slot: "Abalorio 1", name: "Testamento del Libramorte", source: "ICC 25H - Libramorte", quality: "epic", id: 50363, icon: "inv_jewelry_trinket_04" },
+    { slot: "Abalorio 2", name: "Calavera dentuda susurrante", source: "ICC 25H - Lady Susurramuerte", quality: "epic", id: 50343, icon: "inv_misc_bone_skull_02" },
+    { slot: "Arma", name: "Agonía de sombras", source: "Misión Legendaria ICC", quality: "legendary", id: 49623, icon: "inv_axe_113" },
+    { slot: "Libram", name: "Tratado sobre tres verdades", source: "Emblemas de Escarcha", quality: "epic", id: 50455, icon: "inv_misc_book_16" }
+  ],
+  gems: [
+    { type: "meta", name: "Diamante de llama de tierra incansable", stat: "+21 Agilidad y 3% Daño Crítico", id: 41398, icon: "inv_jewelcrafting_shadowspirit_02" },
+    { type: "red", name: "Rubí cardeno llamativo", stat: "+20 Fuerza", id: 40111, icon: "inv_jewelcrafting_gem_37" },
+    { type: "orange", name: "Ametrino con inscripciones", stat: "+10 Fuerza y +10 Índice de Crítico", id: 40142, icon: "inv_jewelcrafting_gem_39" },
+    { type: "blue", name: "Lágrima de pesadilla", stat: "+10 a todas las estadísticas (Solo 1)", id: 49110, icon: "inv_misc_gem_pearl_12" }
+  ],
+  enchants: [
+    { slot: "Arma", name: "Rabiar", id: 59620, icon: "spell_nature_strength", stat: "Probabilidad de aumentar Poder de Ataque" },
+    { slot: "Cabeza", name: "Arcanum de tormento", id: 59954, icon: "ability_warrior_rampage", stat: "+50 Poder de Ataque y +20 Crítico" },
+    { slot: "Hombros", name: "Inscripción del hacha superior", id: 59934, icon: "trade_engineering", stat: "+40 Poder de Ataque y +15 Crítico" },
+    { slot: "Pecho", name: "Estadísticas potentes", id: 60662, icon: "trade_engraving", stat: "+10 a todas las estadísticas" }
+  ],
+  rotation: [
+    { name: "Sentencia de Luz/Sabiduría", description: "Mantén siempre el debuff activo. Genera maná y regeneración.", priority: 1 },
+    { name: "Martillo de Cólera", description: "Usar siempre que el objetivo esté por debajo del 20% de salud.", priority: 2 },
+    { name: "Tormenta Divina", description: "Tu principal ataque de área y daño físico masivo.", priority: 3 },
+    { name: "Golpe de Cruzado", description: "Ataque básico constante para mantener el ritmo de daño.", priority: 4 },
+    { name: "Consagración", description: "Daño sagrado constante en el suelo. Prioridad baja en single target.", priority: 5 }
+  ]
+};
+---
+
+<Layout 
+  title="Guía Paladín Retribución 3.3.5a " 
+  description="Guía del Paladín Retribución para WotLK 3.3.5a. Equipo BIS, talentos, gemas, encantamientos y rotación para ICC 25 Heroico."
+>
+  <div>
+    <!-- WoW Character Panel -->
+    <WoWCharacterPanel {...specData}>
+      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_holy_auraoflight.jpg" alt="Ret" class="w-full h-full object-cover" />
+    </WoWCharacterPanel>
+
+    <!-- Community Section -->
+    <div class="mt-4">
+      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
+      <GuideInteractions guide_id={guideId} />
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  /* Colores de clase personalizados */
+  .text-pink-400 { color: #F48CBA; }
+  .border-pink-500\/30 { border-color: rgba(244, 140, 186, 0.3); }
+  .bg-pink-500\/10 { background-color: rgba(244, 140, 186, 0.1); }
+</style>

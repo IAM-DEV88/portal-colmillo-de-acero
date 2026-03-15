@@ -1,0 +1,99 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import WoWCharacterPanel from '../../components/guides/WoWCharacterPanel.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+const guideId = 'paladin-proteccion-335a';
+
+const specData = {
+  specName: "Protección",
+  className: "Paladín",
+  classColor: "pink", // Paladin pink
+  stats: [
+    { 
+      label: "Defensa (Defense Cap)", 
+      value: "540 (Raid Cap)", 
+      detail: "Esencial para ser inmune a críticos de jefes de nivel 83. No entres a una raid sin este valor mínimo." 
+    },
+    { 
+      label: "Aguante (Stamina)", 
+      value: "Máximo posible", 
+      detail: "Tu estadística de supervivencia principal. Escala con 'Santuario' y 'Fuerza divina'. Aumenta tu reserva de salud para aguantar golpes masivos." 
+    },
+    { 
+      label: "Índice de Golpe (Hit)", 
+      value: "8% (263 pts)", 
+      detail: "Necesario para no fallar Sentencias y Martillo del Honrado. Vital para mantener la amenaza (agro)." 
+    },
+    { 
+      label: "Pericia (Expertise)", 
+      value: "26 (Soft Cap)", 
+      detail: "Evita que el jefe esquive tus ataques, lo que previene el 'parry-haste' y mejora tu generación de agro." 
+    }
+  ],
+  bisItems: [
+    { slot: "Cabeza", name: "Casco juraluz santificado", source: "ICC 25H - Set T10", quality: "epic", id: 51267, icon: "inv_helmet_154" },
+    { slot: "Cuello", name: "Medallón de la Legión de Hierro", source: "ICC 25H - Libramorte", quality: "epic", id: 50627, icon: "inv_jewelry_necklace_44" },
+    { slot: "Hombros", name: "Hombreras de placas juraluz santificadas", source: "ICC 25H - Set T10", quality: "epic", id: 51269, icon: "inv_shoulder_121" },
+    { slot: "Espalda", name: "Capa de invierno real", source: "ICC 25H - Barco", quality: "epic", id: 50628, icon: "item_icecrowncloakb" },
+    { slot: "Pecho", name: "Placa de batalla juraluz santificada", source: "ICC 25H - Set T10", quality: "epic", id: 51265, icon: "inv_chest_plate_27" },
+    { slot: "Muñeca", name: "Brazales de saliva de gárgola", source: "ICC 25H - Lady Susurramuerte", quality: "epic", id: 50611, icon: "inv_bracer_37" },
+    { slot: "Manos", name: "Guanteletes juraluz santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51266, icon: "inv_gauntlets_84" },
+    { slot: "Cintura", name: "Cinturón de huesos rotos", source: "ICC 25H - Tuétano", quality: "epic", id: 50613, icon: "inv_belt_61" },
+    { slot: "Piernas", name: "Quijotes juraluz santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51268, icon: "inv_pants_plate_31" },
+    { slot: "Pies", name: "Botas de científico loco", source: "ICC 25H - Panzachancro", quality: "epic", id: 50607, icon: "inv_boots_plate_12" },
+    { slot: "Anillo 1", name: "Sortija Cinérea de protección infinita", source: "Reputación Veredicto Cinéreo", quality: "epic", id: 50404, icon: "inv_jewelry_ring_83" },
+    { slot: "Anillo 2", name: "Lazo de esperanza de Jaina", source: "ICC 25H - Barco", quality: "epic", id: 50642, icon: "inv_jewelry_ring_82" },
+    { slot: "Abalorio 1", name: "Órgano inidentificable", source: "ICC 25H - Carapútrea", quality: "epic", id: 50344, icon: "inv_misc_organ_03" },
+    { slot: "Abalorio 2", name: "Colmillo impecable de Sindragosa", source: "ICC 25H - Sindragosa", quality: "epic", id: 50364, icon: "inv_jewelry_trinket_06" },
+    { slot: "Arma 1H", name: "Última palabra", source: "ICC 25H - Lich King", quality: "epic", id: 50738, icon: "inv_mace_116" },
+    { slot: "Escudo", name: "Muro de hielo glacial", source: "ICC 25H - Sindragosa", quality: "epic", id: 50729, icon: "inv_shield_73" },
+    { slot: "Tratado", name: "Tratado sobre el combatiente eterno", source: "Emblemas de Triunfo", quality: "epic", id: 47664, icon: "inv_misc_book_11" }
+  ],
+  gems: [
+    { type: "meta", name: "Diamante de asedio de tierra austero", stat: "+32 Aguante y 2% Valor de Armadura", id: 41380, icon: "inv_misc_gem_diamond_04" },
+    { type: "red", name: "Piedra de terror de defensor", stat: "+10 Esquive y +15 Aguante", id: 40167, icon: "inv_misc_gem_ebonshadow_02" },
+    { type: "blue", name: "Zircón majestuoso sólido", stat: "+30 Aguante", id: 40119, icon: "inv_misc_gem_sapphire_02" },
+    { type: "yellow", name: "Ametrino de guardián", stat: "+10 Parada y +15 Aguante", id: 40141, icon: "inv_misc_gem_topaz_01" }
+  ],
+  enchants: [
+    { slot: "Arma", name: "Amparo de hojas", stat: "Probabilidad de aumentar Parada y daño de contraataque", id: 64441, icon: "spell_holy_blessingofprotection" },
+    { slot: "Cabeza", name: "Arcanum de protector adepto", stat: "+37 Aguante y +20 Defensa", id: 59955, icon: "inv_misc_armorkit_27" },
+    { slot: "Hombros", name: "Inscripción del pináculo superior", stat: "+20 Esquive y +15 Defensa", id: 59935, icon: "ability_warrior_shieldwall" },
+    { slot: "Escudo", name: "Aguante mayor", stat: "+18 Aguante", id: 44489, icon: "spell_holy_greaterblessingofsanctuary" },
+    { slot: "Pecho", name: "Supersalud", stat: "+275 Salud", id: 47900, icon: "spell_holy_greaterblessingofkings" }
+  ],
+  rotation: [
+    { name: "Escudo Sagrado", description: "Mantén este buff activo al 100% del tiempo para aumentar tu bloqueo y daño sagrado al bloquear.", priority: 1 },
+    { name: "Martillo del Honrado", description: "Tu principal generador de agro en un solo objetivo y área. Úsalo en cada CD.", priority: 2 },
+    { name: "Sentencia de Sabiduría", description: "Recupera maná y aplica debuffs al jefe. Crucial para la sostenibilidad.", priority: 3 },
+    { name: "Escudo de Rectitud", description: "Gran golpe de escudo que escala con tu valor de bloqueo. Úsalo tras Martillo.", priority: 4 },
+    { name: "Consagración / Martillo de Cólera", description: "Rellena los huecos en la rotación 96969 con estas habilidades según la situación.", priority: 5 }
+  ]
+};
+---
+
+<Layout 
+  title="Guía Paladín Protección 3.3.5a " 
+  description="Guía del Paladín Tanque (Protección) para WotLK 3.3.5a. Equipo BIS, cap de defensa, gemas, encantamientos y rotación 96969."
+>
+  <div>
+    <!-- WoW Character Panel -->
+    <WoWCharacterPanel {...specData}>
+      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_paladin_shieldofthetemplar.jpg" alt="Prot" class="w-full h-full object-cover" />
+    </WoWCharacterPanel>
+
+    <!-- Community Section -->
+    <div class="mt-4">
+      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
+      <GuideInteractions guide_id={guideId} />
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  /* Colores de clase personalizados */
+  .text-pink-400 { color: #F48CBA; }
+  .border-pink-500\/30 { border-color: rgba(244, 140, 186, 0.3); }
+  .bg-pink-500\/10 { background-color: rgba(244, 140, 186, 0.1); }
+</style>

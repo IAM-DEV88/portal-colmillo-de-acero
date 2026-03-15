@@ -1,0 +1,193 @@
+---
+interface Props {
+  specName: string;
+  className: string;
+  classColor: string;
+  stats: { label: string; value: string; detail: string }[];
+  bisItems: { slot: string; name: string; source: string; quality: 'epic' | 'legendary'; id?: number; icon?: string }[];
+  gems: { type: string; name: string; stat: string; id?: number; icon?: string }[];
+  enchants: { slot: string; name: string; stat: string; id?: number; icon?: string }[];
+  rotation: { name: string; description: string; priority: number }[];
+}
+
+const { 
+  specName, 
+  className, 
+  classColor, 
+  stats, 
+  bisItems, 
+  gems, 
+  enchants, 
+  rotation 
+} = Astro.props;
+---
+
+<div class="wow-panel-container animate-fade-in" x-data="{ activeTab: 'gear' }">
+  <!-- Botón Volver -->
+  <div class="mb-8 flex items-center">
+    <a 
+      href="/guides?category=Especialización" 
+      class="flex items-center gap-3 px-5 py-2.5 rounded-lg bg-gray-900/60 border border-white/5 text-gray-400 hover:text-amber-400 hover:border-amber-500/30 transition-all text-[10px] font-black uppercase tracking-[0.2em] no-underline group backdrop-blur-md shadow-lg"
+    >
+      <i class="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
+      Volver al Portal de Guías
+    </a>
+  </div>
+
+  <!-- Spec Header -->
+  <div class="flex items-center gap-6 mb-8 bg-gray-900/60 p-6 rounded-lg border border-white/5 backdrop-blur-md shadow-2xl relative overflow-hidden group">
+    <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-all duration-700"></div>
+    
+    <div class={`w-20 h-20 rounded-lg bg-gradient-to-br from-gray-800 to-black border-2 border-${classColor}-500/30 flex items-center justify-center shadow-lg overflow-hidden`}>
+      <slot name="spec-icon">
+        <i class={`fas fa-crown text-4xl text-${classColor}-400 animate-pulse`}></i>
+      </slot>
+    </div>
+
+    <div>
+      <h1 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">
+        {specName} <span class={`text-${classColor}-400`}>{className}</span>
+      </h1>
+      <p class="text-gray-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-2 italic">
+        World of Warcraft: Wrath of the Lich King (3.3.5a)
+      </p>
+    </div>
+  </div>
+
+  <!-- WoW-like Tab Navigation -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    <button 
+      @click="activeTab = 'gear'"
+      class="px-6 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border-2 flex items-center gap-2"
+      :class="activeTab === 'gear' ? 'bg-amber-600 border-amber-500 text-white shadow-lg' : 'bg-gray-900/40 border-white/5 text-gray-500 hover:text-gray-300'"
+    >
+      <i class="fas fa-shield-alt"></i> Equipamiento (BIS)
+    </button>
+    <button 
+      @click="activeTab = 'gems'"
+      class="px-6 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border-2 flex items-center gap-2"
+      :class="activeTab === 'gems' ? 'bg-amber-600 border-amber-500 text-white shadow-lg' : 'bg-gray-900/40 border-white/5 text-gray-500 hover:text-gray-300'"
+    >
+      <i class="fas fa-gem"></i> Gemas y Encantos
+    </button>
+    <button 
+      @click="activeTab = 'stats'"
+      class="px-6 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border-2 flex items-center gap-2"
+      :class="activeTab === 'stats' ? 'bg-amber-600 border-amber-500 text-white shadow-lg' : 'bg-gray-900/40 border-white/5 text-gray-500 hover:text-gray-300'"
+    >
+      <i class="fas fa-chart-line"></i> Estadísticas
+    </button>
+    <button 
+      @click="activeTab = 'rotation'"
+      class="px-6 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border-2 flex items-center gap-2"
+      :class="activeTab === 'rotation' ? 'bg-amber-600 border-amber-500 text-white shadow-lg' : 'bg-gray-900/40 border-white/5 text-gray-500 hover:text-gray-300'"
+    >
+      <i class="fas fa-sync"></i> Rotación
+    </button>
+  </div>
+
+  <!-- Content Sections -->
+  <div class="bg-gray-900/90 border border-white/5 rounded-lg p-4 backdrop-blur-xl relative overflow-hidden">
+    <!-- Gear Section -->
+    <div x-show="activeTab === 'gear'" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {bisItems.map(item => (
+          <div class="bg-black/30 p-4 rounded-lg border border-white/5 hover:border-amber-500/20 transition-all group">
+            <div class="min-w-0">
+              <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block mb-1">{item.slot}</span>
+              <h4 class={`text-sm font-bold leading-tight truncate ${item.quality === 'legendary' ? 'text-orange-400' : 'text-purple-400'} group-hover:text-white transition-colors`}>{item.name}</h4>
+              <p class="text-[10px] text-white font-medium italic mt-1.5 uppercase truncate opacity-80 group-hover:opacity-100 transition-opacity">{item.source}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Gems & Enchants -->
+    <div x-show="activeTab === 'gems'" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="space-y-4">
+        <h3 class="text-xs font-black text-amber-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 italic">
+          <i class="fas fa-gem"></i> Gemas Prioritarias
+        </h3>
+        {gems.map(gem => (
+          <div class="bg-black/20 p-3 rounded-lg border border-white/5 hover:border-white/10 transition-all group">
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-gray-200 truncate group-hover:text-white transition-colors">{gem.name}</p>
+              <p class="text-[11px] text-gray-300 font-medium uppercase mt-1 leading-relaxed">{gem.stat}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="space-y-4">
+        <h3 class="text-xs font-black text-blue-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 italic">
+          <i class="fas fa-magic"></i> Encantamientos
+        </h3>
+        {enchants.map(enchant => (
+          <div class="bg-black/20 p-3 rounded-lg border border-white/5 hover:border-white/10 transition-all group">
+            <div class="min-w-0">
+              <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-0.5">{enchant.slot}</span>
+              <p class="text-xs font-bold text-gray-200 leading-tight truncate group-hover:text-white transition-colors">{enchant.name}</p>
+              <p class="text-[11px] text-gray-300 font-medium uppercase mt-1 leading-relaxed">{enchant.stat}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div x-show="activeTab === 'stats'" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {stats.map(stat => (
+          <div class="bg-black/20 p-5 rounded-lg border border-white/5 hover:border-amber-500/10 transition-all">
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
+              <div>
+                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1 italic">{stat.label}</h4>
+                <p class="text-2xl font-black text-white italic">{stat.value}</p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs text-gray-300 leading-relaxed italic">
+                {stat.detail}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Rotation Section -->
+    <div x-show="activeTab === 'rotation'" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-y-4">
+      <div class="space-y-4">
+        {rotation.map((step, index) => (
+          <div class="flex items-start gap-6 bg-black/20 p-5 rounded-lg border border-white/5 group hover:bg-black/40 transition-all">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-800 border border-white/10 flex items-center justify-center text-amber-500 font-black italic shadow-lg group-hover:scale-110 transition-transform">
+              {index + 1}
+            </div>
+            <div>
+              <h4 class="text-sm font-black text-white uppercase tracking-wider mb-2 italic group-hover:text-amber-400 transition-colors">{step.name}</h4>
+              <p class="text-[13px] text-gray-300 leading-relaxed font-medium">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón Volver Inferior -->
+  <div class="mt-12 flex justify-center">
+    <a 
+      href="/guides?category=Especialización" 
+      class="flex items-center gap-4 px-8 py-4 rounded-lg bg-gray-900/60 border border-white/5 text-gray-400 hover:text-amber-400 hover:border-amber-500/30 transition-all text-xs font-black uppercase tracking-[0.3em] no-underline group backdrop-blur-md shadow-2xl hover:scale-105"
+    >
+      <i class="fas fa-th-large group-hover:rotate-90 transition-transform duration-500"></i>
+      Volver al Portal de Guías
+    </a>
+  </div>
+</div>
+
+<style>
+  .wow-panel-container {
+    font-family: 'Inter', sans-serif;
+  }
+  [x-cloak] { display: none !important; }
+</style>

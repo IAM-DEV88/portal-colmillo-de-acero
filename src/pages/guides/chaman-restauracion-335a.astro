@@ -1,0 +1,95 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import WoWCharacterPanel from '../../components/guides/WoWCharacterPanel.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+const guideId = 'chaman-restauracion-335a';
+
+const specData = {
+  specName: "Restauración",
+  className: "Chamán",
+  classColor: "blue", // Shaman blue
+  stats: [
+    { 
+      label: "Celeridad (Haste)", 
+      value: "1269 (Cap)", 
+      detail: "Alcanzar 1269 de celeridad reduce el tiempo de casteo de tu Salva de Sanación a 1.5s y Ola de Sanación inferior a 1s." 
+    },
+    { 
+      label: "Poder con Hechizos (SP)", 
+      value: "Máximo posible", 
+      detail: "Tu sanación escala directamente con esta estadística. Nunca es suficiente." 
+    },
+    { 
+      label: "Crítico", 
+      value: "Muy importante", 
+      detail: "Activa 'Despertar ancestral' y 'Resurgimiento' para recuperar maná. Crucial para la sostenibilidad." 
+    },
+    { 
+      label: "MP5", 
+      value: "Secundario", 
+      detail: "Obtendrás suficiente regeneración del equipo BIS y del Crítico, pero algo de MP5 base ayuda." 
+    }
+  ],
+  bisItems: [
+    { slot: "Cabeza", name: "Yelmo de brujo de escarcha santificado", source: "ICC 25H - Set T10", quality: "epic", id: 51247, icon: "inv_helmet_152" },
+    { slot: "Cuello", name: "Gargantilla de alma de fango", source: "ICC 25H - Panzachancro", quality: "epic", id: 50631, icon: "inv_jewelry_necklace_43" },
+    { slot: "Hombros", name: "Hombreras de brujo de escarcha santificadas", source: "ICC 25H - Set T10", quality: "epic", id: 51249, icon: "inv_shoulder_120" },
+    { slot: "Espalda", name: "Capa de invierno real", source: "ICC 25H - Barco", quality: "epic", id: 50628, icon: "item_icecrowncloakb" },
+    { slot: "Pecho", name: "Hábito de brujo de escarcha santificado", source: "ICC 25H - Set T10", quality: "epic", id: 51245, icon: "inv_chest_mail_11" },
+    { slot: "Muñeca", name: "Brazales de médico de la Peste", source: "ICC 25H - Panzachancro", quality: "epic", id: 50629, icon: "inv_bracer_37" },
+    { slot: "Manos", name: "Guantes de brujo de escarcha santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51246, icon: "inv_gauntlets_82" },
+    { slot: "Cintura", name: "Cinturón de forma fracturada", source: "ICC 25H - Panzachancro", quality: "epic", id: 50671, icon: "inv_belt_61" },
+    { slot: "Piernas", name: "Leotardos de brujo de escarcha santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51248, icon: "inv_pants_mail_11" },
+    { slot: "Pies", name: "Botas de crecimiento vacilante", source: "ICC 25H - Carapútrea", quality: "epic", id: 50664, icon: "inv_boots_cloth_24" },
+    { slot: "Anillo 1", name: "Sortija Cinérea de sabiduría infinita", source: "Reputación Veredicto Cinéreo", quality: "epic", id: 50398, icon: "inv_jewelry_ring_84" },
+    { slot: "Anillo 2", name: "Memoria de Malygos", source: "ICC 25H - Sindragosa", quality: "epic", id: 50636, icon: "inv_jewelry_ring_82" },
+    { slot: "Abalorio 1", name: "Ábaco de Althor", source: "ICC 25H - Barco", quality: "epic", id: 50359, icon: "inv_jewelry_trinket_02" },
+    { slot: "Abalorio 2", name: "Escama Crepuscular resplandeciente", source: "RS 25H - Halion", quality: "epic", id: 54589, icon: "inv_misc_rubysanctum4" },
+    { slot: "Arma 1H", name: "Cetro de romperreinos", source: "ICC 25H - Lich King", quality: "epic", id: 50734, icon: "inv_mace_116" },
+    { slot: "Escudo", name: "Baluarte de acero carmesí", source: "ICC 25H - Barco", quality: "epic", id: 50616, icon: "inv_shield_72" },
+    { slot: "Totem", name: "Tótem de la marea calmante", source: "Emblemas de Escarcha", quality: "epic", id: 50464, icon: "inv_misc_totem_02" }
+  ],
+  gems: [
+    { type: "meta", name: "Diamante de llama de cielo de ascuas", stat: "+25 Poder con Hechizos y 2% Maná máximo", id: 41401, icon: "inv_misc_gem_diamond_07" },
+    { type: "red", name: "Rubí cardeno rúnico", stat: "+23 Poder con Hechizos", id: 40113, icon: "inv_misc_gem_ruby_01" },
+    { type: "orange", name: "Ametrino temerario", stat: "+12 Poder con Hechizos y +10 Celeridad", id: 40155, icon: "inv_misc_gem_topaz_02" },
+    { type: "yellow", name: "Ámbar del rey rápido", stat: "+20 Celeridad", id: 40128, icon: "inv_misc_gem_amber_02" }
+  ],
+  enchants: [
+    { slot: "Arma", name: "Poder con hechizos poderoso", stat: "+63 Poder con Hechizos", id: 44467, icon: "spell_holy_greaterblessingofkings" },
+    { slot: "Cabeza", name: "Arcanum de misterios luminosos", stat: "+30 Poder con Hechizos y +10 regeneración de maná", id: 59960, icon: "inv_misc_armorkit_28" },
+    { slot: "Hombros", name: "Inscripción del risco superior", stat: "+24 Poder con Hechizos y +8 regeneración de maná", id: 59937, icon: "ability_shaman_lavaburst" },
+    { slot: "Pecho", name: "Estadísticas potentes", stat: "+10 a todas las estadísticas", id: 60662, icon: "spell_holy_greaterblessingofkings" }
+  ],
+  rotation: [
+    { name: "Escudo de Tierra", description: "Mantén este buff activo en el tanque siempre. Sanación pasiva vital.", priority: 1 },
+    { name: "Mareas Vivas (Riptide)", description: "Usa este HoT instantáneo para activar el buff de 'Mareas de sanación' (celeridad).", priority: 2 },
+    { name: "Salva de Sanación (Chain Heal)", description: "Tu principal herramienta de sanación de banda. Úsala inteligentemente.", priority: 3 },
+    { name: "Ola de Sanación Inferior", description: "Úsala para sanaciones rápidas en un solo objetivo cuando Mareas Vivas esté en CD.", priority: 4 },
+    { name: "Tótem de Corriente de Sanación", description: "Asegúrate de que tus tótems estén activos en todo momento según la necesidad.", priority: 5 }
+  ]
+};
+---
+
+<Layout 
+  title="Guía Chamán Restauración 3.3.5a " 
+  description="Guía del Chamán Healer (Restauración) para WotLK 3.3.5a. Equipo BIS, cap de celeridad, gemas y rotación de sanación de banda."
+>
+  <div>
+    <WoWCharacterPanel {...specData}>
+      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_nature_magicimmunity.jpg" alt="Resto" class="w-full h-full object-cover" />
+    </WoWCharacterPanel>
+
+    <div class="mt-4">
+      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
+      <GuideInteractions guide_id={guideId} />
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .text-blue-400 { color: #0070DE; }
+  .border-blue-500\/30 { border-color: rgba(0, 112, 222, 0.3); }
+  .bg-blue-500\/10 { background-color: rgba(0, 112, 222, 0.1); }
+</style>

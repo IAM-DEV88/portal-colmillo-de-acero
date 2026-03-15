@@ -1,0 +1,161 @@
+---
+import { supabase } from '../../lib/supabase';
+
+const { guide_id } = Astro.props;
+
+// Obtener votos
+const { data: votes } = await supabase
+  .from('guide_votes')
+  .select('id')
+  .eq('guide_id', guide_id);
+
+const voteCount = votes?.length || 0;
+
+// Obtener comentarios aprobados
+const { data: comments } = await supabase
+  .from('guide_comments')
+  .select('*')
+  .eq('guide_id', guide_id)
+  .eq('is_approved', true)
+  .order('created_at', { ascending: false });
+---
+
+<div class="mt-12 space-y-10 animate-fade-in" x-data={`{ 
+  guideId: '${guide_id}', 
+  voteCount: ${voteCount},
+  voted: false,
+  commentName: '',
+  commentText: '',
+  isSubmitting: false,
+  message: '',
+
+  async castVote() {
+    if (this.voted) return;
+    try {
+      const res = await fetch('/api/guides/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guideId: this.guideId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        this.voteCount++;
+        this.voted = true;
+      }
+    } catch (e) { console.error(e); }
+  },
+
+  async submitComment() {
+    if (!this.commentName || !this.commentText || this.isSubmitting) return;
+    this.isSubmitting = true;
+    try {
+      const res = await fetch('/api/guides/comment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          guideId: this.guideId, 
+          playerName: this.commentName, 
+          content: this.commentText 
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        this.message = 'Tu comentario ha sido enviado y está pendiente de aprobación.';
+        this.commentName = '';
+        this.commentText = '';
+      }
+    } catch (e) { console.error(e); }
+    this.isSubmitting = false;
+  }
+}`}>
+  <!-- Sección de Votos -->
+  <div class="flex flex-col items-center justify-center p-8 bg-gray-900/40 rounded-lg border border-white/5 backdrop-blur-sm">
+    <h3 class="text-sm font-black uppercase tracking-[0.2em] text-gray-500 mb-6 italic">¿Te ha servido esta guía?</h3>
+    <button 
+      @click="castVote()"
+      class="group relative flex flex-col items-center transition-all active:scale-95"
+      :disabled="voted"
+    >
+      <div 
+        class="w-20 h-20 rounded-full flex items-center justify-center border-2 transition-all duration-500"
+        :class="voted ? 'bg-red-500 border-red-400 shadow-[0_0_30px_rgba(239,68,68,0.4)]' : 'bg-gray-800/50 border-white/10 group-hover:border-red-500/50 group-hover:bg-red-500/5'"
+      >
+        <i class="fas fa-heart text-3xl transition-transform duration-500" :class="voted ? 'text-white scale-110' : 'text-gray-600 group-hover:text-red-500 group-hover:scale-110'"></i>
+      </div>
+      <span class="mt-4 text-2xl font-black text-white italic" x-text="voteCount"></span>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mt-1" x-text="voted ? '¡Gracias!' : 'Votar'"></span>
+    </button>
+  </div>
+
+  <!-- Sección de Comentarios -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Formulario -->
+    <div class="space-y-6">
+      <h3 class="text-xl font-black text-white uppercase tracking-tighter italic flex items-center gap-3">
+        <i class="fas fa-comment-dots text-amber-500"></i>
+        Deja un comentario
+      </h3>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1 italic">Nombre del Personaje</label>
+          <input 
+            type="text" 
+            x-model="commentName"
+            placeholder="Ej: Arthas"
+            class="w-full bg-black/40 border border-white/5 rounded-lg px-4 py-3 text-sm text-white placeholder:text-gray-700 focus:outline-none focus:border-amber-500/50 transition-all"
+          />
+        </div>
+        <div>
+          <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 ml-1 italic">Comentario</label>
+          <textarea 
+            x-model="commentText"
+            rows="4"
+            placeholder="Comparte tus dudas o consejos..."
+            class="w-full bg-black/40 border border-white/5 rounded-lg px-4 py-3 text-sm text-white placeholder:text-gray-700 focus:outline-none focus:border-amber-500/50 transition-all resize-none"
+          ></textarea>
+        </div>
+        
+        <button 
+          @click="submitComment()"
+          class="w-full py-4 bg-amber-600 hover:bg-amber-500 text-white text-xs font-black uppercase tracking-[0.2em] rounded-lg transition-all shadow-lg shadow-amber-900/20 active:scale-95 disabled:opacity-50"
+          :disabled="!commentName || !commentText || isSubmitting"
+        >
+          <span x-show="!isSubmitting">Enviar Comentario</span>
+          <span x-show="isSubmitting" class="flex items-center justify-center gap-2">
+            <i class="fas fa-spinner fa-spin"></i> Enviando...
+          </span>
+        </button>
+
+        <template x-if="message">
+          <div class="p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-xs font-bold animate-fade-in" x-text="message"></div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Lista de Comentarios -->
+    <div class="space-y-6">
+      <h3 class="text-xl font-black text-white uppercase tracking-tighter italic flex items-center gap-3">
+        <i class="fas fa-comments text-blue-500"></i>
+        Comunidad
+      </h3>
+      
+      <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+        {comments && comments.length > 0 ? comments.map(comment => (
+          <div class="bg-gray-800/30 border border-white/5 p-4 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-amber-400 font-black text-xs uppercase tracking-wider">{comment.player_name}</span>
+              <span class="text-[9px] font-bold text-gray-600">{new Date(comment.created_at).toLocaleDateString()}</span>
+            </div>
+            <p class="text-gray-300 text-xs leading-relaxed italic">"{comment.content}"</p>
+          </div>
+        )) : (
+          <div class="h-40 flex flex-col items-center justify-center bg-gray-900/20 rounded-lg border border-dashed border-white/5">
+            <i class="fas fa-ghost text-gray-800 text-3xl mb-2"></i>
+            <p class="text-gray-600 text-[10px] font-black uppercase tracking-widest italic">Aún no hay comentarios</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</div>

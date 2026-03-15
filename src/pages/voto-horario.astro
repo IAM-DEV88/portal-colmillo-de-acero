@@ -24,7 +24,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
       <!-- Formulario Paso a Paso (Alpine.js) -->
       <section
         x-data="recruitmentForm"
-        class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 shadow-2xl backdrop-blur-sm transition-all duration-500 ease-in-out overflow-hidden"
+        class="bg-gray-900/50 border border-gray-800 rounded-lg p-6 shadow-2xl backdrop-blur-sm transition-all duration-500 ease-in-out overflow-hidden"
         :style="'height: ' + height + 'px'"
         x-ref="container"
       >
@@ -199,7 +199,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
         <div x-show="currentTab === 'list'" class="space-y-4">
           <template x-for="raid in raids" :key="raid.id">
             <div
-              class="bg-gray-900/30 border border-gray-800 rounded-xl overflow-hidden shadow-lg transition-all hover:border-gray-700"
+              class="bg-gray-900/30 border border-gray-800 rounded-lg overflow-hidden shadow-lg transition-all hover:border-gray-700"
             >
               <!-- Cabecera Expansible -->
               <button
@@ -234,7 +234,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
                     <template x-for="voto in getGroupedVotes(raid.id)" :key="voto.key">
                       <button
                         @click="voteLikeThis(voto)"
-                        class="w-full text-left p-4 bg-gray-800/40 rounded-xl border border-gray-700/50 flex justify-between items-center hover:bg-amber-600/10 hover:border-amber-600/50 transition-all group relative overflow-hidden"
+                        class="w-full text-left p-4 bg-gray-800/40 rounded-lg border border-gray-700/50 flex justify-between items-center hover:bg-amber-600/10 hover:border-amber-600/50 transition-all group relative overflow-hidden"
                       >
                         <div class="flex items-center gap-4">
                           <div
@@ -294,7 +294,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
         <!-- Vista de Mapa Visual (Plano Cartesiano) -->
         <div
           x-show="currentTab === 'map'"
-          class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 shadow-2xl overflow-x-auto"
+          class="bg-gray-900/50 border border-gray-800 rounded-lg p-6 shadow-2xl overflow-x-auto"
         >
           <div class="min-w-[600px]">
             <!-- Leyenda de Días (Eje X) -->
