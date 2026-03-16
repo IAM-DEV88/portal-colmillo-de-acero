@@ -1,0 +1,158 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import { supabase } from '../../lib/supabase';
+
+// Solo permitir acceso a administradores u oficiales
+const session = Astro.cookies.get('admin_session')?.value;
+const userRole = Astro.cookies.get('admin_role')?.value;
+
+if (!session || (userRole !== 'admin' && userRole !== 'official')) {
+  return Astro.redirect('/admin');
+}
+
+let errorMessage = '';
+let successMessage = '';
+
+// Handle POST requests for Lua upload
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData();
+    const file = formData.get('lua_file') as File;
+    
+    if (file && file.size > 0) {
+        if (file.name.endsWith('.lua')) {
+            console.log('Processing Lua upload...');
+            
+            // Re-create FormData for the API call
+            const apiFormData = new FormData();
+            apiFormData.append('file', file);
+            
+            // Construct absolute URL for the API
+            const origin = Astro.url.origin || 'http://localhost:4321';
+            const apiUrl = new URL('/api/admin/upload-lua', origin);
+            console.log('Calling API:', apiUrl.toString());
+            
+            // Call the API endpoint
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                body: apiFormData,
+                headers: {
+                    // Important: Pass the session cookie
+                    'Cookie': Astro.request.headers.get('cookie') || ''
+                }
+            });
+            
+            console.log('API Response status:', response.status);
+            
+            if (!response.ok) {
+                const text = await response.text();
+                console.error('API Error Response:', text);
+                try {
+                    const jsonError = JSON.parse(text);
+                    errorMessage = jsonError.error || `Error ${response.status}: ${text}`;
+                } catch {
+                    errorMessage = `Error ${response.status}: ${text}`;
+                }
+            } else {
+                const result = await response.json();
+                console.log('API Result:', result);
+                successMessage = result.message || 'Archivo Lua procesado correctamente';
+            }
+        } else {
+             errorMessage = 'El archivo debe tener extensión .lua';
+        }
+    }
+  } catch (e) {
+    console.error('Error handling POST:', e);
+    errorMessage = `Error inesperado: ${e.message}`;
+  }
+}
+---
+
+<Layout title="Actualizar Roster | Panel Admin">
+  <div class="max-w-7xl mx-auto py-12 px-4 space-y-8">
+    <div class="flex items-center justify-between bg-gray-800/50 backdrop-blur-sm p-6 rounded-md border border-gray-700/50 shadow-xl">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-900/20">
+          <i class="fas fa-file-upload text-2xl text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-3xl font-black text-white uppercase tracking-tighter italic">
+            Actualizar <span class="text-indigo-400">Roster</span>
+          </h1>
+          <p class="text-gray-400 text-xs font-medium uppercase tracking-widest mt-1">Sincronización con RaidDominion (Lua)</p>
+        </div>
+      </div>
+      <a 
+        href="/admin" 
+        class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-white/10 text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+      >
+        <i class="fas fa-arrow-left"></i>
+        Volver al Panel
+      </a>
+    </div>
+
+    {errorMessage && (
+      <div class="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-md flex items-center animate-fade-in">
+        <i class="fas fa-exclamation-circle mr-3"></i>
+        {errorMessage}
+      </div>
+    )}
+    
+    {successMessage && (
+      <div class="bg-green-900/50 border border-green-700 text-green-200 px-4 py-3 rounded-md flex items-center animate-fade-in">
+        <i class="fas fa-check-circle mr-3"></i>
+        {successMessage}
+      </div>
+    )}
+
+    {/* Upload Lua Section */}
+    <div class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-md border border-gray-700/50 shadow-xl">
+      <div class="max-w-2xl mx-auto text-center space-y-6">
+        <div class="space-y-2">
+          <h2 class="text-2xl font-bold text-white">Sincronización de Datos</h2>
+          <p class="text-gray-400 text-sm">
+            Sube el archivo <code>RaidDominion-main.lua</code> generado por el addon para actualizar automáticamente la base de datos de jugadores, sus rangos y sus cores asignados.
+          </p>
+        </div>
+
+        <div class="bg-indigo-500/5 border border-indigo-500/20 p-6 rounded-xl text-left">
+          <h3 class="text-indigo-400 font-bold flex items-center gap-2 mb-3 text-sm">
+            <i class="fas fa-info-circle"></i> Instrucciones de uso
+          </h3>
+          <ul class="text-xs text-gray-300 space-y-2 list-disc list-inside opacity-80">
+            <li>Asegúrate de haber cerrado el juego o haber hecho <code>/reload</code> antes de copiar el archivo.</li>
+            <li>El archivo se encuentra usualmente en: <br/><code class="text-indigo-300 block mt-1 ml-4">WTF/Account/NOMBRE/SavedVariables/RaidDominion.lua</code></li>
+            <li>El sistema procesará los cambios y marcará a los jugadores que ya no estén en la hermandad como <code>Guild Leave</code>.</li>
+          </ul>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+          <div class="relative group">
+            <input
+              type="file"
+              name="lua_file"
+              accept=".lua"
+              required
+              class="block w-full text-sm text-gray-400
+                file:mr-4 file:py-3 file:px-6
+                file:rounded-xl file:border-0
+                file:text-sm file:font-black file:uppercase file:tracking-widest
+                file:bg-indigo-600 file:text-white
+                hover:file:bg-indigo-500
+                cursor-pointer bg-gray-900/50 border border-white/5 rounded-xl p-2 transition-all group-hover:border-indigo-500/30"
+            />
+          </div>
+          
+          <button
+            type="submit"
+            class="w-full py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-black uppercase tracking-[0.2em] rounded-xl shadow-xl shadow-indigo-900/20 transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-3"
+          >
+            <i class="fas fa-cloud-upload-alt text-xl"></i>
+            Procesar Sincronización
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</Layout>

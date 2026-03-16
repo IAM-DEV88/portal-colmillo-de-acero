@@ -1,0 +1,118 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import { rosterService } from '../../services/rosterService';
+
+// Solo permitir acceso a administradores
+const session = Astro.cookies.get('admin_session')?.value;
+const userRole = Astro.cookies.get('admin_role')?.value;
+
+if (!session || userRole !== 'admin') {
+  return Astro.redirect('/admin');
+}
+
+// Fetch roster data to identify officers
+const rosterData = await rosterService.getFormattedRoster();
+
+// Fetch hidden officers config
+const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_officers').maybeSingle();
+const hiddenOfficers = configData?.value ? JSON.parse(configData.value) : [];
+
+// Check for success message in URL
+const success = Astro.url.searchParams.get('success');
+const successMessage = success === 'updated' ? 'Configuración actualizada correctamente' : '';
+
+// Identify all officers (players with leaderData.cores)
+const officers = Object.values(rosterData.players || {})
+  .filter((p: any) => p.leaderData && p.leaderData.cores && p.leaderData.cores.length > 0)
+  .map((p: any) => ({
+    name: p.name,
+    class: p.class,
+    isHidden: hiddenOfficers.includes(p.name)
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+---
+
+<Layout title="Configuración de Oficiales | Panel Admin">
+  <div class="max-w-7xl mx-auto py-12 px-4 space-y-8">
+    <div class="flex items-center justify-between bg-gray-800/50 backdrop-blur-sm p-6 rounded-md border border-gray-700/50 shadow-xl">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/20">
+          <i class="fas fa-user-shield text-2xl text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-3xl font-black text-white uppercase tracking-tighter italic">
+            Configuración de <span class="text-blue-400">Oficiales</span>
+          </h1>
+          <p class="text-gray-400 text-xs font-medium uppercase tracking-widest mt-1">Gestión de visibilidad y roles</p>
+        </div>
+      </div>
+      <a 
+        href="/admin" 
+        class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-white/10 text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+      >
+        <i class="fas fa-arrow-left"></i>
+        Volver al Panel
+      </a>
+    </div>
+
+    {successMessage && (
+      <div class="bg-green-900/50 border border-green-700 text-green-200 px-4 py-3 rounded-md flex items-center animate-fade-in">
+        <i class="fas fa-check-circle mr-3"></i>
+        {successMessage}
+      </div>
+    )}
+
+    {/* Hidden Officers Section */}
+    <div class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-md border border-gray-700/50 shadow-xl">
+      <h2 class="text-xl font-bold text-white mb-4">Visibilidad de Raids por Oficial</h2>
+      <p class="text-sm text-gray-400 mb-6">
+        Selecciona los oficiales cuyas bandas <strong>no deben mostrarse</strong> en el tablero público de horarios.
+      </p>
+      
+      <form 
+        action="/api/admin/update-config" 
+        method="POST"
+        x-data={`{ 
+          hidden: ${JSON.stringify(hiddenOfficers)},
+          updateValue() {
+            const checkboxes = document.querySelectorAll('.officer-toggle:checked');
+            this.hidden = Array.from(checkboxes).map(cb => cb.value);
+          }
+        }`}
+      >
+        <input type="hidden" name="key" value="hidden_officers" />
+        <input type="hidden" name="value" :value="JSON.stringify(hidden)" />
+        <input type="hidden" name="redirect" value="/admin/officer-config?success=updated" />
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar mb-6">
+          {officers.map(officer => (
+            <label class="flex items-center space-x-3 p-3 bg-gray-900/40 rounded-lg border border-white/5 cursor-pointer hover:bg-white/5 transition-all group">
+              <input 
+                type="checkbox" 
+                class="officer-toggle w-5 h-5 rounded border-gray-700 bg-gray-800 text-amber-500 focus:ring-amber-500/50"
+                value={officer.name}
+                checked={officer.isHidden}
+                @change="updateValue()"
+              />
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">{officer.name}</span>
+                <span class="text-[10px] text-gray-500 font-medium uppercase tracking-tight">{officer.class}</span>
+              </div>
+            </label>
+          ))}
+        </div>
+
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            class="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-md shadow-lg shadow-amber-900/20 text-sm font-black uppercase tracking-widest transition-all active:scale-95"
+          >
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</Layout>

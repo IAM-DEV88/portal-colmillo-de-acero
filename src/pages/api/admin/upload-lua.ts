@@ -6,7 +6,9 @@ import { rosterService } from '../../../services/rosterService';
 export const POST: APIRoute = async ({ request, cookies }) => {
   // Check authentication
   const adminSession = cookies.get('admin_session');
-  if (!adminSession || adminSession.value !== 'authenticated') {
+  const userRole = cookies.get('admin_role')?.value;
+
+  if (!adminSession || adminSession.value !== 'authenticated' || (userRole !== 'admin' && userRole !== 'official')) {
     return new Response(JSON.stringify({ error: 'No autorizado' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' }

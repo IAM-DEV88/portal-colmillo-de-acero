@@ -1,0 +1,253 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import { supabase } from '../../lib/supabase';
+import { rosterService } from '../../services/rosterService';
+
+// Solo permitir acceso a administradores
+const session = Astro.cookies.get('admin_session')?.value;
+const userRole = Astro.cookies.get('admin_role')?.value;
+
+if (!session || userRole !== 'admin') {
+    return Astro.redirect('/admin');
+}
+
+const rosterResult = await rosterService.getFormattedRoster(true);
+const rosterDataPlayers = rosterResult.players || {};
+
+// Obtener estadísticas rápidas
+const { data: registrations } = await supabase
+    .from('raid_registrations')
+    .select('*')
+    .in('status', ['aceptado', 'en_espera', 'en_revision']);
+
+const pendingCount = registrations?.filter(r => r.status === 'en_revision').length || 0;
+const acceptedCount = registrations?.filter(r => r.status === 'aceptado').length || 0;
+const waitingCount = registrations?.filter(r => r.status === 'en_espera').length || 0;
+
+---
+
+<Layout title="Distribución de Raids | Panel Admin">
+  <div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="bg-gray-900/50 border border-white/10 rounded-2xl p-8 backdrop-blur-xl shadow-2xl">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-amber-500 rounded-lg flex items-center justify-center shadow-lg shadow-amber-900/20">
+            <i class="fas fa-sitemap text-2xl text-black"></i>
+          </div>
+          <div>
+            <h1 class="text-3xl font-black text-white uppercase tracking-tighter italic">
+              Distribución <span class="text-amber-500">Automática</span>
+            </h1>
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-widest mt-1">Gestión inteligente de cupos y GearScore</p>
+          </div>
+        </div>
+        <a 
+          href="/admin" 
+          class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-white/10 text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+        >
+          <i class="fas fa-arrow-left"></i>
+          Volver al Panel
+        </a>
+      </div>
+
+      <!-- Estadísticas Rápidas -->
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-black/30 border border-white/5 p-4 rounded-xl text-center">
+          <span class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Pendientes</span>
+          <span class="text-2xl font-black text-amber-400 italic">{pendingCount}</span>
+        </div>
+        <div class="bg-black/30 border border-white/5 p-4 rounded-xl text-center">
+          <span class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Aceptados</span>
+          <span class="text-2xl font-black text-green-400 italic">{acceptedCount}</span>
+        </div>
+        <div class="bg-black/30 border border-white/5 p-4 rounded-xl text-center">
+          <span class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">En Espera</span>
+          <span class="text-2xl font-black text-blue-400 italic">{waitingCount}</span>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-amber-500/5 border border-amber-500/20 p-6 rounded-xl">
+          <h3 class="text-amber-400 font-bold flex items-center gap-2 mb-3 text-sm">
+            <i class="fas fa-info-circle"></i> Herramientas de Gestión
+          </h3>
+          <ul class="text-xs text-gray-300 space-y-2 list-disc list-inside opacity-80 mb-6">
+            <li><strong>Distribución Pro:</strong> Llena primero las bandas de mayor GS (ICC25H, SR25H, etc).</li>
+            <li><strong>Distribución Iniciación:</strong> Llena primero las de menor GS para priorizar a los que están subiendo.</li>
+            <li><strong>Limpiar Externos:</strong> Mueve a todos los jugadores que no están en el Roster a "En Espera".</li>
+            <li><strong>Limpiar Duplicados:</strong> Elimina registros sobrantes si un personaje se inscribió a dos bandas del mismo save (ej: dos ICC25N distintas).</li>
+            <li>Restricción: 1 personaje por save semanal (N y H son saves independientes).</li>
+          </ul>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button 
+              id="distributeProBtn"
+              class="py-4 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-black uppercase tracking-[0.1em] rounded-xl shadow-xl shadow-amber-900/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group text-[10px]"
+            >
+              <i class="fas fa-crown group-hover:rotate-12 transition-transform"></i>
+              Distribución Pro (GS Alto → Bajo)
+            </button>
+
+            <button 
+              id="distributeInitBtn"
+              class="py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-black uppercase tracking-[0.1em] rounded-xl shadow-xl shadow-blue-900/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group text-[10px]"
+            >
+              <i class="fas fa-seedling group-hover:rotate-12 transition-transform"></i>
+              Distribución Iniciación (GS Bajo → Alto)
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <button 
+              id="clearExternalsBtn"
+              class="py-3 bg-gray-800 border border-white/10 hover:bg-red-900/20 hover:border-red-500/30 text-gray-400 hover:text-red-400 font-black uppercase tracking-[0.1em] rounded-xl transition-all flex items-center justify-center gap-3 group text-[10px]"
+            >
+              <i class="fas fa-user-slash group-hover:shake transition-transform"></i>
+              Limpiar Externos
+            </button>
+
+            <button 
+              id="cleanDuplicatesBtn"
+              class="py-3 bg-gray-800 border border-white/10 hover:bg-amber-900/20 hover:border-amber-500/30 text-gray-400 hover:text-amber-400 font-black uppercase tracking-[0.1em] rounded-xl transition-all flex items-center justify-center gap-3 group text-[10px]"
+            >
+              <i class="fas fa-copy group-hover:shake transition-transform"></i>
+              Limpiar Duplicados
+            </button>
+          </div>
+        </div>
+        </div>
+
+        <div id="statusArea" class="hidden">
+          <div class="flex items-center justify-center gap-3 text-amber-400 py-4 italic animate-pulse">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span class="text-sm font-bold uppercase tracking-widest">Procesando registros...</span>
+          </div>
+        </div>
+
+        <div id="resultArea" class="hidden">
+          <div class="bg-green-500/10 border border-green-500/30 p-6 rounded-xl">
+            <div class="flex items-center gap-3 text-green-400 mb-4">
+              <i class="fas fa-check-circle text-xl"></i>
+              <span class="font-black uppercase tracking-tighter italic">¡Distribución Exitosa!</span>
+            </div>
+            <div id="resultDetails" class="text-xs text-gray-300 space-y-2">
+              <!-- Se llenará dinámicamente -->
+            </div>
+            <a href="/raids" class="inline-block mt-6 text-amber-500 font-black text-[10px] uppercase tracking-widest hover:underline">
+              Ver Calendario Actualizado <i class="fas fa-external-link-alt ml-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const distributeProBtn = document.getElementById('distributeProBtn');
+  const distributeInitBtn = document.getElementById('distributeInitBtn');
+  const clearExternalsBtn = document.getElementById('clearExternalsBtn');
+  const cleanDuplicatesBtn = document.getElementById('cleanDuplicatesBtn');
+  const statusArea = document.getElementById('statusArea');
+  const resultArea = document.getElementById('resultArea');
+  const resultDetails = document.getElementById('resultDetails');
+
+  const executeDistribution = async (strategy: string) => {
+    const msg = strategy === 'high-to-low' 
+      ? '¿Ejecutar distribución PRO (GS Alto → Bajo)?' 
+      : '¿Ejecutar distribución INICIACIÓN (GS Bajo → Alto)?';
+    
+    if (!confirm(msg)) return;
+
+    toggleLoading(true);
+
+    try {
+      const response = await fetch(`/api/distribute-raids?strategy=${strategy}`);
+      const data = await response.json();
+
+      if (data.success) {
+        showResult(data);
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      alert('Error crítico de conexión');
+    } finally {
+      toggleLoading(false);
+    }
+  };
+
+  const toggleLoading = (loading: boolean) => {
+    [distributeProBtn, distributeInitBtn, clearExternalsBtn, cleanDuplicatesBtn].forEach(btn => {
+      if (btn) {
+        (btn as HTMLButtonElement).disabled = loading;
+        btn.classList.toggle('opacity-50', loading);
+      }
+    });
+    statusArea?.classList.toggle('hidden', !loading);
+    if (loading) resultArea?.classList.add('hidden');
+  };
+
+  const showResult = (data: any) => {
+    resultArea?.classList.remove('hidden');
+    if (resultDetails) {
+      resultDetails.innerHTML = `
+        <p class="mb-4 text-green-400 font-bold">✓ Proceso finalizado con ${data.assignments_count} asignaciones.</p>
+        <div class="grid grid-cols-1 gap-2">
+          ${data.raids.map((r: any) => `
+            <div class="flex justify-between items-center p-2 bg-white/5 rounded border border-white/5">
+              <div class="flex flex-col">
+                <span class="font-bold text-gray-400 uppercase text-[10px]">${r.id}</span>
+                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">${r.day}</span>
+              </div>
+              <span class="text-amber-400 font-black italic text-[10px]">${r.count} Jugadores</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+  };
+
+  distributeProBtn?.addEventListener('click', () => executeDistribution('high-to-low'));
+  distributeInitBtn?.addEventListener('click', () => executeDistribution('low-to-high'));
+
+  clearExternalsBtn?.addEventListener('click', async () => {
+    if (!confirm('¿Mover a todos los jugadores externos a la lista de espera?')) return;
+    
+    toggleLoading(true);
+    try {
+      const response = await fetch('/api/admin/move-externals-to-waiting');
+      const data = await response.json();
+      if (data.success) {
+        alert(`Éxito: ${data.count} jugadores movidos a espera.`);
+        window.location.reload();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      alert('Error de conexión');
+    } finally {
+      toggleLoading(false);
+    }
+  });
+
+  cleanDuplicatesBtn?.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar inscripciones duplicadas? (Se mantendrá solo la más antigua de cada save semanal por personaje)')) return;
+    
+    toggleLoading(true);
+    try {
+      const response = await fetch('/api/admin/clean-duplicates');
+      const data = await response.json();
+      if (data.success) {
+        alert(`Éxito: ${data.count} registros duplicados eliminados.`);
+        window.location.reload();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      alert('Error de conexión');
+    } finally {
+      toggleLoading(false);
+    }
+  });
+</script>

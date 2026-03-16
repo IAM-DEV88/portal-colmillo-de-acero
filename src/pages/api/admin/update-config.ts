@@ -19,6 +19,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     return new Response(error.message, { status: 500 });
   }
 
-  // Redirect back to admin page
-  return redirect('/admin?configUpdated=true');
+  // Use custom redirect if provided
+  const redirectPath = formData.get('redirect') as string || '/admin?configUpdated=true';
+  return redirect(redirectPath);
 };
