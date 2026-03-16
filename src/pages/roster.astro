@@ -4,6 +4,7 @@ import RosterTable from '../components/roster/RosterTable.astro';
 import { validatePublicNote } from '../utils/rosterUtils';
 import { supabase } from '../lib/supabase';
 import { rosterService } from '../services/rosterService';
+import SectionComments from '../components/SectionComments.astro';
 
 // Use rosterService to fetch data with caching
 const rosterFormattedData = await rosterService.getFormattedRoster();
@@ -114,5 +115,11 @@ const { data: raidRegistrations } = await supabase
       />
     </div>
 
+    <!-- Muro de Comentarios Hermandad -->
+    <SectionComments 
+      section="roster" 
+      title="Comunidad" 
+      subtitle="Comparte tu experiencia en la hermandad: raids, sorteos, ruletas y ambiente."
+    />
   </div></Layout
 >

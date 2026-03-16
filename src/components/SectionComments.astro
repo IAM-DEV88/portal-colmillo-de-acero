@@ -1,0 +1,229 @@
+---
+import { supabase } from '../lib/supabase';
+
+interface Props {
+  section: 'inicio' | 'roster' | 'raids';
+  title: string;
+  subtitle: string;
+}
+
+const { section, title, subtitle } = Astro.props;
+
+// Fetch approved comments for this section
+const { data: comments } = await supabase
+  .from('section_comments')
+  .select('*')
+  .eq('section', section)
+  .eq('is_approved', true)
+  .order('created_at', { ascending: false });
+
+// Configuración por sección
+const sectionConfig = {
+  inicio: {
+    icon: 'fas fa-plug',
+    color: 'amber',
+    placeholder: '¿Qué te parece el addon RaidDominion? Déjanos tu opinión...'
+  },
+  roster: {
+    icon: 'fas fa-users',
+    color: 'indigo',
+    placeholder: 'Cuéntanos tu experiencia en la hermandad (raids, sorteos, ambiente)...'
+  },
+  raids: {
+    icon: 'fas fa-dungeon',
+    color: 'rose',
+    placeholder: '¿Alguna sugerencia o comentario sobre el addon en raids?'
+  }
+};
+
+const config = sectionConfig[section];
+---
+
+<section class="mb-12 animate-fade-in">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex flex-col md:flex-row items-end justify-between mb-10 gap-6">
+      <div class="text-left">
+        <h2 class="text-3xl font-black text-white uppercase tracking-tighter italic">
+          {title} <span class={`text-${config.color}-500`}>Muro de Opinión</span>
+        </h2>
+        <p class="text-gray-400 text-sm font-medium uppercase tracking-widest mt-2">{subtitle}</p>
+        <div class={`w-20 h-1 bg-${config.color}-500 mt-4 rounded-full`}></div>
+      </div>
+
+      <!-- Compact Comment Trigger (Alpine.js) -->
+      <div x-data="{ open: false }">
+        <button 
+          @click="open = true"
+          class={`flex items-center gap-2 px-4 py-2 bg-${config.color}-600/10 hover:bg-${config.color}-600 border border-${config.color}-600/30 text-${config.color}-400 hover:text-white rounded-lg transition-all font-black text-[10px] uppercase tracking-widest group shadow-lg shadow-${config.color}-900/20`}
+        >
+          <i class={`${config.icon} group-hover:scale-110 transition-transform`}></i>
+          <span>Dejar Comentario</span>
+        </button>
+
+        <!-- Modal Overlay -->
+        <div 
+          x-show="open" 
+          class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          x-cloak
+        >
+          <!-- Backdrop -->
+          <div 
+            x-show="open"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            class="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            @click="open = false"
+          ></div>
+
+          <!-- Modal Content -->
+          <div 
+            x-show="open" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95 transform -translate-y-4"
+            x-transition:enter-end="opacity-100 scale-100 transform translate-y-0"
+            class="relative w-full max-w-md bg-gray-900 border border-white/10 rounded-2xl p-8 shadow-2xl z-10"
+            @click.away="open = false"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <h3 class={`text-xl font-black text-white uppercase italic flex items-center gap-2`}>
+                <i class={`${config.icon} text-${config.color}-500`}></i>
+                Tu <span class={`text-${config.color}-500`}>Opinión</span>
+              </h3>
+              <button @click="open = false" class="text-gray-500 hover:text-white transition-colors">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
+
+            <form id={`comment-form-${section}`} class="space-y-6">
+              <input type="hidden" name="section" value={section} />
+              <div>
+                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 italic">Nombre del Personaje</label>
+                <input 
+                  type="text" 
+                  name="player_name" 
+                  required 
+                  placeholder="Ej: Arthas"
+                  class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500/50 transition-all outline-none focus:ring-1 focus:ring-amber-500/20"
+                />
+              </div>
+              <div>
+                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 italic">Tu Opinión</label>
+                <textarea 
+                  name="content" 
+                  required 
+                  rows="4"
+                  placeholder={config.placeholder}
+                  class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500/50 transition-all outline-none resize-none focus:ring-1 focus:ring-amber-500/20"
+                ></textarea>
+              </div>
+              <button 
+                type="submit"
+                class={`w-full py-4 bg-${config.color}-600 hover:bg-${config.color}-500 text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl transition-all shadow-xl shadow-${config.color}-900/40 transform active:scale-95`}
+              >
+                Enviar
+              </button>
+              <div class="pt-2 text-center">
+                <p class="text-[9px] text-gray-500 uppercase font-bold italic leading-relaxed">
+                  * El comentario será visible tras ser aprobado<br/>por un administrador
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments Wall -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {comments && comments.length > 0 ? (
+        comments.map((comment) => (
+          <div class="group relative bg-gray-900/40 backdrop-blur-sm border border-white/5 rounded-xl p-6 hover:border-white/10 transition-all hover:-translate-y-1">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center gap-3">
+                <div class={`w-10 h-10 rounded-full bg-${config.color}-500/10 flex items-center justify-center border border-${config.color}-500/20`}>
+                  <span class={`text-${config.color}-400 font-black text-lg italic`}>
+                    {comment.player_name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <h4 class="text-sm font-black text-white uppercase italic tracking-tighter">
+                    {comment.player_name}
+                  </h4>
+                  <p class="text-[9px] text-gray-500 font-bold uppercase">
+                    {new Date(comment.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <i class={`fas fa-quote-right text-gray-800 text-xl group-hover:text-${config.color}-900/40 transition-colors`}></i>
+            </div>
+            <p class="text-gray-300 text-sm italic leading-relaxed relative z-10">
+              "{comment.content}"
+            </p>
+            <div class={`absolute bottom-0 left-0 w-0 h-0.5 bg-${config.color}-500 group-hover:w-full transition-all duration-500`}></div>
+          </div>
+        ))
+      ) : (
+        <div class="col-span-full py-16 text-center bg-white/5 border border-dashed border-white/10 rounded-2xl">
+          <div class={`w-16 h-16 bg-${config.color}-500/10 rounded-full flex items-center justify-center mx-auto mb-4`}>
+            <i class={`${config.icon} text-${config.color}-500/40 text-2xl`}></i>
+          </div>
+          <p class="text-gray-500 text-xs font-black uppercase tracking-[0.2em] italic">
+            Sé el primero en compartir tu experiencia
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ section }}>
+  const form = document.getElementById(`comment-form-${section}`);
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch('/api/section-comment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          alert('¡Gracias! Tu comentario ha sido enviado para revisión.');
+          form.reset();
+          // Cerrar el modal de Alpine si es posible (alternativa: recargar o usar evento)
+          window.location.reload();
+        } else {
+          const err = await response.json();
+          alert('Error: ' + (err.error || 'No se pudo enviar el comentario'));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión al enviar el comentario');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  }
+</script>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

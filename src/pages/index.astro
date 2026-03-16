@@ -3,6 +3,7 @@ import Layout from '../components/layout/Layout.astro';
 import AddonGallery from '../components/index/AddonGallery.astro';
 import ImageComponent from '@/components/index/ImageComponent.astro';
 import DiscordIcon from '@/components/ui/DiscordIcon.astro';
+import SectionComments from '../components/SectionComments.astro';
 import festivities from '../data/festivities.json';
 
 const currentDate = new Date();
@@ -561,6 +562,13 @@ const { temporada, enlaces } = activeFestivity;
         </section>
       </div>
     </section>
+
+    <!-- Muro de Comentarios Addon -->
+    <SectionComments 
+      section="inicio" 
+      title="RaidDominion" 
+      subtitle="¿Qué opinas de nuestro addon? Ayúdanos a mejorar con tu feedback."
+    />
   </main>
 
   <style>

@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 // Import components
 import RaidRulesModal from '../components/raids/RaidRulesModal.astro';
 import RaidSurvey from '../components/RaidSurvey.astro';
+import SectionComments from '../components/SectionComments.astro';
 
 // Función auxiliar para contar jugadores por rol
 type PlayerRole = 'tank' | 'healer' | 'melee' | 'ranged';
@@ -1067,8 +1068,8 @@ if (Astro.request.method === 'POST') {
 
           <div class="max-w-7xl mx-auto relative">
             <!-- Instrucciones de Registro -->
-            <div class="mb-10 px-4">
-              <div class="bg-gradient-to-br from-amber-900/10 via-gray-900/40 to-blue-900/10 backdrop-blur-md border border-white/5 rounded-lg p-6 md:p-8 shadow-2xl relative overflow-hidden group">
+            <div class="mb-20">
+              <div class="bg-gradient-to-br from-gray-900/70 via-gray-900/90 to-amber-800/60 backdrop-blur-md border border-white/5 rounded-lg p-4 shadow-2xl relative overflow-hidden group">
                 {/* Decoración de fondo */}
                 <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-colors duration-500"></div>
                 <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-500"></div>
@@ -1092,7 +1093,7 @@ if (Astro.request.method === 'POST') {
                         <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-black italic">1</span>
                         <div>
                           <h4 class="text-amber-200 font-bold text-sm mb-1 uppercase tracking-wide">Explora las Bandas</h4>
-                          <p class="text-gray-400 text-xs leading-relaxed">Navega por las pestañas superiores para ver los diferentes Cores y horarios disponibles.</p>
+                          <p class="text-white text-xs leading-relaxed">Navega por las pestañas superiores para ver los diferentes Cores y horarios disponibles.</p>
                         </div>
                       </div>
                     </div>
@@ -1103,7 +1104,7 @@ if (Astro.request.method === 'POST') {
                         <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-black italic">2</span>
                         <div>
                           <h4 class="text-amber-200 font-bold text-sm mb-1 uppercase tracking-wide">Elige tu Rol</h4>
-                          <p class="text-gray-400 text-xs leading-relaxed">Dentro de un Core, haz clic en el icono de tu rol (Tanque, Healer, Melee o Rango) para abrir el formulario.</p>
+                          <p class="text-white text-xs leading-relaxed">Dentro de un Core, haz clic en el icono de tu rol (Tanque, Healer, Melee o Rango) para abrir el formulario.</p>
                         </div>
                       </div>
                     </div>
@@ -1114,7 +1115,7 @@ if (Astro.request.method === 'POST') {
                         <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-black italic">3</span>
                         <div>
                           <h4 class="text-amber-200 font-bold text-sm mb-1 uppercase tracking-wide">¡Confirma!</h4>
-                          <p class="text-gray-400 text-xs leading-relaxed">Ingresa el nombre exacto de tu personaje y confirma tu asistencia. ¡Nos vemos en la raid!</p>
+                          <p class="text-white text-xs leading-relaxed">Ingresa el nombre exacto de tu personaje y confirma tu asistencia. ¡Nos vemos en la raid!</p>
                         </div>
                       </div>
                     </div>
@@ -1175,10 +1176,10 @@ if (Astro.request.method === 'POST') {
                           aria-label={`Ir a ${raid.name}`}
                         >
                           <span class="pagination-dot" />
-                          <span class="pagination-label">
+                          <span class="text-amber-200 font-bold text-sm mb-1 uppercase tracking-wide">
                             {raid.name}
                             {approvedSchedulesCount > 0 && (
-                              <span class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center group-hover:bg-amber-400 transition-colors">
+                              <span class="absolute -top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-500 text-white text-xs font-bold shadow-lg text-shadow [text-shadow:_1px_2px_0.5px_#000,_-1px_-1px_0.5px_#000,_1px_-1px_0.5px_#000,_-1px_2px_0.5px_#000] rounded-full w-5 h-5 flex items-center justify-center group-hover:bg-amber-400 transition-colors">
                                 {approvedSchedulesCount}
                               </span>
                             )}
@@ -1221,7 +1222,7 @@ if (Astro.request.method === 'POST') {
                       }, 0);
 
                       return (
-                        <div class="swiper-slide px-6">
+                        <div class="swiper-slide">
                           <div class="w-full" data-raid-id={raid.id}>
                             <div class="group/raid relative bg-gradient-to-br from-gray-900/70 via-gray-900/90 to-amber-800/60 backdrop-blur-sm border border-amber-600/30 rounded-md shadow-2xl hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 overflow-hidden">
                               
@@ -1247,7 +1248,7 @@ if (Astro.request.method === 'POST') {
                                   <div class="flex justify-between items-end">
                                     <div>
                                       <div class="flex items-center gap-3">
-                                        <h3 class="text-xl font-bold text-white italic">{raid.name}</h3>
+                                        <h3 class="text-amber-200 font-bold text-sm mb-6 uppercase tracking-wide italic">{raid.name}</h3>
                                       </div>
                                       
                                       <p class="text-xs text-gray-300 flex items-center mt-1">
@@ -1880,11 +1881,11 @@ if (Astro.request.method === 'POST') {
   </div>
 
   {/* Weekly Schedule Section */}
-  <div class="max-w-7xl mx-auto py-8">
+  <div class="max-w-7xl mx-auto py-20">
     <!-- Título de la sección -->
     <div
       id="reglas-hermandad"
-      class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6 mt-20"
+      class="flex flex-col md:flex-row md:justify-between md:items-end gap-4 px-2 mb-6"
     >
       <div class="flex items-center space-x-4">
         <div
@@ -1975,7 +1976,7 @@ if (Astro.request.method === 'POST') {
                           <div class="marquee-container flex-grow">
                             <button 
                               onclick={`window.navigateToRaid('${schedule.raid_id}', '${normalizeDay(schedule.day_of_week)}')`}
-                              class="marquee-text text-left text-xs text-white font-bold hover:text-amber-400 transition-colors focus:outline-none w-full"
+                              class="marquee-text text-left text-amber-200 font-bold text-[11px] mb-1 uppercase tracking-wide hover:text-amber-400 transition-colors focus:outline-none w-full"
                               title={schedule.raid_name}
                               onmouseenter="this.scrollWidth > this.clientWidth ? this.classList.add('is-overflowing') : null"
                             >
@@ -2370,6 +2371,14 @@ if (Astro.request.method === 'POST') {
     }
   });
 </script>
+
+<!-- Muro de Comentarios Addon -->
+<SectionComments 
+  section="raids" 
+  title="Raids Colmillo" 
+  subtitle="¿Cómo ha sido tu experiencia en nuestras raids? Déjanos tu comentario."
+/>
+
 </Layout>
 <script is:inline>
   // Raid Leaders and Regular Players Modal Functions
@@ -3887,17 +3896,8 @@ if (Astro.request.method === 'POST') {
     transform: scale(1.1);
   }
 
-  .pagination-item:hover .pagination-label {
+  .pagination-item:hover {
     color: #fbbf24; /* amber-400 */
-  }
-
-  .pagination-label {
-    color: #ffffff; /* white */
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 700; /* bold */
-    transition: color 0.2s ease;
-    text-align: center;
-    white-space: nowrap;
   }
 
   .pagination-dot {
