@@ -50,8 +50,15 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
             
             // Lógica de reseteo a las 00:00 hora server (Europe/London)
             const guildTimezone = 'Europe/London';
-            const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: guildTimezone }));
-            const lastActiveServer = new Date(new Date(existingSession.last_active).toLocaleString('en-US', { timeZone: guildTimezone }));
+            const now = new Date();
+            const nowServerStr = now.toLocaleString('en-US', { timeZone: guildTimezone });
+            const nowServer = new Date(nowServerStr);
+            
+            const lastActive = new Date(existingSession.last_active);
+            const lastActiveServerStr = lastActive.toLocaleString('en-US', { timeZone: guildTimezone });
+            const lastActiveServer = new Date(lastActiveServerStr);
+
+            console.log(`[GameState] Now Server: ${nowServer.toISOString()}, Last Active Server: ${lastActiveServer.toISOString()}`);
 
             // Comprobar si estamos en un día diferente al de la última actividad según la hora server
             const isDifferentDay = 
@@ -67,7 +74,7 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
                     gold_pool: existingSession.gold_pool > 100 ? existingSession.gold_pool : 100,
                     has_won_choker: false,
                     spin_history: [],
-                    last_active: new Date().toISOString() // Guardamos en UTC para persistencia
+                    last_active: now.toISOString() // Guardamos en UTC para persistencia
                 };
 
                 const { data: updatedSession, error: updateError } = await supabase
@@ -78,6 +85,7 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
                     .single();
 
                 if (!updateError) {
+                    console.log(`[GameState] Sesión reseteada con éxito para ${sessionId}`);
                     return new Response(JSON.stringify(updatedSession), { 
                         status: 200,
                         headers: { 
