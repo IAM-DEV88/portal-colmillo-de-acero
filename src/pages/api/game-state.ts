@@ -50,21 +50,18 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
             
             // Lógica de reseteo a las 00:00 hora server (Europe/London)
             const guildTimezone = 'Europe/London';
+            
+            // Formatear fechas como YYYY-MM-DD en la zona horaria del servidor
             const now = new Date();
-            const nowServerStr = now.toLocaleString('en-US', { timeZone: guildTimezone });
-            const nowServer = new Date(nowServerStr);
+            const nowServerStr = now.toLocaleDateString('en-CA', { timeZone: guildTimezone }); // en-CA da YYYY-MM-DD
             
             const lastActive = new Date(existingSession.last_active);
-            const lastActiveServerStr = lastActive.toLocaleString('en-US', { timeZone: guildTimezone });
-            const lastActiveServer = new Date(lastActiveServerStr);
+            const lastActiveServerStr = lastActive.toLocaleDateString('en-CA', { timeZone: guildTimezone });
 
-            console.log(`[GameState] Now Server: ${nowServer.toISOString()}, Last Active Server: ${lastActiveServer.toISOString()}`);
+            console.log(`[GameState] IP: ${sessionId} | Now Server Day: ${nowServerStr} | Last Active Server Day: ${lastActiveServerStr}`);
 
-            // Comprobar si estamos en un día diferente al de la última actividad según la hora server
-            const isDifferentDay = 
-                nowServer.getDate() !== lastActiveServer.getDate() || 
-                nowServer.getMonth() !== lastActiveServer.getMonth() || 
-                nowServer.getFullYear() !== lastActiveServer.getFullYear();
+            // Comprobar si las cadenas de fecha son diferentes
+            const isDifferentDay = nowServerStr !== lastActiveServerStr;
 
             if (isDifferentDay) {
                 console.log(`[GameState] Reseteando sesión por cambio de día (Medianoche Server). IP: ${sessionId}`);
