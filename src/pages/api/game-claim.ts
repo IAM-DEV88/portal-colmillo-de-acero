@@ -38,6 +38,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         }
 
         // 2. Determine reset values
+        const claimedAmount = existingSession.gold_pool;
         let newGoldPool = existingSession.gold_pool;
         let hasWonChoker = existingSession.has_won_choker;
 
@@ -68,6 +69,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         return new Response(JSON.stringify({
             success: true,
             gold_pool: newGoldPool,
+            claimed_amount: claimedAmount,
             has_won_choker: hasWonChoker
         }), {
             status: 200,

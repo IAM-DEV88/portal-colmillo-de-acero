@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿---
+﻿﻿﻿﻿﻿﻿﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 ---
@@ -605,6 +605,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
       let claimText = "";
       let subText = "";
       let userIP = "Desconocida";
+      let claimedAmount = 0;
 
       try {
         const res = await fetch('/api/game-claim', {
@@ -615,6 +616,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
         
         const data = await res.json();
         if (data.success) {
+          claimedAmount = data.claimed_amount;
           const oldPool = goldPool;
           goldPool = data.gold_pool;
           hasWonChoker = data.has_won_choker;
@@ -635,10 +637,10 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
       } catch (e) {}
 
       if (type === 'pool') {
-        claimText = `TIQUET GANADOR DE ORO`;
+        claimText = `TIQUET GANADOR DE ${claimedAmount.toLocaleString()} ORO`;
         subText = "¡La suerte te sonríe!";
       } else if (type === 'choker') {
-        claimText = `¡GARGANTILLA LEGENDARIA!`;
+        claimText = `¡GARGANTILLA + ${claimedAmount.toLocaleString()} ORO!`;
         subText = "Item Legendario Obtenido";
       }
 
@@ -872,10 +874,10 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
                     <div class="flex justify-center mb-2">
                       <div class="max-w-full overflow-hidden flex justify-center bg-black/40 p-2 rounded-lg border border-white/5 shadow-2xl">
                         <div class="block md:hidden">
-                          <iframe srcdoc="${ad320}" width="320" height="50" frameborder="0" scrolling="no" style="border:none; overflow:hidden; pointer-events: auto;"></iframe>
+                          <iframe srcdoc="${ad320}" width="320" height="50" frameborder="0" scrolling="no" style="border:none; overflow:hidden; pointer-events: auto;" sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin"></iframe>
                         </div>
                         <div class="hidden md:block">
-                          <iframe srcdoc="${ad728}" width="728" height="90" frameborder="0" scrolling="no" style="border:none; overflow:hidden; pointer-events: auto;"></iframe>
+                          <iframe srcdoc="${ad728}" width="728" height="90" frameborder="0" scrolling="no" style="border:none; overflow:hidden; pointer-events: auto;" sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin"></iframe>
                         </div>
                       </div>
                     </div>
