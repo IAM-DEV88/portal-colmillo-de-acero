@@ -1,4 +1,4 @@
-﻿﻿﻿---
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 ---
@@ -259,35 +259,30 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 
     // Game Logic
     const SYMBOLS = [
-      { id: 'skull', icon: '💀', weight: 50, name: 'MALDICIÓN' }, // Common (Loss)
-      { id: 'gold_small', icon: '⚜️', weight: 28, name: 'MONEDA' }, // Frequent (Target 501-1000 range)
-      { id: 'gold_bag', icon: '💰', weight: 16, name: 'BOLSA' }, // Uncommon (Target 1001-3000 range)
-      { id: 'chest', icon: '📦', weight: 2.5, name: 'COFRE' }, // Very Rare (Target 7000+)
-      { id: 'choker', icon: '📿', weight: 0.5, name: 'GARGANTILLA' }, // Legendary (Item)
-      { id: 'thief', icon: '🗡️', weight: 3, name: 'PÍCARO' } // Rare (Turns)
+      { id: 'skull', icon: '💀', weight: 50, name: 'MALDICIÓN' }, 
+      { id: 'gold_small', icon: '⚜️', weight: 28, name: 'MONEDA' }, 
+      { id: 'gold_bag', icon: '💰', weight: 16, name: 'BOLSA' }, 
+      { id: 'chest', icon: '📦', weight: 2.5, name: 'COFRE' }, 
+      { id: 'choker', icon: '📿', weight: 0.5, name: 'GARGANTILLA' }, 
+      { id: 'thief', icon: '🗡️', weight: 3, name: 'PÍCARO' } 
     ];
 
     let credits = 5; 
     let goldPool = 100; 
     let isSpinning = false;
     let hasWonChoker = false; 
-    let hasClickedAd = false; // Nueva variable para seguimiento de publicidad
-    let isAdBlockerActive = false; // Detección de AdBlocker
+    let hasClickedAd = false;
+    let isAdBlockerActive = false;
     const spinHistory = [];
 
-    // Función para detectar AdBlocker
-    async function checkAdBlocker() {
-      // Intento 1: Verificar si el script de Adsterra cargó (en el modal se inyecta, pero aquí probamos conectividad)
-      try {
-        const testAd = await fetch('https://www.highperformanceformat.com/bc3afce27a408298cd40496786edc9ca/invoke.js', { 
-          method: 'HEAD', 
-          mode: 'no-cors' 
-        });
-        isAdBlockerActive = false;
-      } catch (e) {
-        console.warn("AdBlocker detectado o error de red:", e);
-        isAdBlockerActive = true;
+    function getRandomSymbol() {
+      const totalWeight = SYMBOLS.reduce((sum, s) => sum + s.weight, 0);
+      let rand = Math.random() * totalWeight;
+      for (const symbol of SYMBOLS) {
+        if (rand < symbol.weight) return symbol;
+        rand -= symbol.weight;
       }
+      return SYMBOLS[0];
     }
 
     // Sincronización con API (Persistencia por IP)
@@ -320,16 +315,17 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
         } catch (e) { console.error("Error loading state", e); }
     }
 
-    async function syncGameState() {
-        try {
-            await fetch('/api/game-state', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ credits, gold_pool: goldPool, has_won_choker: hasWonChoker, spin_history: spinHistory })
-            });
-        } catch (e) { console.error("Error saving state", e); }
+    async function checkAdBlocker() {
+      try {
+        const testAd = await fetch('https://www.highperformanceformat.com/bc3afce27a408298cd40496786edc9ca/invoke.js', { 
+          method: 'HEAD', 
+          mode: 'no-cors' 
+        });
+        isAdBlockerActive = false;
+      } catch (e) {
+        isAdBlockerActive = true;
+      }
     }
-
 
     // Initialize
     document.addEventListener('DOMContentLoaded', async () => {
@@ -346,7 +342,7 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
       if(poolEl) poolEl.innerHTML = goldPool.toLocaleString();
       
       updateHistoryDisplay();
-      updateDisplay(true); // Añadir esta línea para asegurar que el botón Reclamar se evalúe al cargar la página
+      updateDisplay(true); 
       
       // Init Reels
       initReel('reel-1');
@@ -356,15 +352,10 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
       // Event Listeners
       document.getElementById('spin-btn').addEventListener('click', spin);
       
-      window.addCredits = (amount) => {
-        credits += amount;
-        // Increase pool when buying credits to simulate community pot
-        goldPool += amount * 100; 
-        
-        syncGameState();
-        
-        updateDisplay(false, amount * 100);
-        showMessage(`¡+${amount} GIROS AÑADIDOS!`, 'text-green-400');
+      window.addCredits = async (amount) => {
+        // Just refresh state from server after purchase
+        await fetchGameState();
+        showMessage(`¡GIROS ACTUALIZADOS!`, 'text-green-400');
       };
     });
 
@@ -613,37 +604,42 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
     async function handleDiscordClaim(type) {
       let claimText = "";
       let subText = "";
-      let amount = 0;
       let userIP = "Desconocida";
+
+      try {
+        const res = await fetch('/api/game-claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          const oldPool = goldPool;
+          goldPool = data.gold_pool;
+          hasWonChoker = data.has_won_choker;
+          updateDisplay(false, -oldPool);
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (e) {
+        console.error("Claim Error:", e);
+        alert("Error al procesar el reclamo. Intenta de nuevo.");
+        return;
+      }
 
       try {
         const ipResponse = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipResponse.json();
         userIP = ipData.ip;
-      } catch (e) {
-        console.warn("No se pudo obtener la IP:", e);
-      }
+      } catch (e) {}
 
       if (type === 'pool') {
-        amount = goldPool; 
-        claimText = `TIQUET GANADOR DE **${amount.toLocaleString()}** ORO`;
+        claimText = `TIQUET GANADOR DE ORO`;
         subText = "¡La suerte te sonríe!";
-        
-        // Reset Pool
-        goldPool = 0;
-        syncGameState();
-        updateDisplay(false, -amount);
-        
       } else if (type === 'choker') {
-        const poolAmount = goldPool;
-        claimText = `¡GARGANTILLA + ${poolAmount.toLocaleString()} ORO!`;
-        subText = "Item Legendario y Pozo Obtenidos";
-        
-        // Reset Choker and Pool
-        hasWonChoker = false;
-        goldPool = 0;
-        syncGameState();
-        updateDisplay(false, -poolAmount);
+        claimText = `¡GARGANTILLA LEGENDARIA!`;
+        subText = "Item Legendario Obtenido";
       }
 
       // Create Canvas for Ticket
@@ -1168,129 +1164,105 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
 
 
 
-    function spin() {
+    async function spin() {
       if (!hasClickedAd) {
         showAdModal();
         return;
       }
 
-      const startPool = goldPool;
       if (credits <= 0 || isSpinning) return;
       
-      // Set spinning state first
       isSpinning = true;
       document.getElementById('spin-btn').disabled = true;
       document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
 
+      // Animación inmediata local: descontar crédito y sumar 10 al pozo
       credits--;
-      // Add a small amount to the pool each spin
       goldPool += 10;
-      
-      syncGameState();
-      
-      // DO NOT update display yet, wait for animation
-      // updateDisplay();
-      
+      updateDisplay(false, 10);
+
+      const startPool = goldPool;
       showMessage('LA REINA DECIDE TU DESTINO...', 'text-red-400');
-      
-      // Determine outcome
-      const outcome = getOutcome();
-      
-      // Animate reels
-      // Reset highlights
-      document.querySelectorAll('.symbol.highlight').forEach(el => el.classList.remove('highlight'));
 
-      animateReel('reel-1', outcome[0], 1500, () => {
-          highlightReel('reel-1');
-          showMessage(`${outcome[0].name}`, 'text-amber-200');
-      });
-      
-      animateReel('reel-2', outcome[1], 2500, () => {
-          highlightReel('reel-2');
-          if (outcome[0].id === outcome[1].id) {
-             showMessage(`¡DOS ${outcome[1].name}S!`, 'text-yellow-400 font-bold animate-pulse');
-          } else {
-             showMessage(`${outcome[1].name}`, 'text-amber-200');
+      try {
+        const res = await fetch('/api/game-spin', { method: 'POST' });
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error);
+
+        const outcome = data.outcome;
+        
+        document.querySelectorAll('.symbol.highlight').forEach(el => el.classList.remove('highlight'));
+
+        animateReel('reel-1', outcome[0], 1500, () => {
+            highlightReel('reel-1');
+            showMessage(`${outcome[0].name}`, 'text-amber-200');
+        });
+        
+        animateReel('reel-2', outcome[1], 2500, () => {
+            highlightReel('reel-2');
+            if (outcome[0].id === outcome[1].id) {
+               showMessage(`¡DOS ${outcome[1].name}S!`, 'text-yellow-400 font-bold animate-pulse');
+            } else {
+               showMessage(`${outcome[1].name}`, 'text-amber-200');
+            }
+        });
+        
+        animateReel('reel-3', outcome[2], 3500, () => {
+          highlightReel('reel-3');
+          isSpinning = false;
+          
+          // Update state from server response
+          credits = data.credits;
+          goldPool = data.gold_pool;
+          hasWonChoker = data.has_won_choker;
+          
+          if (data.prize.type !== 'none') {
+            handleServerPrize(data.prize);
           }
-      });
-      
-      animateReel('reel-3', outcome[2], 3500, () => {
-        highlightReel('reel-3');
-        isSpinning = false;
-        
-        // Check win first to potentially add credits
-        checkWin(outcome);
-        
-        // Add outcome to history reliably AFTER spin completes
-        spinHistory.unshift([outcome[0], outcome[1], outcome[2]]);
-        if (spinHistory.length > 3) spinHistory.pop(); // Keep only last 3
-        updateHistoryDisplay();
 
-        // Then update display (will show modal only if credits are still 0)
-        updateDisplay(true, goldPool - startPool); // finalUpdate = true, pass change
-        
-        syncGameState();
-      });
+          spinHistory.length = 0;
+          data.spin_history.forEach(s => spinHistory.push(s));
+          updateHistoryDisplay();
+
+          updateDisplay(true, goldPool - startPool);
+        });
+
+      } catch (e) {
+        console.error("Spin Error:", e);
+        isSpinning = false;
+        document.getElementById('spin-btn').disabled = false;
+        document.getElementById('spin-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+        showMessage('ERROR AL GIRAR', 'text-red-500');
+      }
+    }
+
+    function handleServerPrize(prize) {
+      let colorClass = 'text-white';
+      if (prize.type === 'item') colorClass = 'text-purple-400';
+      if (prize.type === 'gold') colorClass = 'text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]';
+      if (prize.type === 'turns') colorClass = 'text-green-400';
+
+      if (prize.type === 'item') {
+        showMessage(`🎉 ${prize.name} (RECLAMA EN DISCORD) 🎉`, colorClass);
+        setTimeout(() => showGameOver(true), 2000);
+      } else if (prize.type === 'gold') {
+        showMessage(`🎉 ${prize.name} (+${prize.amount} ORO) 🎉`, colorClass);
+      } else if (prize.type === 'turns') {
+        showMessage(`🎉 ${prize.name} 🎉`, colorClass);
+      } else if (prize.type === 'loss') {
+        showMessage('☠️ ¡LA REINA RECLAMA TU ALMA! (Pozo reducido) ☠️', 'text-red-600 font-bold text-xl animate-pulse');
+      }
+
+      const machine = document.getElementById('game-container');
+      if (machine) {
+          machine.classList.add('ring-4', 'ring-yellow-400', 'ring-opacity-100');
+          setTimeout(() => machine.classList.remove('ring-4', 'ring-yellow-400', 'ring-opacity-100'), 1000);
+      }
     }
 
     function resetGame() {
-        if (!confirm('¿Estás seguro de reiniciar el juego? Se perderá todo el progreso actual.')) return;
-        
-        const oldCredits = credits;
-        const oldPool = goldPool;
-        
-        credits = 5;
-              goldPool = 100;
-              hasWonChoker = false;
-              spinHistory.length = 0; // Clear array
-              
-              syncGameState();
-        
-        updateHistoryDisplay();
-        updateDisplay(false, goldPool - oldPool); // Pass negative change to animate down
-        
-        // Also force update credits display if it wasn't updated by updateDisplay (if we want to animate it too)
-        const creditsEl = document.getElementById('credits-display');
-        if (creditsEl) {
-             animateValue(creditsEl, oldCredits, credits, 1000);
-             showFloatingText('credits-display', credits - oldCredits);
-        }
-
-        showMessage('JUEGO REINICIADO', 'text-gray-400');
-    }
-
-    function simulateChokerSpin() {
-      const startPool = goldPool;
-      if (isSpinning) return;
-
-      isSpinning = true;
-      document.getElementById('spin-btn').disabled = true;
-      document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
-
-      showMessage('¡SIMULANDO TRES GARGANTILLAS!', 'text-purple-400');
-
-      const chokerSymbol = SYMBOLS.find(s => s.id === 'choker');
-      const outcome = [chokerSymbol, chokerSymbol, chokerSymbol];
-
-      document.querySelectorAll('.symbol.highlight').forEach(el => el.classList.remove('highlight'));
-
-      animateReel('reel-1', outcome[0], 1500, () => {
-          highlightReel('reel-1');
-      });
-      
-      animateReel('reel-2', outcome[1], 2500, () => {
-          highlightReel('reel-2');
-      });
-      
-      animateReel('reel-3', outcome[2], 3500, () => {
-        highlightReel('reel-3');
-        isSpinning = false;
-        checkWin(outcome);
-        spinHistory.unshift([outcome[0], outcome[1], outcome[2]]);
-        if (spinHistory.length > 3) spinHistory.pop();
-        updateHistoryDisplay();
-        updateDisplay(true, goldPool - startPool);
-      });
+        alert("El reseteo manual está deshabilitado por seguridad. Los créditos se reinician automáticamente cada 24h.");
     }
 
     function highlightReel(reelId) {
@@ -1298,42 +1270,6 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
         if (target) {
             target.classList.add('highlight');
         }
-    }
-
-    function getOutcome() {
-      // 3 Skulls = Lose Pool (Bad luck)
-      // 5% chance of 3 matching (Win)
-      // 35% chance of Near Miss
-      
-      const rand = Math.random();
-      
-      // 1% Chance of TOTAL LOSS (3 Skulls)
-      if (rand < 0.01) {
-          const skull = SYMBOLS.find(s => s.id === 'skull');
-          return [skull, skull, skull];
-      }
-      
-      // 4% Chance of WIN
-      if (rand < 0.05) {
-        // WIN!
-        let sym = getRandomSymbol();
-        // Prevent skulls from being a "win" in this block unless we want small prize
-        while (sym.id === 'skull') {
-            sym = getRandomSymbol();
-        }
-        return [sym, sym, sym];
-      } 
-      
-      // 35% Chance of NEAR MISS
-      if (rand < 0.40) {
-        // NEAR MISS (2 matching)
-        const sym = getRandomSymbol();
-        const other = getRandomSymbol();
-        return [sym, sym, other];
-      } 
-      
-      // Random
-      return [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
     }
 
     function createSymbolElement(sym) {
@@ -1401,123 +1337,6 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
       setTimeout(() => {
         if (callback) callback();
       }, duration);
-    }
-
-    // Simplified checkWin to use prizes from pool, not credits
-    function checkWin(outcome) {
-      let won = false;
-      let prizeName = '';
-      let prizeAmount = 0;
-      let colorClass = 'text-white';
-      
-      // Calculate multiplier or prize
-      const id1 = outcome[0].id;
-      const id2 = outcome[1].id;
-      const id3 = outcome[2].id;
-
-      if (id1 === 'skull' && id2 === 'skull' && id3 === 'skull') {
-        // BAD LUCK: LOSE POOL
-        const oldPool = goldPool;
-        goldPool = Math.floor(goldPool / 2); // Lose half pool
-
-        showMessage('☠️ ¡LA REINA RECLAMA TU ALMA! (Pozo reducido) ☠️', 'text-red-600 font-bold text-xl animate-pulse');
-        return;
-      }
-
-      // 3 Match Logic (Jackpots)
-      if (outcome[0].id === outcome[1].id && outcome[1].id === outcome[2].id) {
-          won = true;
-          const symbolId = outcome[0].id;
-
-          if (symbolId === 'choker') {
-             prizeName = "¡GARGANTILLA LEGENDARIA! (RECLAMA EN DISCORD)";
-             colorClass = "text-purple-400";
-             prizeAmount = 0;
-             hasWonChoker = true; // Establecer a true cuando se gana una gargantilla
-             updateDisplay(true); // Asegurarse de que updateDisplay actualice el botón Reclamar
-             setTimeout(() => showGameOver(true), 2000); // Forzar modal de victoria
-          } else if (symbolId === 'chest') {
-              prizeAmount = 7000;
-              prizeName = "¡GRAN COFRE! (+7000)";
-              colorClass = "text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]";
-          } else if (symbolId === 'gold_bag') {
-              prizeAmount = 2900;
-              prizeName = "¡BOLSA DE ORO! (+2900)";
-              colorClass = "text-yellow-300";
-          } else if (symbolId === 'gold_small') {
-              prizeAmount = 600;
-              prizeName = "¡MONEDAS! (+600)";
-              colorClass = "text-yellow-200";
-          } else if (symbolId === 'thief') {
-               // Bonus Turns
-               credits += 5;
-               prizeName = "¡PÍCARO! (+5 TURNOS)";
-               colorClass = "text-purple-400";
-               // Don't add gold
-               prizeAmount = 0;
-          } else {
-              // 3 Skulls = Loss
-              won = false;
-              prizeName = "INTÉNTALO DE NUEVO";
-              colorClass = "text-gray-400";
-          }
-
-      } else {
-          // 2 Match Logic (Consolation)
-          // Check for pairs
-          let pairSymbol = null;
-          if (outcome[0].id === outcome[1].id) pairSymbol = outcome[0].id;
-          else if (outcome[1].id === outcome[2].id) pairSymbol = outcome[1].id;
-          else if (outcome[0].id === outcome[2].id) pairSymbol = outcome[0].id;
-
-          if (pairSymbol) {
-               if (pairSymbol === 'thief') {
-                   won = true;
-                   credits += 2;
-                   prizeName = "PAR DE PÍCAROS (+2 TURNOS)";
-                   colorClass = "text-purple-300";
-              } else if (pairSymbol !== 'skull' && pairSymbol !== 'gold_small') {
-                  // Only high value pairs pay gold
-                  won = true;
-                  prizeAmount = 100;
-                  prizeName = "PAR GANADOR (+100)";
-                  colorClass = "text-yellow-100";
-              }
-          }
-      }
-
-      if (won) {
-         if (prizeAmount > 0) {
-             goldPool += prizeAmount; // Add to pool (Accumulated Winnings)
-             showMessage(`🎉 ${prizeName} (+${prizeAmount} ORO) 🎉`, colorClass);
-         } else if (prizeName.includes("TURNOS")) {
-             // Turns message
-             showMessage(`🎉 ${prizeName} 🎉`, colorClass);
-         } else {
-              // Real item message
-              showMessage(`🎉 ${prizeName} (RECLAMA EN DISCORD) 🎉`, colorClass);
-         }
-        
-        // Trigger confetti or visual effect here if possible
-        const machine = document.getElementById('game-container');
-        if (machine) {
-            machine.classList.add('ring-4', 'ring-yellow-400', 'ring-opacity-100');
-            setTimeout(() => machine.classList.remove('ring-4', 'ring-yellow-400', 'ring-opacity-100'), 1000);
-        }
-      } else {
-        const msgs = [
-            'La Reina exige más sacrificios...',
-            'Tu suerte se agota...',
-            '¿Te atreves a girar de nuevo?',
-            'El abismo te observa...',
-            'Casi... pero no.'
-        ];
-        const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
-        showMessage(randomMsg, 'text-gray-500');
-      }
-      
-      isSpinning = false;
-      document.getElementById('spin-btn').disabled = false;
     }
 
   </script>

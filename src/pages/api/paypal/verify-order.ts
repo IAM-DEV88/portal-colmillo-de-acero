@@ -25,10 +25,30 @@ async function getPayPalAccessToken() {
     return data.access_token;
 }
 
-export const POST: APIRoute = async ({ request }) => {
-    try {
-        const { orderID, option } = await request.json();
+import { createClient } from '@supabase/supabase-js';
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+function getClientIP(request: Request, clientAddress?: string) {
+    const forwarded = request.headers.get('x-forwarded-for');
+    if (forwarded) {
+        const ip = forwarded.split(',')[0].trim();
+        if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
+        return ip;
+    }
+    let ip = clientAddress || '127.0.0.1';
+    if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
+    return ip;
+}
+
+export const POST: APIRoute = async ({ request, clientAddress }) => {
+    try {
+        const ip = getClientIP(request, clientAddress);
+        const sessionId = ip;
+        const { orderID, option } = await request.json();
+        
         if (!orderID || !option) {
             return new Response(JSON.stringify({ error: 'Faltan datos de la orden' }), { status: 400 });
         }
@@ -47,21 +67,41 @@ export const POST: APIRoute = async ({ request }) => {
         const details = await response.json();
 
         // 2. Validar que el pago fue exitoso y el monto coincide
-        if (details.status !== 'COMPLETED') {
-             // Si ya fue capturada previamente, details.status podría no ser COMPLETED en la respuesta de captura
-             // pero podemos verificar detalles.
-             if (details.name === 'ORDER_ALREADY_CAPTURED') {
-                 return new Response(JSON.stringify({ error: 'Esta orden ya fue procesada' }), { status: 400 });
-             }
+        if (details.status !== 'COMPLETED' && details.name !== 'ORDER_ALREADY_CAPTURED') {
              return new Response(JSON.stringify({ error: 'El pago no se ha completado', details }), { status: 400 });
         }
 
-        const capturedAmount = details.purchase_units[0].payments.captures[0].amount.value;
-        if (parseFloat(capturedAmount) !== option.price) {
-            return new Response(JSON.stringify({ error: 'El monto pagado no coincide con el paquete' }), { status: 400 });
+        // Si ya fue capturada, details.purchase_units podría no estar presente en la respuesta de error
+        // Pero si es COMPLETED, validamos el monto.
+        if (details.status === 'COMPLETED') {
+            const capturedAmount = details.purchase_units[0].payments.captures[0].amount.value;
+            if (parseFloat(capturedAmount) !== option.price) {
+                return new Response(JSON.stringify({ error: 'El monto pagado no coincide con el paquete' }), { status: 400 });
+            }
         }
 
-        // 3. Notificar a Discord desde el servidor (Seguro)
+        // 3. ACTUALIZAR CRÉDITOS EN SUPABASE (SEGURO)
+        const { data: session } = await supabase
+            .from('game_sessions')
+            .select('credits, gold_pool')
+            .eq('ip_hash', sessionId)
+            .single();
+
+        if (session) {
+            const newCredits = session.credits + option.turns;
+            const newGoldPool = session.gold_pool + (option.turns * 100); // Bonus pool for buying
+
+            await supabase
+                .from('game_sessions')
+                .update({ 
+                    credits: newCredits, 
+                    gold_pool: newGoldPool,
+                    last_active: new Date().toISOString()
+                })
+                .eq('ip_hash', sessionId);
+        }
+
+        // 4. Notificar a Discord desde el servidor (Seguro)
         if (DISCORD_WEBHOOK_URL) {
             const payer = details.payer;
             const payload = {

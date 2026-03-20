@@ -29,7 +29,7 @@ function getClientIP(request: Request, clientAddress?: string) {
     return ip;
 }
 
-// GET: Obtener estado actual del juego para esta IP
+// GET: Obtener estado actual (Seguro)
 export const GET: APIRoute = async ({ request, clientAddress }) => {
     try {
         const ip = getClientIP(request, clientAddress);
@@ -158,71 +158,10 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
     }
 };
 
-// POST: Actualizar estado del juego
-export const POST: APIRoute = async ({ request, clientAddress }) => {
-    try {
-        const ip = getClientIP(request, clientAddress);
-        const sessionId = ip;
-        
-        const body = await request.json();
-        
-        // Extraer solo los campos permitidos para actualizar
-        const { credits, gold_pool, has_won_choker, spin_history } = body;
-
-        // Validaciones básicas
-        if (typeof credits !== 'number' || typeof gold_pool !== 'number') {
-             return new Response(JSON.stringify({ error: 'Invalid data types' }), { 
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
-        const updateData: any = {
-            credits,
-            gold_pool,
-            last_active: new Date().toISOString()
-        };
-
-        if (typeof has_won_choker === 'boolean') updateData.has_won_choker = has_won_choker;
-        if (Array.isArray(spin_history)) updateData.spin_history = spin_history;
-
-        const { data, error } = await supabase
-            .from('game_sessions')
-            .update(updateData)
-            .eq('ip_hash', sessionId)
-            .select()
-            .single();
-
-        if (error) {
-            console.error('[GameState] Error updating session:', error);
-            
-            // Si la sesión no existe (por limpieza o error), intentar crearla (Upsert manual)
-            // Esto maneja el caso donde el usuario envía POST pero su sesión fue borrada o nunca creada
-            if (error.code === 'PGRST116' || error.details?.includes('0 rows')) {
-                 console.log(`[GameState] Sesión perdida, recreando para ${sessionId}`);
-                 const newSession = { ...updateData, ip_hash: sessionId, created_at: new Date().toISOString() };
-                 const { data: newData, error: newError } = await supabase.from('game_sessions').upsert(newSession).select().single();
-                 if (!newError) {
-                     return new Response(JSON.stringify({ success: true, data: newData }), { status: 200 });
-                 }
-            }
-            
-            return new Response(JSON.stringify({ error: 'Update failed' }), { 
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
-        return new Response(JSON.stringify({ success: true, data }), { 
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-    } catch (e) {
-        console.error('API Error:', e);
-        return new Response(JSON.stringify({ error: 'Internal Server Error' }), { 
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
+// POST: Actualizar estado del juego (OBSOLETO - Por seguridad, la lógica está en /api/game-spin y /api/game-claim)
+export const POST: APIRoute = async () => {
+    return new Response(JSON.stringify({ error: 'Endpoint deshabilitado por seguridad' }), { 
+        status: 405,
+        headers: { 'Content-Type': 'application/json' }
+    });
 };
