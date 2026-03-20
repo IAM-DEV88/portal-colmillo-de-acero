@@ -1,4 +1,4 @@
-﻿﻿---
+﻿﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 ---
@@ -560,17 +560,49 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
     let modalCountdownIntervalId;
 
     function getFormattedTimeUntilMidnight() {
+      const timeZone = 'Europe/London';
       const now = new Date();
-      const midnight = new Date(now);
-      midnight.setHours(24, 0, 0, 0); // Próxima medianoche
-
-      const timeLeft = midnight.getTime() - now.getTime();
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      
+      // Obtener partes de la fecha actual en Londres
+      const formatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      
+      const parts = formatter.formatToParts(now);
+      const getPart = (type) => parts.find(p => p.type === type).value;
+      
+      // Crear una representación de la hora de Londres en milisegundos "ficticios" para el cálculo
+      const londonNowMs = Date.UTC(
+        parseInt(getPart('year')),
+        parseInt(getPart('month')) - 1,
+        parseInt(getPart('day')),
+        parseInt(getPart('hour')),
+        parseInt(getPart('minute')),
+        parseInt(getPart('second'))
+      );
+      
+      // Calcular la próxima medianoche en Londres
+      const londonMidnight = new Date(londonNowMs);
+      londonMidnight.setUTCHours(24, 0, 0, 0);
+      const londonMidnightMs = londonMidnight.getTime();
+      
+      const timeLeft = londonMidnightMs - londonNowMs;
+      
+      const hours = Math.floor(timeLeft / (1000 * 60 * 60));
       const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
+      // Formatear la fecha de reinicio (mañana en Londres)
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const restartDate = midnight.toLocaleDateString('es-ES', options);
+      // Usamos el objeto londonMidnight que ya apunta al inicio del próximo día
+      const restartDate = londonMidnight.toLocaleDateString('es-ES', options);
 
       return {
         time: `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`,
