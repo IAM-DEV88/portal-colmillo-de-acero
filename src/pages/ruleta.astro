@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿---
+﻿﻿﻿﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 ---
@@ -259,12 +259,12 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 
     // Game Logic
     const SYMBOLS = [
-      { id: 'skull', icon: '💀', weight: 50, name: 'MALDICIÓN' }, 
-      { id: 'gold_small', icon: '⚜️', weight: 28, name: 'MONEDA' }, 
-      { id: 'gold_bag', icon: '💰', weight: 16, name: 'BOLSA' }, 
-      { id: 'chest', icon: '📦', weight: 2.5, name: 'COFRE' }, 
-      { id: 'choker', icon: '📿', weight: 0.5, name: 'GARGANTILLA' }, 
-      { id: 'thief', icon: '🗡️', weight: 3, name: 'PÍCARO' } 
+      { id: 'skull', icon: '💀', weight: 60, name: 'MALDICIÓN' }, 
+      { id: 'gold_small', icon: '⚜️', weight: 30, name: 'MONEDA' }, 
+      { id: 'gold_bag', icon: '💰', weight: 8, name: 'BOLSA' }, 
+      { id: 'chest', icon: '📦', weight: 0.8, name: 'COFRE' }, 
+      { id: 'choker', icon: '📿', weight: 0.2, name: 'GARGANTILLA' }, 
+      { id: 'thief', icon: '🗡️', weight: 1.0, name: 'PÍCARO' } 
     ];
 
     let credits = 5; 

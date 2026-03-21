@@ -1,10 +1,10 @@
 export const SYMBOLS = [
-  { id: 'skull', icon: '💀', weight: 50, name: 'MALDICIÓN' }, 
-  { id: 'gold_small', icon: '⚜️', weight: 28, name: 'MONEDA' }, 
-  { id: 'gold_bag', icon: '💰', weight: 16, name: 'BOLSA' }, 
-  { id: 'chest', icon: '📦', weight: 2.5, name: 'COFRE' }, 
-  { id: 'choker', icon: '📿', weight: 0.5, name: 'GARGANTILLA' }, 
-  { id: 'thief', icon: '🗡️', weight: 3, name: 'PÍCARO' } 
+  { id: 'skull', icon: '💀', weight: 60, name: 'MALDICIÓN' }, 
+  { id: 'gold_small', icon: '⚜️', weight: 30, name: 'MONEDA' }, 
+  { id: 'gold_bag', icon: '💰', weight: 8, name: 'BOLSA' }, 
+  { id: 'chest', icon: '📦', weight: 0.8, name: 'COFRE' }, 
+  { id: 'choker', icon: '📿', weight: 0.2, name: 'GARGANTILLA' }, 
+  { id: 'thief', icon: '🗡️', weight: 1.0, name: 'PÍCARO' } 
 ];
 
 export function getRandomSymbol() {
@@ -21,14 +21,14 @@ export function getRandomSymbol() {
 export function getOutcome() {
   const rand = Math.random();
   
-  // 1% Chance of TOTAL LOSS (3 Skulls)
-  if (rand < 0.01) {
+  // 5% Chance of TOTAL LOSS (3 Skulls) - Increased from 1% to drain pool
+  if (rand < 0.05) {
     const skull = SYMBOLS.find(s => s.id === 'skull');
     return [skull, skull, skull];
   }
   
-  // 4% Chance of WIN (3 matching)
-  if (rand < 0.05) {
+  // 2% Chance of WIN (3 matching) - Reduced from 4%
+  if (rand < 0.07) {
     let sym = getRandomSymbol();
     while (sym.id === 'skull') {
       sym = getRandomSymbol();
@@ -36,7 +36,7 @@ export function getOutcome() {
     return [sym, sym, sym];
   } 
   
-  // 35% Chance of NEAR MISS (2 matching)
+  // 33% Chance of NEAR MISS (2 matching)
   if (rand < 0.40) {
     const sym = getRandomSymbol();
     const other = getRandomSymbol();
