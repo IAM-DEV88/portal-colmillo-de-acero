@@ -169,10 +169,17 @@ if (rosterPlayers && rosterPlayers.length > 0) {
 
 import { validatePublicNote } from '../utils/rosterUtils';
 
-// Fetch hidden officers config
-const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_officers').maybeSingle();
-const hiddenOfficersRaw = configData?.value ? JSON.parse(configData.value) : [];
-const hiddenOfficers = hiddenOfficersRaw.map((name: string) => name.toLowerCase().trim());
+// Fetch hidden raid slots config
+const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_raid_slots').maybeSingle();
+const hiddenRaidSlots = configData?.value ? JSON.parse(configData.value) : [];
+
+// Helper to normalize days for comparison
+const normalizeDayStr = (d: string) => 
+  d.toLowerCase()
+   .normalize('NFD')
+   .replace(/[\u0300-\u036f]/g, '')
+   .replace('miercoles', 'miercoles')
+   .replace('sabado', 'sabado');
 
 // Normalización de Raid ID
 const normalizeRaidId = (id: string) => (id || '').toUpperCase().replace(/\s+/g, ' ').trim();
@@ -203,34 +210,41 @@ const hiddenSlots = new Set<string>(); // To track raid-day-time slots of hidden
 if (rosterData && rosterData.players) {
   Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
     const leaderData = member.leaderData;
-    if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
+    if (!leaderData || !leaderData.cores) return;
 
-    const isHidden = !playerName || hiddenOfficers.includes(playerName.toLowerCase().trim());
+    // Ensure cores is treated as an array
+    const cores = Array.isArray(leaderData.cores) ? leaderData.cores : Object.values(leaderData.cores);
 
-    leaderData.cores.forEach((core) => {
+    cores.forEach((core) => {
       if (!core.raid || !core.schedule) return;
 
       const coreRaidKey = normalizeRaidId(core.raid);
       
       // Extract day and time for slot tracking
-      let normalizedTime = "Sin hora";
+      let normalizedTime = "00:00";
       let normalizedDay = "Sin día";
-      const timeMatch = String(core.schedule).match(/(\d{1,2}:\d{2})/);
+      const scheduleStr = String(core.schedule).toLowerCase();
+
+      const timeMatch = scheduleStr.match(/(\d{1,2}:\d{2})/);
       if (timeMatch) normalizedTime = timeMatch[1].padStart(5, '0');
-      const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
+      
+      const dayMatch = scheduleStr.match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
       if (dayMatch) {
-        normalizedDay = dayMatch[1]
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace('miércoles', 'miercoles')
-          .replace('sábado', 'sabado');
+        const foundDayNorm = normalizeDayStr(dayMatch[1]);
+        // Match against our display days to get correct case/accents
+        const displayDays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        normalizedDay = displayDays.find(d => normalizeDayStr(d) === foundDayNorm) || "Sin día";
       }
 
-      const slotKey = `${coreRaidKey}-${normalizedDay}-${normalizedTime}`;
-      
+      // Generate the same unique ID as in admin panel
+      const slotId = `${playerName}-${core.raid}-${normalizedDay}-${normalizedTime}`.toLowerCase().trim();
+      const isHidden = hiddenRaidSlots.includes(slotId);
+
       if (isHidden) {
-        hiddenSlots.add(slotKey);
-        return; // Skip adding to available raids if it's a hidden officer's raid
+        // Track this key to filter later in the main schedule map
+        const key = `${coreRaidKey}-${normalizeDayStr(normalizedDay)}-${normalizedTime}`;
+        hiddenSlots.add(key);
+        return; 
       }
 
       if (!seenRaids.has(coreRaidKey)) {
@@ -616,19 +630,11 @@ if (Astro.request.method === 'POST') {
   // 1. First, process data from Supabase (Primary source for cores)
   if (rosterData && rosterData.players) {
     Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
-      // Filter out hidden officers (Case insensitive)
-      if (!playerName || hiddenOfficers.includes(playerName.toLowerCase().trim())) return;
-      
       const leaderData = member.leaderData;
       if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
 
       leaderData.cores.forEach((core) => {
         if (!core.raid || !core.schedule) return;
-
-        // Buscar coincidencia exacta por nombre original (insensible a mayúsculas)
-        const raid = allAvailableRaids.find((r) => r.id === normalizeRaidId(core.raid));
-
-        if (!raid) return;
 
         // Normalize schedule: try to extract time and day
         let normalizedTime = "Sin hora";
@@ -639,14 +645,21 @@ if (Astro.request.method === 'POST') {
 
         const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
         if (dayMatch) {
-          normalizedDay = dayMatch[1]
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace('miércoles', 'miercoles')
-            .replace('sábado', 'sabado');
+          const foundDayNorm = normalizeDayStr(dayMatch[1]);
+          const displayDays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+          normalizedDay = displayDays.find(d => normalizeDayStr(d) === foundDayNorm) || "Sin día";
         }
 
-        const key = `${raid.id}-${normalizedDay}-${normalizedTime}`;
+        // Check if this specific slot is hidden
+        const slotId = `${playerName}-${core.raid}-${normalizedDay}-${normalizedTime}`.toLowerCase().trim();
+        if (hiddenRaidSlots.includes(slotId)) return;
+
+        // Buscar coincidencia exacta por nombre original (insensible a mayúsculas)
+        const raid = allAvailableRaids.find((r) => r.id === normalizeRaidId(core.raid));
+
+        if (!raid) return;
+
+        const key = `${raid.id}-${normalizeDayStr(normalizedDay)}-${normalizedTime}`;
 
         if (!schedulesMap.has(key)) {
           schedulesMap.set(key, {

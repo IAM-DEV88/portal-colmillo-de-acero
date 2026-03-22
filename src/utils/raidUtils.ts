@@ -17,12 +17,12 @@ interface RaidSchedule {
 const DAY_MAP: Record<string, string> = {
   'lunes': 'lunes',
   'martes': 'martes',
-  'miercoles': 'miercoles',
-  'miércoles': 'miercoles',
+  'miercoles': 'miércoles',
+  'miércoles': 'miércoles',
   'jueves': 'jueves',
   'viernes': 'viernes',
-  'sabado': 'sabado',
-  'sábado': 'sabado',
+  'sabado': 'sábado',
+  'sábado': 'sábado',
   'domingo': 'domingo'
 };
 
@@ -43,15 +43,11 @@ export async function getAllRaidSchedules(forceFresh = false): Promise<RaidSched
   const rosterData = await rosterService.getFormattedRoster(forceFresh);
   if (!rosterData || !rosterData.players) return [];
 
-  // Obtener oficiales ocultos de la configuración
-  const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_officers').maybeSingle();
-  const hiddenOfficersRaw: string[] = configData?.value ? JSON.parse(configData.value) : [];
-  const hiddenOfficers = hiddenOfficersRaw.map(name => name.toLowerCase().trim());
+  // Obtener slots de raid ocultos de la configuración
+  const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_raid_slots').maybeSingle();
+  const hiddenRaidSlots: string[] = configData?.value ? JSON.parse(configData.value) : [];
 
   Object.entries(rosterData.players).forEach(([playerName, member]: [string, any]) => {
-    // Filtrar oficiales ocultos (Insensible a mayúsculas)
-    if (!playerName || hiddenOfficers.includes(playerName.toLowerCase().trim())) return;
-
     const leaderData = member.leaderData;
     if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
 
@@ -71,6 +67,13 @@ export async function getAllRaidSchedules(forceFresh = false): Promise<RaidSched
         const rawDay = dayMatch[1].toLowerCase();
         normalizedDay = DAY_MAP[rawDay] || rawDay;
       } else return; // Si no hay día, no nos sirve
+
+      // Formatear el día para el slotId (con mayúscula inicial para coincidir con el admin)
+      const displayDay = normalizedDay.charAt(0).toUpperCase() + normalizedDay.slice(1);
+      const slotId = `${playerName}-${core.raid}-${displayDay}-${normalizedTime}`.toLowerCase().trim();
+
+      // Filtrar si el slot está oculto
+      if (hiddenRaidSlots.includes(slotId)) return;
 
       // Clave única para evitar duplicados si varios miembros tienen el mismo core listado
       // Usamos raid + dia + hora + lider (para distinguir diferentes grupos)
