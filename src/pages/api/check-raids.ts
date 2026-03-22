@@ -10,16 +10,23 @@ import { rosterService } from '../../services/rosterService';
 import { supabase } from '../../lib/supabase';
 
 // Días de la semana en orden para el reporte semanal
-const DAYS_IN_ORDER = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+const DAYS_IN_ORDER = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
 
 function normalizeDay(d: string): string {
   if (!d) return '';
-  return d.toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace('miércoles', 'miercoles')
-    .replace('sábado', 'sabado')
-    .trim();
+  const dayMap: Record<string, string> = {
+    'lunes': 'lunes',
+    'martes': 'martes',
+    'miercoles': 'miércoles',
+    'miércoles': 'miércoles',
+    'jueves': 'jueves',
+    'viernes': 'viernes',
+    'sabado': 'sábado',
+    'sábado': 'sábado',
+    'domingo': 'domingo'
+  };
+  const raw = d.toLowerCase().trim();
+  return dayMap[raw] || raw;
 }
 
 function getShiftedDay(day: string, time: string): string {
@@ -173,29 +180,32 @@ export const GET = async ({ url }: { url: URL }) => {
       // 3. Weekly / Summary logic
       const slotsMap = new Map<string, { raidId: string; day: string; time: string; count: number; isOfficial?: boolean; minGS?: number }>();
 
-      // Obtener oficiales ocultos de la configuración
-      let hiddenOfficers: string[] = [];
+      // Obtener slots de raid ocultos de la configuración
+      let hiddenRaidSlots: string[] = [];
       try {
-        const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_officers').maybeSingle();
-        const hiddenOfficersRaw: string[] = configData?.value ? JSON.parse(configData.value) : [];
-        hiddenOfficers = hiddenOfficersRaw.map(name => name.toLowerCase().trim());
+        const { data: configData } = await supabase.from('config').select('value').eq('key', 'hidden_raid_slots').maybeSingle();
+        hiddenRaidSlots = configData?.value ? JSON.parse(configData.value) : [];
       } catch (e) {
-        console.error('Error fetching hidden officers:', e);
+        console.error('Error fetching hidden raid slots:', e);
       }
 
       // Fetch Cores
       Object.entries(players).forEach(([playerName, member]: [string, any]) => {
-        // Filtrar oficiales ocultos (Insensible a mayúsculas)
-        if (!playerName || hiddenOfficers.includes(playerName.toLowerCase().trim())) return;
-
         if (member.leaderData?.cores) {
-          member.leaderData.cores.forEach((core: any) => {
+          const cores = Array.isArray(member.leaderData.cores) ? member.leaderData.cores : Object.values(member.leaderData.cores);
+          cores.forEach((core: any) => {
             const timeMatch = String(core.schedule).match(/(\d{1,2}:\d{2})/);
             if (!timeMatch) return;
             const time = timeMatch[1].padStart(5, '0');
             const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
             if (!dayMatch) return;
             const day = getShiftedDay(dayMatch[1], time);
+
+            // Generate the same unique ID as in admin panel to check visibility
+            const displayDay = day.charAt(0).toUpperCase() + day.slice(1);
+            const slotId = `${playerName}-${core.raid}-${displayDay}-${time}`.toLowerCase().trim();
+            if (hiddenRaidSlots.includes(slotId)) return;
+
             const normalizedRaidId = core.raid.toUpperCase().trim().replace(/\s+/g, '');
             const minGS = core.gs || 0;
             const key = `${normalizedRaidId}-${day}-${time}`;
