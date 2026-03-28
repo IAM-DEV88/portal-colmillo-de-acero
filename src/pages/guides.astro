@@ -2,241 +2,7 @@
 import Layout from '../components/layout/Layout.astro';
 import { supabase } from '../lib/supabase';
 import ShareButton from '../components/guides/ShareButton.astro';
-
-// Categorías solicitadas
-const categories = ["Mecánicas", "Especialización", "Profesiones", "Leveo"];
-
-// Mapeo de colores a clases reales de Tailwind para evitar problemas con JIT
-const colorClasses: Record<string, any> = {
-  blue: {
-    border: "border-blue-900/30",
-    hoverBorder: "hover:border-blue-800/50",
-    shadow: "hover:shadow-blue-500/5",
-    iconBg: "bg-blue-500/10",
-    iconBorder: "border-blue-500/20",
-    iconText: "text-blue-400",
-    btnBg: "bg-blue-500/10",
-    btnText: "text-blue-400",
-    btnHoverBg: "group-hover:bg-blue-500"
-  },
-  red: {
-    border: "border-red-900/30",
-    hoverBorder: "hover:border-red-800/50",
-    shadow: "hover:shadow-red-500/5",
-    iconBg: "bg-red-500/10",
-    iconBorder: "border-red-500/20",
-    iconText: "text-red-400",
-    btnBg: "bg-red-500/10",
-    btnText: "text-red-400",
-    btnHoverBg: "group-hover:bg-red-500"
-  },
-  purple: {
-    border: "border-purple-900/30",
-    hoverBorder: "hover:border-purple-800/50",
-    shadow: "hover:shadow-purple-500/5",
-    iconBg: "bg-purple-500/10",
-    iconBorder: "border-purple-500/20",
-    iconText: "text-purple-400",
-    btnBg: "bg-purple-500/10",
-    btnText: "text-purple-400",
-    btnHoverBg: "group-hover:bg-purple-500"
-  },
-  amber: {
-    border: "border-amber-900/30",
-    hoverBorder: "hover:border-amber-800/50",
-    shadow: "hover:shadow-amber-500/5",
-    iconBg: "bg-amber-500/10",
-    iconBorder: "border-amber-500/20",
-    iconText: "text-amber-400",
-    btnBg: "bg-amber-500/10",
-    btnText: "text-amber-400",
-    btnHoverBg: "group-hover:bg-amber-500"
-  },
-  pink: {
-    border: "border-pink-900/30",
-    hoverBorder: "hover:border-pink-800/50",
-    shadow: "hover:shadow-pink-500/5",
-    iconBg: "bg-pink-500/10",
-    iconBorder: "border-pink-500/20",
-    iconText: "text-pink-400",
-    btnBg: "bg-pink-500/10",
-    btnText: "text-pink-400",
-    btnHoverBg: "group-hover:bg-pink-500"
-  },
-  orange: {
-    border: "border-orange-900/30",
-    hoverBorder: "hover:border-orange-800/50",
-    shadow: "hover:shadow-orange-500/5",
-    iconBg: "bg-orange-500/10",
-    iconBorder: "border-orange-500/20",
-    iconText: "text-orange-400",
-    btnBg: "bg-orange-500/10",
-    btnText: "text-orange-400",
-    btnHoverBg: "group-hover:bg-orange-500"
-  },
-  yellow: {
-    border: "border-yellow-900/30",
-    hoverBorder: "hover:border-yellow-800/50",
-    shadow: "hover:shadow-yellow-500/5",
-    iconBg: "bg-yellow-500/10",
-    iconBorder: "border-yellow-500/20",
-    iconText: "text-yellow-400",
-    btnBg: "bg-yellow-500/10",
-    btnText: "text-yellow-400",
-    btnHoverBg: "group-hover:bg-yellow-500"
-  },
-  // Para Guerrero usamos un tono café/naranja (amber/orange) ya que brown no es estándar
-  warrior: {
-    border: "border-orange-900/30",
-    hoverBorder: "hover:border-orange-800/50",
-    shadow: "hover:shadow-orange-500/5",
-    iconBg: "bg-orange-500/10",
-    iconBorder: "border-orange-500/20",
-    iconText: "text-orange-400",
-    btnBg: "bg-orange-500/10",
-    btnText: "text-orange-400",
-    btnHoverBg: "group-hover:bg-orange-500"
-  }
-};
-
-// Guías estáticas (se podrían mover a un JSON si crecen mucho)
-const staticGuides = [
-  {
-    id: "icc-heroico",
-    title: "ICC 25 Heroico - Mecánicas",
-    category: "Mecánicas",
-    description: "Guía completa de las mecánicas de ICC 25 Heroico con navegación por tiempo",
-    href: "/guides/icc-heroico",
-    icon: "fa-skull",
-    color: "blue"
-  },
-  {
-    id: "halion-rs",
-    title: "Halion - Sagrario Rubí",
-    category: "Mecánicas",
-    description: "Colección de guías visuales y estrategias para el encuentro de Halion 25H/N",
-    href: "/guides/halion-rs",
-    icon: "fa-dragon",
-    color: "red"
-  },
-  {
-    id: "toc",
-    title: "Prueba del Cruzado (ToC)",
-    category: "Mecánicas",
-    description: "Guía completa de todos los encuentros de ToC 25H/N",
-    href: "/guides/toc",
-    icon: "fa-shield-alt",
-    color: "purple"
-  },
-  {
-    id: "nota-publica",
-    title: "Guía de Nota Pública",
-    category: "Leveo",
-    description: "Aprende a configurar tu nota pública para participar en el sistema de raids",
-    href: "/guides/nota-publica",
-    icon: "fa-file-alt",
-    color: "amber"
-  },
-  {
-    id: "paladin-retribucion-335a",
-    title: "Paladín Retribución 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Paladín Retribución para WotLK. Equipo BIS, gemas, encantamientos y rotación para ICC 25 Heroico.",
-    href: "/guides/paladin-retribucion-335a",
-    icon: "fa-hammer",
-    color: "pink"
-  },
-  {
-    id: "paladin-proteccion-335a",
-    title: "Paladín Protección 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Paladín Tanque para WotLK. Equipo BIS, cap de defensa, gemas, encantamientos y rotación 96969.",
-    href: "/guides/paladin-proteccion-335a",
-    icon: "fa-shield-alt",
-    color: "pink"
-  },
-  {
-    id: "druida-restauracion-335a",
-    title: "Druida Restauración 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Druida Healer. Equipo BIS, caps de celeridad, gemas y rotación de HoTs.",
-    href: "/guides/druida-restauracion-335a",
-    icon: "fa-leaf",
-    color: "orange"
-  },
-  {
-    id: "druida-equilibrio-335a",
-    title: "Druida Equilibrio 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Druida Cásterr (Pollo). Equipo BIS, caps de celeridad y rotación de Eclipses.",
-    href: "/guides/druida-equilibrio-335a",
-    icon: "fa-moon",
-    color: "orange"
-  },
-  {
-    id: "brujo-afliccion-335a",
-    title: "Brujo Aflicción 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Brujo Aflicción. Equipo BIS, caps de celeridad y rotación de DoTs.",
-    href: "/guides/brujo-afliccion-335a",
-    icon: "fa-ghost",
-    color: "purple"
-  },
-  {
-    id: "brujo-demonologia-335a",
-    title: "Brujo Demonología 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Brujo Buff (Demo). Equipo BIS, gemas de SP y rotación de Metamorfosis.",
-    href: "/guides/brujo-demonologia-335a",
-    icon: "fa-fire-alt",
-    color: "purple"
-  },
-  {
-    id: "guerrero-furia-335a",
-    title: "Guerrero Furia 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Guerrero Furia. Equipo BIS, cap de ArP (100%) y rotación explosiva.",
-    href: "/guides/guerrero-furia-335a",
-    icon: "fa-fire",
-    color: "warrior"
-  },
-  {
-    id: "guerrero-proteccion-335a",
-    title: "Guerrero Protección 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Guerrero Tanque. Equipo BIS, cap de defensa y rotación de mitigación.",
-    href: "/guides/guerrero-proteccion-335a",
-    icon: "fa-shield-alt",
-    color: "warrior"
-  },
-  {
-    id: "chaman-restauracion-335a",
-    title: "Chamán Restauración 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Chamán Healer. Equipo BIS, cap de celeridad y sanación de banda.",
-    href: "/guides/chaman-restauracion-335a",
-    icon: "fa-water",
-    color: "blue"
-  },
-  {
-    id: "chaman-mejora-335a",
-    title: "Chamán Mejora 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Chamán Melé. Equipo BIS, cap de celeridad y rotación de Vorágine.",
-    href: "/guides/chaman-mejora-335a",
-    icon: "fa-bolt",
-    color: "blue"
-  },
-  {
-    id: "picaro-combate-335a",
-    title: "Pícaro Combate 3.3.5a",
-    category: "Especialización",
-    description: "Guía del Pícaro Combate. Equipo BIS, cap de ArP (100%) y rotación de remates.",
-    href: "/guides/picaro-combate-335a",
-    icon: "fa-khanda",
-    color: "yellow"
-  }
-];
+import { staticGuides, categories, colorClasses } from '../data/guides';
 
 // Obtener votos de Supabase
 const { data: votesData } = await supabase.from('guide_votes').select('guide_id');
@@ -292,6 +58,7 @@ votesData?.forEach(v => {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {staticGuides.map(guide => {
           const classes = colorClasses[guide.color] || colorClasses.blue;
+          const initialVotes = votesCount[guide.id] || 0;
           return (
             <div 
               x-show={`activeCategory === '${guide.category}'`}
@@ -299,6 +66,37 @@ votesData?.forEach(v => {
               x-transition:enter-start="opacity-0 transform translate-y-4"
               x-transition:enter-end="opacity-100 transform translate-y-0"
               class={`relative group bg-gray-900/60 backdrop-blur-sm border ${classes.border} rounded-lg p-6 transition-all duration-300 ${classes.hoverBorder} ${classes.shadow} hover:-translate-y-1 overflow-hidden`}
+              x-data={`{ 
+                guideId: '${guide.id}', 
+                voteCount: ${initialVotes},
+                voted: false,
+                init() {
+                  this.voted = localStorage.getItem('voted_' + this.guideId) === 'true';
+                },
+                async toggleVote() {
+                  const originalVoted = this.voted;
+                  const originalCount = this.voteCount;
+                  this.voted = !this.voted;
+                  this.voteCount = this.voted ? this.voteCount + 1 : Math.max(0, this.voteCount - 1);
+                  try {
+                    const res = await fetch('/api/guides/vote', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ guideId: this.guideId, action: this.voted ? 'add' : 'remove' })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                      localStorage.setItem('voted_' + this.guideId, this.voted);
+                    } else {
+                      this.voted = originalVoted;
+                      this.voteCount = originalCount;
+                    }
+                  } catch (e) {
+                    this.voted = originalVoted;
+                    this.voteCount = originalCount;
+                  }
+                }
+              }`}
             >
               <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
               
@@ -307,17 +105,26 @@ votesData?.forEach(v => {
                   <div class={`p-3 rounded-lg ${classes.iconBg} border ${classes.iconBorder}`}>
                     <i class={`fas ${guide.icon} ${classes.iconText} text-xl`}></i>
                   </div>
-                  <div class="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-md border border-white/5">
-                    <i class="fas fa-heart text-red-500 text-[10px]"></i>
-                    <span class="text-[10px] font-bold text-gray-300">{votesCount[guide.id] || 0}</span>
-                  </div>
+                  
+                  <!-- Interactive Like Button -->
+                  <button 
+                    @click="toggleVote()"
+                    class="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-md border border-white/5 hover:border-red-500/30 transition-all active:scale-95 group/heart"
+                    title="Me gusta"
+                  >
+                    <i 
+                      class="fas fa-heart transition-all duration-300"
+                      :class="voted ? 'text-red-500 scale-110' : 'text-gray-600 group-hover/heart:text-red-400'"
+                    ></i>
+                    <span class="text-[10px] font-bold transition-colors" :class="voted ? 'text-white' : 'text-gray-400'" x-text="voteCount"></span>
+                  </button>
                 </div>
 
                 <h2 class="text-lg font-bold text-white mb-3 group-hover:text-amber-400 transition-colors leading-tight">
                   {guide.title}
                 </h2>
                 
-                <p class="text-gray-400 text-xs leading-relaxed mb-6 flex-grow">
+                <p class="text-gray-400 text-xs leading-relaxed mb-6 flex-grow italic">
                   {guide.description}
                 </p>
 

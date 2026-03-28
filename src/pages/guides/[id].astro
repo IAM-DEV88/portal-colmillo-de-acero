@@ -1,0 +1,42 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import WoWCharacterPanel from '../../components/guides/WoWCharacterPanel.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+import { classGuidesData } from '../../data/class-guides';
+
+export function getStaticPaths() {
+  return Object.keys(classGuidesData).map(id => ({
+    params: { id }
+  }));
+}
+
+const { id } = Astro.params;
+const specData = classGuidesData[id];
+
+if (!specData) {
+  return Astro.redirect('/404');
+}
+
+const title = `Guía ${specData.className} ${specData.specName} 3.3.5a`;
+const description = `Guía del ${specData.className} ${specData.specName} para WotLK 3.3.5a. Equipo BIS, estadísticas, gemas y rotación.`;
+---
+
+<Layout title={title} description={description}>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src={specData.iconUrl} alt={specData.specName} class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
+
+  <GuideInteractions guide_id={id} />
+</Layout>
+
+<style is:global define:vars={{ classColor: specData.classColor }}>
+  /* Colores de clase dinámicos */
+  .text-custom-class { color: var(--classColor); }
+  
+  /* Fallbacks para clases específicas si no se usa la variable */
+  .text-pink-400 { color: #F48CBA; }
+  .text-orange-400 { color: #C79C6E; }
+  .text-purple-400 { color: #A335EE; }
+  .text-blue-400 { color: #0070DE; }
+  .text-yellow-400 { color: #FFF569; }
+</style>
