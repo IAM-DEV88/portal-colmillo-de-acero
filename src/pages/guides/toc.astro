@@ -1,6 +1,9 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
 import ShareButton from '../../components/guides/ShareButton.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+const guideId = 'toc';
 ---
 
 <Layout 
@@ -87,6 +90,9 @@ import ShareButton from '../../components/guides/ShareButton.astro';
           </div>
         </div>
       </div>
+
+      <!-- Interacciones de la Comunidad -->
+      <GuideInteractions guide_id={guideId} />
 
       <!-- Botón Volver Inferior -->
       <div class="mt-16 flex justify-center">

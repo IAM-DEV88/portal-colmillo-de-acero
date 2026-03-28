@@ -74,18 +74,13 @@ const specData = {
 
 <Layout 
   title="Guía Pícaro Combate 3.3.5a " 
-  description="Guía del Pícaro Combate para WotLK 3.3.5a. Equipo BIS, cap de ArP (100%), gemas y rotación de daño físico explosivo."
+  description="Guía del Pícaro Combate para WotLK 3.3.5a. Equipo BIS, cap de ArP (100%), gemas y rotación de daño sostenido."
 >
-  <div>
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_backstab.jpg" alt="Combat" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_backstab.jpg" alt="Combat" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

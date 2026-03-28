@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase';
 
 const { guide_id } = Astro.props;
 
-// Obtener votos
+// Obtener votos (usaremos esto como el contador base)
 const { data: votes } = await supabase
   .from('guide_votes')
   .select('id')
@@ -29,20 +29,41 @@ const { data: comments } = await supabase
   isSubmitting: false,
   message: '',
 
-  async castVote() {
-    if (this.voted) return;
+  init() {
+    this.voted = localStorage.getItem('voted_' + this.guideId) === 'true';
+  },
+
+  async toggleVote() {
+    const originalVoted = this.voted;
+    const originalCount = this.voteCount;
+    
+    // Optimistic update
+    this.voted = !this.voted;
+    this.voteCount = this.voted ? this.voteCount + 1 : Math.max(0, this.voteCount - 1);
+    
     try {
       const res = await fetch('/api/guides/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guideId: this.guideId })
+        body: JSON.stringify({ 
+          guideId: this.guideId,
+          action: this.voted ? 'add' : 'remove'
+        })
       });
       const data = await res.json();
       if (data.success) {
-        this.voteCount++;
-        this.voted = true;
+        localStorage.setItem('voted_' + this.guideId, this.voted);
+      } else {
+        // Rollback on failure
+        this.voted = originalVoted;
+        this.voteCount = originalCount;
       }
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+      console.error(e);
+      // Rollback on failure
+      this.voted = originalVoted;
+      this.voteCount = originalCount;
+    }
   },
 
   async submitComment() {
@@ -72,9 +93,8 @@ const { data: comments } = await supabase
   <div class="flex flex-col items-center justify-center p-8 bg-gray-900/40 rounded-lg border border-white/5 backdrop-blur-sm">
     <h3 class="text-sm font-black uppercase tracking-[0.2em] text-gray-500 mb-6 italic">¿Te ha servido esta guía?</h3>
     <button 
-      @click="castVote()"
+      @click="toggleVote()"
       class="group relative flex flex-col items-center transition-all active:scale-95"
-      :disabled="voted"
     >
       <div 
         class="w-20 h-20 rounded-full flex items-center justify-center border-2 transition-all duration-500"
@@ -83,7 +103,7 @@ const { data: comments } = await supabase
         <i class="fas fa-heart text-3xl transition-transform duration-500" :class="voted ? 'text-white scale-110' : 'text-gray-600 group-hover:text-red-500 group-hover:scale-110'"></i>
       </div>
       <span class="mt-4 text-2xl font-black text-white italic" x-text="voteCount"></span>
-      <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mt-1" x-text="voted ? '¡Gracias!' : 'Votar'"></span>
+      <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mt-1" x-text="voted ? '¡Me gusta!' : 'Votar'"></span>
     </button>
   </div>
 

@@ -1,6 +1,9 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
 import ShareButton from '../../components/guides/ShareButton.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+const guideId = 'halion-rs';
 ---
 
 <Layout 
@@ -38,7 +41,7 @@ import ShareButton from '../../components/guides/ShareButton.astro';
       </header>
 
       <!-- Videos Grid -->
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
         
         <!-- Video 1 -->
         <div class="bg-gray-900/60 backdrop-blur-sm border border-red-900/30 rounded-lg overflow-hidden hover:border-red-500/30 transition-all duration-300 group">
@@ -137,6 +140,9 @@ import ShareButton from '../../components/guides/ShareButton.astro';
         </div>
 
       </div>
+
+      <!-- Interacciones de la Comunidad -->
+      <GuideInteractions guide_id={guideId} />
 
       <!-- Botón Volver Inferior -->
       <div class="mt-16 flex justify-center">

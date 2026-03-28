@@ -75,20 +75,13 @@ const specData = {
 
 <Layout 
   title="Guía Paladín Protección 3.3.5a " 
-  description="Guía del Paladín Tanque (Protección) para WotLK 3.3.5a. Equipo BIS, cap de defensa, gemas, encantamientos y rotación 96969."
+  description="Guía del Paladín Tanque para WotLK 3.3.5a. Equipo BIS, cap de defensa, gemas y rotación 96969."
 >
-  <div>
-    <!-- WoW Character Panel -->
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_paladin_shieldofthetemplar.jpg" alt="Prot" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_paladin_shieldofvengeance.jpg" alt="Prot" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <!-- Community Section -->
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

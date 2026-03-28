@@ -73,20 +73,13 @@ const specData = {
 
 <Layout 
   title="Guía Paladín Retribución 3.3.5a " 
-  description="Guía del Paladín Retribución para WotLK 3.3.5a. Equipo BIS, talentos, gemas, encantamientos y rotación para ICC 25 Heroico."
+  description="Guía del Paladín Retribución para WotLK 3.3.5a. Equipo BIS, gemas, encantamientos y rotación para ICC 25 Heroico."
 >
-  <div>
-    <!-- WoW Character Panel -->
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_holy_auraoflight.jpg" alt="Ret" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_holy_auraoflight.jpg" alt="Retri" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <!-- Community Section -->
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

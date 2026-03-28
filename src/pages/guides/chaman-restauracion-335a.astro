@@ -74,18 +74,13 @@ const specData = {
 
 <Layout 
   title="Guía Chamán Restauración 3.3.5a " 
-  description="Guía del Chamán Healer (Restauración) para WotLK 3.3.5a. Equipo BIS, cap de celeridad, gemas y rotación de sanación de banda."
+  description="Guía del Chamán Healer (Resto) para WotLK 3.3.5a. Equipo BIS, caps de celeridad, gemas y rotación de Cadenas de Sanación."
 >
-  <div>
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_nature_magicimmunity.jpg" alt="Resto" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_nature_magicimmunity.jpg" alt="Resto" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

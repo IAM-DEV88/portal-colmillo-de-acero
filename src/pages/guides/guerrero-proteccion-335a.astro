@@ -75,18 +75,13 @@ const specData = {
 
 <Layout 
   title="Guía Guerrero Protección 3.3.5a " 
-  description="Guía del Guerrero Tanque (Protección) para WotLK 3.3.5a. Equipo BIS, cap de defensa, gemas y rotación de mitigación física."
+  description="Guía del Guerrero Tanque para WotLK 3.3.5a. Equipo BIS, cap de defensa, gemas y rotación de mitigación."
 >
-  <div>
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_warrior_defensivestance.jpg" alt="Prot" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_warrior_defensivestance.jpg" alt="Prot" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

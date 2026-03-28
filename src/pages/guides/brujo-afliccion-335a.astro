@@ -76,16 +76,11 @@ const specData = {
   title="Guía Brujo Aflicción 3.3.5a " 
   description="Guía del Brujo Aflicción para WotLK 3.3.5a. Equipo BIS, caps de celeridad, gemas y rotación de DoTs."
 >
-  <div>
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_shadow_deathcoil.jpg" alt="Affli" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_shadow_deathcoil.jpg" alt="Affli" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

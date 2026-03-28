@@ -1,7 +1,10 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
 import ShareButton from '../../components/guides/ShareButton.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
 
+const guideId = 'nota-publica';
+---
 // Importar iconos de clases
 const classIcons = {
   'Death Knight': 'classicon_deathknight',
@@ -869,6 +872,11 @@ const classIcons = {
         </div>
       </div>
     </section>
+
+    <!-- Interacciones de la Comunidad -->
+    <div class="mt-12">
+      <GuideInteractions guide_id={guideId} />
+    </div>
 
     <!-- Botón Volver Inferior -->
     <div class="mt-16 flex justify-center">

@@ -74,18 +74,13 @@ const specData = {
 
 <Layout 
   title="Guía Chamán Mejora 3.3.5a " 
-  description="Guía del Chamán Melé (Mejora) para WotLK 3.3.5a. Equipo BIS, cap de celeridad, gemas y rotación de Arma de Vorágine."
+  description="Guía del Chamán Mejora para WotLK 3.3.5a. Equipo BIS, cap de pericia y golpe, gemas y rotación de prioridad."
 >
-  <div>
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_nature_lightningshield.jpg" alt="Enhance" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_nature_lightningshield.jpg" alt="Enhance" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

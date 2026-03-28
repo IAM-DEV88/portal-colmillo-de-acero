@@ -76,16 +76,11 @@ const specData = {
   title="Guía Brujo Demonología 3.3.5a " 
   description="Guía del Brujo Demonología (Buff de Banda) para WotLK 3.3.5a. Equipo BIS, SP máximo, gemas y rotación de Metamorfosis."
 >
-  <div>
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_shadow_metamorphosis.jpg" alt="Demo" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/spell_shadow_metamorphosis.jpg" alt="Demo" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>

@@ -74,18 +74,13 @@ const specData = {
 
 <Layout 
   title="Guía Guerrero Furia 3.3.5a " 
-  description="Guía del Guerrero Furia para WotLK 3.3.5a. Equipo BIS, cap de ArP (100%), gemas y rotación de daño físico masivo."
+  description="Guía del Guerrero Furia para WotLK 3.3.5a. Equipo BIS, cap de ArP (100%) y rotación explosiva."
 >
-  <div>
-    <WoWCharacterPanel {...specData}>
-      <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_warrior_innerrage.jpg" alt="Fury" class="w-full h-full object-cover" />
-    </WoWCharacterPanel>
+  <WoWCharacterPanel {...specData}>
+    <img slot="spec-icon" src="https://wotlk.ultimowow.com/static/images/wow/icons/large/ability_warrior_innerrage.jpg" alt="Fury" class="w-full h-full object-cover" />
+  </WoWCharacterPanel>
 
-    <div class="mt-4">
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-12"></div>
-      <GuideInteractions guide_id={guideId} />
-    </div>
-  </div>
+  <GuideInteractions guide_id={guideId} />
 </Layout>
 
 <style is:global>
