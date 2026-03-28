@@ -4,7 +4,7 @@ import ShareButton from '../../components/guides/ShareButton.astro';
 import GuideInteractions from '../../components/guides/GuideInteractions.astro';
 
 const guideId = 'nota-publica';
----
+
 // Importar iconos de clases
 const classIcons = {
   'Death Knight': 'classicon_deathknight',
@@ -162,13 +162,11 @@ const classIcons = {
           LW: 'Peletería',
         };
 
-        // Elementos del DOM con tipos TypeScript
-        const notaInput = document.getElementById('notaInput') as HTMLInputElement | null;
-        const notaError = document.getElementById('notaError') as HTMLDivElement | null;
-        const notaResult = document.getElementById('notaResult') as HTMLDivElement | null;
-        const detallesPersonaje = document.getElementById(
-          'detallesPersonaje'
-        ) as HTMLDivElement | null;
+        // Elementos del DOM
+        const notaInput = document.getElementById('notaInput');
+        const notaError = document.getElementById('notaError');
+        const notaResult = document.getElementById('notaResult');
+        const detallesPersonaje = document.getElementById('detallesPersonaje');
 
         // Expresiones regulares mejoradas
         const regexPersonaje = {
@@ -181,17 +179,7 @@ const classIcons = {
         };
 
         // Función para validar el bloque de personaje
-        function validarPersonaje(bloque: string): {
-          valido: boolean;
-          mensaje: string;
-          faltantes?: string[];
-          mainRole?: string;
-          spec?: string;
-          gs?: string;
-          offSpec?: string;
-          offGs?: string;
-          profs?: string;
-        } {
+        function validarPersonaje(bloque) {
           // Inicializar variables para almacenar los resultados
           let mainRoleValid = false;
           let specValid = false;
@@ -200,8 +188,8 @@ const classIcons = {
           let offGsValid = false;
           let profsValid = false;
 
-          const errores: string[] = [];
-          const faltantes: string[] = [];
+          const errores = [];
+          const faltantes = [];
 
           // Si el bloque está vacío, es válido pero con advertencia
           if (!bloque.trim()) {
@@ -214,7 +202,7 @@ const classIcons = {
 
           // Intentar extraer Main/Alt (opcional)
           const mainRoleMatch = bloque.match(/^([MA])/i);
-          const mainRole = mainRoleMatch?.[1]?.toUpperCase() || '';
+          const mainRole = mainRoleMatch ? mainRoleMatch[1].toUpperCase() : '';
 
           // Validar rol principal (M o A)
           if (mainRole) {
@@ -228,11 +216,11 @@ const classIcons = {
 
           // Extraer especialización principal
           const specMatch = bloque.match(/[MA]?([THDB]+)/i);
-          const spec = specMatch?.[1]?.toUpperCase() || '';
+          const spec = specMatch ? specMatch[1].toUpperCase() : '';
 
           // Extraer especialización secundaria (después del primer número)
           const offSpecMatch = bloque.match(/\d+(?:\.\d+)?\s*([THDB]+)/i);
-          const offSpec = offSpecMatch?.[1]?.toUpperCase() || '';
+          const offSpec = offSpecMatch ? offSpecMatch[1].toUpperCase() : '';
 
           // Validar especialización principal
           if (spec) {
@@ -271,7 +259,7 @@ const classIcons = {
 
           // Validar Profesiones (opcional)
           const profsMatch = bloque.match(/([A-Z]{2,4})$/i);
-          const profs = profsMatch?.[1]?.toUpperCase() || '';
+          const profs = profsMatch ? profsMatch[1].toUpperCase() : '';
 
           // Validar formato de profesiones si están presentes
           if (profs) {
@@ -292,7 +280,7 @@ const classIcons = {
           // Manejar mensajes de error
           if (errores.length > 0) {
             if (mensajeError) {
-              mensajeError.innerHTML = errores.map((e: string) => `❌ ${e}`).join('<br>');
+              mensajeError.innerHTML = errores.map((e) => `❌ ${e}`).join('<br>');
               mensajeError.classList.remove('hidden');
             }
             return {
@@ -341,7 +329,7 @@ const classIcons = {
           }
 
           notaInput.addEventListener('input', (e) => {
-            const target = e.target as HTMLInputElement;
+            const target = e.target;
             if (!target) return;
 
             const nota = target.value.trim();
@@ -383,7 +371,7 @@ const classIcons = {
               if (resultadoValidacion.mainRole) {
                 const mainRoleTag = document.createElement('span');
                 const rolCompleto =
-                  STATUS[resultadoValidacion.mainRole as keyof typeof STATUS] ||
+                  STATUS[resultadoValidacion.mainRole] ||
                   resultadoValidacion.mainRole;
                 mainRoleTag.className =
                   'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-900/50 text-blue-200';
@@ -396,7 +384,7 @@ const classIcons = {
               if (resultadoValidacion.spec) {
                 const specTag = document.createElement('span');
                 const specs = Array.from(resultadoValidacion.spec)
-                  .map((s) => ROLES[s as keyof typeof ROLES] || s)
+                  .map((s) => ROLES[s] || s)
                   .join('');
                 specTag.className =
                   'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-900/50 text-purple-200';
@@ -419,7 +407,7 @@ const classIcons = {
               if (resultadoValidacion.offSpec) {
                 const offSpecTag = document.createElement('span');
                 const offSpecs = Array.from(resultadoValidacion.offSpec)
-                  .map((s) => ROLES[s as keyof typeof ROLES] || s)
+                  .map((s) => ROLES[s] || s)
                   .join('');
                 offSpecTag.className =
                   'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-fuchsia-900/50 text-fuchsia-200';
