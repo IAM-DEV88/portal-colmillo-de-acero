@@ -1,4 +1,4 @@
-﻿---
+﻿﻿---
 import Layout from '../components/layout/Layout.astro';
 const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 ---
@@ -8,3 +8,1338 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
   description="¡Prueba tu suerte en la Ruleta de la Fortuna! Gana premios exclusivos, oro y objetos en el juego diariamente."
 >
       <main class="relative z-10 flex flex-col items-center" data-paypal-id={PAYPAL_CLIENT_ID}>
+      
+      <!-- Paytable Toggle (Mobile) / Visible (Desktop) -->
+      <!-- Keeping Paytable at top or moving to bottom? User didn't specify, but implies main game UI first. -->
+      <!-- Let's keep paytable collapsible or smaller at bottom, or top as "Leyenda" -->
+      
+      <!-- Message Area (Moved to Top) -->
+      <div class="w-full max-w-4xl mx-auto mb-4">
+        <div class="w-full bg-black/40 rounded-lg border border-amber-500/20 p-4 min-h-[4rem] flex items-center justify-center text-center backdrop-blur-sm">
+            <div id="message-display" class="text-amber-100/80 text-lg md:text-xl font-light tracking-wide animate-fade-in">
+                ¿Te atreves a desafiar a la Reina?
+            </div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-4xl mx-auto flex flex-col gap-4">
+        
+        <!-- ROW 1: REELS + SPIN BUTTON -->
+        <div id="game-container" class="flex flex-col md:flex-row items-center justify-center gap-4 w-full transition-all duration-300 rounded-lg">
+            
+            <!-- Reels Container (Flexible width now) -->
+            <div class="flex gap-2 md:gap-4 justify-center bg-black/80 p-4 rounded-lg border border-amber-900/50 shadow-inner w-full max-w-lg md:max-w-3xl flex-shrink-0 md:flex-shrink">
+                <!-- Reel 1 -->
+                <div class="reel-container flex-1 min-w-[5rem] h-20 md:h-28 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 rounded border border-amber-500/30 overflow-hidden relative">
+                    <div class="reel-strip absolute top-0 left-0 w-full" id="reel-1"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90 pointer-events-none z-10"></div>
+                    <div class="absolute inset-0 border-2 border-amber-900/30 pointer-events-none z-20"></div>
+                </div>
+                
+                <!-- Reel 2 -->
+                <div class="reel-container flex-1 min-w-[5rem] h-20 md:h-28 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 rounded border border-amber-500/30 overflow-hidden relative">
+                    <div class="reel-strip absolute top-0 left-0 w-full" id="reel-2"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90 pointer-events-none z-10"></div>
+                    <div class="absolute inset-0 border-2 border-amber-900/30 pointer-events-none z-20"></div>
+                </div>
+                
+                <!-- Reel 3 -->
+                <div class="reel-container flex-1 min-w-[5rem] h-20 md:h-28 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 rounded border border-amber-500/30 overflow-hidden relative">
+                    <div class="reel-strip absolute top-0 left-0 w-full" id="reel-3"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90 pointer-events-none z-10"></div>
+                    <div class="absolute inset-0 border-2 border-amber-900/30 pointer-events-none z-20"></div>
+                </div>
+            </div>
+
+            <!-- Spin Button (Right of Reels on Desktop, Below on Mobile) -->
+            <button id="spin-btn" class="group relative px-8 py-4 md:py-8 bg-gradient-to-b from-amber-600 to-amber-800 rounded-lg border-4 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.5)] transform active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_40px_rgba(245,158,11,0.8)] flex flex-col items-center justify-center">
+                <span class="text-3xl md:text-4xl mb-1 filter drop-shadow-lg group-hover:animate-bounce">🎰</span>
+                <span class="font-black text-white text-lg md:text-xl uppercase tracking-widest drop-shadow-md">GIRAR</span>
+                <span class="text-xs text-amber-200 font-bold mt-1 bg-black/30 px-2 py-0.5 rounded">-1 Turno</span>
+                
+                <!-- Shiny effect -->
+                <div class="absolute inset-0 rounded-lg bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            </button>
+        </div>
+
+        <!-- ROW 2: STATS & STACK -->
+        <div class="flex flex-col md:flex-row gap-4 w-full">
+            
+            <!-- Left Column: Stats & History -->
+            <div class="flex-1 flex flex-col gap-4">
+                
+                <!-- Stats (Turnos y Pozo) -->
+                <div class="flex flex-row justify-between items-center bg-black/60 p-4 rounded-lg border border-amber-900/30 backdrop-blur-sm">
+                    <div class="flex flex-col relative">
+                        <span class="text-xs text-amber-500/70 uppercase font-bold tracking-widest">Tus Turnos</span>
+                        <span id="credits-display" class="text-white text-3xl font-extrabold drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">5</span>
+                    </div>
+                    
+                    <!-- Actions (Middle) -->
+                    <div class="flex flex-col items-center gap-1 mx-2">
+                         <div class="flex gap-1 opacity-50 hover:opacity-100 transition-opacity">
+                            <!--
+                            <button onclick="resetGame()" class="text-[0.6rem] text-gray-600 hover:text-gray-400 border border-gray-800 rounded px-1 py-0.5 transition-colors" title="Reset Game">
+                                ⚠️
+                            </button>
+                            -->
+                            <!--
+                            <button onclick="simulateChokerSpin()" class="text-[0.6rem] text-purple-600 hover:text-purple-400 border border-purple-800 rounded px-1 py-0.5 transition-colors" title="Simulate Win">
+                                ✨
+                            </button>
+                            -->
+                         </div>
+                         <button id="claim-btn" onclick="claimReward()" class="text-[0.6rem] text-green-600 hover:text-green-400 border border-green-800 rounded px-2 py-1 transition-colors hidden" disabled>
+                            ✅ RECLAMAR
+                         </button>
+                    </div>
+
+                    <div class="flex flex-col items-end relative">
+                        <span class="text-xs text-red-500/70 uppercase font-bold tracking-widest">Pozo Acumulado</span>
+                        <span class="text-amber-200 text-2xl font-bold font-mono tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            <span id="pool-display">100</span> ⚜️
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Code Redemption -->
+                <div class="flex flex-row justify-center items-center bg-black/60 p-4 rounded-lg border border-amber-900/30 backdrop-blur-sm">
+                    <div class="flex items-center gap-1">
+                        <input type="text" id="redeem-code-input" placeholder="INGRESA TU CÓDIGO" class="bg-gray-900/80 border border-gray-700 rounded px-3 py-2 text-sm flex-grow text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 uppercase tracking-widest font-mono text-center shadow-inner" />
+                        <button onclick="redeemCode()" class="bg-gradient-to-b from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white text-sm font-bold px-3 py-2 rounded transition-all shadow-md border border-amber-500/50">
+                            CANJEAR
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Stack (Moved here) -->
+                <div class="bg-black/60 border border-amber-900/50 rounded-lg p-2 backdrop-blur-sm">
+                    <div class="text-[0.6rem] text-amber-500/70 uppercase font-bold tracking-widest mb-1 text-center">Últimos Giros</div>
+                    <div id="history-stack" class="flex flex-wrap justify-center gap-2 min-h-[2.5rem]">
+                        <!-- History items will be injected here -->
+                        <div class="text-xs text-gray-500 italic">Sin historial</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Paytable Mini -->
+            <div class="flex-1 bg-black/60 border border-amber-900/50 rounded-lg p-2 backdrop-blur-sm flex items-center justify-center">
+                <div class="grid grid-cols-3 gap-2 w-full max-w-sm mx-auto">
+                  <!-- Condensed Paytable Items -->
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-purple-900/20 rounded border border-purple-500/30">
+                    <span class="text-2xl">📿</span>
+                    <span class="text-[0.6rem] text-purple-300 font-bold uppercase mt-1 leading-tight text-center">Gargantilla carmesí de la Reina de Sangre</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-blue-900/20 rounded border border-blue-500/30">
+                    <span class="text-2xl">📦</span>
+                    <span class="text-[0.6rem] text-blue-300 font-bold uppercase mt-1 leading-tight text-center">Cofre<br>7000 Oro</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-yellow-900/20 rounded border border-yellow-500/30">
+                    <span class="text-2xl">💰</span>
+                    <span class="text-[0.6rem] text-yellow-300 font-bold uppercase mt-1 leading-tight text-center">Bolsa<br>2900 Oro</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-yellow-900/10 rounded border border-yellow-500/20">
+                    <span class="text-2xl">⚜️</span>
+                    <span class="text-[0.6rem] text-yellow-200 font-bold uppercase mt-1 leading-tight text-center">Moneda<br>600 Oro</span>
+                  </div>
+                  <div class="flex flex-col items-center p-2 min-w-[3rem] bg-green-900/20 rounded border border-green-500/30">
+                    <span class="text-2xl">🗡️</span>
+                    <span class="text-[0.6rem] text-green-400 font-bold uppercase mt-1 leading-tight text-center">Pícaro<br>+5 Turnos</span>
+                  </div>
+                   <div class="flex flex-col items-center p-2 min-w-[3rem] bg-red-900/20 rounded border border-red-500/30">
+                    <span class="text-2xl">💀</span>
+                    <span class="text-[0.6rem] text-red-400 font-bold uppercase mt-1 leading-tight text-center">Maldición<br>Pozo</span>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 3: INDICATORS (Removed, moved to top) -->
+        <!-- Old location was here -->
+
+        <!-- Buy Credits Section -->
+        <div id="buy-section" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <button onclick="showBuyModal(0)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all">
+                <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">5 Turnos</div>
+                <div class="text-gray-400 text-sm">$1 USD</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 500 Oro ⚜️</div>
+            </button>
+            <button onclick="showBuyModal(1)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-amber-600 text-black text-[0.6rem] font-bold px-2 py-0.5 transform rotate-0 rounded-bl">POPULAR</div>
+                <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">15 Turnos</div>
+                <div class="text-gray-400 text-sm">$2 USD</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 1500 Oro ⚜️</div>
+            </button>
+            <button onclick="showBuyModal(2)" class="bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-600 hover:border-amber-500 p-4 rounded-lg group transition-all">
+                <div class="text-amber-400 font-bold text-lg group-hover:scale-110 transition-transform">50 Turnos</div>
+                <div class="text-gray-400 text-sm">$5 USD</div>
+                <div class="text-amber-300 text-xs mt-1">Incluye 5000 Oro ⚜️</div>
+            </button>
+        </div>
+
+      </div>
+    </main>
+
+  <style>
+    .font-title { font-family: 'Arial', sans-serif; }
+    
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .animate-shine { animation: shine 2s infinite; }
+
+    .reel-strip {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.1s linear; /* Default, will be overridden by JS */
+    }
+    
+
+    .reel-container {
+      box-shadow: inset 0 -20px 20px -10px rgba(0,0,0,0.8);
+
+      
+        white-space: nowrap; /* Force single line */
+        
+        text-overflow: ellipsis; /* Dot dot dot if it still overflows */
+    }
+
+    .symbol.highlight {
+      border: 2px solid #fbbf24;
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+      background-color: rgba(251, 191, 36, 0.1);
+      z-index: 25;
+      border-radius: 0.5rem;
+    }
+
+    .symbol span {
+        font-size: 3rem;
+        line-height: 1;
+    }
+    
+    .symbol-label {
+        font-size: 0.5rem; 
+        color: #fbbf24; 
+        text-transform: uppercase;
+        font-weight: 800;
+        text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        text-align: center;
+        margin-top: 0.1rem;
+        
+    }
+
+    @media (min-width: 768px) {
+        .symbol {
+            height: 10rem; 
+        }
+        .symbol span {
+            font-size: 4rem;
+        }
+        .symbol-label {
+            font-size: 0.75rem; /* Increased slightly for desktop as we shortened names */
+        }
+    }
+
+    @keyframes floatUpFade {
+      0% { transform: translate(-50%, -50%) translateY(0) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateY(-30px) scale(1.1); opacity: 0; }
+    }
+    .floating-stat {
+      /* Base styles in JS class string, animation here */
+      animation: floatUpFade 2s ease-out forwards;
+    }
+  </style>
+
+  <script is:inline>
+    // Configuración de Discord Webhook
+    // Los webhooks ahora se manejan a través del endpoint /api/discord-webhook para seguridad.
+    // Ver src/pages/api/discord-webhook.ts y archivo .env
+
+    // Game Logic
+    const SYMBOLS = [
+      { id: 'skull', icon: '💀', weight: 60, name: 'MALDICIÓN' }, 
+      { id: 'gold_small', icon: '⚜️', weight: 30, name: 'MONEDA' }, 
+      { id: 'gold_bag', icon: '💰', weight: 8, name: 'BOLSA' }, 
+      { id: 'chest', icon: '📦', weight: 0.8, name: 'COFRE' }, 
+      { id: 'choker', icon: '📿', weight: 0.2, name: 'GARGANTILLA' }, 
+      { id: 'thief', icon: '🗡️', weight: 1.0, name: 'PÍCARO' } 
+    ];
+
+    let credits = 5; 
+    let goldPool = 100; 
+    let isSpinning = false;
+    let hasWonChoker = false; 
+    let hasClickedAd = false;
+    let isAdBlockerActive = false;
+    const spinHistory = [];
+
+    function getRandomSymbol() {
+      const totalWeight = SYMBOLS.reduce((sum, s) => sum + s.weight, 0);
+      let rand = Math.random() * totalWeight;
+      for (const symbol of SYMBOLS) {
+        if (rand < symbol.weight) return symbol;
+        rand -= symbol.weight;
+      }
+      return SYMBOLS[0];
+    }
+
+    // Sincronización con API (Persistencia por IP)
+    async function fetchGameState() {
+        try {
+            // Añadir timestamp para evitar caché del navegador
+            const res = await fetch('/api/game-state?t=' + Date.now(), {
+                cache: 'no-store'
+            });
+            if (res.ok) {
+                const data = await res.json();
+                credits = data.credits;
+                goldPool = data.gold_pool;
+                hasWonChoker = data.has_won_choker;
+                if (data.spin_history && Array.isArray(data.spin_history)) {
+                    spinHistory.length = 0;
+                    data.spin_history.forEach(s => spinHistory.push(s));
+                }
+                
+                // Actualizar UI inmediatamente
+                const creditsEl = document.getElementById('credits-display');
+                const poolEl = document.getElementById('pool-display');
+                if(creditsEl) creditsEl.innerHTML = credits.toLocaleString();
+                if(poolEl) poolEl.innerHTML = goldPool.toLocaleString();
+                updateHistoryDisplay();
+                updateDisplay(true);
+            } else {
+                console.error("Error del servidor al cargar estado:", await res.text());
+            }
+        } catch (e) { console.error("Error loading state", e); }
+    }
+
+    async function checkAdBlocker() {
+      try {
+        const testAd = await fetch('https://www.highperformanceformat.com/bc3afce27a408298cd40496786edc9ca/invoke.js', { 
+          method: 'HEAD', 
+          mode: 'no-cors' 
+        });
+        isAdBlockerActive = false;
+      } catch (e) {
+        isAdBlockerActive = true;
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Verificar AdBlocker al inicio
+      await checkAdBlocker();
+      
+      // Load credits from Server (IP based persistence)
+      fetchGameState();
+
+      // Initial display without animation
+      const creditsEl = document.getElementById('credits-display');
+      const poolEl = document.getElementById('pool-display');
+      if(creditsEl) creditsEl.innerHTML = credits.toLocaleString();
+      if(poolEl) poolEl.innerHTML = goldPool.toLocaleString();
+      
+      updateHistoryDisplay();
+      updateDisplay(true); 
+      
+      // Init Reels
+      initReel('reel-1');
+      initReel('reel-2');
+      initReel('reel-3');
+      
+      // Event Listeners
+      document.getElementById('spin-btn').addEventListener('click', spin);
+      
+      window.addCredits = async (amount) => {
+        // Just refresh state from server after purchase
+        await fetchGameState();
+        showMessage(`¡GIROS ACTUALIZADOS!`, 'text-green-400');
+      };
+    });
+
+    function updateHistoryDisplay() {
+        const container = document.getElementById('history-stack');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        if (spinHistory.length === 0) {
+            container.innerHTML = '<div class="text-xs text-gray-500 italic p-2">Sin historial</div>';
+            return;
+        }
+
+        spinHistory.forEach(spin => { 
+            const div = document.createElement('div');
+            div.className = 'flex items-center gap-1 bg-black/40 px-2 py-1 rounded border border-gray-800 min-w-max animate-fade-in';
+            
+            spin.forEach(sym => {
+                const span = document.createElement('span');
+                span.textContent = sym.icon;
+                span.className = 'text-lg leading-none';
+                div.appendChild(span);
+            });
+            
+            container.appendChild(div);
+        });
+    }
+
+    async function redeemCode() {
+        const input = document.getElementById('redeem-code-input');
+        const code = input.value.trim();
+        
+        if (!code) {
+            alert('Por favor ingresa un código.');
+            return;
+        }
+
+        input.disabled = true;
+        
+        try {
+            const res = await fetch('/api/redeem-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                window.addCredits(data.credits); 
+                alert(data.message);
+                input.value = '';
+            } else {
+                alert(data.error || 'Código inválido');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Error al canjear código');
+        } finally {
+            input.disabled = false;
+        }
+    }
+
+    function initReel(elementId) {
+      const reel = document.getElementById(elementId);
+      reel.innerHTML = '';
+      
+      // Generate random strip
+      for (let i = 0; i < 20; i++) {
+        const symbol = getRandomSymbol();
+        const div = createSymbolElement(symbol);
+        reel.appendChild(div);
+      }
+    }
+
+    function getRandomSymbol() {
+      // Weighted random
+      const totalWeight = SYMBOLS.reduce((sum, s) => sum + s.weight, 0);
+      let random = Math.random() * totalWeight;
+      
+      for (const symbol of SYMBOLS) {
+        random -= symbol.weight;
+        if (random <= 0) return symbol;
+      }
+      return SYMBOLS[0];
+    }
+
+    // Number Animation Helper
+    function animateValue(obj, start, end, duration) {
+        if (start === end) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // Ease-out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+            const value = Math.floor(ease * (end - start) + start);
+            obj.innerHTML = value.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                obj.innerHTML = end.toLocaleString();
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Floating Text Helper
+    function showFloatingText(elementId, change) {
+        if (change === 0) return;
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        
+        // Find closest relative parent or use immediate parent
+        let parent = el.closest('.relative') || el.parentElement;
+        
+        // Ensure parent is relative if not already (safeguard)
+        if (getComputedStyle(parent).position === 'static') {
+            parent.style.position = 'relative';
+        }
+
+        const floatEl = document.createElement('div');
+        // Use absolute positioning with transform to center
+        floatEl.className = 'floating-stat pointer-events-none absolute top-1/2 -translate-y-1/2 text-xl font-bold z-50 whitespace-nowrap ' + 
+                            (change > 0 ? 'text-green-400 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' : 'text-red-500 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]');
+        
+        floatEl.innerText = (change > 0 ? '+' : '') + change.toLocaleString();
+
+        // Adjust position based on elementId
+        if (elementId === 'pool-display') {
+            // Override the left-1/2 from the class to move it 30px to the right
+            floatEl.style.left = 'calc(50% + 30px)'; 
+        } else if (elementId === 'credits-display') {
+            // Adjust for credits-display to be 30px to the right
+            floatEl.style.left = 'calc(50%)';
+        }
+        // The -translate-x-1/2 from the class will still apply, centering it relative to this new left.
+        // For other elements, the default left-1/2 from the class will apply.
+        
+        // Append to parent
+        parent.appendChild(floatEl);
+        
+        // Remove after animation (match CSS duration)
+        setTimeout(() => {
+            if (floatEl.parentNode) floatEl.remove();
+        }, 2000);
+    }
+
+    // Game State
+    function updateDisplay(finalUpdate = false, amountChanged = null) {
+       const creditsEl = document.getElementById('credits-display');
+       const poolEl = document.getElementById('pool-display');
+       
+       let currentCredits = creditsEl ? parseInt(creditsEl.innerText.replace(/[^\d-]/g, '')) : 0;
+       let currentPool = poolEl ? parseInt(poolEl.innerText.replace(/[^\d-]/g, '')) : 0;
+
+       if (isNaN(currentCredits)) currentCredits = 0;
+       if (isNaN(currentPool)) currentPool = 0;
+
+       if(creditsEl && currentCredits !== credits) {
+           const diff = credits - currentCredits;
+           animateValue(creditsEl, currentCredits, credits, 1000);
+           showFloatingText('credits-display', diff);
+       }
+       if(poolEl && currentPool !== goldPool) {
+           const diff = goldPool - currentPool;
+           animateValue(poolEl, currentPool, goldPool, 1500);
+           
+           const displayChange = (amountChanged !== null) ? amountChanged : diff;
+           showFloatingText('pool-display', displayChange);
+       }
+
+
+
+       const claimBtn = document.getElementById('claim-btn');
+       if (claimBtn) {
+           const shouldBeActive = (credits <= 0 || hasWonChoker) && !isSpinning;
+           claimBtn.disabled = !shouldBeActive;
+           claimBtn.classList.toggle('hidden', !shouldBeActive);
+       }
+
+       if (credits <= 0 && !isSpinning && finalUpdate) {
+         document.getElementById('spin-btn').disabled = true;
+         document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
+         // Wait for animation (1000ms) + small delay
+         setTimeout(() => showGameOver(hasWonChoker), 1200); 
+       } else if (!isSpinning) {
+         document.getElementById('spin-btn').disabled = false;
+         document.getElementById('spin-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+       }
+    }
+
+    let modalCountdownIntervalId;
+
+    function getFormattedTimeUntilMidnight() {
+      const timeZone = 'Europe/London';
+      const now = new Date();
+      
+      // Obtener partes de la fecha actual en Londres
+      const formatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      
+      const parts = formatter.formatToParts(now);
+      const getPart = (type) => parts.find(p => p.type === type).value;
+      
+      // Crear una representación de la hora de Londres en milisegundos "ficticios" para el cálculo
+      const londonNowMs = Date.UTC(
+        parseInt(getPart('year')),
+        parseInt(getPart('month')) - 1,
+        parseInt(getPart('day')),
+        parseInt(getPart('hour')),
+        parseInt(getPart('minute')),
+        parseInt(getPart('second'))
+      );
+      
+      // Calcular la próxima medianoche en Londres
+      const londonMidnight = new Date(londonNowMs);
+      londonMidnight.setUTCHours(24, 0, 0, 0);
+      const londonMidnightMs = londonMidnight.getTime();
+      
+      const timeLeft = londonMidnightMs - londonNowMs;
+      
+      const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      // Formatear la fecha de reinicio (mañana en Londres)
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      // Usamos el objeto londonMidnight que ya apunta al inicio del próximo día
+      const restartDate = londonMidnight.toLocaleDateString('es-ES', options);
+
+      return {
+        time: `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`,
+        date: restartDate
+      };
+    }
+
+    async function handleDiscordClaim(type) {
+      let claimText = "";
+      let subText = "";
+      let userIP = "Desconocida";
+      let claimedAmount = 0;
+
+      try {
+        const res = await fetch('/api/game-claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type })
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          claimedAmount = data.claimed_amount;
+          const oldPool = goldPool;
+          goldPool = data.gold_pool;
+          hasWonChoker = data.has_won_choker;
+          updateDisplay(false, -oldPool);
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (e) {
+        console.error("Claim Error:", e);
+        alert("Error al procesar el reclamo. Intenta de nuevo.");
+        return;
+      }
+
+      try {
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        userIP = ipData.ip;
+      } catch (e) {}
+
+      if (type === 'pool') {
+        claimText = `TIQUET GANADOR DE ${claimedAmount.toLocaleString()} ORO`;
+        subText = "¡La suerte te sonríe!";
+      } else if (type === 'choker') {
+        claimText = `¡GARGANTILLA + ${claimedAmount.toLocaleString()} ORO!`;
+        subText = "Item Legendario Obtenido";
+      }
+
+      // Create Canvas for Ticket
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, '#1a1a1a');
+      gradient.addColorStop(1, '#000000');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Border
+      ctx.strokeStyle = '#F59E0B'; 
+      ctx.lineWidth = 8;
+      ctx.strokeRect(4, 4, canvas.width-8, canvas.height-8);
+      
+      // Inner Border
+      ctx.strokeStyle = '#92400E'; 
+      ctx.lineWidth = 2;
+      ctx.strokeRect(15, 15, canvas.width-30, canvas.height-30);
+
+      // Title
+      ctx.fillStyle = '#F59E0B';
+      ctx.font = 'bold 32px Arial';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = "rgba(245, 158, 11, 0.5)";
+      ctx.shadowBlur = 10;
+      ctx.fillText(claimText, canvas.width/2, 100);
+      ctx.shadowBlur = 0;
+
+      // Subtext
+      ctx.fillStyle = '#D1D5DB';
+      ctx.font = 'italic 20px Arial';
+      ctx.fillText(subText, canvas.width/2, 140);
+
+      // Date
+      const dateOptions = { dateStyle: 'full', timeStyle: 'short' };
+      const date = new Date().toLocaleString('es-ES', dateOptions);
+      ctx.fillStyle = '#9CA3AF';
+      ctx.font = '16px Arial';
+      ctx.fillText(`Fecha: ${date}`, canvas.width/2, 200);
+      
+      // Verification Code
+      const uniqueCode = `R-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random()*1000)}`;
+      ctx.fillStyle = '#4B5563';
+      ctx.font = 'bold 18px Courier New';
+      ctx.fillText(`ID VERIFICACIÓN:`, canvas.width/2, 280);
+      
+      ctx.fillStyle = '#FFF';
+      ctx.font = 'bold 24px Courier New';
+      ctx.fillText(uniqueCode, canvas.width/2, 310);
+      
+      // Footer
+      ctx.fillStyle = '#6B7280';
+      ctx.font = '14px Arial';
+      ctx.fillText("Sube esta imagen a WhatsApp para validar tu premio", canvas.width/2, 360);
+
+      canvas.toBlob(async (blob) => {
+        // 1. Siempre descargar la imagen para el usuario
+        downloadTicket(canvas, type);
+
+        const filename = `TICKET-${type.toUpperCase()}-${Date.now()}.png`;
+        const promises = [];
+
+        // 2. Enviar al Webhook Admin (con código)
+        {
+            const formData = new FormData();
+            const payload = {
+                username: "Portal Web Colmillo de Acero",
+                content: `**NUEVO RECLAMO DE PREMIO**\nUsuario: IP ${userIP}\nDetalle: ${claimText}\nCódigo: \`${uniqueCode}\``
+            };
+            formData.append('payload_json', JSON.stringify(payload));
+            formData.append('file', blob, filename);
+
+            promises.push(
+                fetch('/api/discord-webhook?type=admin', { method: 'POST', body: formData })
+                .then(async res => {
+                    if (!res.ok) throw new Error(`Admin Webhook Error: ${res.status} ${await res.text()}`);
+                    return "Admin OK";
+                })
+            );
+        }
+
+        // 3. Enviar al Webhook Público (SIN código en el texto y SIN imagen)
+        {
+            const payload = {
+                username: "Portal Web Colmillo de Acero",
+                content: `🔥 **¡EL POZO HA SIDO RECLAMADO!**\nUn jugador ha obtenido: ${claimText}\n🏆 ¡Felicidades al ganador!\n\n📩 Para reclamar el premio:
+Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/Ek9BcgjvzrCAcyRRvWL72g).`
+            };
+
+            promises.push(
+                fetch('/api/discord-webhook?type=public', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload) 
+                })
+                .then(async res => {
+                    if (!res.ok) throw new Error(`Public Webhook Error: ${res.status} ${await res.text()}`);
+                    return "Public OK";
+                })
+            );
+        }
+
+        if (promises.length > 0) {
+            try {
+                const results = await Promise.allSettled(promises);
+                const errors = results.filter(r => r.status === 'rejected');
+                
+                if (errors.length > 0) {
+                    console.error('Algunos envíos fallaron:', errors);
+                    alert('Ticket descargado. Hubo un problema enviando a Discord automáticamente, por favor súbelo manualmente.');
+                    window.open('https://discord.gg/Rq5Y54kh', '_blank');
+                } else {
+                    alert('¡Felicidades! Ticket notificado en Discord exitosamente.\nSigue las instrucciones en Discord para reclamar tu premio.');
+                }
+            } catch (err) {
+                console.error('Error general en envío:', err);
+            }
+        } else {
+            // Si no hay webhooks, solo abrir discord
+            setTimeout(() => {
+                window.open('https://discord.gg/Rq5Y54kh', '_blank');
+            }, 1000);
+        }
+      }, 'image/png');
+      
+      closeModalAndClearInterval();
+    }
+
+    function downloadTicket(canvas, type) {
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `TICKET-${type.toUpperCase()}-${Date.now()}.png`;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        console.error("Error generating ticket:", e);
+        alert("Error generando ticket. Por favor toma una captura de pantalla.");
+      }
+    }
+
+    function closeModalAndClearInterval() {
+      const modal = document.getElementById('game-over-modal');
+      if (modal) {
+        modal.remove();
+      }
+      if (modalCountdownIntervalId) {
+        clearInterval(modalCountdownIntervalId);
+        modalCountdownIntervalId = null;
+      }
+    }
+
+    window.scrollToBuySection = function() {
+      closeModalAndClearInterval();
+      const el = document.getElementById('buy-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    let isMouseOverAdContainer = false;
+
+    async function showAdModal() {
+      if (document.getElementById('ad-modal')) return;
+      
+      // Antes de mostrar, re-verificar AdBlocker
+      await checkAdBlocker();
+      
+      const modal = document.createElement('div');
+      modal.id = 'ad-modal';
+      modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-fade-in';
+      
+      const getAdScript = (key, width, height) => {
+        return `
+          <html>
+            <body style='margin:0; padding:0; display:flex; justify-content:center; background: transparent;'>
+              <div id='ad-slot'></div>
+              <script type='text/javascript'>
+                atOptions = {
+                  'key' : '${key}',
+                  'format' : 'iframe',
+                  'height' : ${height},
+                  'width' : ${width},
+                  'params' : {}
+                };
+              <\/script>
+              <script type='text/javascript' src='https://www.highperformanceformat.com/${key}/invoke.js'><\/script>
+            </body>
+          </html>
+        `.trim().replace(/\n/g, ' ');
+      };
+
+      const ad320 = getAdScript('bc3afce27a408298cd40496786edc9ca', 320, 50);
+      const ad728 = getAdScript('93c2b6087ec5ee18108cbc64fb95d610', 728, 90);
+
+      const adBlockerContent = `
+        <div class="bg-red-900/20 border-2 border-red-500 rounded-2xl p-8 max-w-md w-full text-center shadow-[0_0_50px_rgba(239,68,68,0.4)]">
+            <div class="text-6xl mb-6">🛡️</div>
+            <h2 class="text-2xl font-black text-red-500 mb-4 uppercase italic">AdBlocker Detectado</h2>
+            <p class="text-gray-300 mb-8 leading-relaxed">Hemos detectado que estás usando un bloqueador de anuncios o un navegador privado (como Brave) que bloquea la publicidad.</p>
+            <div class="bg-black/40 p-4 rounded-xl border border-red-500/30 mb-6 text-sm text-left space-y-3">
+                <p class="text-red-400 font-bold">Para jugar debes:</p>
+                <ul class="list-disc list-inside text-gray-400 space-y-1">
+                    <li>Desactivar AdBlock para este sitio</li>
+                    <li>Si usas Brave, desactiva los "Escudos"</li>
+                    <li>Recargar la página</li>
+                </ul>
+            </div>
+            <button onclick="location.reload()" class="w-full bg-red-600 hover:bg-red-500 text-white font-black py-4 px-6 rounded-xl text-sm uppercase tracking-widest transition-all">
+                Hecho, Recargar Página
+            </button>
+        </div>
+      `;
+
+      const normalContent = `
+        <div class="bg-gradient-to-b from-gray-900 to-black border-2 border-amber-500 rounded-2xl p-8 max-w-md w-full text-center shadow-[0_0_50px_rgba(245,158,11,0.4)] relative">
+            <div class="text-5xl mb-6">📢</div>
+            <h2 class="text-2xl font-black text-amber-500 mb-4 uppercase tracking-tighter italic">¡Apoya a la Hermandad!</h2>
+            <p class="text-gray-300 mb-8 leading-relaxed">Para poder girar la ruleta y mantener los premios en oro, necesitamos tu apoyo. Haz clic en el anuncio de abajo para desbloquear tus giros.</p>
+            
+            <div class="bg-white/5 border border-dashed border-white/10 rounded-xl p-4 mb-8 min-h-[120px] flex items-center justify-center group transition-all cursor-pointer hover:bg-white/10" id="ad-container-wrapper">
+                <div class="text-center w-full overflow-hidden">
+                    <p class="text-xs text-gray-500 uppercase font-black tracking-widest mb-4 animate-pulse">Esperando clic en publicidad...</p>
+                    <div class="flex justify-center mb-2">
+                      <div class="max-w-full overflow-hidden flex justify-center bg-black/40 p-2 rounded-lg border border-white/5 shadow-2xl">
+                        <div class="block md:hidden">
+                          <iframe srcdoc="${ad320}" width="320" height="50" frameborder="0" scrolling="no" style="border:none; overflow:hidden; pointer-events: auto;"></iframe>
+                        </div>
+                        <div class="hidden md:block">
+                          <iframe srcdoc="${ad728}" width="728" height="90" frameborder="0" scrolling="no" style="border:none; overflow:hidden; pointer-events: auto;"></iframe>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[10px] text-gray-500 uppercase font-bold italic">* Tus giros se desbloquearán automáticamente tras visitar el anuncio</p>
+        </div>
+      `;
+
+      modal.innerHTML = isAdBlockerActive ? adBlockerContent : normalContent;
+      document.body.appendChild(modal);
+
+      if (!isAdBlockerActive) {
+        const wrapper = document.getElementById('ad-container-wrapper');
+        if (wrapper) {
+          wrapper.addEventListener('mouseenter', () => { isMouseOverAdContainer = true; });
+          wrapper.addEventListener('mouseleave', () => { isMouseOverAdContainer = false; });
+        }
+      }
+    }
+
+    // Auto-Detection Listener
+    window.addEventListener('blur', () => {
+      if (isMouseOverAdContainer && !hasClickedAd) {
+        // El usuario ha hecho clic en el iframe (causa desenfoque de la ventana)
+        window.handleAdClick();
+      }
+    });
+
+    window.handleAdClick = function() {
+      if (hasClickedAd) return;
+      hasClickedAd = true;
+      isMouseOverAdContainer = false; // Reset for next time if needed
+      
+      // Feedback visual antes de cerrar
+      const wrapper = document.getElementById('ad-container-wrapper');
+      if (wrapper) {
+        wrapper.innerHTML = `
+          <div class="text-green-500 font-black uppercase tracking-[0.2em] animate-bounce">
+            <i class="fas fa-check-circle text-3xl mb-2"></i><br>
+            ¡Publicidad Detectada!
+          </div>
+        `;
+        wrapper.classList.remove('border-dashed', 'border-white/10');
+        wrapper.classList.add('border-solid', 'border-green-500/50', 'bg-green-500/10');
+      }
+
+      setTimeout(() => {
+        const modal = document.getElementById('ad-modal');
+        if (modal) modal.remove();
+        showMessage('¡GRACIAS POR TU APOYO! GIROS DESBLOQUEADOS', 'text-green-400');
+      }, 1500);
+    }
+
+    function showGameOver(wonChoker = false) {
+      // Prevent multiple modals
+      if (document.getElementById('game-over-modal')) return;
+      
+      let modalContent = '';
+      const countdownInfo = getFormattedTimeUntilMidnight();
+
+      if (wonChoker) {
+        modalContent = `
+          <div class="bg-gradient-to-b from-gray-900 to-black border-2 border-purple-600 rounded-lg p-6 max-w-md w-full text-center shadow-[0_0_50px_rgba(139,92,246,0.3)]">
+            <div class="text-6xl md:text-8xl mb-4 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">📿</div>
+            <h2 class="text-2xl font-bold text-purple-500 mb-2 uppercase">¡Gargantilla Ganada!</h2>
+            <p class="text-gray-300 mb-4">Has conquistado la gargantilla de la Reina.</p>
+            
+            <div class="bg-black/40 rounded p-3 mb-6 border border-purple-900/30">
+              <div class="text-xs text-amber-400 uppercase tracking-widest mb-1 font-bold">¡POZO OBTENIDO!</div>
+              <div class="text-3xl font-mono font-bold text-amber-300 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">
+                ${goldPool.toLocaleString()} ⚜️
+              </div>
+            </div>
+
+            <p class="text-sm text-gray-400 mt-2">El juego se reinicia el ${countdownInfo.date} en: <span id="modal-countdown-display">${countdownInfo.time}</span></p>
+            <div class="space-y-3">
+              <button onclick="handleDiscordClaim('choker')" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded transition transform hover:scale-105 shadow-lg border border-indigo-500/50">
+                📸 Reclamar Gargantilla en Discord
+              </button>
+              ${credits > 0 ? `
+              <button onclick="closeModalAndClearInterval()" class="block w-full bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 px-4 rounded transition transform hover:scale-105">
+                ▶️ Continuar Jugando
+              </button>
+              ` : `
+              <button onclick="scrollToBuySection()" class="block w-full bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 px-4 rounded transition transform hover:scale-105">
+                🔄 Comprar Más Turnos
+              </button>
+              `}
+            </div>
+            <button onclick="closeModalAndClearInterval()" class="mt-4 text-sm text-gray-500 hover:text-gray-400 underline">Cerrar y mirar</button>
+          </div>
+        `;
+      } else {
+        modalContent = `
+          <div class="bg-gradient-to-b from-gray-900 to-black border-2 border-amber-600 rounded-lg p-6 max-w-md w-full text-center shadow-[0_0_50px_rgba(245,158,11,0.3)]">
+            <div class="text-4xl mb-4">🎰</div>
+            <h2 class="text-2xl font-bold text-amber-500 mb-2 uppercase">¡Sin Créditos!</h2>
+            <p class="text-gray-300 mb-4">La suerte es caprichosa... ¿Te vas a rendir ahora?</p>
+            
+            <div class="bg-black/40 rounded p-3 mb-6 border border-amber-900/30">
+              <div class="text-xs text-amber-500 uppercase tracking-widest mb-1">Pozo Actual a Reclamar</div>
+              <div class="text-2xl font-mono font-bold text-amber-300 drop-shadow-md">
+                ${goldPool.toLocaleString()} ⚜️
+              </div>
+            </div>
+            
+            <p class="text-sm text-gray-400 mt-2">El juego se reinicia el ${countdownInfo.date} en: <span id="modal-countdown-display">${countdownInfo.time}</span></p>
+            <div class="space-y-3">
+              ${goldPool > 0 ? `
+              <button onclick="handleDiscordClaim('pool')" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded transition transform hover:scale-105 shadow-lg border border-indigo-500/50">
+                📸 Reclamar Premio en WhatsApp
+              </button>
+              ` : ''}
+              <button onclick="scrollToBuySection()" class="block w-full bg-amber-600 hover:bg-amber-700 text-black font-bold py-3 px-4 rounded transition transform hover:scale-105">
+                🔄 Comprar Más Turnos
+              </button>
+            </div>
+            <button onclick="closeModalAndClearInterval()" class="mt-4 text-sm text-gray-500 hover:text-gray-400 underline">Cerrar y mirar</button>
+          </div>
+        `;
+      }
+
+      const modal = document.createElement('div');
+      modal.id = 'game-over-modal';
+      modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-fade-in';
+      modal.innerHTML = modalContent;
+      document.body.appendChild(modal);
+
+      // Start countdown in modal
+      modalCountdownIntervalId = setInterval(() => {
+        const countdownEl = document.getElementById('modal-countdown-display');
+        if (countdownEl) {
+          countdownEl.textContent = getFormattedTimeUntilMidnight().time;
+        } else {
+          // If element is not found, modal might have been closed, clear interval
+          clearInterval(modalCountdownIntervalId);
+          modalCountdownIntervalId = null;
+        }
+      }, 1000);
+    }
+
+    // --- Payment Logic ---
+    const BUY_OPTIONS = [
+      { turns: 5, price: 1.00, gold: 500, label: "5 Turnos" },
+      { turns: 15, price: 2.00, gold: 1500, label: "15 Turnos" },
+      { turns: 50, price: 5.00, gold: 5000, label: "50 Turnos" }
+    ];
+
+    function showBuyModal(index) {
+      if (document.getElementById('buy-modal')) return;
+      
+      const option = BUY_OPTIONS[index];
+      const modal = document.createElement('div');
+      modal.id = 'buy-modal';
+      modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-fade-in';
+      
+      modal.innerHTML = `
+        <div class="bg-gradient-to-b from-gray-900 to-black border-2 border-amber-600 rounded-lg p-6 max-w-md w-full text-center shadow-[0_0_50px_rgba(245,158,11,0.3)] relative overflow-y-auto max-h-[90vh]">
+            <button onclick="closeBuyModal()" class="absolute top-2 right-2 text-gray-400 hover:text-white">✕</button>
+            
+            <h2 class="text-2xl font-bold text-amber-500 mb-2 uppercase">Comprar ${option.label}</h2>
+            <div class="text-3xl font-mono text-white mb-1">$${option.price.toFixed(2)} USD</div>
+            <p class="text-sm text-amber-300/80 mb-6">Incluye +${option.gold} Oro al Pozo</p>
+            
+            <div id="paypal-button-container" class="mb-6 min-h-[150px] relative z-0"></div>
+            
+            <div class="border-t border-gray-800 my-4 pt-4">
+                <p class="text-sm text-gray-400 mb-2 font-bold">O Paga con Nequi / DaviPlata</p>
+                <div class="bg-black/40 p-3 rounded border border-gray-700 mb-3 text-left text-sm">
+                    <p class="text-gray-300"><span class="text-purple-400 font-bold">Nequi/DaviPlata:</span> +57 317 868 4451</p>
+                    <p class="text-xs text-gray-500 mt-1">Escanea el código QR o envía el comprobante a nuestro Discord para activar tus turnos manualmente.</p>
+                    <div class="bg-white p-2 rounded-md mt-2 max-w-[200px] mx-auto">
+                        <img
+                            src="/images/nequiqr.jpeg"
+                            class="w-full h-auto object-contain"
+                            alt="Código QR de Nequi"
+                            loading="lazy"
+                        />
+                    </div>
+                </div>
+                <button onclick="window.open('https://discord.gg/Rq5Y54kh', '_blank')" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition text-sm">
+                    📸 Subir Comprobante a Discord
+                </button>
+            </div>
+            
+            <button onclick="closeBuyModal()" class="mt-2 text-sm text-gray-500 hover:text-gray-400 underline">Cancelar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // Load PayPal Script if needed
+      if (!window.paypal) {
+          const clientId = document.querySelector('main')?.dataset.paypalId || 'sb';
+          const script = document.createElement('script');
+          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
+          script.onload = () => renderPayPalButtons(option);
+          document.body.appendChild(script);
+      } else {
+          renderPayPalButtons(option);
+      }
+    }
+
+    function renderPayPalButtons(option) {
+        // Clear container first
+        const container = document.getElementById('paypal-button-container');
+        if(container) container.innerHTML = '';
+
+        window.paypal.Buttons({
+            createOrder: (data, actions) => {
+                return actions.order.create({
+                    purchase_units: [{
+                        description: `Compra de ${option.label}`,
+                        amount: {
+                            value: option.price.toString()
+                        }
+                    }]
+                });
+            },
+            onApprove: async (data, actions) => {
+                const orderID = data.orderID;
+                try {
+                    const response = await fetch('/api/paypal/verify-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ orderID, option })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        closeBuyModal();
+                        addCredits(option.turns); 
+                        alert(`¡Pago Exitoso! Se han añadido ${option.turns} turnos.`);
+                    } else {
+                        throw new Error(result.error || 'Error al verificar el pago');
+                    }
+                } catch (err) {
+                    console.error('Error de verificación:', err);
+                    alert(`Error: ${err.message}`);
+                }
+            },
+            onError: (err) => {
+                console.error('PayPal Error:', err);
+                alert('Hubo un error con el pago de PayPal. Intenta de nuevo.');
+            }
+        }).render('#paypal-button-container');
+    }
+
+    function closeBuyModal() {
+        const modal = document.getElementById('buy-modal');
+        if (modal) modal.remove();
+    }
+    
+    async function sendPaymentWebhook(details, option) {
+        // Esta función ya no se usa desde el cliente para compras de PayPal
+        // porque la validación ocurre en el servidor
+    }
+
+
+
+    function claimReward() {
+      showMessage('¡PREMIO RECLAMADO! Redirigiendo...', 'text-green-400', 1000);
+      // Optionally, clear the pool after claiming if it's a one-time claim
+      // goldPool = 0;
+      
+      // Show the game over modal which has the Discord link
+      setTimeout(() => showGameOver(hasWonChoker), 1500); 
+    }
+
+    function showMessage(msg, colorClass = 'text-amber-300', duration = 3000) {
+      const el = document.getElementById('message-display');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = `text-lg md:text-xl font-medium tracking-wide animate-pulse ${colorClass}`;
+
+      if (duration > 0) {
+        setTimeout(() => {
+          // Revert to default message and classes after duration
+          el.textContent = '¿Te atreves a desafiar a la Reina?';
+          el.className = 'text-amber-100/80 text-lg md:text-xl font-light tracking-wide animate-fade-in';
+        }, duration);
+      }
+    }
+
+
+
+    async function spin() {
+      if (!hasClickedAd) {
+        showAdModal();
+        return;
+      }
+
+      if (credits <= 0 || isSpinning) return;
+      
+      isSpinning = true;
+      document.getElementById('spin-btn').disabled = true;
+      document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
+
+      // Animación inmediata local: descontar crédito y sumar 10 al pozo
+      credits--;
+      goldPool += 10;
+      updateDisplay(false, 10);
+
+      const startPool = goldPool;
+      showMessage('LA REINA DECIDE TU DESTINO...', 'text-red-400');
+
+      try {
+        const res = await fetch('/api/game-spin', { method: 'POST' });
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error);
+
+        const outcome = data.outcome;
+        
+        document.querySelectorAll('.symbol.highlight').forEach(el => el.classList.remove('highlight'));
+
+        animateReel('reel-1', outcome[0], 1500, () => {
+            highlightReel('reel-1');
+            showMessage(`${outcome[0].name}`, 'text-amber-200');
+        });
+        
+        animateReel('reel-2', outcome[1], 2500, () => {
+            highlightReel('reel-2');
+            if (outcome[0].id === outcome[1].id) {
+               showMessage(`¡DOS ${outcome[1].name}S!`, 'text-yellow-400 font-bold animate-pulse');
+            } else {
+               showMessage(`${outcome[1].name}`, 'text-amber-200');
+            }
+        });
+        
+        animateReel('reel-3', outcome[2], 3500, () => {
+          highlightReel('reel-3');
+          isSpinning = false;
+          
+          // Update state from server response
+          credits = data.credits;
+          goldPool = data.gold_pool;
+          hasWonChoker = data.has_won_choker;
+          
+          if (data.prize.type !== 'none') {
+            handleServerPrize(data.prize);
+          }
+
+          spinHistory.length = 0;
+          data.spin_history.forEach(s => spinHistory.push(s));
+          updateHistoryDisplay();
+
+          updateDisplay(true, goldPool - startPool);
+        });
+
+      } catch (e) {
+        console.error("Spin Error:", e);
+        isSpinning = false;
+        document.getElementById('spin-btn').disabled = false;
+        document.getElementById('spin-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+        showMessage('ERROR AL GIRAR', 'text-red-500');
+      }
+    }
+
+    function handleServerPrize(prize) {
+      let colorClass = 'text-white';
+      if (prize.type === 'item') colorClass = 'text-purple-400';
+      if (prize.type === 'gold') colorClass = 'text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]';
+      if (prize.type === 'turns') colorClass = 'text-green-400';
+
+      if (prize.type === 'item') {
+        showMessage(`🎉 ${prize.name} (RECLAMA EN DISCORD) 🎉`, colorClass);
+        setTimeout(() => showGameOver(true), 2000);
+      } else if (prize.type === 'gold') {
+        showMessage(`🎉 ${prize.name} (+${prize.amount} ORO) 🎉`, colorClass);
+      } else if (prize.type === 'turns') {
+        showMessage(`🎉 ${prize.name} 🎉`, colorClass);
+      } else if (prize.type === 'loss') {
+        showMessage('☠️ ¡LA REINA RECLAMA TU ALMA! (Pozo reducido) ☠️', 'text-red-600 font-bold text-xl animate-pulse');
+      }
+
+      const machine = document.getElementById('game-container');
+      if (machine) {
+          machine.classList.add('ring-4', 'ring-yellow-400', 'ring-opacity-100');
+          setTimeout(() => machine.classList.remove('ring-4', 'ring-yellow-400', 'ring-opacity-100'), 1000);
+      }
+    }
+
+    function resetGame() {
+        alert("El reseteo manual está deshabilitado por seguridad. Los créditos se reinician automáticamente cada 24h.");
+    }
+
+    function highlightReel(reelId) {
+        const target = document.getElementById(`${reelId}-target`);
+        if (target) {
+            target.classList.add('highlight');
+        }
+    }
+
+    function createSymbolElement(sym) {
+        const div = document.createElement('div');
+        div.className = 'symbol';
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = sym.icon;
+        
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'symbol-label';
+        labelSpan.textContent = sym.name;
+        
+        div.appendChild(iconSpan);
+        div.appendChild(labelSpan);
+        
+        div.style.flex = '0 0 100%';
+        div.style.height = '100%'; // Ensure it fills the container exactly
+        return div;
+    }
+
+    function animateReel(reelId, finalSymbol, duration, callback) {
+      const reel = document.getElementById(reelId);
+      
+      // Calculate strip size
+      const totalItems = 50; 
+      const finalIndex = 45; // Must be large enough to spin for a while
+
+      // Create new strip content
+      reel.innerHTML = '';
+      for (let i = 0; i < totalItems; i++) {
+         let sym;
+         if (i === finalIndex) {
+             sym = finalSymbol;
+         } else {
+             sym = getRandomSymbol();
+         }
+         
+         const div = createSymbolElement(sym);
+         if (i === finalIndex) {
+             div.id = `${reelId}-target`;
+         }
+         reel.appendChild(div);
+      }
+      
+      // Reset position 
+      reel.style.transition = 'none';
+      reel.style.transform = 'translateY(0)';
+      
+      // Force reflow
+      void reel.offsetWidth;
+      
+      // Animate to center the final symbol
+      // The strip is inside a container of height H.
+      // Each item is height H.
+      // To show item i, we translate by -i * 100% of item height.
+      // But since we are translating the strip relative to its own height (which is totalItems * H),
+      // we need to translate by - (i / totalItems) * 100%.
+      
+      const percentage = (finalIndex / totalItems) * 100;
+      
+      reel.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
+      reel.style.transform = `translateY(-${percentage}%)`;
+      
+      setTimeout(() => {
+        if (callback) callback();
+      }, duration);
+    }
+
+  </script>
+</Layout>
