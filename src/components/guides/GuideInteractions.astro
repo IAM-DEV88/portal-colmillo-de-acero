@@ -53,6 +53,10 @@ const { data: comments } = await supabase
       const data = await res.json();
       if (data.success) {
         localStorage.setItem('voted_' + this.guideId, this.voted);
+        // Mostrar notificación si se ganó un turno
+        if (data.rewarded && window.showRewardToast) {
+          window.showRewardToast('¡Por apoyar nuestras guías!');
+        }
       } else {
         // Rollback on failure
         this.voted = originalVoted;

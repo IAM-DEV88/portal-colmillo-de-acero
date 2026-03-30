@@ -5,8 +5,8 @@ import type { APIRoute } from 'astro';
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
     const { guideId, action } = await request.json();
-    const ip = clientAddress || 'anonymous';
-    const ipHash = btoa(ip).substring(0, 16);
+    const ip = RouletteService.getClientIP(request, clientAddress);
+    const ipHash = RouletteService.getIpHash(ip);
 
     if (action === 'remove') {
       const { error } = await supabase
@@ -34,14 +34,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     // Otorgar crédito en la ruleta (solo la primera vez para esta guía e IP)
     const rewardActionId = `guide_vote_${guideId}`;
-    const alreadyRewarded = await RouletteService.hasAlreadyRewarded(ip, rewardActionId);
-    
-    if (!alreadyRewarded) {
-      await RouletteService.addCredits(ip, 1);
-      await RouletteService.logReward(ip, rewardActionId);
-    }
+    const { success: rewarded } = await RouletteService.grantReward(ip, rewardActionId, 1);
 
-    return new Response(JSON.stringify({ success: true, data, rewarded: !alreadyRewarded }), { status: 200 });
+    return new Response(JSON.stringify({ success: true, data, rewarded }), { status: 200 });
   } catch (e: any) {
     return new Response(JSON.stringify({ success: false, error: e.message }), { status: 500 });
   }

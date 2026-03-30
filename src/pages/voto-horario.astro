@@ -462,7 +462,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
             window.dispatchEvent(new CustomEvent('vote-submitted'));
 
             // Mostrar notificación de recompensa si ganamos un turno
-            if (window.showRewardToast) {
+            if (result.rewarded && window.showRewardToast) {
               window.showRewardToast('¡Por participar en el voto de horario!');
             }
           } else {
@@ -564,7 +564,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
               this.loadVotes();
 
               // Mostrar notificación de recompensa si ganamos un turno
-              if (window.showRewardToast) {
+              if (result.rewarded && window.showRewardToast) {
                 window.showRewardToast('¡Por participar en el voto de horario!');
               }
             } else {

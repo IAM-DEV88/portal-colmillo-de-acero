@@ -32,7 +32,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
     const body = await request.json();
     const { raid_name, difficulty, size, day_of_week, preferred_time } = body;
-    const ip = clientAddress || 'unknown';
+    const ip = RouletteService.getClientIP(request, clientAddress);
 
     if (!raid_name || !difficulty || !size || !day_of_week || !preferred_time) {
       return new Response(JSON.stringify({ error: 'Faltan campos obligatorios' }), { status: 400 });
@@ -44,7 +44,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const { count, error: countError } = await supabase
       .from('schedule_votes')
       .select('*', { count: 'exact', head: true })
-      .eq('ip_hash', ip)
+      .eq('ip_hash', RouletteService.getIpHash(ip))
       .gte('created_at', twentyFourHoursAgo);
 
     if (countError) throw countError;
@@ -65,7 +65,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           size, 
           day_of_week, 
           preferred_time,
-          ip_hash: ip
+          ip_hash: RouletteService.getIpHash(ip)
         }
       ])
       .select();
@@ -73,9 +73,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     if (error) throw error;
 
     // Otorgar crédito en la ruleta por cada voto (hasta 3 diarios)
-    await RouletteService.addCredits(ip, 1);
+    // Usamos la fecha actual y el número de voto para el action_id para permitir hasta 3 recompensas diarias
+    const today = new Date().toISOString().split('T')[0];
+    const voteNumber = (count || 0) + 1;
+    const rewardActionId = `schedule_vote_${today}_${voteNumber}`;
+    const { success: rewarded } = await RouletteService.grantReward(ip, rewardActionId, 1);
 
-    return new Response(JSON.stringify({ success: true, data }), { status: 200 });
+    return new Response(JSON.stringify({ success: true, data, rewarded }), { status: 200 });
   } catch (error: any) {
     console.error('Error in schedule-vote:', error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });

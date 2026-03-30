@@ -11,30 +11,14 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function getClientIP(request: Request, clientAddress?: string) {
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) {
-        const ip = forwarded.split(',')[0].trim();
-        // Normalizar IP de localhost
-        if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-        return ip;
-    }
-    
-    // En desarrollo local a veces no hay IP real, usar 'localhost' o similar
-    let ip = clientAddress || '127.0.0.1';
-    
-    // Normalizar IP de localhost para consistencia entre IPv4 e IPv6
-    if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-    
-    return ip;
-}
+import { RouletteService } from '../../lib/roulette-service';
 
 // GET: Obtener estado actual (Seguro)
 export const GET: APIRoute = async ({ request, clientAddress }) => {
     try {
-        const ip = getClientIP(request, clientAddress);
-        // Usamos la IP directamente como ID. En producción podrías hashearla.
-        const sessionId = ip; 
+        const ip = RouletteService.getClientIP(request, clientAddress);
+        // Usamos el hash de la IP consistentemente
+        const sessionId = RouletteService.getIpHash(ip); 
 
         // 1. Intentar obtener la sesión existente
         console.log(`[GameState] Buscando sesión para IP: ${sessionId}`);
@@ -48,53 +32,10 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
         if (existingSession) {
             console.log(`[GameState] Sesión encontrada para ${sessionId}:`, existingSession.credits, 'créditos');
             
-            // Lógica de reseteo a las 00:00 hora server (Europe/London)
-            const guildTimezone = 'Europe/London';
-            
-            // Formatear fechas como YYYY-MM-DD en la zona horaria del servidor
-            const now = new Date();
-            const nowServerStr = now.toLocaleDateString('en-CA', { timeZone: guildTimezone }); // en-CA da YYYY-MM-DD
-            
-            const lastActive = new Date(existingSession.last_active);
-            const lastActiveServerStr = lastActive.toLocaleDateString('en-CA', { timeZone: guildTimezone });
+            // Lógica de reseteo centralizada en RouletteService
+            const finalSession = await RouletteService.ensureDailyReset(existingSession);
 
-            console.log(`[GameState] IP: ${sessionId} | Now Server Day: ${nowServerStr} | Last Active Server Day: ${lastActiveServerStr}`);
-
-            // Comprobar si las cadenas de fecha son diferentes
-            const isDifferentDay = nowServerStr !== lastActiveServerStr;
-
-            if (isDifferentDay) {
-                console.log(`[GameState] Reseteando sesión por cambio de día (Medianoche Server). IP: ${sessionId}`);
-                
-                const resetData = {
-                    credits: 5,
-                    gold_pool: existingSession.gold_pool > 100 ? existingSession.gold_pool : 100,
-                    has_won_choker: false,
-                    spin_history: [],
-                    last_active: now.toISOString() // Guardamos en UTC para persistencia
-                };
-
-                const { data: updatedSession, error: updateError } = await supabase
-                    .from('game_sessions')
-                    .update(resetData)
-                    .eq('ip_hash', sessionId)
-                    .select()
-                    .single();
-
-                if (!updateError) {
-                    console.log(`[GameState] Sesión reseteada con éxito para ${sessionId}`);
-                    return new Response(JSON.stringify(updatedSession), { 
-                        status: 200,
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Cache-Control': 'no-store, max-age=0' 
-                        }
-                    });
-                }
-                console.error('[GameState] Error al resetear sesión:', updateError);
-            }
-
-            return new Response(JSON.stringify(existingSession), { 
+            return new Response(JSON.stringify(finalSession), { 
                 status: 200,
                 headers: { 
                     'Content-Type': 'application/json',

@@ -31,22 +31,12 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function getClientIP(request: Request, clientAddress?: string) {
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) {
-        const ip = forwarded.split(',')[0].trim();
-        if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-        return ip;
-    }
-    let ip = clientAddress || '127.0.0.1';
-    if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-    return ip;
-}
+import { RouletteService } from '../../../lib/roulette-service';
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
     try {
-        const ip = getClientIP(request, clientAddress);
-        const sessionId = ip;
+        const ip = RouletteService.getClientIP(request, clientAddress);
+        const sessionId = RouletteService.getIpHash(ip);
         const { orderID, option } = await request.json();
         
         if (!orderID || !option) {
@@ -81,25 +71,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         }
 
         // 3. ACTUALIZAR CRÉDITOS EN SUPABASE (SEGURO)
-        const { data: session } = await supabase
-            .from('game_sessions')
-            .select('credits, gold_pool')
-            .eq('ip_hash', sessionId)
-            .single();
-
-        if (session) {
-            const newCredits = session.credits + option.turns;
-            const newGoldPool = session.gold_pool + (option.turns * 100); // Bonus pool for buying
-
-            await supabase
-                .from('game_sessions')
-                .update({ 
-                    credits: newCredits, 
-                    gold_pool: newGoldPool,
-                    last_active: new Date().toISOString()
-                })
-                .eq('ip_hash', sessionId);
-        }
+        const bonusGold = option.turns * 100;
+        await RouletteService.addCredits(sessionId, option.turns, bonusGold);
 
         // 4. Notificar a Discord desde el servidor (Seguro)
         if (DISCORD_WEBHOOK_URL) {

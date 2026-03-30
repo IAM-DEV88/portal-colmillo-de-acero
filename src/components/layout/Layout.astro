@@ -186,6 +186,52 @@ const socialImageURL = new URL(image, Astro.url);
         <slot />
       </main>
 
+      {/* Sección Ultra-Optimizada: Recompensas por Apoyo */}
+      <section class="max-w-4xl mx-auto px-4 mb-12">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-blue-900/20 to-amber-900/20 border border-white/10 p-1">
+          <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          <div class="relative z-10 bg-gray-900/60 backdrop-blur-xl rounded-[14px] p-6 md:p-8 flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-shrink-0 relative group">
+              <div class="absolute -inset-4 bg-amber-500/20 rounded-full blur-2xl group-hover:bg-amber-500/30 transition-all duration-500"></div>
+              <div class="relative w-24 h-24 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                <i class="fas fa-wheelchair-alt text-4xl text-white animate-spin-slow" style="animation: spin 8s linear infinite;"></i>
+                <div class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-md shadow-lg">+1 GIRO</div>
+              </div>
+            </div>
+
+            <div class="flex-grow text-center md:text-left">
+              <h2 class="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight uppercase">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-200">Gana Turnos Gratis</span> en la Ruleta
+              </h2>
+              <p class="text-gray-400 text-sm md:text-base leading-relaxed mb-6 italic">
+                Tu apoyo mantiene viva la hermandad. Por cada guía que te guste o cada voto por horario que realices, ¡te regalamos giros extra para ganar oro y premios exclusivos!
+              </p>
+              
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                <a href="/guides" class="group relative px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all overflow-hidden">
+                  <span class="relative z-10 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400">
+                    <i class="fas fa-heart text-red-500 group-hover:scale-125 transition-transform"></i>
+                    Dar Like a Guías
+                  </span>
+                </a>
+                <a href="/voto-horario" class="group relative px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all overflow-hidden">
+                  <span class="relative z-10 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-blue-400">
+                    <i class="fas fa-calendar-check group-hover:rotate-12 transition-transform"></i>
+                    Votar Horarios
+                  </span>
+                </a>
+                <a href="/ruleta" class="group relative px-6 py-3 bg-amber-500 hover:bg-amber-400 rounded-xl transition-all shadow-lg shadow-amber-500/20">
+                  <span class="relative z-10 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-black">
+                    <i class="fas fa-play"></i>
+                    Ir a la Ruleta
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Nuevo Banner de Apoyo a la Comunidad antes del Footer */}
       <center class="mb-12 px-4 overflow-hidden relative">
         <div class="max-w-3xl mx-auto mb-4 p-4 bg-gradient-to-br from-amber-900/20 via-gray-900/40 to-blue-900/20 backdrop-blur-md border border-white/10 rounded-lg shadow-xl">
@@ -270,6 +316,33 @@ const socialImageURL = new URL(image, Astro.url);
     </div> <!-- Close the content wrapper -->
     <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+    <div id="reward-toast-container" class="fixed bottom-4 left-4 space-y-2 z-[60]"></div>
+
+    <script is:inline>
+      window.showRewardToast = function(message) {
+        const container = document.getElementById('reward-toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'animate-bounce-in bg-gradient-to-br bg-gradient-to-br from-gray-900/70 via-gray-900/90 to-amber-800/60 text-white px-6 py-4 rounded-xl shadow-2xl border border-white/20 flex items-center gap-4 backdrop-blur-md';
+        toast.innerHTML = `
+          <div class="bg-white/20 p-2 rounded-lg">
+            <i class="fas fa-star text-xl animate-pulse"></i>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-black tracking-widest opacity-80">¡Giro Extra Ganado!</p>
+            <p class="text-sm font-bold">${message}</p>
+          </div>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add('animate-fade-out');
+          setTimeout(() => toast.remove(), 500);
+        }, 5000);
+      };
+    </script>
 
     <!-- Visitor Tracking -->
     <script is:inline>

@@ -3,23 +3,7 @@ import type { APIRoute } from 'astro';
 
 const DISCORD_WEBHOOK_URL = import.meta.env.DISCORD_WEBHOOK_URL;
 
-function getClientIP(request: Request, clientAddress?: string) {
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) {
-        const ip = forwarded.split(',')[0].trim();
-        // Normalizar IP de localhost
-        if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-        return ip;
-    }
-    
-    // En desarrollo local a veces no hay IP real, usar 'localhost' o similar
-    let ip = clientAddress || '127.0.0.1';
-    
-    // Normalizar IP de localhost para consistencia entre IPv4 e IPv6
-    if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-    
-    return ip;
-}
+import { RouletteService } from '../../lib/roulette-service';
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
@@ -29,7 +13,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     }
 
     const body = await request.json();
-    const ip = getClientIP(request, clientAddress);
+    const ip = RouletteService.getClientIP(request, clientAddress);
 
     // Ignorar visitas locales (localhost/127.0.0.1)
     if (ip === '127.0.0.1' || body.url?.includes('localhost') || body.url?.includes('127.0.0.1')) {

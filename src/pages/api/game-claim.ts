@@ -7,22 +7,12 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function getClientIP(request: Request, clientAddress?: string) {
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) {
-        const ip = forwarded.split(',')[0].trim();
-        if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-        return ip;
-    }
-    let ip = clientAddress || '127.0.0.1';
-    if (ip === '::1' || ip === '::ffff:127.0.0.1') return '127.0.0.1';
-    return ip;
-}
+import { RouletteService } from '../../lib/roulette-service';
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
     try {
-        const ip = getClientIP(request, clientAddress);
-        const sessionId = ip;
+        const ip = RouletteService.getClientIP(request, clientAddress);
+        const sessionId = RouletteService.getIpHash(ip);
         const body = await request.json();
         const { type } = body; // 'pool' or 'choker'
 
