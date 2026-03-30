@@ -457,8 +457,14 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
           if (response.ok) {
             this.completed = true;
             this.$nextTick(() => this.updateHeight());
+            
             // Notificar al resumen para que se actualice
             window.dispatchEvent(new CustomEvent('vote-submitted'));
+
+            // Mostrar notificación de recompensa si ganamos un turno
+            if (window.showRewardToast) {
+              window.showRewardToast('¡Por participar en el voto de horario!');
+            }
           } else {
             alert(result.error || 'Hubo un error al registrar tu voto.');
           }
@@ -556,6 +562,11 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
             if (response.ok) {
               alert('¡Voto registrado con éxito!');
               this.loadVotes();
+
+              // Mostrar notificación de recompensa si ganamos un turno
+              if (window.showRewardToast) {
+                window.showRewardToast('¡Por participar en el voto de horario!');
+              }
             } else {
               alert(result.error || 'Hubo un error al procesar tu voto.');
             }

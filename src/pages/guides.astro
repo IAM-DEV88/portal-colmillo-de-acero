@@ -87,6 +87,10 @@ votesData?.forEach(v => {
                     const data = await res.json();
                     if (data.success) {
                       localStorage.setItem('voted_' + this.guideId, this.voted);
+                      // Mostrar notificación si se ganó un turno
+                      if (data.rewarded && window.showRewardToast) {
+                        window.showRewardToast('¡Por apoyar nuestras guías!');
+                      }
                     } else {
                       this.voted = originalVoted;
                       this.voteCount = originalCount;

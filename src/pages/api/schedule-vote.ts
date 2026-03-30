@@ -1,6 +1,7 @@
 export const prerender = false;
 import { createClient } from '@supabase/supabase-js';
 import type { APIRoute } from 'astro';
+import { RouletteService } from '../../lib/roulette-service';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -70,6 +71,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       .select();
 
     if (error) throw error;
+
+    // Otorgar crédito en la ruleta por cada voto (hasta 3 diarios)
+    await RouletteService.addCredits(ip, 1);
 
     return new Response(JSON.stringify({ success: true, data }), { status: 200 });
   } catch (error: any) {
