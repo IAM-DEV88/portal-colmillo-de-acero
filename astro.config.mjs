@@ -1,17 +1,15 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
-import netlify from '@astrojs/netlify/functions';
+import netlify from '@astrojs/netlify';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://colmillo.netlify.app',
   output: 'server',
-  adapter: netlify({
-    dist: new URL('./dist/', import.meta.url),
-  }),
+  adapter: netlify(),
   integrations: [tailwind()],
   server: {
     port: 3000,
   },
-  site: 'https://colmillo.netlify.app',
 });

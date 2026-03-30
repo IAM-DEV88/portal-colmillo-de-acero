@@ -15,6 +15,7 @@
     "@alpinejs/collapse": "^3.13.3",
     "@astrojs/check": "^0.9.4",
     "@astrojs/netlify": "^4.1.1",
+    "@astrojs/sitemap": "^3.7.2",
     "@astrojs/tailwind": "^5.1.0",
     "@fontsource-variable/jost": "^5.1.1",
     "@midudev/tailwind-animations": "^0.0.7",
