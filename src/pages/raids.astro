@@ -2,7 +2,6 @@
 import Layout from '../components/layout/Layout.astro';
 import { supabase } from '../lib/supabase';
 // Import components
-import RaidRulesModal from '../components/raids/RaidRulesModal.astro';
 import RaidSurvey from '../components/RaidSurvey.astro';
 import SectionComments from '../components/SectionComments.astro';
 
@@ -905,79 +904,6 @@ if (Astro.request.method === 'POST') {
     console.error('Fetch error:', fetchError);
   }
 ---
-
-<script is:inline>
-    function openRaidRulesModal(btn) {
-      const name = btn.getAttribute('data-raid-name');
-      const rules = btn.getAttribute('data-raid-rules');
-      const gs = btn.getAttribute('data-raid-gs');
-
-      console.log('Datos recuperados del botón:', { name, rules, gs });
-
-      const modal = document.getElementById('raid-rules-modal');
-      // Usar querySelector para los elementos dentro del modal
-      const nameEl = modal ? modal.querySelector('[data-js-id="modal-raid-name"]') : null;
-      const gsEl = modal ? modal.querySelector('[data-js-id="modal-raid-gs"]') : null;
-      const rulesEl = modal ? modal.querySelector('[data-js-id="modal-raid-rules"]') : null;
-
-      console.log('Elementos del modal encontrados:', { modal: !!modal, nameEl: !!nameEl, gsEl: !!gsEl, rulesEl: !!rulesEl });
-
-      if (modal && nameEl && rulesEl) {
-        nameEl.textContent = name;
-        if (gsEl) gsEl.textContent = `[${gs} GS]`;
-        
-        // Procesar y formatear las reglas
-        if (rulesEl && rules) {
-          const formattedRules = rules.split('\n')
-            .filter(line => line.trim() !== '')
-            .map((rule, index) => {
-              // Clean up any existing numbering at the start
-              const cleanRule = rule.replace(/^\d+[\.\-]\s*/, '').trim();
-              
-              const colonIndex = cleanRule.indexOf(':');
-              let content = '';
-              
-              if (colonIndex !== -1) {
-                const beforeColon = cleanRule.substring(0, colonIndex);
-                const afterColon = cleanRule.substring(colonIndex + 1);
-                content = `<span class="font-bold text-amber-400">${beforeColon}:</span>${afterColon}`;
-              } else {
-                content = cleanRule;
-              }
-
-              return `
-                <div class="flex gap-3 mb-3 p-2 rounded hover:bg-white/5 transition-colors">
-                  <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold font-mono">
-                    ${index + 1}
-                  </span>
-                  <span class="text-gray-300">${content}</span>
-                </div>
-              `;
-            }).join('');
-          rulesEl.innerHTML = formattedRules;
-        }
-        
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-      } else {
-        console.error('Error: No se pudieron encontrar todos los elementos del modal para actualizar.');
-      }
-    }
-
-    function closeRaidRulesModal() {
-      const modal = document.getElementById('raid-rules-modal');
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = 'auto';
-      }
-    }
-
-    // Exponer globalmente
-    window.openRaidRulesModal = openRaidRulesModal;
-    window.closeRaidRulesModal = closeRaidRulesModal;
-  </script>
 
 <Layout 
   title="Raids y Horarios" 
@@ -2093,8 +2019,6 @@ if (Astro.request.method === 'POST') {
 
 
   <Fragment slot="modals">
-    <RaidRulesModal />
-
 <!-- Raid Leaders Modal -->
 <div
   id="raid-leaders-modal"

@@ -255,83 +255,11 @@ function roleFallbackByClass(enOrEs?: string): 'melee' | 'ranged' | undefined {
   return undefined;
 }
 
-function normDay(text: string): string | null {
-  const m = String(text).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
-  if (!m) return null;
-  const raw = m[1].toLowerCase();
-  return DAY_MAP[raw] || raw;
-}
-
-function normTime(text: string): string | null {
-  const m = String(text).match(/(\d{1,2}:\d{2})/);
-  if (!m) return null;
-  return m[1].padStart(5, '0');
-}
-
 function toEsClass(enOrEs?: string): string | undefined {
   if (!enOrEs) return undefined;
   const key = toClassKey(enOrEs);
   if (key && CLASS_MAP_EN_TO_ES[key]) return CLASS_MAP_EN_TO_ES[key];
   return enOrEs;
-}
-
-export async function getRaidRosterForSchedule(schedule: RaidSchedule, forceFresh = false): Promise<{
-  leaderClass?: string;
-  tank: Array<{ name: string; class?: string }>;
-  healer: Array<{ name: string; class?: string }>;
-  melee: Array<{ name: string; class?: string }>;
-  ranged: Array<{ name: string; class?: string }>;
-}> {
-  const rosterData = await rosterService.getFormattedRoster(forceFresh);
-  const leader = schedule.leader;
-  const leaderNode: any = (rosterData as any)?.players?.[leader];
-  const leaderClass = leaderNode?.class;
-  const cores: any[] = leaderNode?.leaderData?.cores || [];
-  const targetDay = schedule.day_of_week;
-  const targetTime = schedule.start_time;
-  const targetRaid = schedule.raid_name;
-
-  let members: any[] = [];
-  for (const core of cores) {
-    const cDay = normDay(core.schedule || '');
-    const cTime = normTime(core.schedule || '');
-    if (!cDay || !cTime) continue;
-    if (core.raid === targetRaid && cDay === targetDay && cTime === targetTime) {
-      members = Array.isArray(core.members) ? core.members : [];
-      break;
-    }
-  }
-
-  const result = {
-    tank: [] as Array<{ name: string; class?: string }>,
-    healer: [] as Array<{ name: string; class?: string }>,
-    melee: [] as Array<{ name: string; class?: string }>,
-    ranged: [] as Array<{ name: string; class?: string }>,
-    leaderClass: leaderClass as string | undefined
-  };
-
-  for (const m of members) {
-    const name: string = m.name;
-    const rosterEntry: any = (rosterData as any)?.players?.[name];
-
-    // Si existe en roster, chequear guildLeave
-    if (rosterEntry && rosterEntry.guildLeave === true) continue;
-
-    // Si no existe en roster, lo incluimos igual (para ser fiel a raids)
-
-    const memberClass = m.class && m.class.length ? toEsClass(m.class) : rosterEntry?.class;
-    let role = normRole(m.role);
-    if (!role) {
-      const fallback = roleFallbackByClass(m.class || rosterEntry?.class);
-      role = fallback || 'ranged';
-    }
-    if (role === 'tank') result.tank.push({ name, class: memberClass });
-    else if (role === 'healer') result.healer.push({ name, class: memberClass });
-    else if (role === 'melee') result.melee.push({ name, class: memberClass });
-    else result.ranged.push({ name, class: memberClass });
-  }
-
-  return result;
 }
 
 export async function getRaidRosterForScheduleWithExternal(schedule: RaidSchedule, forceFresh = false): Promise<{
