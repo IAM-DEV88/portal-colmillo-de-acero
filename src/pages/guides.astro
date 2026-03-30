@@ -3,12 +3,22 @@ import Layout from '../components/layout/Layout.astro';
 import { supabase } from '../lib/supabase';
 import ShareButton from '../components/guides/ShareButton.astro';
 import { staticGuides, categories, colorClasses } from '../data/guides';
+import { RouletteService } from '../lib/roulette-service';
 
 // Obtener votos de Supabase
-const { data: votesData } = await supabase.from('guide_votes').select('guide_id');
+const { data: votesData } = await supabase.from('guide_votes').select('guide_id, ip_hash');
 const votesCount: Record<string, number> = {};
+const userVotes: string[] = [];
+
+// Obtener IP del cliente para marcar votos locales
+const clientIP = RouletteService.getClientIP(Astro.request, Astro.clientAddress);
+const ipHash = RouletteService.getIpHash(clientIP);
+
 votesData?.forEach(v => {
   votesCount[v.guide_id] = (votesCount[v.guide_id] || 0) + 1;
+  if (v.ip_hash === ipHash) {
+    userVotes.push(v.guide_id);
+  }
 });
 ---
 
@@ -59,6 +69,7 @@ votesData?.forEach(v => {
         {staticGuides.map(guide => {
           const classes = colorClasses[guide.color] || colorClasses.blue;
           const initialVotes = votesCount[guide.id] || 0;
+          const isVoted = userVotes.includes(guide.id);
           return (
             <div 
               x-show={`activeCategory === '${guide.category}'`}
@@ -69,9 +80,13 @@ votesData?.forEach(v => {
               x-data={`{ 
                 guideId: '${guide.id}', 
                 voteCount: ${initialVotes},
-                voted: false,
+                voted: ${isVoted},
                 init() {
-                  this.voted = localStorage.getItem('voted_' + this.guideId) === 'true';
+                  // Sincronizar localStorage solo si hay discrepancia (para offline/UX rápido)
+                  const local = localStorage.getItem('voted_' + this.guideId) === 'true';
+                  if (local !== this.voted) {
+                    localStorage.setItem('voted_' + this.guideId, this.voted);
+                  }
                 },
                 async toggleVote() {
                   const originalVoted = this.voted;

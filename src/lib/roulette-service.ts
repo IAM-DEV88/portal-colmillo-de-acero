@@ -88,7 +88,7 @@ export class RouletteService {
     if (nowServerStr !== lastActiveServerStr) {
       const resetData = {
         credits: 5,
-        gold_pool: session.gold_pool, // Mantenemos el pozo exactamente como está
+        gold_pool: 100, // Reseteamos el pozo a 100 en el reset diario
         has_won_choker: false,
         spin_history: [],
         last_active: now.toISOString()

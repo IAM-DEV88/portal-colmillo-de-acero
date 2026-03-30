@@ -1,15 +1,21 @@
 ---
 import { supabase } from '../../lib/supabase';
+import { RouletteService } from '../../lib/roulette-service';
 
 const { guide_id } = Astro.props;
+
+// Obtener IP del cliente para marcar votos locales
+const clientIP = RouletteService.getClientIP(Astro.request, Astro.clientAddress);
+const ipHash = RouletteService.getIpHash(clientIP);
 
 // Obtener votos (usaremos esto como el contador base)
 const { data: votes } = await supabase
   .from('guide_votes')
-  .select('id')
+  .select('id, ip_hash')
   .eq('guide_id', guide_id);
 
 const voteCount = votes?.length || 0;
+const isVoted = votes?.some(v => v.ip_hash === ipHash) || false;
 
 // Obtener comentarios aprobados
 const { data: comments } = await supabase
@@ -23,14 +29,18 @@ const { data: comments } = await supabase
 <div class="mt-12 space-y-10 animate-fade-in" x-data={`{ 
   guideId: '${guide_id}', 
   voteCount: ${voteCount},
-  voted: false,
+  voted: ${isVoted},
   commentName: '',
   commentText: '',
   isSubmitting: false,
   message: '',
 
   init() {
-    this.voted = localStorage.getItem('voted_' + this.guideId) === 'true';
+    // Sincronizar localStorage solo si hay discrepancia (para offline/UX rápido)
+    const local = localStorage.getItem('voted_' + this.guideId) === 'true';
+    if (local !== this.voted) {
+      localStorage.setItem('voted_' + this.guideId, this.voted);
+    }
   },
 
   async toggleVote() {
