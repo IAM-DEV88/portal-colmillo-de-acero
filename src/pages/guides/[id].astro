@@ -1,16 +1,10 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from '../../components/layout/Layout.astro';
 import WoWCharacterPanel from '../../components/guides/WoWCharacterPanel.astro';
 import GuideInteractions from '../../components/guides/GuideInteractions.astro';
 import { classGuidesData } from '../../data/class-guides';
-
-export function getStaticPaths() {
-  return Object.keys(classGuidesData).map(id => ({
-    params: { id }
-  }));
-}
 
 const { id } = Astro.params;
 const specData = classGuidesData[id];
