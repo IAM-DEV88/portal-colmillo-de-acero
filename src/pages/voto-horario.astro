@@ -13,11 +13,18 @@ const sizes = ['10', '25'];
 const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 ---
 
-<Layout title="Voto por horario | Colmillo de Acero">
+<Layout 
+  title="Voto por Horario y Disponibilidad" 
+  description="Participa en la organización de nuestras próximas raids. Vota por tus horarios preferidos para ICC, TOC y SR, y gana turnos extra para la ruleta de la hermandad.">
   <main class="max-w-6xl mx-auto px-4 py-8">
     <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-white mb-4">🗳️ Voto por horario</h1>
-      <p class="text-gray-400">Ayúdanos a organizar las próximas bandas según tu disponibilidad.</p>
+      <h1 class="text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter uppercase italic">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-yellow-200">🗳️ Centro de Votación</span> de Raids
+      </h1>
+      <p class="text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+        Tu opinión es clave para el éxito de la hermandad. Selecciona la banda, dificultad y el horario que mejor se adapte a ti. 
+        <span class="text-amber-500 font-bold italic block mt-2">¡Recuerda: cada voto te otorga un giro extra en la ruleta!</span>
+      </p>
     </div>
 
     <div>
@@ -175,9 +182,12 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
 
       <!-- Resumen de Votos (Alpine.js) -->
       <section x-data="voteSummary" class="space-y-6">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-2xl font-bold text-white">Resumen de Interés</h2>
-          <div class="flex bg-gray-800/50 p-1 rounded-lg border border-gray-700">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+          <div class="flex flex-col gap-1">
+            <h2 class="text-2xl font-black text-white uppercase tracking-tighter italic">Resumen de Interés</h2>
+            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Consulta los horarios más votados por la hermandad</p>
+          </div>
+          <div class="flex bg-gray-900 p-1 rounded-lg border border-gray-800">
             <button
               @click="currentTab = 'list'"
               class="px-4 py-1.5 rounded-md text-sm font-medium transition-all"
@@ -196,94 +206,69 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
         </div>
 
         <!-- Vista de Lista -->
-        <div x-show="currentTab === 'list'" class="space-y-4">
+        <div x-show="currentTab === 'list'" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <template x-for="raid in raids" :key="raid.id">
             <div
-              class="bg-gray-900/30 border border-gray-800 rounded-lg overflow-hidden shadow-lg transition-all hover:border-gray-700"
+              class="bg-gray-900/40 border border-gray-800 rounded-xl overflow-hidden shadow-2xl transition-all hover:border-amber-500/30 group"
             >
-              <!-- Cabecera Expansible -->
-              <button
-                @click="toggle(raid.id)"
-                class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-800/50 transition-colors"
+              <!-- Cabecera Compacta -->
+              <div
+                class="px-5 py-3 flex items-center justify-between bg-gradient-to-r from-gray-800/50 to-transparent border-b border-gray-800"
               >
-                <div class="flex items-center gap-4">
-                  <span class="text-xl font-bold text-white" x-text="raid.id"></span>
-                  <span
-                    class="text-sm text-amber-500/80 font-mono bg-amber-500/10 px-2 py-0.5 rounded"
-                    x-text="getCount(raid.id) + ' votos'"></span>
+                <div class="flex items-center gap-3">
+                  <div class="w-2 h-8 bg-amber-500 rounded-full"></div>
+                  <span class="text-lg font-black text-white tracking-tighter uppercase italic" x-text="raid.id"></span>
                 </div>
-                <svg
-                  class="w-5 h-5 text-gray-500 transition-transform"
-                  :class="open === raid.id ? 'rotate-180' : ''"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
+                <span
+                  class="text-[10px] font-black text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md border border-amber-500/20 uppercase"
+                  x-text="getCount(raid.id) + ' votos'"></span>
+              </div>
 
-              <!-- Contenido Expansible -->
-              <div x-show="open === raid.id" x-collapse>
-                <div class="px-6 py-4 border-t border-gray-800 bg-black/20">
-                  <div class="grid grid-cols-1 gap-3">
-                    <template x-for="voto in getGroupedVotes(raid.id)" :key="voto.key">
-                      <button
-                        @click="voteLikeThis(voto)"
-                        class="w-full text-left p-4 bg-gray-800/40 rounded-lg border border-gray-700/50 flex justify-between items-center hover:bg-amber-600/10 hover:border-amber-600/50 transition-all group relative overflow-hidden"
-                      >
-                        <div class="flex items-center gap-4">
-                          <div
-                            class="w-10 h-10 rounded-full bg-amber-600/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-600 group-hover:text-white transition-all shadow-inner"
-                          >
-                            <span class="text-lg font-black" x-text="voto.count"></span>
-                          </div>
-                          <div>
-                            <div
-                              class="text-white font-bold group-hover:text-amber-400 transition-colors flex items-center gap-2"
-                            >
-                              <span x-text="voto.difficulty"></span>
-                              <span class="text-gray-600">•</span>
-                              <span x-text="voto.size" class="text-amber-500/90 font-mono"></span>
-                            </div>
-                            <div
-                              class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-0.5 group-hover:text-gray-400 transition-colors"
-                            >
-                              Votado por <span x-text="voto.count"></span> personas
-                            </div>
-                          </div>
-                        </div>
-                        <div class="text-right">
-                          <div
-                            class="text-amber-500 text-xs font-black uppercase tracking-tighter"
-                            x-text="voto.day_of_week"
-                          >
-                          </div>
-                          <div
-                            class="text-[10px] text-gray-400 font-mono bg-black/40 px-1.5 py-0.5 rounded mt-1 border border-white/5"
-                            x-text="voto.preferred_time"
-                          >
-                          </div>
-                        </div>
-
-                        <!-- Mini badge indicator -->
-                        <div
-                          class="absolute -top-1 -right-4 bg-amber-600 text-white text-[8px] font-bold px-5 py-1 rotate-45 shadow-sm transform group-hover:scale-110 transition-transform"
-                        >
-                          <span x-text="voto.count"></span>
-                        </div>
-                      </button>
-                    </template>
-                    <div
-                      x-show="getCount(raid.id) === 0"
-                      class="text-center py-8 text-gray-600 italic bg-black/10 rounded-lg"
+              <!-- Contenido Siempre Visible -->
+              <div class="p-4 bg-black/20">
+                <div class="grid grid-cols-1 gap-2">
+                  <template x-for="voto in getGroupedVotes(raid.id)" :key="voto.key">
+                    <button
+                      @click="voteLikeThis(voto)"
+                      class="w-full text-left p-3 bg-gray-800/30 rounded-lg border border-white/5 flex justify-between items-center hover:bg-amber-600/10 hover:border-amber-600/40 transition-all group/item relative overflow-hidden"
                     >
-                      No hay votos para esta banda aún.
-                    </div>
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-8 h-8 rounded-lg bg-amber-600/10 flex items-center justify-center text-amber-500 group-hover/item:bg-amber-600 group-hover/item:text-white transition-all shadow-inner border border-amber-500/20"
+                        >
+                          <span class="text-sm font-black" x-text="voto.count"></span>
+                        </div>
+                        <div>
+                          <div
+                            class="text-xs font-black text-gray-200 group-hover/item:text-amber-400 transition-colors flex items-center gap-1.5"
+                          >
+                            <span x-text="voto.raid_name"></span>
+                            <span class="text-gray-600">|</span>
+                            <span x-text="voto.difficulty"></span>
+                            <span class="text-gray-600">|</span>
+                            <span x-text="voto.size" class="text-amber-500/90 font-mono"></span>
+                          </div>
+                          <div
+                            class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-0.5"
+                          >
+                            Día: <span class="text-gray-400" x-text="voto.day_of_week"></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <div
+                          class="text-xs text-amber-500 font-black font-mono bg-black/40 px-2 py-1 rounded border border-white/5"
+                          x-text="voto.preferred_time"
+                        >
+                        </div>
+                      </div>
+                    </button>
+                  </template>
+                  <div
+                    x-show="getCount(raid.id) === 0"
+                    class="text-center py-6 text-gray-600 text-xs italic bg-black/10 rounded-lg border border-dashed border-gray-800"
+                  >
+                    Sin votos aún.
                   </div>
                 </div>
               </div>
@@ -323,7 +308,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
               </div>
 
               <template
-                x-for="hour in ['18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00']"
+                x-for="hour in getUniqueHours()"
                 :key="hour"
               >
                 <div class="grid grid-cols-8 gap-2 h-16">
@@ -334,27 +319,43 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
                   </div>
 
                   <template
-                    x-for="dayName in ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']"
+                    x-for="dayName in days"
                     :key="dayName"
                   >
                     <div
-                      class="relative bg-black/20 rounded-lg border border-gray-800/30 flex items-center justify-center overflow-hidden"
+                      class="relative bg-black/20 rounded-lg border border-gray-800/30 flex items-center justify-center"
                     >
-                      <div class="flex flex-wrap gap-1 p-1 justify-center">
+                      <div class="flex flex-wrap gap-1 p-1 justify-center relative">
                         <template
-                          x-for="voto in votes.filter(v => v.day_of_week === dayName && v.preferred_time.startsWith(hour.split(':')[0]))"
-                          :key="voto.id"
+                          x-for="voto in getMapGroupedVotes(dayName, hour)"
+                          :key="voto.key"
                         >
                           <div
                             @click="voteLikeThis(voto)"
-                            class="w-3 h-3 rounded-sm cursor-pointer hover:scale-150 transition-transform shadow-sm"
-                            :class="{
-                              'bg-blue-500': voto.raid_name === 'ICC',
-                              'bg-green-500': voto.raid_name === 'TOC',
-                              'bg-red-500': voto.raid_name === 'SR'
-                            }"
-                            :title="voto.raid_name + ' ' + voto.difficulty + ' ' + voto.size"
+                            class="w-6 h-6 rounded-md cursor-pointer hover:scale-125 transition-transform flex items-center justify-center relative group/mapitem hover:z-[110]"
+                            :class="getRaidStyle(voto).classes"
                           >
+                            <i class="fas text-[10px] text-white/90" :class="getRaidStyle(voto).isHeroic ? 'fa-bolt animate-pulse' : getRaidStyle(voto).icon"></i>
+                            
+                            <!-- Contador de votos agrupados -->
+                            <template x-if="voto.count > 1">
+                              <div class="absolute -top-1.5 -right-1.5 bg-amber-500 text-black text-[8px] font-black px-1 rounded-full border border-black shadow-sm z-20">
+                                <span x-text="voto.count + 'x'"></span>
+                              </div>
+                            </template>
+
+                            <!-- Tooltip personalizado al pasar el mouse -->
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/mapitem:block z-[100] pointer-events-none">
+                              <div class="bg-gray-950 text-white text-[9px] font-black px-2 py-1.5 rounded-lg border border-white/20 whitespace-nowrap shadow-[0_0_20px_rgba(0,0,0,0.8)] flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full" :class="getRaidStyle(voto).classes.split(' ')[0]"></div>
+                                <div>
+                                  <span x-text="voto.raid_name"></span> | <span x-text="voto.difficulty"></span> | <span x-text="voto.size"></span>
+                                  <div class="text-[8px] text-gray-400 mt-0.5" x-text="voto.count + ' personas interesadas'"></div>
+                                </div>
+                              </div>
+                              <!-- Flechita del tooltip -->
+                              <div class="w-2 h-2 bg-gray-950 border-r border-b border-white/20 rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
+                            </div>
                           </div>
                         </template>
                       </div>
@@ -364,19 +365,65 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
               </template>
             </div>
 
-            <!-- Leyenda de Colores -->
-            <div class="flex justify-center gap-6 mt-8 pt-6 border-t border-gray-800">
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-sm bg-blue-500"></div>
-                <span class="text-xs text-gray-400 font-bold uppercase">ICC</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-sm bg-green-500"></div>
-                <span class="text-xs text-gray-400 font-bold uppercase">TOC</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-sm bg-red-500"></div>
-                <span class="text-xs text-gray-400 font-bold uppercase">SR</span>
+            <!-- Leyenda de Colores e Iconos Mejorada -->
+            <div class="mt-12 pt-8 border-t border-gray-800">
+              <div class="flex flex-wrap justify-center gap-x-16 gap-y-10">
+                <!-- Colores e Iconos por Raid -->
+                <div class="flex flex-col gap-4">
+                  <span class="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] text-center">Identificadores de Banda</span>
+                  <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-3 group/leg">
+                      <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20 border border-white/10 group-hover/leg:scale-110 transition-transform">
+                        <i class="fas fa-chess-rook text-white text-sm"></i>
+                      </div>
+                      <span class="text-xs text-gray-300 font-black uppercase tracking-wider">ICC</span>
+                    </div>
+                    <div class="flex items-center gap-3 group/leg">
+                      <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/10 group-hover/leg:scale-110 transition-transform">
+                        <i class="fas fa-shield-halved text-white text-sm"></i>
+                      </div>
+                      <span class="text-xs text-gray-300 font-black uppercase tracking-wider">TOC</span>
+                    </div>
+                    <div class="flex items-center gap-3 group/leg">
+                      <div class="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center shadow-lg shadow-red-500/20 border border-white/10 group-hover/leg:scale-110 transition-transform">
+                        <i class="fas fa-dragon text-white text-sm"></i>
+                      </div>
+                      <span class="text-xs text-gray-300 font-black uppercase tracking-wider">SR</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Indicadores de Dificultad y Tamaño -->
+                <div class="flex flex-col gap-4 px-12 border-l border-gray-800">
+                  <span class="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] text-center">Modificadores Visuales</span>
+                  <div class="flex items-center gap-10">
+                    <div class="flex items-center gap-3">
+                      <div class="flex -space-x-2">
+                        <div class="w-7 h-7 rounded-md bg-gray-500 border border-white/10 z-0"></div>
+                        <div class="w-7 h-7 rounded-md bg-gray-400 border border-white/40 ring-2 ring-white/30 shadow-[0_0_15px_rgba(255,255,255,0.4)] z-10 flex items-center justify-center">
+                          <i class="fas fa-bolt text-[10px] text-white animate-pulse"></i>
+                        </div>
+                      </div>
+                      <div class="text-[10px] leading-tight">
+                        <p class="text-gray-200 font-black uppercase">Normal vs Heroico</p>
+                        <p class="text-gray-500 font-bold tracking-tighter">Brillo intenso + Icono de Rayo</p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-end -space-x-2">
+                        <div class="w-5 h-5 rounded-md bg-gray-700 border border-white/10 scale-90"></div>
+                        <div class="w-8 h-8 rounded-md bg-gray-600 border-2 border-white/60 shadow-xl z-10 flex items-center justify-center">
+                          <span class="text-[8px] font-black text-white">25</span>
+                        </div>
+                      </div>
+                      <div class="text-[10px] leading-tight">
+                        <p class="text-gray-200 font-black uppercase">10m vs 25m</p>
+                        <p class="text-gray-500 font-bold tracking-tighter">Mayor tamaño + Borde marcado</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -489,7 +536,7 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
 
     // Lógica del Resumen de Votos
     Alpine.data('voteSummary', () => ({
-      open: 'ICC',
+      open: ['ICC', 'TOC', 'SR'],
       votes: [],
       currentTab: 'list',
       raids: [
@@ -513,12 +560,60 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
         }
       },
 
+      // Obtener todas las horas únicas que tienen votos para el mapa
+      getUniqueHours() {
+        const hours = new Set();
+        this.votes.forEach(v => {
+          if (v.preferred_time) {
+            // Normalizar a formato HH:00 para el grid
+            const hour = v.preferred_time.split(':')[0].padStart(2, '0') + ':00';
+            hours.add(hour);
+          }
+        });
+        
+        // Si no hay votos, mostrar un rango base por defecto
+        if (hours.size === 0) return ['18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'];
+        
+        return Array.from(hours).sort((a, b) => {
+          // Ordenar horas teniendo en cuenta el cruce de medianoche (ej: 00:00 va después de 23:00)
+          const getVal = (h) => {
+            const val = parseInt(h.split(':')[0]);
+            return val < 6 ? val + 24 : val; // Horas de madrugada van al final
+          };
+          return getVal(a) - getVal(b);
+        });
+      },
+
+      // Agrupar votos para el mapa visual (celda específica)
+      getMapGroupedVotes(dayName, hour) {
+        const cellVotes = this.votes.filter(v => 
+          this.isSameDay(v.day_of_week, dayName) && 
+          this.isSameHour(v.preferred_time, hour)
+        );
+        
+        const groups = {};
+        cellVotes.forEach(v => {
+          const raid = (v.raid_name || '').trim().toUpperCase();
+          const key = `${raid}-${v.difficulty}-${v.size}`;
+          if (!groups[key]) {
+            groups[key] = { ...v, count: 0, key };
+          }
+          groups[key].count++;
+        });
+        
+        return Object.values(groups);
+      },
+
       toggle(id) {
-        this.open = this.open === id ? null : id;
+        if (this.open.includes(id)) {
+          this.open = this.open.filter(i => i !== id);
+        } else {
+          this.open.push(id);
+        }
       },
 
       getVotes(raidId) {
-        return this.votes.filter((v) => v.raid_name === raidId);
+        return this.votes.filter((v) => v.raid_name.trim().toUpperCase() === raidId.trim().toUpperCase());
       },
 
       getGroupedVotes(raidId) {
@@ -526,9 +621,11 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
         const groups = {};
 
         raidVotes.forEach((v) => {
-          const key = `${v.raid_name}-${v.difficulty}-${v.size}-${v.day_of_week}-${v.preferred_time}`;
+          // Normalizar el nombre de la banda para agrupar (eliminar espacios/puntos extra)
+          const normalizedRaidName = v.raid_name.trim().toUpperCase();
+          const key = `${normalizedRaidName}-${v.difficulty}-${v.size}-${v.day_of_week}-${v.preferred_time}`;
           if (!groups[key]) {
-            groups[key] = { ...v, count: 0, key };
+            groups[key] = { ...v, raid_name: normalizedRaidName, count: 0, key };
           }
           groups[key].count++;
         });
@@ -538,6 +635,49 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
 
       getCount(raidId) {
         return this.getVotes(raidId).length;
+      },
+
+      // Función de utilidad para comparar horas de forma robusta
+      isSameHour(voteTime, gridHour) {
+        if (!voteTime || !gridHour) return false;
+        // Normalizar "1:00" a "01:00"
+        const normalize = (t) => t.split(':')[0].padStart(2, '0');
+        return normalize(voteTime) === normalize(gridHour);
+      },
+
+      // Función de utilidad para comparar días ignorando acentos
+      isSameDay(day1, day2) {
+        if (!day1 || !day2) return false;
+        const normalize = (d) => d.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        return normalize(day1) === normalize(day2);
+      },
+
+      getRaidStyle(voto) {
+        const raid = (voto.raid_name || '').trim().toUpperCase();
+        const diff = (voto.difficulty || '').trim().toLowerCase();
+        const size = (voto.size || '').trim();
+        const isHeroic = diff.includes('heroic') || diff.includes('heroica');
+
+        // Mapa de colores base por Raid
+        const baseColors = {
+          'ICC': { normal: 'bg-blue-400', heroic: 'bg-blue-600', ring: 'ring-blue-500/50', icon: 'fa-chess-rook' },
+          'TOC': { normal: 'bg-emerald-400', heroic: 'bg-emerald-600', ring: 'ring-emerald-500/50', icon: 'fa-shield-halved' },
+          'SR': { normal: 'bg-red-400', heroic: 'bg-red-600', ring: 'ring-red-500/50', icon: 'fa-dragon' }
+        };
+
+        const colorSet = baseColors[raid] || { normal: 'bg-gray-400', heroic: 'bg-gray-600', ring: 'ring-gray-500/50', icon: 'fa-circle' };
+        
+        // 25m tienen un borde más grueso o sombra
+        const sizeStyle = size === '25' ? 'border-white/40 border-2 scale-110 z-10' : 'border-white/10 border scale-90';
+        const color = isHeroic ? colorSet.heroic : colorSet.normal;
+        const heroicRing = isHeroic ? 'ring-2 ' + colorSet.ring + ' shadow-[0_0_10px_rgba(255,255,255,0.3)]' : '';
+
+        return {
+          classes: `${color} ${sizeStyle} ${heroicRing}`,
+          icon: colorSet.icon,
+          isHeroic,
+          size
+        };
       },
 
       async voteLikeThis(voto) {
