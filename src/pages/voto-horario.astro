@@ -20,11 +20,11 @@ const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', '
       <p class="text-gray-400">Ayúdanos a organizar las próximas bandas según tu disponibilidad.</p>
     </div>
 
-    <div class="grid lg:grid-cols-2 gap-12">
+    <div>
       <!-- Formulario Paso a Paso (Alpine.js) -->
       <section
         x-data="recruitmentForm"
-        class="bg-gray-900/50 border border-gray-800 rounded-lg p-6 shadow-2xl backdrop-blur-sm transition-all duration-500 ease-in-out overflow-hidden"
+        class="mb-8 bg-gray-900/50 border border-gray-800 rounded-lg p-6 shadow-2xl backdrop-blur-sm transition-all duration-500 ease-in-out overflow-hidden"
         :style="'height: ' + height + 'px'"
         x-ref="container"
       >

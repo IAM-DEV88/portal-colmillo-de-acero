@@ -381,13 +381,13 @@ export const GET = async ({ url }: { url: URL }) => {
         }
 
         return {
-          title: `:warning: Recordatorio de Raid: ${raid.raid_name} (${now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })})`,
+          title: `:warning: Recordatorio de Raid: ${raid.raid_name}`,
           url: raidLink,
           description: `@everyone La raid de **${raid.raid_name}** liderada por **${raid.leader}** está programada para comenzar **${timeString}** via **RaidDominion**.\n\n:point_right: **Garantía de invitación para asistentes registrados en la web.**\n\n[**【Apuntarse a ${raid.raid_name}】**](${raidLink})`,
           color: 0xff0000,
           thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
           fields: [
-            { name: ":alarm_clock: Hora de Inicio", value: `\`${raid.start_time}\``, inline: true },
+            { name: ":alarm_clock: Hora de Inicio", value: `\`${raid.start_time}\` hora server`, inline: true },
             { name: ":calendar: Día", value: `\`${raid.day_of_week.charAt(0).toUpperCase() + raid.day_of_week.slice(1)}\``, inline: true },
             { name: ":guard: Líder", value: `**${leaderInfo}**`, inline: true },
             { name: ":shield: Tanques", value: tanksList, inline: true },

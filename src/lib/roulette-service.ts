@@ -71,14 +71,14 @@ export class RouletteService {
   }
 
   /**
-   * Asegura que la sesión esté al día, reseteando créditos si es necesario (00:00 Europe/London).
+   * Asegura que la sesión esté al día, reseteando créditos si es necesario (00:00 Europe/Madrid).
    * @param session La sesión actual obtenida de la DB
    * @returns La sesión actualizada (o la misma si no hubo cambios)
    */
   static async ensureDailyReset(session: any) {
     if (!session) return null;
 
-    const guildTimezone = 'Europe/London';
+    const guildTimezone = 'Europe/Madrid';
     const now = new Date();
     const nowServerStr = now.toLocaleDateString('en-CA', { timeZone: guildTimezone });
     
