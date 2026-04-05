@@ -26,10 +26,34 @@ const DAY_MAP: Record<string, string> = {
 };
 
 /**
- * Obtiene la hora actual en la zona horaria de la hermandad
+ * Obtiene la hora actual en la zona horaria de la hermandad (Madrid)
+ * Devuelve un objeto Date donde la hora UTC coincide con la hora de Madrid.
+ * Esto permite comparaciones seguras con los horarios de la base de datos (wall-clock time).
  */
 export function getGuildTime(): Date {
-  return new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: GUILD_TIMEZONE,
+    hour12: false,
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  }).formatToParts(now);
+  
+  const v: any = {};
+  parts.forEach(p => v[p.type] = p.value);
+  
+  return new Date(Date.UTC(
+    parseInt(v.year),
+    parseInt(v.month) - 1,
+    parseInt(v.day),
+    parseInt(v.hour),
+    parseInt(v.minute),
+    parseInt(v.second)
+  ));
 }
 
 /**
@@ -107,7 +131,7 @@ export async function getUpcomingRaids(minutesAhead: number | null = 30, windowM
     // Buscar la raid futura más cercana
     // 1. Convertir todo a fechas comparables
     const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
-    const todayIndex = now.getDay();
+    const todayIndex = now.getUTCDay();
 
     let nearestDiff = Infinity;
     let nearestRaids: RaidSchedule[] = [];
@@ -126,7 +150,7 @@ export async function getUpcomingRaids(minutesAhead: number | null = 30, windowM
       if (dayDiff < 0) dayDiff += 7; // Es en la próxima semana
 
       // Si es hoy pero la hora ya pasó, es la próxima semana
-      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+      const nowMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
 
       if (dayDiff === 0 && schedTimeMinutes < nowMinutes) {
         dayDiff = 7;
@@ -151,10 +175,10 @@ export async function getUpcomingRaids(minutesAhead: number | null = 30, windowM
 
   // Obtener día de la semana y hora objetivo en formato compatible
   const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
-  const targetDay = days[targetTime.getDay()];
+  const targetDay = days[targetTime.getUTCDay()];
 
-  const targetHour = targetTime.getHours();
-  const targetMinute = targetTime.getMinutes();
+  const targetHour = targetTime.getUTCHours();
+  const targetMinute = targetTime.getUTCMinutes();
 
   // Convertir hora objetivo a minutos desde medianoche para comparación fácil
   const targetTimeMinutes = targetHour * 60 + targetMinute;

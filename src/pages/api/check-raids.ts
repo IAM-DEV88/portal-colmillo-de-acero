@@ -52,6 +52,11 @@ export const GET = async ({ url }: { url: URL }) => {
     // Lógica de Selección de Mensaje
     let messageType = 'NONE';
     let upcomingRaids: any[] = [];
+    const now = getUpcomingRaids ? await (async () => {
+      // Usamos la utilidad centralizada para obtener la hora de Madrid como UTC
+      const { getGuildTime } = await import('../../utils/raidUtils');
+      return getGuildTime();
+    })() : new Date();
 
     if (isTest) {
       messageType = testType?.toUpperCase() || (Math.random() < 0.5 ? 'RAID' : 'GENERAL');
@@ -67,8 +72,7 @@ export const GET = async ({ url }: { url: URL }) => {
         }
       }
     } else {
-      const now = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
-      const minutes = now.getMinutes();
+      const minutes = now.getUTCMinutes();
       upcomingRaids = await getUpcomingRaids(30, 15, true); // Force fresh
 
       if (upcomingRaids.length > 0) {
@@ -85,21 +89,19 @@ export const GET = async ({ url }: { url: URL }) => {
     const isGeneralMessage = ['GENERAL', 'SUMMARY', 'ROSTER', 'WEEKLY', 'SCHEDULE', 'POLLS'].includes(messageType);
 
     if (isGeneralMessage) {
-      const nowServer = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
-      
       // Ajuste de sesión: Si son menos de las 4 AM, consideramos que aún es el "día de raideo" anterior
       // para que las raids de las 00:00 se muestren como "Mañana" durante la noche anterior.
-      const sessionDate = new Date(nowServer);
-      if (nowServer.getHours() < 4) {
-        sessionDate.setDate(sessionDate.getDate() - 1);
+      const sessionDate = new Date(now);
+      if (now.getUTCHours() < 4) {
+        sessionDate.setUTCDate(sessionDate.getUTCDate() - 1);
       }
 
-      const currentDay = sessionDate.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
+      const currentDay = sessionDate.toLocaleDateString('es-ES', { weekday: 'long', timeZone: 'UTC' }).toLowerCase();
       const currentDayNormalized = normalizeDay(currentDay);
 
       const tomorrowDate = new Date(sessionDate);
-      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-      const tomorrowDayRaw = tomorrowDate.toLocaleDateString('es-ES', { weekday: 'long', timeZone: GUILD_TIMEZONE }).toLowerCase();
+      tomorrowDate.setUTCDate(tomorrowDate.getUTCDate() + 1);
+      const tomorrowDayRaw = tomorrowDate.toLocaleDateString('es-ES', { weekday: 'long', timeZone: 'UTC' }).toLowerCase();
       const tomorrowDayNormalized = normalizeDay(tomorrowDayRaw);
 
       const dynamicMessages: any[] = [];
@@ -353,19 +355,12 @@ export const GET = async ({ url }: { url: URL }) => {
         const rangedList = roster.ranged.map(p => p.class ? `${p.name} — ${p.class}` : p.name).join('\n') || '—';
         const sanctionedList = roster.sanctioned.map(p => p.class ? `${p.name} — ${p.class}` : p.name).join('\n') || '—';
 
-        // Calcular tiempo restante dinámico
-        const now = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
         const [h, m] = raid.start_time.split(':').map(Number);
         
-        // Crear objeto de fecha para la raid hoy
+        // Crear objeto de fecha para la raid hoy (en formato UTC wall-clock)
         const raidTime = new Date(now);
-        raidTime.setHours(h, m, 0, 0);
+        raidTime.setUTCHours(h, m, 0, 0);
 
-        // Si la diferencia es muy negativa (ej: -23h), es probable que nos refiramos a mañana
-        // pero getUpcomingRaids ya nos da raids futuras en un rango de 30-45min.
-        // El problema del "desfase de una hora" suele ser por la comparación directa de 
-        // raidTime.getTime() - now.getTime() si raidTime no tiene la zona horaria correcta.
-        
         let diffMs = raidTime.getTime() - now.getTime();
         
         // Ajuste de seguridad: si la raid ya pasó hace más de 12 horas, es mañana.
@@ -373,10 +368,7 @@ export const GET = async ({ url }: { url: URL }) => {
           diffMs += 24 * 60 * 60 * 1000;
         } 
         
-        // Si el resultado es negativo pero por poco (ej: -5min), mostramos "AHORA MISMO"
-        // No aplicamos el Math.max(0) aquí para que totalMinutes sea preciso.
-
-        const totalMinutes = Math.round(diffMs / 60000); // Usamos round para mayor precisión en el límite de la hora
+        const totalMinutes = Math.round(diffMs / 60000);
         let timeString = "";
         if (totalMinutes <= 0) {
           timeString = "¡AHORA MISMO!";
