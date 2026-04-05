@@ -1,0 +1,94 @@
+---
+// src/components/admin/AdminNav.astro
+const { userRole = 'admin', activePage = '' } = Astro.props;
+
+const navItems = [
+  {
+    href: '/admin',
+    label: 'Solicitudes',
+    icon: 'fas fa-clipboard-list',
+    roles: ['admin', 'official'],
+    id: 'dashboard'
+  },
+  {
+    href: '/admin/roster-upload',
+    label: 'Sincronizar Roster',
+    icon: 'fas fa-file-upload',
+    roles: ['admin', 'official'],
+    id: 'roster'
+  },
+  {
+    href: '/admin/blog-management',
+    label: 'Gestión de Blog',
+    icon: 'fas fa-book-open',
+    roles: ['admin'],
+    id: 'blog'
+  },
+  {
+    href: '/admin/comment-moderation',
+    label: 'Moderar Comentarios',
+    icon: 'fas fa-comments',
+    roles: ['admin'],
+    id: 'comments'
+  },
+  {
+    href: '/admin/raid-distribution',
+    label: 'Distribución',
+    icon: 'fas fa-sitemap',
+    roles: ['admin'],
+    id: 'distribution'
+  },
+  {
+    href: '/admin/officer-config',
+    label: 'Configuración',
+    icon: 'fas fa-user-shield',
+    roles: ['admin'],
+    id: 'config'
+  }
+];
+
+const filteredItems = navItems.filter(item => item.roles.includes(userRole));
+---
+
+<nav class="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-900/80 backdrop-blur-md p-4 rounded-xl border border-white/5 shadow-2xl sticky top-4 z-40 mb-8">
+  <div class="flex items-center gap-4">
+    <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center shadow-lg shadow-amber-900/20">
+      <i class="fas fa-user-shield text-xl text-black"></i>
+    </div>
+    <div>
+      <h1 class="text-xl font-black text-white uppercase tracking-tighter italic leading-none">
+        Admin <span class="text-amber-500">Panel</span>
+      </h1>
+      <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Gestión Centralizada</p>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2 mt-4 md:mt-0">
+    <div class="flex flex-wrap items-center gap-2 mr-4 md:px-4 md:border-r border-white/10">
+      {filteredItems.map(item => (
+        <a 
+          href={item.href} 
+          class={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-[10px] font-black uppercase tracking-widest ${
+            activePage === item.id 
+              ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' 
+              : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/5'
+          }`}
+          title={item.label}
+        >
+          <i class={`${item.icon} text-sm`}></i>
+          <span class="hidden sm:inline">{item.label}</span>
+        </a>
+      ))}
+    </div>
+
+    <form method="POST" action="/api/admin/logout" class="ml-auto md:ml-0">
+      <button
+        type="submit"
+        class="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-white bg-red-900/10 hover:bg-red-600 border border-red-500/20 rounded-lg transition-all flex items-center gap-2"
+      >
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Salir</span>
+      </button>
+    </form>
+  </div>
+</nav>

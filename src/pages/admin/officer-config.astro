@@ -1,5 +1,6 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
+import AdminNav from '../../components/admin/AdminNav.astro';
 import { supabase } from '../../lib/supabase';
 import { rosterService } from '../../services/rosterService';
 
@@ -102,6 +103,7 @@ const sortedOfficers = Object.values(allOfficers).sort((a, b) => a.name.localeCo
 
 <Layout title="Configuración de Oficiales | Panel Admin">
   <div class="max-w-7xl mx-auto py-12 px-4 space-y-8">
+    <AdminNav userRole={userRole} activePage="config" />
     {/* Header */}
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-gray-900/50 backdrop-blur-md p-8 rounded-2xl border border-white/5 shadow-2xl relative overflow-hidden">
       <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
@@ -119,16 +121,6 @@ const sortedOfficers = Object.values(allOfficers).sort((a, b) => a.name.localeCo
             Calendario de Temporada
           </p>
         </div>
-      </div>
-
-      <div class="relative z-10">
-        <a 
-          href="/admin" 
-          class="group px-6 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-xl border border-white/10 text-xs font-black uppercase tracking-widest transition-all flex items-center gap-3 shadow-lg"
-        >
-          <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
-          Volver al Panel
-        </a>
       </div>
     </div>
 

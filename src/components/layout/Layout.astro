@@ -319,6 +319,25 @@ const socialImageURL = new URL(image, Astro.url);
     <div id="reward-toast-container" class="fixed bottom-4 left-4 space-y-2 z-[60]"></div>
 
     <script is:inline>
+      window.showToast = function(message) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'animate-fade-in bg-gray-900/90 text-white px-6 py-3 rounded-xl shadow-2xl border border-white/10 flex items-center gap-3 backdrop-blur-md';
+        toast.innerHTML = `
+          <i class="fas fa-info-circle text-blue-400"></i>
+          <p class="text-xs font-bold uppercase tracking-tight">${message}</p>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add('animate-fade-out');
+          setTimeout(() => toast.remove(), 500);
+        }, 3000);
+      };
+
       window.showRewardToast = function(message) {
         const container = document.getElementById('reward-toast-container');
         if (!container) return;

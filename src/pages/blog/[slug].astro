@@ -1,0 +1,190 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import BlogInteractions from '../../components/BlogInteractions.astro';
+import { supabase } from '../../lib/supabase';
+
+const { slug } = Astro.params;
+
+// Fetch the blog post
+const { data: post, error } = await supabase
+  .from('rd_blog_posts')
+  .select('*')
+  .eq('slug', slug)
+  .single();
+
+if (error || !post) {
+  return Astro.redirect('/404');
+}
+
+const categories: Record<string, { label: string, color: string }> = {
+  'lore': { label: 'Lore', color: 'purple' },
+  'addons': { label: 'Addons', color: 'blue' },
+  'raids': { label: 'Raids', color: 'rose' },
+  'class-guide': { label: 'Guías', color: 'amber' },
+  'community': { label: 'Comunidad', color: 'emerald' }
+};
+
+const cat = categories[post.category] || { label: 'General', color: 'gray' };
+---
+
+<Layout 
+  title={`${post.title} | Blog de Colmillo`}
+  description={post.excerpt}
+>
+  <article class="relative min-h-screen pb-20">
+    <!-- Hero Header: Fusion image and title -->
+    <div class="relative h-[60vh] md:h-[75vh] w-full overflow-hidden border-b border-white/5">
+      <!-- Background Image -->
+      <img 
+        src={post.image_url || '/images/raids/default.jpg'} 
+        alt={post.title}
+        class="absolute inset-0 w-full h-full object-cover grayscale-[0.2] brightness-50"
+      />
+      
+      <!-- Gradients for depth and readability -->
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-gray-950/60 via-transparent to-transparent"></div>
+
+      <!-- Hero Content -->
+      <div class="absolute inset-0 flex flex-col justify-end pb-32 md:pb-40 px-4 max-w-6xl mx-auto w-full">
+        <div class="animate-fade-in">
+          <div class="flex items-center gap-3 mb-6">
+            <a href="/blog" class="text-[10px] font-black text-white/50 uppercase tracking-widest hover:text-amber-500 transition-colors">Blog</a>
+            <i class="fas fa-chevron-right text-[8px] text-white/20"></i>
+            <span class={`px-2 py-0.5 bg-${cat.color}-500 text-gray-950 text-[10px] font-black uppercase tracking-widest rounded`}>
+              {cat.label}
+            </span>
+          </div>
+          
+          <h1 class="text-2xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-[0.9] mb-8 max-w-4xl drop-shadow-2xl">
+            {post.title}
+          </h1>
+          
+          <div class="flex flex-wrap items-center gap-6 text-[10px] text-white/60 font-black uppercase tracking-widest italic">
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+              <i class="fas fa-user text-amber-500"></i>
+              <span>{post.author}</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+              <i class="fas fa-calendar text-amber-500"></i>
+              <span>{new Date(post.created_at).toLocaleDateString()}</span>
+            </div>
+            <button 
+              onclick={`fetch('/api/blog/like', { method: 'POST', body: JSON.stringify({ postId: '${post.id}' }) }).then(r => r.json()).then(res => { 
+                if(res.success) { 
+                  if(res.rewarded && window.showRewardToast) window.showRewardToast('¡Por tu apoyo al Blog!');
+                  setTimeout(() => location.reload(), 1500);
+                } 
+              })`}
+              class="flex items-center gap-2 px-3 py-1.5 bg-amber-500 text-gray-950 rounded-full shadow-lg hover:scale-105 transition-transform cursor-pointer"
+            >
+              <i class="fas fa-heart"></i>
+              <span>{post.likes_count} Likes</span>
+            </button>
+            <button 
+              onclick={`navigator.clipboard.writeText(window.location.href).then(() => { 
+                if(window.showToast) window.showToast('¡Enlace copiado al portapapeles!');
+              })`}
+              class="flex items-center gap-2 px-3 py-1.5 bg-white/10 text-white rounded-full border border-white/20 backdrop-blur-md hover:bg-white/20 transition-all cursor-pointer"
+            >
+              <i class="fas fa-share-alt text-amber-500"></i>
+              <span>Compartir</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Overlapped -->
+    <div class="relative z-10 -mt-20 md:-mt-28 max-w-6xl mx-auto px-4">
+      <div class="bg-gray-950/80 backdrop-blur-2xl border border-white/10 rounded-lg p-8 md:p-16 shadow-[0_30px_100px_rgba(0,0,0,0.8)]">
+        <div class="prose prose-invert max-w-none prose-sm md:prose-base prose-amber post-content lg:columns-2 lg:gap-16 lg:divide-x lg:divide-white/5">
+          <div set:html={post.content} class="column-content" />
+        </div>
+
+        <!-- Interactions Section -->
+        <div class="mt-16 pt-12 border-t border-white/5">
+          <BlogInteractions postId={post.id} postTitle={post.title} />
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style is:global>
+  .post-content h2 {
+    font-size: 1.75rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: italic;
+    color: white;
+    break-after: avoid;
+    column-span: all;
+    border-bottom: 2px solid rgba(245, 158, 11, 0.2);
+    padding-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  
+  .post-content h2:not(:first-child) {
+    margin-top: 3rem;
+  }
+  
+  .post-content p {
+    margin-bottom: 1.75rem;
+    color: #9ca3af;
+    line-height: 1.9;
+    font-style: italic;
+    font-size: 1.05rem;
+    text-align: justify;
+  }
+  
+  .post-content ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 2.5rem;
+    break-inside: avoid;
+  }
+  
+  .post-content li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    color: #d1d5db;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .post-content li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #f59e0b;
+    font-weight: 900;
+    font-size: 1.2rem;
+  }
+
+  /* Ajustes para las columnas */
+  @media (min-width: 1024px) {
+    .post-content .column-content > * {
+      padding-left: 2rem;
+    }
+    .post-content .column-content > *:first-child {
+      padding-left: 0;
+    }
+    /* El primer h2 no debe tener padding left si está al inicio */
+    .post-content h2 {
+      padding-left: 0 !important;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

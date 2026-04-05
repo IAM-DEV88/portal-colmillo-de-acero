@@ -356,17 +356,27 @@ export const GET = async ({ url }: { url: URL }) => {
         // Calcular tiempo restante dinámico
         const now = new Date(new Date().toLocaleString('en-US', { timeZone: GUILD_TIMEZONE }));
         const [h, m] = raid.start_time.split(':').map(Number);
+        
+        // Crear objeto de fecha para la raid hoy
         const raidTime = new Date(now);
         raidTime.setHours(h, m, 0, 0);
 
+        // Si la diferencia es muy negativa (ej: -23h), es probable que nos refiramos a mañana
+        // pero getUpcomingRaids ya nos da raids futuras en un rango de 30-45min.
+        // El problema del "desfase de una hora" suele ser por la comparación directa de 
+        // raidTime.getTime() - now.getTime() si raidTime no tiene la zona horaria correcta.
+        
         let diffMs = raidTime.getTime() - now.getTime();
+        
+        // Ajuste de seguridad: si la raid ya pasó hace más de 12 horas, es mañana.
         if (diffMs < -12 * 60 * 60 * 1000) {
           diffMs += 24 * 60 * 60 * 1000;
-        } else if (diffMs < 0) {
-          diffMs = 0;
-        }
+        } 
+        
+        // Si el resultado es negativo pero por poco (ej: -5min), mostramos "AHORA MISMO"
+        // No aplicamos el Math.max(0) aquí para que totalMinutes sea preciso.
 
-        const totalMinutes = Math.ceil(diffMs / 60000);
+        const totalMinutes = Math.round(diffMs / 60000); // Usamos round para mayor precisión en el límite de la hora
         let timeString = "";
         if (totalMinutes <= 0) {
           timeString = "¡AHORA MISMO!";

@@ -1,0 +1,255 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: initialPosts, error } = await supabase
+  .from('rd_blog_posts')
+  .select('*')
+  .eq('is_hidden', false)
+  .order('created_at', { ascending: false })
+  .range(0, 5); // Cargar solo los primeros 6 posts inicialmente
+
+const categories: Record<string, { label: string, color: string }> = {
+  'lore': { label: 'Lore', color: 'purple' },
+  'addons': { label: 'Addons', color: 'blue' },
+  'raids': { label: 'Raids', color: 'rose' },
+  'class-guide': { label: 'Guías', color: 'amber' },
+  'community': { label: 'Comunidad', color: 'emerald' }
+};
+---
+
+<Layout 
+  title="Blog | Crónicas de Colmillo de Acero"
+  description="Explora el lore de Northrend, descubre los mejores addons para WotLK y mantente al día con las noticias de nuestra hermandad."
+>
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <!-- Header -->
+    <header class="mb-12">
+      <h1 class="text-4xl font-black text-white uppercase tracking-tighter italic mb-2">
+        BlOG <span class="text-amber-500">COLMILLO</span>
+      </h1>
+      <p class="text-gray-400 text-sm font-bold uppercase tracking-widest italic">Sabiduría y crónicas sobre WotLK y Northrend</p>
+      <div class="w-16 h-1 bg-amber-500 mt-4 rounded-full"></div>
+    </header>
+
+    <!-- Posts Grid -->
+    <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {initialPosts && initialPosts.length > 0 ? (
+        initialPosts.map((post) => {
+          const cat = categories[post.category] || { label: 'General', color: 'gray' };
+          return (
+            <article class="group bg-gray-950 border border-white/5 rounded-lg overflow-hidden transition-all hover:border-amber-500/30 flex flex-col animate-fade-in">
+              <!-- Post Image -->
+              <div class="relative aspect-video overflow-hidden">
+                <img 
+                  src={post.image_url || '/images/raids/default.jpg'} 
+                  alt={post.title}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div class={`absolute top-3 left-3 px-2 py-0.5 bg-${cat.color}-500 text-gray-950 text-[9px] font-black uppercase tracking-widest rounded`}>
+                  {cat.label}
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="p-5 flex flex-col flex-grow">
+                <div class="flex items-center gap-3 mb-3 text-[9px] text-gray-500 font-black uppercase tracking-widest">
+                  <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                  <span class="w-1 h-1 bg-gray-800 rounded-full"></span>
+                  <button 
+                    onclick={`event.preventDefault(); fetch('/api/blog/like', { method: 'POST', body: JSON.stringify({ postId: '${post.id}' }) }).then(r => r.json()).then(res => { 
+                      if(res.success) { 
+                        if(res.rewarded && window.showRewardToast) window.showRewardToast('¡Por tu apoyo al Blog!');
+                        setTimeout(() => location.reload(), 1500);
+                      } 
+                    })`}
+                    class="flex items-center gap-1 transition-colors cursor-pointer group/like"
+                    title={post.likes_count > 0 ? "Quitar me gusta" : "Me gusta"}
+                  >
+                    <i class={`fas fa-heart ${post.likes_count > 0 ? 'text-amber-500' : 'text-amber-500/30 group-hover/like:text-amber-500'}`}></i> 
+                    <span class={post.likes_count > 0 ? 'text-amber-500' : 'text-gray-500'}>{post.likes_count}</span>
+                  </button>
+                  <span class="w-1 h-1 bg-gray-800 rounded-full"></span>
+                  <button 
+                    onclick={`event.preventDefault(); navigator.clipboard.writeText(window.location.origin + '/blog/${post.slug}').then(() => { 
+                      if(window.showToast) window.showToast('¡Enlace copiado al portapapeles!');
+                    })`}
+                    class="flex items-center gap-1 text-gray-500 hover:text-amber-500 transition-colors cursor-pointer"
+                    title="Compartir Crónica"
+                  >
+                    <i class="fas fa-share-alt"></i>
+                  </button>
+                </div>
+
+                <h2 class="text-xl font-black text-white uppercase italic tracking-tighter mb-3 group-hover:text-amber-400 transition-colors line-clamp-2">
+                  <a href={`/blog/${post.slug}`} class="text-white hover:text-amber-400 transition-colors">{post.title}</a>
+                </h2>
+
+                <p class="text-gray-400 text-xs leading-relaxed mb-6 flex-grow italic line-clamp-2">
+                  {post.excerpt}
+                </p>
+
+                <a 
+                  href={`/blog/${post.slug}`}
+                  class="text-amber-500 text-[9px] font-black uppercase tracking-widest flex items-center gap-2 group/btn"
+                >
+                  Leer Crónica
+                  <i class="fas fa-arrow-right transition-transform group-hover/btn:translate-x-1"></i>
+                </a>
+              </div>
+            </article>
+          );
+        })
+      ) : (
+        <div class="col-span-full py-20 text-center bg-white/5 border border-dashed border-white/10 rounded-lg">
+          <p class="text-gray-500 text-xs font-black uppercase tracking-widest italic">
+            Nuestros escribas están preparando nuevas crónicas...
+          </p>
+        </div>
+      )}
+    </div>
+
+    <!-- Loading Sentinel -->
+    <div id="sentinel" class="h-20 flex justify-center items-center mt-12 invisible">
+      <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-amber-500"></div>
+    </div>
+  </div>
+
+  <script is:inline>
+    let page = 1;
+    let isLoading = false;
+    let hasMore = true;
+    const blogGrid = document.getElementById('blog-grid');
+    const sentinel = document.getElementById('sentinel');
+    const categories = {
+      'lore': { label: 'Lore', color: 'purple' },
+      'addons': { label: 'Addons', color: 'blue' },
+      'raids': { label: 'Raids', color: 'rose' },
+      'class-guide': { label: 'Guías', color: 'amber' },
+      'community': { label: 'Comunidad', color: 'emerald' }
+    };
+
+    const observer = new IntersectionObserver(async (entries) => {
+      const firstEntry = entries[0];
+      if (firstEntry.isIntersecting && !isLoading && hasMore) {
+        await loadMorePosts();
+      }
+    }, { threshold: 0.1 });
+
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    async function loadMorePosts() {
+      isLoading = true;
+      sentinel.classList.remove('invisible');
+
+      try {
+        const response = await fetch(`/api/blog/posts?page=${page}`);
+        const data = await response.json();
+
+        if (data.posts && data.posts.length > 0) {
+          data.posts.forEach(post => {
+            const cat = categories[post.category] || { label: 'General', color: 'gray' };
+            const article = document.createElement('article');
+            article.className = 'group bg-gray-950 border border-white/5 rounded-lg overflow-hidden transition-all hover:border-amber-500/30 flex flex-col animate-fade-in';
+            
+            article.innerHTML = `
+              <div class="relative aspect-video overflow-hidden">
+                <img 
+                  src="${post.image_url || '/images/raids/default.jpg'}" 
+                  alt="${post.title}"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div class="absolute top-3 left-3 px-2 py-0.5 bg-${cat.color}-500 text-gray-950 text-[9px] font-black uppercase tracking-widest rounded">
+                  ${cat.label}
+                </div>
+              </div>
+
+              <div class="p-5 flex flex-col flex-grow">
+                <div class="flex items-center gap-3 mb-3 text-[9px] text-gray-500 font-black uppercase tracking-widest">
+                  <span>${new Date(post.created_at).toLocaleDateString()}</span>
+                  <span class="w-1 h-1 bg-gray-800 rounded-full"></span>
+                  <button 
+                    class="flex items-center gap-1 transition-colors cursor-pointer group/like btn-like"
+                    data-id="${post.id}"
+                    title="${post.likes_count > 0 ? "Quitar me gusta" : "Me gusta"}"
+                  >
+                    <i class="fas fa-heart ${post.likes_count > 0 ? 'text-amber-500' : 'text-amber-500/30'}"></i> 
+                    <span class="${post.likes_count > 0 ? 'text-amber-500' : 'text-gray-500'}">${post.likes_count}</span>
+                  </button>
+                  <span class="w-1 h-1 bg-gray-800 rounded-full"></span>
+                  <button 
+                    class="flex items-center gap-1 text-gray-500 hover:text-amber-500 transition-colors cursor-pointer btn-share"
+                    data-slug="${post.slug}"
+                    title="Compartir Crónica"
+                  >
+                    <i class="fas fa-share-alt"></i>
+                  </button>
+                </div>
+
+                <h2 class="text-xl font-black text-white uppercase italic tracking-tighter mb-3 group-hover:text-amber-400 transition-colors line-clamp-2">
+                  <a href="/blog/${post.slug}" class="text-white hover:text-amber-400 transition-colors">${post.title}</a>
+                </h2>
+
+                <p class="text-gray-400 text-xs leading-relaxed mb-6 flex-grow italic line-clamp-2">
+                  ${post.excerpt}
+                </p>
+
+                <a 
+                  href="/blog/${post.slug}"
+                  class="text-amber-500 text-[9px] font-black uppercase tracking-widest flex items-center gap-2 group/btn"
+                >
+                  Leer Crónica
+                  <i class="fas fa-arrow-right transition-transform group-hover/btn:translate-x-1"></i>
+                </a>
+              </div>
+            `;
+            
+            // Add event listeners to new elements
+            const likeBtn = article.querySelector('.btn-like');
+            likeBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const postId = likeBtn.dataset.id;
+              fetch('/api/blog/like', { method: 'POST', body: JSON.stringify({ postId }) })
+                .then(r => r.json())
+                .then(res => { 
+                  if(res.success) { 
+                    if(res.rewarded && window.showRewardToast) window.showRewardToast('¡Por tu apoyo al Blog!');
+                    setTimeout(() => location.reload(), 1500);
+                  } 
+                });
+            });
+
+            const shareBtn = article.querySelector('.btn-share');
+            shareBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const slug = shareBtn.dataset.slug;
+              navigator.clipboard.writeText(window.location.origin + '/blog/' + slug).then(() => { 
+                if(window.showToast) window.showToast('¡Enlace copiado al portapapeles!');
+              });
+            });
+
+            blogGrid.appendChild(article);
+          });
+          
+          page++;
+          if (data.posts.length < 6) {
+            hasMore = false;
+            sentinel.remove();
+          }
+        } else {
+          hasMore = false;
+          sentinel.remove();
+        }
+      } catch (error) {
+        console.error('Error loading posts:', error);
+      } finally {
+        isLoading = false;
+        if (hasMore) sentinel.classList.add('invisible');
+      }
+    }
+  </script>
+</Layout>

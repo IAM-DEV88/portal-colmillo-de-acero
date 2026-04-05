@@ -1,5 +1,6 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
+import AdminNav from '../../components/admin/AdminNav.astro';
 import { supabase } from '../../lib/supabase';
 import { rosterService } from '../../services/rosterService';
 
@@ -27,7 +28,8 @@ const waitingCount = registrations?.filter(r => r.status === 'en_espera').length
 ---
 
 <Layout title="Distribución de Raids | Panel Admin">
-  <div class="max-w-4xl mx-auto py-12 px-4">
+  <div class="max-w-4xl mx-auto py-12 px-4 space-y-8">
+    <AdminNav userRole={userRole} activePage="distribution" />
     <div class="bg-gray-900/50 border border-white/10 rounded-2xl p-8 backdrop-blur-xl shadow-2xl">
       <div class="flex items-center justify-between mb-8">
         <div class="flex items-center gap-4">
@@ -41,13 +43,7 @@ const waitingCount = registrations?.filter(r => r.status === 'en_espera').length
             <p class="text-gray-400 text-xs font-medium uppercase tracking-widest mt-1">Gestión inteligente de cupos y GearScore</p>
           </div>
         </div>
-        <a 
-          href="/admin" 
-          class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-white/10 text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
-        >
-          <i class="fas fa-arrow-left"></i>
-          Volver al Panel
-        </a>
+      </div>
       </div>
 
       <!-- Estadísticas Rápidas -->

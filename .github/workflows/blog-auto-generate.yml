@@ -1,0 +1,29 @@
+name: Auto-Generate Blog Posts
+
+on:
+  schedule:
+    # Se ejecuta cada 4 horas (6 veces al día: 0, 4, 8, 12, 16, 20 UTC)
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Permite ejecución manual desde la pestaña Actions
+
+jobs:
+  generate-post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Auto-Generate API
+        run: |
+          # Reemplaza 'colmillo.netlify.app' con tu dominio real si es diferente
+          DOMAIN="colmillo.netlify.app"
+          ENDPOINT="https://$DOMAIN/api/blog/auto-generate?token=${{ secrets.CRON_TOKEN }}"
+          
+          echo "Generando crónica para Colmillo de Acero..."
+          RESPONSE=$(curl -s -X GET "$ENDPOINT")
+          
+          if echo "$RESPONSE" | grep -q '"success":true'; then
+            echo "¡Éxito! Crónica generada correctamente."
+            echo "Respuesta: $RESPONSE"
+          else
+            echo "Error al generar la crónica."
+            echo "Respuesta: $RESPONSE"
+            exit 1
+          fi
