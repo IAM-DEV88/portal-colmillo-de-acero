@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { BlogService } from '../../lib/blog-service';
-import { supabase } from '../../lib/supabase';
+import { BlogService } from '../../../lib/blog-service';
+import { supabase } from '../../../lib/supabase';
 import { DiscordService } from '../../../services/discordService';
 
 /**
