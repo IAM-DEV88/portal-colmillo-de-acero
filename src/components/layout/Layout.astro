@@ -122,9 +122,9 @@ const socialImageURL = new URL(image, Astro.url);
   <body class="overflow-x-hidden w-full relative min-h-screen">
     <MagicBackground />
     <!-- Background Image with fixed positioning -->
-    <div class="fixed inset-0 -z-10 w-screen h-screen bg-center bg-cover bg-no-repeat bg-fixed" style="background-image: url('/images/background.png'); transform: translateZ(0); backface-visibility: hidden; will-change: transform;"></div>
+    <div class="fixed inset-0 z-0 w-screen h-screen bg-center bg-cover bg-no-repeat bg-fixed" style="background-image: url('/images/background.png'); transform: translateZ(0); backface-visibility: hidden; will-change: transform;"></div>
     <!-- Overlay to control background darkness if needed -->
-    <div class="fixed inset-0 -z-10 w-screen h-screen bg-black/50"></div>
+    <div class="fixed inset-0 z-[1] w-screen h-screen bg-black/50 pointer-events-none"></div>
     <!-- Content wrapper with hardware acceleration -->
     <div class="relative z-10 min-h-screen">
       <Navigation />
