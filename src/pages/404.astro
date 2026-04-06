@@ -1,0 +1,76 @@
+---
+import Layout from '../components/layout/Layout.astro';
+---
+
+<Layout title="404 - Página no encontrada" description="Lo sentimos, el mapa que buscas no existe. Nuestra mascota te ayudará a volver al portal de Colmillo de Acero.">
+  <main class="min-h-[70vh] flex items-center justify-center py-20 px-4 relative overflow-hidden">
+    <!-- Efectos de fondo -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
+    <div class="absolute top-1/4 right-1/4 w-32 h-32 bg-blue-500/5 rounded-full blur-[60px] -z-10"></div>
+
+    <div class="max-w-2xl w-full text-center space-y-8 animate-fade-in">
+      <!-- Imagen de la Mascota -->
+      <div class="relative inline-block group">
+        <div class="absolute inset-0 bg-gradient-to-b from-amber-500/20 to-transparent rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+        <img 
+          src="/images/mascota.png" 
+          alt="Mascota Colmillo de Acero" 
+          class="w-64 md:w-80 mx-auto relative z-10 drop-shadow-[0_20px_50px_rgba(245,158,11,0.3)] transform hover:scale-105 transition-transform duration-500"
+        />
+        <!-- Badge 404 Flotante -->
+        <div class="absolute -top-4 -right-4 bg-gray-900 border-2 border-amber-500 text-amber-500 font-black px-4 py-2 rounded-2xl rotate-12 shadow-2xl z-20 animate-bounce">
+          404
+        </div>
+      </div>
+
+      <!-- Texto -->
+      <div class="space-y-4 relative z-10">
+        <h1 class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter italic">
+          ¡Te has <span class="text-amber-500">Perdido</span>, Guerrero!
+        </h1>
+        <p class="text-gray-400 text-sm md:text-base font-medium max-w-md mx-auto leading-relaxed uppercase tracking-widest italic">
+          Incluso los mejores exploradores de <span class="text-gray-200">Azeroth</span> se desvían del camino. Nuestra mascota ha revisado sus pergaminos y confirma que esta página no existe.
+        </p>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+        <a 
+          href="/" 
+          class="w-full sm:w-auto px-8 py-4 bg-amber-600 hover:bg-amber-500 text-black font-black rounded-xl text-xs uppercase tracking-[0.2em] transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-amber-900/20 flex items-center justify-center gap-3"
+        >
+          <i class="fas fa-home text-sm"></i>
+          Volver al Inicio
+        </a>
+        <a 
+          href="/guides" 
+          class="w-full sm:w-auto px-8 py-4 bg-gray-900/60 hover:bg-gray-800/80 border border-white/5 text-gray-300 font-black rounded-xl text-xs uppercase tracking-[0.2em] transition-all transform hover:scale-105 active:scale-95 backdrop-blur-md flex items-center justify-center gap-3"
+        >
+          <i class="fas fa-book-open text-sm text-amber-500"></i>
+          Ver Guías
+        </a>
+      </div>
+
+      <!-- Lema Inferior (Inspirado en la imagen) -->
+      <div class="pt-12 opacity-30">
+        <div class="flex items-center justify-center gap-4 text-[10px] font-black text-gray-500 uppercase tracking-[0.5em] italic">
+          <span>Comunidad</span>
+          <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+          <span>Respeto</span>
+          <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+          <span>Disciplina</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.8s ease-out forwards;
+  }
+</style>
