@@ -1,0 +1,101 @@
+---
+---
+<canvas id="magic-particles" class="fixed inset-0 w-full h-full pointer-events-none -z-[5] opacity-60"></canvas>
+
+<script>
+  class ParticleSystem {
+    constructor() {
+      this.canvas = document.getElementById('magic-particles');
+      this.ctx = this.canvas.getContext('2d');
+      this.particles = [];
+      this.runes = ['᚛', '᚜', 'ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚩ', 'ᚬ', 'ᚭ', 'ᚮ', 'ᚯ', 'ᚰ', 'ᚱ', 'ᚳ', 'ᚴ', 'ᚵ', 'ᚶ', 'ᚷ', 'ᚸ', 'ᚹ'];
+      this.colors = ['#4f46e5', '#7c3aed', '#0d9488', '#f59e0b']; // Indigo, Purple, Teal, Amber
+      this.resize();
+      this.init();
+      this.animate();
+
+      window.addEventListener('resize', () => this.resize());
+    }
+
+    resize() {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+      this.particleCount = window.innerWidth < 768 ? 60 : 150; // Increased density
+    }
+
+    init() {
+      this.particles = [];
+      for (let i = 0; i < this.particleCount; i++) {
+        this.particles.push(this.createParticle());
+      }
+    }
+
+    createParticle() {
+      const isRune = Math.random() > 0.6; // More runes
+      const baseOpacity = Math.random() * 0.6 + 0.2;
+      return {
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        size: isRune ? Math.random() * 20 + 12 : Math.random() * 5 + 2, // Larger sizes
+        speedX: (Math.random() - 0.5) * 0.6,
+        speedY: (Math.random() - 0.5) * 0.4 - 0.3, 
+        opacity: baseOpacity,
+        baseOpacity: baseOpacity,
+        twinkleSpeed: Math.random() * 0.05 + 0.01,
+        twinklePhase: Math.random() * Math.PI * 2,
+        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+        isRune: isRune,
+        rune: this.runes[Math.floor(Math.random() * this.runes.length)],
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.03
+      };
+    }
+
+    animate() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.rotation += p.rotationSpeed;
+        p.twinklePhase += p.twinkleSpeed;
+
+        // Twinkle effect (sine wave oscillation)
+        const twinkle = Math.sin(p.twinklePhase) * 0.3;
+        const currentOpacity = Math.max(0.1, Math.min(1, p.baseOpacity + twinkle));
+
+        // Wrap around screen
+        if (p.y < -30) p.y = this.canvas.height + 30;
+        if (p.y > this.canvas.height + 30) p.y = -30;
+        if (p.x < -30) p.x = this.canvas.width + 30;
+        if (p.x > this.canvas.width + 30) p.x = -30;
+
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.rotation);
+        this.ctx.globalAlpha = currentOpacity;
+        this.ctx.fillStyle = p.color;
+        
+        // Dynamic Glow
+        this.ctx.shadowBlur = 15 + (twinkle * 10);
+        this.ctx.shadowColor = p.color;
+
+        if (p.isRune) {
+          this.ctx.font = `${p.size}px serif`;
+          this.ctx.fillText(p.rune, 0, 0);
+        } else {
+          this.ctx.beginPath();
+          this.ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
+
+        this.ctx.restore();
+      });
+
+      requestAnimationFrame(() => this.animate());
+    }
+  }
+
+  // Initialize system
+  new ParticleSystem();
+</script>

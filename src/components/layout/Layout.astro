@@ -2,6 +2,7 @@
 import '../../styles/global.css';
 import Navigation from './Navigation.astro';
 import Footer from './Footer.astro';
+import MagicBackground from './MagicBackground.astro';
 
 interface Props {
   title?: string;
@@ -119,6 +120,7 @@ const socialImageURL = new URL(image, Astro.url);
 </style>
   </head>
   <body class="overflow-x-hidden w-full relative min-h-screen">
+    <MagicBackground />
     <!-- Background Image with fixed positioning -->
     <div class="fixed inset-0 -z-10 w-screen h-screen bg-center bg-cover bg-no-repeat bg-fixed" style="background-image: url('/images/background.png'); transform: translateZ(0); backface-visibility: hidden; will-change: transform;"></div>
     <!-- Overlay to control background darkness if needed -->
