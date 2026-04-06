@@ -387,7 +387,7 @@ export const GET = async ({ url }: { url: URL }) => {
           url: raidLink,
           description: `@everyone La raid de **${raid.raid_name}** liderada por **${raid.leader}** está programada para comenzar **${timeString}** via **RaidDominion**.\n\n:point_right: **Garantía de invitación para asistentes registrados en la web.**\n\n[**【Apuntarse a ${raid.raid_name}】**](${raidLink})`,
           color: 0xff0000,
-          thumbnail: { url: "https://colmillo.netlify.app/images/logo.png" },
+          thumbnail: { url: "https://colmillo.netlify.app/images/mascotaAnuncios.png" },
           fields: [
             { name: ":alarm_clock: Hora de Inicio", value: `\`${raid.start_time}\` hora server`, inline: true },
             { name: ":calendar: Día", value: `\`${raid.day_of_week.charAt(0).toUpperCase() + raid.day_of_week.slice(1)}\``, inline: true },
@@ -401,7 +401,7 @@ export const GET = async ({ url }: { url: URL }) => {
           ],
           footer: {
             text: "Sistema de Notificaciones RaidDominion",
-            icon_url: "https://colmillo.netlify.app/images/logo.png",
+            icon_url: "https://colmillo.netlify.app/images/mascotaAnuncios.png",
           },
           timestamp: now.toISOString()
         };
