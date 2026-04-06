@@ -1,160 +1,40 @@
 ---
-export const prerender = false;
-import Layout from '../../components/layout/Layout.astro';
-import ShareButton from '../../components/guides/ShareButton.astro';
-import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+import VideoGuideLayout from '../../components/guides/VideoGuideLayout.astro';
 
 const guideId = 'halion-rs';
+const videos = [
+  {
+    id: 'maMyulXXX_w',
+    title: 'Guía Visual Simplificada',
+    description: 'Estrategia visual y parches para facilitar el posicionamiento en Halion 25 Heroico.',
+    author: 'Mapache',
+    contributor: 'Krauzz',
+    icon: 'fa-eye'
+  },
+  {
+    id: 'VtRSGh1WUPw',
+    title: 'Guía General SR',
+    description: 'Explicación detallada de las mecánicas y fases del encuentro en El Santuario Rubí.',
+    author: 'Alegos',
+    contributor: 'Krauzz',
+    icon: 'fa-book'
+  },
+  {
+    id: 'GCJmjM65D5w',
+    title: 'Guía Muchamiel 25HC',
+    description: 'Guía completa de Muchamiel para Halion en modalidades Normal y Heroica.',
+    author: 'Muchamiel',
+    contributor: 'Krauzz',
+    icon: 'fa-crown'
+  }
+];
 ---
 
-<Layout 
-  title="Guía de Halion (Sagrario Rubí)" 
-  description="Guía completa para el encuentro de Halion en Sagrario Rubí (25H). Estrategias visuales y consejos para tanques, dps y healers."
->
-  <main class="">
-    <div class="max-w-5xl mx-auto">
-      <!-- Botón Volver y Compartir -->
-      <div class="mb-8 flex items-center justify-between gap-4">
-        <a 
-          href="/guides?category=Mecánicas" 
-          class="flex items-center gap-3 px-5 py-2.5 rounded-lg bg-gray-900/60 border border-white/5 text-gray-400 hover:text-amber-400 hover:border-amber-500/30 transition-all text-[10px] font-black uppercase tracking-[0.2em] no-underline group backdrop-blur-md shadow-lg"
-        >
-          <i class="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
-          Volver al Portal
-        </a>
-        <ShareButton variant="full" />
-      </div>
-
-      <!-- Header -->
-      <header class="text-center mb-12 animate-fade-in">
-        <h1
-          class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-red-300 to-red-500 font-title tracking-wider"
-        >
-          HALION - SAGRARIO RUBÍ
-        </h1>
-        <div
-          class="w-48 h-0.5 bg-gradient-to-r from-red-900/0 via-red-500/80 to-red-900/0 mx-auto my-6"
-        >
-        </div>
-        <p class="text-red-100/80 max-w-2xl mx-auto">
-          Colección de guías visuales y estrategias para dominar el encuentro contra Halion en el Sagrario Rubí.
-        </p>
-      </header>
-
-      <!-- Videos Grid -->
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
-        
-        <!-- Video 1 -->
-        <div class="bg-gray-900/60 backdrop-blur-sm border border-red-900/30 rounded-lg overflow-hidden hover:border-red-500/30 transition-all duration-300 group">
-          <div class="relative aspect-video">
-            <iframe
-              class="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/maMyulXXX_w"
-              title="Halion 25H - Guía Visual"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-bold text-red-200 mb-2 group-hover:text-red-300 transition-colors">
-              <i class="fas fa-eye text-red-500 mr-2"></i>Guía Visual Simplificada
-            </h3>
-            <p class="text-sm text-gray-400 mb-3">
-              Estrategia visual y parches para facilitar el posicionamiento en Halion 25 Heroico.
-            </p>
-            <div class="flex flex-wrap justify-between items-center text-xs border-t border-red-900/30 pt-3 mt-2">
-              <div>
-                <span class="text-gray-500">Video original por:</span>
-                <span class="text-red-400 ml-1">Dange</span>
-              </div>
-              <div class="mt-1 sm:mt-0">
-                <span class="text-gray-500">Aportado por:</span>
-                <span class="text-amber-400 ml-1">Krauzz</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Video 2 -->
-        <div class="bg-gray-900/60 backdrop-blur-sm border border-red-900/30 rounded-lg overflow-hidden hover:border-red-500/30 transition-all duration-300 group">
-          <div class="relative aspect-video">
-            <iframe
-              class="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/VtRSGh1WUPw"
-              title="Guía Halion - Santuario Rubí"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-bold text-red-200 mb-2 group-hover:text-red-300 transition-colors">
-              <i class="fas fa-book text-red-500 mr-2"></i>Guía General SR
-            </h3>
-            <p class="text-sm text-gray-400 mb-3">
-              Explicación detallada de las mecánicas y fases del encuentro en El Santuario Rubí.
-            </p>
-            <div class="flex flex-wrap justify-between items-center text-xs border-t border-red-900/30 pt-3 mt-2">
-              <div>
-                <span class="text-gray-500">Video original por:</span>
-                <span class="text-red-400 ml-1">Yuki Series</span>
-              </div>
-              <div class="mt-1 sm:mt-0">
-                <span class="text-gray-500">Aportado por:</span>
-                <span class="text-amber-400 ml-1">Krauzz</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Video 3 -->
-        <div class="bg-gray-900/60 backdrop-blur-sm border border-red-900/30 rounded-lg overflow-hidden hover:border-red-500/30 transition-all duration-300 group">
-          <div class="relative aspect-video">
-            <iframe
-              class="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/GCJmjM65D5w"
-              title="Halion 25 HC/NM Guía Muchamiel"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-bold text-red-200 mb-2 group-hover:text-red-300 transition-colors">
-              <i class="fas fa-crown text-red-500 mr-2"></i>Guía Muchamiel 25HC
-            </h3>
-            <p class="text-sm text-gray-400 mb-3">
-              Guía completa de Muchamiel para Halion en modalidades Normal y Heroica.
-            </p>
-            <div class="flex flex-wrap justify-between items-center text-xs border-t border-red-900/30 pt-3 mt-2">
-              <div>
-                <span class="text-gray-500">Video original por:</span>
-                <span class="text-red-400 ml-1">Muchamiel</span>
-              </div>
-              <div class="mt-1 sm:mt-0">
-                <span class="text-gray-500">Aportado por:</span>
-                <span class="text-amber-400 ml-1">Krauzz</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Interacciones de la Comunidad -->
-      <GuideInteractions guide_id={guideId} />
-
-      <!-- Botón Volver Inferior -->
-      <div class="mt-16 flex justify-center">
-        <a 
-          href="/guides?category=Mecánicas" 
-          class="flex items-center gap-4 px-8 py-4 rounded-lg bg-gray-900/60 border border-white/5 text-gray-400 hover:text-amber-400 hover:border-amber-500/30 transition-all text-xs font-black uppercase tracking-[0.3em] no-underline group backdrop-blur-md shadow-2xl hover:scale-105"
-        >
-          <i class="fas fa-th-large group-hover:rotate-90 transition-transform duration-500"></i>
-          Volver al Portal
-        </a>
-      </div>
-    </div>
-  </main>
-</Layout>
+<VideoGuideLayout 
+  id={guideId}
+  title="HALION - SAGRARIO RUBÍ"
+  description="Colección de guías visuales y estrategias para dominar el encuentro contra Halion en el Sagrario Rubí."
+  category="Mecánicas"
+  color="red"
+  videos={videos}
+/>

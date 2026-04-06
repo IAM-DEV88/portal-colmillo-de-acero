@@ -60,12 +60,14 @@ export const GET: APIRoute = async ({ cookies }) => {
         if (fetchError) throw fetchError;
         if (!registrations) return new Response(JSON.stringify({ success: true, count: 0 }), { status: 200 });
 
-        // Day Order starting from Wednesday (Server Reset)
+        // Day Order starting from Wednesday (Server Reset) - No accents
         const dayOrder: Record<string, number> = {
             'miercoles': 0,
+            'miércoles': 0,
             'jueves': 1,
             'viernes': 2,
             'sabado': 3,
+            'sábado': 3,
             'domingo': 4,
             'lunes': 5,
             'martes': 6

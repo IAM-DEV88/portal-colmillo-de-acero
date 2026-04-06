@@ -1,7 +1,7 @@
 // src/lib/raids.ts
 // Dinámico: Los nombres de las raids se extraen de Supabase (leaderData)
 
-export const raidDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+export const raidDays = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
 export const raidTimes = ['18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'];
 

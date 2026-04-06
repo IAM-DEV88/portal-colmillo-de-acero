@@ -460,9 +460,11 @@ document.addEventListener('DOMContentLoaded', () => {
         Lunes: 'Lunes',
         Martes: 'Martes',
         Miercoles: 'Miercoles',
+        Miércoles: 'Miercoles',
         Jueves: 'Jueves',
         Viernes: 'Viernes',
         Sabado: 'Sabado',
+        Sábado: 'Sabado',
         Domingo: 'Domingo',
       };
       return daysMap[normalized] || '';

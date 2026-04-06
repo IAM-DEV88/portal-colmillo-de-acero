@@ -9,20 +9,20 @@ import {
 import { rosterService } from '../../services/rosterService';
 import { supabase } from '../../lib/supabase';
 
-// Días de la semana en orden para el reporte semanal
-const DAYS_IN_ORDER = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+// Días de la semana en orden para el reporte semanal (Sin acentos)
+const DAYS_IN_ORDER = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
 function normalizeDay(d: string): string {
   if (!d) return '';
   const dayMap: Record<string, string> = {
     'lunes': 'lunes',
     'martes': 'martes',
-    'miercoles': 'miércoles',
-    'miércoles': 'miércoles',
+    'miercoles': 'miercoles',
+    'miércoles': 'miercoles',
     'jueves': 'jueves',
     'viernes': 'viernes',
-    'sabado': 'sábado',
-    'sábado': 'sábado',
+    'sabado': 'sabado',
+    'sábado': 'sabado',
     'domingo': 'domingo'
   };
   const raw = d.toLowerCase().trim();
@@ -123,7 +123,7 @@ export const GET = async ({ url }: { url: URL }) => {
         votesByDay[day].push({ raid: v.raid_name, diff: v.difficulty, size: v.size, time: v.preferred_time });
       });
 
-      ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'].forEach(day => {
+      DAYS_IN_ORDER.forEach(day => {
         const dayVotes = votesByDay[day];
         if (dayVotes && dayVotes.length > 0) {
           const counts: Record<string, number> = {};
@@ -235,8 +235,8 @@ export const GET = async ({ url }: { url: URL }) => {
       });
 
       // Build WEEKLY
-      const currentMonth = nowServer.toLocaleDateString('es-ES', { month: 'long', timeZone: GUILD_TIMEZONE });
-      const seasonTitle = `Temporada ${currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)} ${nowServer.getFullYear()}`;
+      const currentMonth = now.toLocaleDateString('es-ES', { month: 'long', timeZone: GUILD_TIMEZONE });
+      const seasonTitle = `Temporada ${currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)} ${now.getFullYear()}`;
 
       const weeklyFields: any[] = [];
       for (const day of DAYS_IN_ORDER) {

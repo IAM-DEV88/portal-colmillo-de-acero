@@ -24,7 +24,7 @@ const success = Astro.url.searchParams.get('success');
 const successMessage = success === 'updated' ? 'Configuración actualizada correctamente' : '';
 
 // Identify all officers and group their raids by day
-const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const DAYS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 const schedule: Record<string, any[]> = DAYS.reduce((acc, day) => {
   acc[day] = [];
   return acc;
@@ -36,9 +36,7 @@ const allOfficers: Record<string, any> = {};
 const normalizeDayStr = (d: string) => 
   d.toLowerCase()
    .normalize('NFD')
-   .replace(/[\u0300-\u036f]/g, '')
-   .replace('miercoles', 'miercoles')
-   .replace('sabado', 'sabado');
+   .replace(/[\u0300-\u036f]/g, '');
 
 Object.values(rosterData.players || {}).forEach((player: any) => {
   const leaderData = player.leaderData;
@@ -80,12 +78,54 @@ Object.values(rosterData.players || {}).forEach((player: any) => {
           type: core.type || (core.raid.toLowerCase().includes('10') ? '10' : '25'),
           officer: player.name,
           class: player.class,
-          isHidden
+          isHidden,
+          day: raidDay
         });
       }
     });
   }
 });
+
+// Fetch all active registrations from Supabase to find leaderless ones
+const { data: allRegistrations } = await supabase
+  .from('raid_registrations')
+  .select('*')
+  .in('status', ['aceptado', 'en_revision', 'en_espera', 'sancionado']);
+
+// Identify all "official" slot identifiers (Raid-Day-Time) to compare
+const officialSlotIdentifiers = new Set();
+Object.values(schedule).flat().forEach(slot => {
+  const key = `${slot.name}-${slot.day}-${slot.time}`.toLowerCase().trim();
+  officialSlotIdentifiers.add(key);
+});
+
+// Group registrations that don't match any official slot (The "Limbo")
+const limboSlots: Record<string, { 
+  raid_id: string; 
+  day_of_week: string; 
+  start_time: string; 
+  registrations: any[] 
+}> = {};
+
+(allRegistrations || []).forEach(reg => {
+  const time = (reg.start_time || '').toString().padStart(5, '0').substring(0, 5);
+  const day = DAYS.find(d => normalizeDayStr(d) === normalizeDayStr(reg.day_of_week)) || reg.day_of_week;
+  const identifier = `${reg.raid_id}-${day}-${time}`.toLowerCase().trim();
+  
+  if (!officialSlotIdentifiers.has(identifier)) {
+    if (!limboSlots[identifier]) {
+      limboSlots[identifier] = {
+        raid_id: reg.raid_id,
+        day_of_week: day,
+        start_time: time,
+        registrations: []
+      };
+    }
+    limboSlots[identifier].registrations.push(reg);
+  }
+});
+
+const limboList = Object.values(limboSlots).sort((a, b) => a.raid_id.localeCompare(b.raid_id));
 
 // Sort each day by time
 DAYS.forEach(day => {
@@ -102,8 +142,153 @@ const sortedOfficers = Object.values(allOfficers).sort((a, b) => a.name.localeCo
 ---
 
 <Layout title="Configuración de Oficiales | Panel Admin">
-  <div class="max-w-7xl mx-auto py-12 px-4 space-y-8">
+  <div class="max-w-7xl mx-auto py-12 px-4 space-y-8" x-data={"{" + 
+    "hidden: " + JSON.stringify(hiddenRaidSlots) + "," +
+    "isMoving: false," +
+    "toggleSlot(id) {" +
+      "const index = this.hidden.indexOf(id);" +
+      "if (index !== -1) {" +
+        "this.hidden.splice(index, 1);" +
+      "} else {" +
+        "this.hidden.push(id);" +
+      "}" +
+    "}," +
+    "async moveRegistrations(sourceData, targetSlot) {" +
+      "if (!sourceData) return;" +
+      "const source = JSON.parse(sourceData);" +
+      "if (source.raid_id === targetSlot.name && source.day_of_week === targetSlot.day && source.start_time === targetSlot.time) {" +
+        "if (window.showToast) window.showToast('El origen y destino son el mismo slot');" +
+        "return;" +
+      "}" +
+      "this.isMoving = true;" +
+      "const sL = source.officer ? source.officer + ' (' + source.raid_id + ')' : source.raid_id;" +
+      "if (window.showToast) window.showToast('Reubicando registros de ' + sL + ' a ' + targetSlot.officer + '...');" +
+      "try {" +
+        "const response = await fetch('/api/admin/move-registrations', {" +
+          "method: 'POST'," +
+          "headers: { 'Content-Type': 'application/json' }," +
+          "body: JSON.stringify({" +
+            "sourceSlot: { raid_id: source.raid_id, day_of_week: source.day_of_week, start_time: source.start_time }," +
+            "targetSlot: { raid_id: targetSlot.name, day_of_week: targetSlot.day, start_time: targetSlot.time }" +
+          "})" +
+        "});" +
+        "const res = await response.json();" +
+        "if (res.success) {" +
+          "if (window.showToast) window.showToast('¡Registros reubicados con éxito!');" +
+          "setTimeout(() => location.reload(), 1500);" +
+        "} else {" +
+          "if (window.showToast) window.showToast('Error: ' + (res.message || res.error));" +
+          "console.error('Move error:', res);" +
+        "}" +
+      "} catch (e) {" +
+        "if (window.showToast) window.showToast('Error crítico al conectar con el servidor');" +
+        "console.error(e);" +
+      "} finally {" +
+        "this.isMoving = false;" +
+      "}" +
+    "}," +
+    "async clearOfficerData(playerName) {" +
+      "if (!confirm('¿Estás seguro de que quieres limpiar los datos de líder de ' + playerName + '? Esto eliminará todos sus cores y horarios asociados en el Roster.')) return;" +
+      "this.isMoving = true;" +
+      "if (window.showToast) window.showToast('Limpiando datos de ' + playerName + '...');" +
+      "try {" +
+        "const response = await fetch('/api/admin/clear-officer-data', {" +
+          "method: 'POST'," +
+          "headers: { 'Content-Type': 'application/json' }," +
+          "body: JSON.stringify({ playerName })" +
+        "});" +
+        "const res = await response.json();" +
+        "if (res.success) {" +
+          "if (window.showToast) window.showToast('¡Datos de oficial limpiados!');" +
+          "setTimeout(() => location.reload(), 1000);" +
+        "} else {" +
+          "if (window.showToast) window.showToast('Error: ' + res.error);" +
+        "}" +
+      "} catch (e) {" +
+        "console.error(e);" +
+        "if (window.showToast) window.showToast('Error de conexión');" +
+      "} finally {" +
+        "this.isMoving = false;" +
+      "}" +
+    "}" +
+  "}"}>
     <AdminNav userRole={userRole} activePage="config" />
+
+    {/* Loading Overlay */}
+    <div x-show="isMoving" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" x-cloak>
+        <div class="bg-gray-900 p-8 rounded-2xl border border-amber-500/30 flex flex-col items-center gap-4 shadow-2xl">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+            <p class="text-amber-500 font-black uppercase tracking-widest text-xs">Procesando solicitud...</p>
+        </div>
+    </div>
+
+    {/* Registros Sin Líder (Limbo) - Seccion Drag & Drop */}
+    <div class="bg-gray-900/40 backdrop-blur-md p-8 rounded-3xl border border-dashed border-amber-500/20 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <div>
+                    <h2 class="text-2xl font-black text-white uppercase tracking-tighter italic flex items-center gap-3">
+                        <i class="fas fa-ghost text-amber-500 animate-pulse"></i>
+                        Registros <span class="text-amber-500">Sin Líder</span> (Limbo)
+                    </h2>
+                    <p class="text-gray-500 text-xs font-medium uppercase tracking-widest mt-1 italic leading-none flex items-center gap-2">
+                        <span class="w-8 h-[1px] bg-amber-500/50"></span>
+                        Arrastra para reubicar registros huérfanos en un slot oficial
+                    </p>
+                </div>
+                <div class="px-4 py-2 bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest border border-amber-500/20 rounded-xl backdrop-blur-xl">
+                    {limboList.length} Grupos Detectados
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 min-h-[100px] p-6 bg-black/20 rounded-2xl border border-white/5">
+                {limboList.length === 0 ? (
+                    <div class="w-full flex flex-col items-center justify-center py-12 gap-4">
+                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center border border-white/5">
+                            <i class="fas fa-check text-2xl text-green-500/50"></i>
+                        </div>
+                        <p class="text-gray-600 text-[10px] font-black uppercase tracking-widest italic">No se detectaron registros sin líder en el portal</p>
+                    </div>
+                ) : (
+                    limboList.map(slot => (
+                        <div 
+                            draggable="true"
+                            ondragstart={"event.dataTransfer.setData('text/plain', '" + JSON.stringify({
+                              raid_id: slot.raid_id,
+                              day_of_week: slot.day_of_week,
+                              start_time: slot.start_time
+                            }) + "')"}
+                            class="group relative p-4 bg-amber-950/20 border border-amber-500/30 rounded-xl cursor-grab active:cursor-grabbing hover:border-amber-500 hover:bg-amber-500/10 transition-all shadow-lg min-w-[200px] border-l-4 border-l-amber-500"
+                        >
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="bg-black/60 text-amber-400 text-[9px] font-black px-2 py-1 rounded-lg border border-amber-500/20 uppercase tracking-tighter">
+                                    {slot.start_time} - {slot.day_of_week}
+                                </span>
+                                <div class="w-6 h-6 bg-amber-500 rounded flex items-center justify-center text-gray-950 text-[10px] font-black shadow-lg shadow-amber-900/40">
+                                    {slot.registrations.length}
+                                </div>
+                            </div>
+                            <h3 class="text-xs font-black text-white leading-tight uppercase tracking-tight mb-2 group-hover:text-amber-400 transition-colors">
+                                {slot.raid_id}
+                            </h3>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-exclamation-triangle text-[8px] text-amber-500/50"></i>
+                                <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest italic">Pendiente de reubicar</span>
+                            </div>
+
+                            {/* Drag Indicator */}
+                            <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-50 transition-opacity">
+                                <i class="fas fa-hand-rock text-[10px] text-white"></i>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
+    </div>
+
     {/* Header */}
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-gray-900/50 backdrop-blur-md p-8 rounded-2xl border border-white/5 shadow-2xl relative overflow-hidden">
       <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
@@ -160,17 +345,6 @@ const sortedOfficers = Object.values(allOfficers).sort((a, b) => a.name.localeCo
         action="/api/admin/update-config" 
         method="POST"
         class="p-4"
-        x-data={`{ 
-          hidden: ${JSON.stringify(hiddenRaidSlots)},
-          toggleSlot(id) {
-            const index = this.hidden.indexOf(id);
-            if (index !== -1) {
-              this.hidden.splice(index, 1);
-            } else {
-              this.hidden.push(id);
-            }
-          }
-        }`}
       >
         <input type="hidden" name="key" value="hidden_raid_slots" />
         <input type="hidden" name="value" :value="JSON.stringify(hidden)" />
@@ -191,9 +365,19 @@ const sortedOfficers = Object.values(allOfficers).sort((a, b) => a.name.localeCo
                 ) : (
                   schedule[day].map(raid => (
                     <div 
-                      class="group relative p-4 rounded-xl border transition-all duration-300 cursor-pointer overflow-hidden shadow-lg active:scale-95"
-                      @click={`toggleSlot('${raid.id}')`}
-                      :class={`hidden.includes('${raid.id}') ? 'bg-red-950/20 border-red-500/40 grayscale-[0.5]' : 'bg-gray-900/80 border-amber-600/30 hover:border-amber-500 hover:shadow-amber-500/10 border-l-4 border-l-amber-500'`}
+                      draggable="true"
+                      ondragstart={"event.dataTransfer.setData('text/plain', '" + JSON.stringify({
+                        raid_id: raid.name,
+                        day_of_week: raid.day,
+                        start_time: raid.time,
+                        officer: raid.officer
+                      }) + "')"}
+                      class="group relative p-4 rounded-xl border transition-all duration-300 cursor-pointer overflow-hidden shadow-lg active:scale-95 hover:z-10"
+                      @click={"toggleSlot('" + raid.id + "')"}
+                      @dragover.prevent="$el.classList.add('scale-105', 'border-amber-500', 'shadow-amber-500/20')"
+                      @dragleave="$el.classList.remove('scale-105', 'border-amber-500', 'shadow-amber-500/20')"
+                      @drop={"$el.classList.remove('scale-105', 'border-amber-500', 'shadow-amber-500/20'); moveRegistrations(event.dataTransfer.getData('text/plain'), " + JSON.stringify(raid) + ")"}
+                      :class={"hidden.includes('" + raid.id + "') ? 'bg-red-950/20 border-red-500/40 grayscale-[0.5]' : 'bg-gray-900/80 border-amber-600/30 hover:border-amber-500 hover:shadow-amber-500/10 border-l-4 border-l-amber-500'"}
                     >
                       {/* Badge Time */}
                       <div class="flex justify-between items-start mb-3">
@@ -267,6 +451,14 @@ const sortedOfficers = Object.values(allOfficers).sort((a, b) => a.name.localeCo
                             <div class={`w-2.5 h-2.5 rounded-full class-${officer.class.toLowerCase().replace(/\s+/g, '-')}`}></div>
                             <span class="text-xs font-black text-gray-300 uppercase tracking-tighter group-hover:text-white transition-colors">{officer.name}</span>
                         </div>
+                        
+                        <button 
+                          @click={`clearOfficerData('${officer.name}')`}
+                          class="opacity-0 group-hover:opacity-100 p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                          title="Limpiar datos de oficial"
+                        >
+                          <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
                     </div>
                 ))}
             </div>

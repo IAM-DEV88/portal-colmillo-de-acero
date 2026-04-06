@@ -62,7 +62,7 @@ export const RAID_RULES: RaidRule[] = [
     lootRules: [
       { item: "ESCAMA RESPLANDECIENTE (HEAL)", requirement: "Top 1 Afuera / Top 2 Adentro." },
       { item: "ESCAMA CARBONIZADA (CASTER)", requirement: "Top 3 Afuera / Top 4 Auras (Elemental, Pollo, Demo)." },
-      { item: "ESCAMA AFILADA (MELE)", requirement: "War, DK, Feral, Caza Puntería, Pícaro, Mejora y Paladín con Agonía (Top 3 Fase Crepuscular y Top 3 Fase Físico)." },
+      { item: "ESCAMA AFILADA (MELE)", requirement: "War, DK, Feral, Pícaro, Mejora y Paladín con Agonía (Top 3 Fase Crepuscular y Top 3 Fase Físico), Caza Puntería (Top 3 Fase Físico)." },
       { item: "ESCAMA PETRIFICADA (TANK)", requirement: "Los 2 Tanques activos en su rol." },
 
       { item: "SELLO DE CREPÚSCULO", requirement: "Paladín Repre, Mejora, Pícaro Asesinato" },

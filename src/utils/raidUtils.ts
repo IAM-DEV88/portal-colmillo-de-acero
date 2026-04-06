@@ -12,16 +12,16 @@ interface RaidSchedule {
   leader: string;
 }
 
-// Mapa de días para normalización
+// Mapa de días para normalización (Sin acentos para evitar problemas de búsqueda)
 const DAY_MAP: Record<string, string> = {
   'lunes': 'lunes',
   'martes': 'martes',
-  'miercoles': 'miércoles',
-  'miércoles': 'miércoles',
+  'miercoles': 'miercoles',
+  'miércoles': 'miercoles',
   'jueves': 'jueves',
   'viernes': 'viernes',
-  'sabado': 'sábado',
-  'sábado': 'sábado',
+  'sabado': 'sabado',
+  'sábado': 'sabado',
   'domingo': 'domingo'
 };
 

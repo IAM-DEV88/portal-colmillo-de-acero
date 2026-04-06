@@ -476,7 +476,7 @@ wotlkRaids.forEach((raid) => {
                     const sortedRaids = Array.from(raidGroups.values())
                       .sort((a, b) => a.raid_name.localeCompare(b.raid_name))
                       .map(raid => {
-                        const dayOrder = { lunes: 1, martes: 2, miercoles: 3, miércoles: 3, jueves: 4, viernes: 5, sabado: 6, sábado: 6, domingo: 7 };
+                        const dayOrder = { lunes: 1, martes: 2, miercoles: 3, jueves: 4, viernes: 5, sabado: 6, domingo: 7 };
                         
                         raid.schedules = Array.from(raid.schedules.values()).sort((a, b) => {
                           const dayA = a.day_of_week?.toLowerCase() || '';
@@ -991,10 +991,10 @@ wotlkRaids.forEach((raid) => {
                   >
                     <option value="Lunes">Lunes</option>
                     <option value="Martes">Martes</option>
-                    <option value="Miercoles">Miércoles</option>
+                    <option value="Miercoles">Miercoles</option>
                     <option value="Jueves">Jueves</option>
                     <option value="Viernes">Viernes</option>
-                    <option value="Sabado">Sábado</option>
+                    <option value="Sabado">Sabado</option>
                     <option value="Domingo">Domingo</option>
                   </select>
                 </div>

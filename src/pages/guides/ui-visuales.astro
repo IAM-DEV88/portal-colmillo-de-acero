@@ -1,0 +1,40 @@
+---
+import VideoGuideLayout from '../../components/guides/VideoGuideLayout.astro';
+
+const guideId = 'parches-visuales-ui';
+const videos = [
+  {
+    id: 'D25kSRT07JU',
+    title: 'Login de 2010 a 2026',
+    description: 'Transforma tu pantalla de login con auto-login y soporte para altas resoluciones HD.',
+    author: 'Mapache',
+    contributor: 'Jaguer',
+    icon: 'fa-user-lock'
+  },
+  {
+    id: 'BP9VhO7XOmE',
+    title: 'Parche Visual para Farmers',
+    description: 'El parche esencial que todo farmer de materiales necesita para mejorar la visibilidad de nodos.',
+    author: 'Mapache',
+    contributor: 'Jaguer',
+    icon: 'fa-pickaxe'
+  },
+  {
+    id: 'bHyRa8paJTs',
+    title: 'NUNCA más vas a Wipear en ICC',
+    description: 'El mejor parche visual para mecánicas de ICC 3.3.5a. Mejora drásticamente la visibilidad de áreas.',
+    author: 'Mapache',
+    contributor: 'Krauzz',
+    icon: 'fa-eye'
+  }
+];
+---
+
+<VideoGuideLayout 
+  id={guideId}
+  title="PARCHES VISUALES Y UI 2026"
+  description="Optimiza tu experiencia de juego con los mejores parches visuales y configuraciones de interfaz para World of Warcraft WotLK."
+  category="UI"
+  color="blue"
+  videos={videos}
+/>

@@ -176,9 +176,7 @@ const hiddenRaidSlots = configData?.value ? JSON.parse(configData.value) : [];
 const normalizeDayStr = (d: string) => 
   d.toLowerCase()
    .normalize('NFD')
-   .replace(/[\u0300-\u036f]/g, '')
-   .replace('miercoles', 'miercoles')
-   .replace('sabado', 'sabado');
+   .replace(/[\u0300-\u036f]/g, '');
 
 // Normalización de Raid ID
 const normalizeRaidId = (id: string) => (id || '').toUpperCase().replace(/\s+/g, ' ').trim();
@@ -230,8 +228,8 @@ if (rosterData && rosterData.players) {
       const dayMatch = scheduleStr.match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
       if (dayMatch) {
         const foundDayNorm = normalizeDayStr(dayMatch[1]);
-        // Match against our display days to get correct case/accents
-        const displayDays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        // Match against our display days to get correct case (no accents for search consistency)
+        const displayDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
         normalizedDay = displayDays.find(d => normalizeDayStr(d) === foundDayNorm) || "Sin día";
       }
 
@@ -326,14 +324,11 @@ function getSortedSchedules(schedules) {
     lunes: 1,
     martes: 2,
     miercoles: 3,
-    miércoles: 3,
     jueves: 4,
     viernes: 5,
     sabado: 6,
-    sábado: 6,
     domingo: 7,
     'sin dia': 8,
-    'sin día': 8,
     'hora-definida-sin-dia': 9,
     'sin-dia-ni-hora': 10,
   };
@@ -645,7 +640,7 @@ if (Astro.request.method === 'POST') {
         const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
         if (dayMatch) {
           const foundDayNorm = normalizeDayStr(dayMatch[1]);
-          const displayDays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+          const displayDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
           normalizedDay = displayDays.find(d => normalizeDayStr(d) === foundDayNorm) || "Sin día";
         }
 
@@ -1855,7 +1850,7 @@ if (Astro.request.method === 'POST') {
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
         {
-          ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map((day) => {
+          ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'].map((day) => {
             // Normalize day for comparison
             const normalizeDay = (d) =>
               d

@@ -1,7 +1,7 @@
 export interface Guide {
   id: string;
   title: string;
-  category: "Mecánicas" | "Especialización" | "Profesiones" | "Leveo";
+  category: "Mecánicas" | "Especialización" | "Profesiones" | "Leveo" | "UI";
   description: string;
   href: string;
   icon: string;
@@ -9,7 +9,7 @@ export interface Guide {
   specData?: any; // For class guides that use WoWCharacterPanel
 }
 
-export const categories = ["Mecánicas", "Especialización", "Profesiones", "Leveo"] as const;
+export const categories = ["Mecánicas", "Especialización", "Profesiones", "Leveo", "UI"] as const;
 
 export const colorClasses: Record<string, any> = {
   blue: {
@@ -237,5 +237,14 @@ export const staticGuides: Guide[] = [
     href: "/guides/picaro-combate-335a",
     icon: "fa-khanda",
     color: "yellow"
+  },
+  {
+    id: "parches-visuales-ui",
+    title: "Parches Visuales y UI 2026",
+    category: "UI",
+    description: "Transforma tu experiencia visual en WotLK con parches HD, auto-login y mejoras de interfaz para ICC.",
+    href: "/guides/ui-visuales",
+    icon: "fa-desktop",
+    color: "blue"
   }
 ];

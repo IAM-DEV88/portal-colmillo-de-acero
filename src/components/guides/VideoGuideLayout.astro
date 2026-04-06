@@ -1,0 +1,118 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import ShareButton from '../../components/guides/ShareButton.astro';
+import GuideInteractions from '../../components/guides/GuideInteractions.astro';
+
+interface Video {
+  id: string;
+  title: string;
+  description: string;
+  author: string;
+  contributor: string;
+  icon: string;
+}
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  color: 'blue' | 'red' | 'purple' | 'amber' | 'pink' | 'orange' | 'yellow' | 'warrior';
+  videos: Video[];
+  category: string;
+}
+
+const { id, title, description, color, videos, category } = Astro.props;
+
+const colorMap = {
+  blue: { text: 'text-blue-400', via: 'via-blue-300', to: 'to-blue-500', border: 'border-blue-900/30', hover: 'hover:border-blue-500/30', icon: 'text-blue-500', author: 'text-blue-400', line: 'from-blue-900/0 via-blue-500/80 to-blue-900/0' },
+  red: { text: 'text-red-400', via: 'via-red-300', to: 'to-red-500', border: 'border-red-900/30', hover: 'hover:border-red-500/30', icon: 'text-red-500', author: 'text-red-400', line: 'from-red-900/0 via-red-500/80 to-red-900/0' },
+  purple: { text: 'text-purple-400', via: 'via-purple-300', to: 'to-purple-500', border: 'border-purple-900/30', hover: 'hover:border-purple-500/30', icon: 'text-purple-500', author: 'text-purple-400', line: 'from-purple-900/0 via-purple-500/80 to-purple-900/0' },
+  amber: { text: 'text-amber-400', via: 'via-amber-300', to: 'to-amber-500', border: 'border-amber-900/30', hover: 'hover:border-amber-500/30', icon: 'text-amber-500', author: 'text-amber-400', line: 'from-amber-900/0 via-amber-500/80 to-amber-900/0' },
+  pink: { text: 'text-pink-400', via: 'via-pink-300', to: 'to-pink-500', border: 'border-pink-900/30', hover: 'hover:border-pink-500/30', icon: 'text-pink-500', author: 'text-pink-400', line: 'from-pink-900/0 via-pink-500/80 to-pink-900/0' },
+  orange: { text: 'text-orange-400', via: 'via-orange-300', to: 'to-orange-500', border: 'border-orange-900/30', hover: 'hover:border-orange-500/30', icon: 'text-orange-500', author: 'text-orange-400', line: 'from-orange-900/0 via-orange-500/80 to-orange-900/0' },
+  yellow: { text: 'text-yellow-400', via: 'via-yellow-300', to: 'to-yellow-500', border: 'border-yellow-900/30', hover: 'hover:border-yellow-500/30', icon: 'text-yellow-500', author: 'text-yellow-400', line: 'from-yellow-900/0 via-yellow-500/80 to-yellow-900/0' },
+  warrior: { text: 'text-orange-400', via: 'via-orange-300', to: 'to-orange-500', border: 'border-orange-900/30', hover: 'hover:border-orange-500/30', icon: 'text-orange-500', author: 'text-orange-400', line: 'from-orange-900/0 via-orange-500/80 to-orange-900/0' }
+};
+
+const theme = colorMap[color] || colorMap.blue;
+---
+
+<Layout title={title} description={description}>
+  <main class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <!-- Nav -->
+      <div class="mb-8 flex items-center justify-between gap-4">
+        <a 
+          href={`/guides?category=${category}`}
+          class="flex items-center gap-3 px-5 py-2.5 rounded-lg bg-gray-900/60 border border-white/5 text-gray-400 hover:text-amber-400 hover:border-amber-500/30 transition-all text-[10px] font-black uppercase tracking-[0.2em] no-underline group backdrop-blur-md shadow-lg"
+        >
+          <i class="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
+          Volver al Portal
+        </a>
+        <ShareButton variant="full" />
+      </div>
+
+      <!-- Header -->
+      <header class="text-center mb-12 animate-fade-in">
+        <h1 class={`text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${theme.text} ${theme.via} ${theme.to} font-title tracking-wider uppercase`}>
+          {title}
+        </h1>
+        <div class={`w-48 h-0.5 bg-gradient-to-r ${theme.line} mx-auto my-6`}></div>
+        <p class="text-gray-400 max-w-2xl mx-auto italic text-sm">
+          {description}
+        </p>
+      </header>
+
+      <!-- Videos Grid -->
+      <div class={`grid gap-8 ${videos.length === 1 ? 'max-w-3xl mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'} mb-12`}>
+        {videos.map(video => (
+          <div class={`bg-gray-900/60 backdrop-blur-sm border ${theme.border} rounded-lg overflow-hidden ${theme.hover} transition-all duration-300 group`}>
+            <div class="relative aspect-video">
+              <iframe
+                class="absolute top-0 left-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${video.id}`}
+                title={video.title}
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="p-4">
+              <h3 class={`text-lg font-bold text-gray-200 mb-2 group-hover:${theme.text} transition-colors flex items-center gap-2`}>
+                <i class={`fas ${video.icon} ${theme.icon}`}></i>
+                {video.title}
+              </h3>
+              <p class="text-xs text-gray-400 mb-4 leading-relaxed italic">
+                {video.description}
+              </p>
+              <div class={`flex flex-wrap justify-between items-center text-[10px] border-t ${theme.border} pt-3 mt-2 font-bold uppercase tracking-tighter`}>
+                <div>
+                  <span class="text-gray-500">Video:</span>
+                  <span class={`${theme.author} ml-1`}>{video.author}</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Aportado:</span>
+                  <span class="text-amber-500 ml-1">{video.contributor}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Interactions -->
+      <GuideInteractions guide_id={id} />
+
+      <!-- Bottom Nav -->
+      <div class="mt-16 flex justify-center">
+        <a 
+          href={`/guides?category=${category}`}
+          class="flex items-center gap-4 px-8 py-4 rounded-lg bg-gray-900/60 border border-white/5 text-gray-400 hover:text-amber-400 hover:border-amber-500/30 transition-all text-xs font-black uppercase tracking-[0.3em] no-underline group backdrop-blur-md shadow-2xl hover:scale-105"
+        >
+          <i class="fas fa-th-large group-hover:rotate-90 transition-transform duration-500"></i>
+          Volver al Portal
+        </a>
+      </div>
+    </div>
+  </main>
+</Layout>
