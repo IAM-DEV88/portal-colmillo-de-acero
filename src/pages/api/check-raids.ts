@@ -331,6 +331,7 @@ export const GET = async ({ url }: { url: URL }) => {
             fields: msg.fields,
             url: msg.url,
             color: msg.color,
+            thumbnail: { url: "https://colmillo.netlify.app/images/mascotaAnuncios.png" },
             footer: { text: "Colmillo de Acero • Comunidad", icon_url: "https://colmillo.netlify.app/images/logo.png" }
           }]
         })
@@ -401,7 +402,7 @@ export const GET = async ({ url }: { url: URL }) => {
           ],
           footer: {
             text: "Sistema de Notificaciones RaidDominion",
-            icon_url: "https://colmillo.netlify.app/images/mascotaAnuncios.png",
+            icon_url: "https://colmillo.netlify.app/images/logo.png",
           },
           timestamp: now.toISOString()
         };
@@ -412,7 +413,7 @@ export const GET = async ({ url }: { url: URL }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: "Portal Web Colmillo de Acero",
-          avatar_url: "https://colmillo.netlify.app/images/logo.png",
+          avatar_url: "https://colmillo.netlify.app/images/mascotaAnuncios.png",
           content: isTest ? ":loudspeaker: **【 TEST AVISO RAID 】**" : ":loudspeaker: **【 AVISO DE RAID PRÓXIMA 】** @everyone",
           embeds
         })
