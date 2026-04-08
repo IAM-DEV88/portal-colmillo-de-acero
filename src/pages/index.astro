@@ -41,11 +41,11 @@ const { temporada, enlaces } = activeFestivity;
   description="Bienvenido a Colmillo de Acero. Descubre nuestras guías de WoW 3.3.5a, roster de hermandad, horarios de raid y descarga nuestro addon exclusivo Raid Dominion."
 >
   <!-- Main Container -->
-  <main class="min-h-screen w-full">
+  <main class="min-h-screen w-full" x-data="{ showArcadePrompt: false }">
     <!-- Main Content -->
     <div class="relative flex flex-col items-center justify-center w-full max-w-full mx-auto">
       <!-- Header -->
-      <header class="text-center animate-fade-in">
+      <header class="text-center animate-fade-in relative z-20">
         <div
           class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-title tracking-wider"
         >
@@ -56,18 +56,23 @@ const { temporada, enlaces } = activeFestivity;
         >
         </div>
         <div
-          class="relative animate-fade-in-1"
+          class="relative animate-fade-in-1 cursor-pointer group"
           style="animation-delay: 0.3s"
-          data-astro-cid-wuxc42xx=""
+          @click="showArcadePrompt = true"
         >
           <img
             src="images/mascota.png"
             alt="Raid Dominion"
             width="170"
             height="auto"
-            class="drop-shadow-[0_0_15px_rgba(245,158,11,0.4)] mx-auto"
-            data-astro-cid-wuxc42xx=""
+            class="drop-shadow-[0_0_15px_rgba(245,158,11,0.4)] mx-auto transition-transform duration-300 group-hover:scale-110"
           />
+          
+          <!-- Tooltip Hint -->
+          <div class="absolute -right-8 top-0 bg-gray-900/90 border border-amber-500/30 text-amber-400 text-[10px] px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest font-bold rotate-12">
+            ¡Pst!
+          </div>
+
           <style>
             @keyframes float {
               0%,
@@ -83,7 +88,7 @@ const { temporada, enlaces } = activeFestivity;
           {
             enlaces &&
               enlaces.map((enlace) => (
-                <a href={enlace.url} class="absolute top-[-50px] left-1/2 w-auto block">
+                <a href={enlace.url} class="absolute top-[-50px] left-1/2 w-auto block" @click.stop>
                   <div
                     class="bg-gradient-to-r from-gray-900/90 to-gray-800/30 rounded-md shadow-xl py-1 px-6 border border-amber-900/30 hover:border-amber-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/5 cursor-pointer"
                     style="animation: float 3s ease-in-out infinite;"
@@ -97,6 +102,37 @@ const { temporada, enlaces } = activeFestivity;
           }
         </div>
       </header>
+
+      <!-- Arcade Prompt Modal -->
+      <div 
+        x-show="showArcadePrompt" 
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-90"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-90"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        style="display: none;"
+      >
+        <div class="bg-gradient-to-b from-gray-900 to-black border-2 border-amber-500 rounded-2xl p-8 max-w-md w-full text-center shadow-[0_0_50px_rgba(245,158,11,0.4)] relative" @click.outside="showArcadePrompt = false">
+            <button @click="showArcadePrompt = false" class="absolute top-4 right-4 text-gray-500 hover:text-white">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="text-5xl mb-6 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]">🎮</div>
+            <h2 class="text-2xl font-black text-amber-500 mb-4 uppercase tracking-tighter italic">¿Buscas Diversión?</h2>
+            <p class="text-gray-300 mb-8 leading-relaxed">He descubierto una entrada secreta a la <strong class="text-white">Zona de Juegos de Colmillo de Acero</strong>. ¿Quieres echar un vistazo?</p>
+            
+            <div class="flex flex-col gap-3">
+              <a href="/juegos" class="block w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-black font-black py-3 px-4 rounded-xl transition transform hover:scale-105 shadow-lg border border-amber-400 uppercase tracking-widest">
+                ¡Sí, Llévame Allí!
+              </a>
+              <button @click="showArcadePrompt = false" class="block w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-3 px-4 rounded-xl transition uppercase text-sm">
+                Mejor en otro momento
+              </button>
+            </div>
+        </div>
+      </div>
 
       <!-- Navigation Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">

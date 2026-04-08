@@ -95,7 +95,8 @@ const { data: allRegistrations } = await supabase
 // Identify all "official" slot identifiers (Raid-Day-Time) to compare
 const officialSlotIdentifiers = new Set();
 Object.values(schedule).flat().forEach(slot => {
-  const key = `${slot.name}-${slot.day}-${slot.time}`.toLowerCase().trim();
+  const normalizedRaidName = slot.name.replace(/\s+/g, '').toLowerCase().trim();
+  const key = `${normalizedRaidName}-${slot.day}-${slot.time}`.toLowerCase().trim();
   officialSlotIdentifiers.add(key);
 });
 
@@ -110,7 +111,8 @@ const limboSlots: Record<string, {
 (allRegistrations || []).forEach(reg => {
   const time = (reg.start_time || '').toString().padStart(5, '0').substring(0, 5);
   const day = DAYS.find(d => normalizeDayStr(d) === normalizeDayStr(reg.day_of_week)) || reg.day_of_week;
-  const identifier = `${reg.raid_id}-${day}-${time}`.toLowerCase().trim();
+  const normalizedRaidName = (reg.raid_id || '').replace(/\s+/g, '').toLowerCase().trim();
+  const identifier = `${normalizedRaidName}-${day}-${time}`.toLowerCase().trim();
   
   if (!officialSlotIdentifiers.has(identifier)) {
     if (!limboSlots[identifier]) {
