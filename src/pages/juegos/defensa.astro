@@ -260,6 +260,12 @@ import Layout from '../../components/layout/Layout.astro';
     let isShiftDown = false;
     let screenShake = 0; // Current screen shake intensity
 
+    // Drag and Drop Mobile state
+    let isDragging = false;
+    let draggedType = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
     let curseTimer = 0;
     let curseCooldown = 600;
     let curseNotification = null;
@@ -515,39 +521,47 @@ import Layout from '../../components/layout/Layout.astro';
     }
 
     function generateRandomPath() {
-      // Avoid top-left (UI) and right edge (Towers panel)
-      // We must be conservative for mobile views.
+      // Define restricted areas (approximate for collision check during pathing)
+      // HUD: top-left (x < 450, y < 120)
+      // Right Menu: x > canvas.width - 120
       const maxW = canvas.width;
       const maxH = canvas.height;
 
       const newPath = [];
 
-      // Start on left edge, avoiding top UI
-      let currentY = Math.random() * (maxH * 0.4) + maxH * 0.3; // Start between 30% and 70% height
+      // Start on left edge, but lower to avoid HUD
+      let currentY = Math.random() * (maxH * 0.3) + maxH * 0.4; // Start between 40% and 70% height
       newPath.push({ x: 0, y: currentY });
 
       let currentX = 0;
 
-      while (currentX < maxW - 200) {
-        // Keep far away from right panel (width 80px + padding)
-        currentX += Math.random() * (maxW * 0.15) + maxW * 0.15; // Step forward relative to width
-        if (currentX > maxW - 150) currentX = maxW - 150; // Stop well before right panel
+      while (currentX < maxW - 220) {
+        // Increment X by a chunk
+        currentX += Math.random() * (maxW * 0.15) + maxW * 0.15;
+        if (currentX > maxW - 160) currentX = maxW - 160;
 
-        // Pick a Y that avoids top-left and the new bottom status bar
-        let minY = maxH * 0.15;
-        let maxY = maxH * 0.75; // Reduced from 0.85 to avoid bottom UI (status bar)
+        // Define Y limits for this X
+        let minY = maxH * 0.25; // Keep away from top HUD
+        let maxY = maxH * 0.75; // Keep away from bottom edge/status
 
-        if (currentX < maxW * 0.35) {
-          minY = maxH * 0.3; // Force path lower in the first third
+        // If in the first third (where HUD is largest)
+        if (currentX < 480) {
+          minY = 160; // Push path lower to clear HUD indicators
+        }
+        
+        // If near the right edge (where Tower count might be)
+        if (currentX > maxW - 300) {
+          minY = 160; // Also keep clear of potential top-right UI elements
         }
 
         currentY = Math.random() * (maxY - minY) + minY;
         newPath.push({ x: currentX, y: currentY });
       }
 
-      // End path just before right panel, directing enemies down or up instead of right to avoid UI
-      // Also avoid bottom UI
-      newPath.push({ x: currentX, y: currentY > maxH / 2 ? maxH - 60 : 0 });
+      // End path: either goes to bottom-right or top-right, but avoiding the panel
+      // Force the final destination to be clear of UI
+      const finalY = currentY > maxH / 2 ? maxH - 80 : 160;
+      newPath.push({ x: currentX, y: finalY });
 
       path = newPath;
       redrawBackground();
@@ -729,6 +743,60 @@ import Layout from '../../components/layout/Layout.astro';
             selectedTowerType = type;
           }
         });
+
+        // Touch start for drag
+        btn.addEventListener('touchstart', (e) => {
+          if (gameState !== 'playing') return;
+          const type = btn.dataset.type;
+          // Only towers can be dragged (not repair/upgrade for now to keep it simple, or they can be too)
+          if (type && !['repair', 'upgrade'].includes(type)) {
+            isDragging = true;
+            draggedType = type;
+            const touch = e.touches[0];
+            dragStartX = touch.clientX;
+            dragStartY = touch.clientY;
+          }
+        }, { passive: true });
+      });
+
+      // Global touch listeners for dragging
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        
+        // Update mouseX/mouseY for preview drawing
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        mouseX = (touch.clientX - rect.left) * scaleX;
+        mouseY = (touch.clientY - rect.top) * scaleY;
+
+        // Prevent scrolling when dragging over the game area
+        if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+            touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+          if (e.cancelable) e.preventDefault();
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        
+        const touch = e.changedTouches[0];
+        const rect = canvas.getBoundingClientRect();
+        
+        // Check if dropped on canvas
+        if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+            touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const x = (touch.clientX - rect.left) * scaleX;
+          const y = (touch.clientY - rect.top) * scaleY;
+          
+          handleConstruction(x, y, draggedType);
+        }
+        
+        isDragging = false;
+        draggedType = null;
       });
 
       window.addEventListener('keydown', (e) => {
@@ -876,16 +944,18 @@ import Layout from '../../components/layout/Layout.astro';
         }
 
         if (!selectedTowerType) return;
+        handleConstruction(x, y, selectedTowerType);
+      }
 
-        const cost = getTowerCost(selectedTowerType);
+      function handleConstruction(x, y, type) {
+        const cost = getTowerCost(type);
 
         // Snap to Grid
         const gridX = Math.round(x / GRID_SIZE) * GRID_SIZE;
         const gridY = Math.round(y / GRID_SIZE) * GRID_SIZE;
 
         // --- REPAIR MODE ---
-        if (selectedTowerType === 'repair') {
-          if (!isMouseDown) return;
+        if (type === 'repair') {
           const targetTower = towers.find((t) => {
             const th = t.gridHeight || 1;
             for (let i = 0; i < th; i++) {
@@ -916,8 +986,7 @@ import Layout from '../../components/layout/Layout.astro';
         }
 
         // --- UPGRADE MODE ---
-        else if (selectedTowerType === 'upgrade') {
-          if (!isMouseDown) return;
+        else if (type === 'upgrade') {
           const targetTower = towers.find((t) => {
             const th = t.gridHeight || 1;
             for (let i = 0; i < th; i++) {
@@ -987,7 +1056,7 @@ import Layout from '../../components/layout/Layout.astro';
           return;
         }
 
-        const stats = TOWER_STATS[selectedTowerType];
+        const stats = TOWER_STATS[type];
         const h = stats.gridHeight || 1;
         let isOccupied = false;
         let isOnPath = false;
@@ -1039,11 +1108,14 @@ import Layout from '../../components/layout/Layout.astro';
           towers.push({
             x: gridX,
             y: gridY,
-            type: selectedTowerType,
+            type,
             level: 1,
             cooldown: 0,
-            buffs: { doubleShot: 0, freeze: 0 },
-            ...TOWER_STATS[selectedTowerType],
+            buffs: {
+              doubleShot: 0,
+              freeze: 0
+            },
+            ...TOWER_STATS[type],
           });
           abyssals -= cost;
           updateHUD();
@@ -2458,10 +2530,13 @@ import Layout from '../../components/layout/Layout.astro';
       }
 
       // Draw Placement Preview
-      if (selectedTowerType) {
+      const previewType = isDragging ? draggedType : selectedTowerType;
+      if (previewType) {
         const gridX = Math.round(mouseX / GRID_SIZE) * GRID_SIZE;
         const gridY = Math.round(mouseY / GRID_SIZE) * GRID_SIZE;
-        const stats = TOWER_STATS[selectedTowerType];
+        const stats = TOWER_STATS[previewType];
+        if (!stats) return; // Safety check
+
         const h = stats.gridHeight || 1;
         let isOccupied = false;
         let isOnPath = false;
@@ -2491,9 +2566,9 @@ import Layout from '../../components/layout/Layout.astro';
         const inRightUI = gridX > canvas.width - 120;
         const inBottomUI = gridY > canvas.height - 70;
 
-        const dynamicCost = selectedTowerType === 'repair' ? 50 + wave * 5 : stats.cost;
-        const isRepair = selectedTowerType === 'repair';
-        const isUpgrade = selectedTowerType === 'upgrade';
+        const dynamicCost = previewType === 'repair' ? 50 + wave * 5 : stats.cost;
+        const isRepair = previewType === 'repair';
+        const isUpgrade = previewType === 'upgrade';
         const isBuilding = !isRepair && !isUpgrade;
 
         const isValid =
@@ -2518,8 +2593,8 @@ import Layout from '../../components/layout/Layout.astro';
         // Draw Tower Ghost
         ctx.globalAlpha = 0.5;
         const visualGhostY = gridY + ((h - 1) * GRID_SIZE) / 2;
-        if (spritesLoaded && SPRITE_MAP.towers[selectedTowerType]) {
-          const s = SPRITE_MAP.towers[selectedTowerType];
+        if (spritesLoaded && SPRITE_MAP.towers[previewType]) {
+          const s = SPRITE_MAP.towers[previewType];
           const renderSize = stats.size * 2.5;
           const renderH = renderSize * (h > 1 ? 1.5 : 1);
           ctx.drawImage(
@@ -2535,7 +2610,7 @@ import Layout from '../../components/layout/Layout.astro';
           );
         } else {
           ctx.fillStyle = isValid ? stats.color : '#EF4444';
-          if (selectedTowerType === 'basic') {
+          if (previewType === 'basic') {
             ctx.fillRect(gridX - stats.size / 2, visualGhostY - stats.size / 2, stats.size, stats.size);
           } else {
             ctx.beginPath();
