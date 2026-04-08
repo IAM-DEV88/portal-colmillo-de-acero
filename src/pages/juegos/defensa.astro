@@ -39,65 +39,150 @@ import Layout from '../../components/layout/Layout.astro';
       id="game-container"
       class="w-full max-w-5xl mx-auto relative rounded-xl overflow-hidden border-2 border-indigo-900/50 shadow-2xl bg-gray-900 aspect-video flex items-center justify-center"
     >
-      <!-- UI Overlay -->
-      <div class="absolute top-2 left-2 right-36 md:top-4 md:left-4 md:right-auto z-20 flex flex-wrap gap-1 md:gap-2 pointer-events-none">
+      <!-- UI Overlay (Top HUD) -->
+      <div class="absolute top-2 left-2 right-28 md:top-3 md:left-3 md:right-auto z-20 flex flex-wrap gap-1 md:gap-1.5 pointer-events-none">
         <div
-          class="bg-black/80 text-white px-2 md:px-3 py-1 md:py-1.5 rounded border border-white/10 font-mono text-xs md:text-sm shadow-md flex flex-col items-center flex-1 min-w-[55px] md:min-w-[70px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[50px] md:min-w-[65px]"
         >
-          <span class="text-gray-400 text-[7px] md:text-[8px] block uppercase tracking-tighter">Salud</span>
-          <span id="health-display" class="text-red-400 font-bold text-sm md:text-base">100</span>
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Salud</span>
+          <span id="health-display" class="text-red-400 font-bold">100</span>
         </div>
         <div
-          class="bg-black/80 text-white px-2 md:px-3 py-1 md:py-1.5 rounded border border-white/10 font-mono text-xs md:text-sm shadow-md flex flex-col items-center flex-1 min-w-[55px] md:min-w-[70px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[50px] md:min-w-[65px]"
         >
-          <span class="text-gray-400 text-[7px] md:text-[8px] block uppercase tracking-tighter"
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter"
             >Abisales</span
           >
-          <span id="abyssals-display" class="text-purple-400 font-bold text-sm md:text-base">150</span>
+          <span id="abyssals-display" class="text-purple-400 font-bold">150</span>
         </div>
         <div
-          class="bg-black/80 text-white px-2 md:px-3 py-1 md:py-1.5 rounded border border-white/10 font-mono text-xs md:text-sm shadow-md flex flex-col items-center flex-1 min-w-[55px] md:min-w-[70px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[50px] md:min-w-[65px]"
         >
-          <span class="text-gray-400 text-[7px] md:text-[8px] block uppercase tracking-tighter"
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter"
             >Mejoras</span
           >
           <div class="flex items-baseline gap-1">
-            <span id="upgrades-display" class="text-amber-400 font-bold text-sm md:text-base">50</span>
-            <span id="upgrade-costs-display" class="text-amber-600 text-[8px] md:text-[9px] font-mono"></span>
+            <span id="upgrades-display" class="text-amber-400 font-bold">50</span>
+            <span id="upgrade-costs-display" class="text-amber-600 text-[7px] md:text-[8px] font-mono"></span>
           </div>
         </div>
         <div
-          class="bg-black/80 text-white px-2 md:px-3 py-1 md:py-1.5 rounded border border-white/10 font-mono text-xs md:text-sm shadow-md flex flex-col items-center flex-1 min-w-[45px] md:min-w-[60px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[40px] md:min-w-[55px]"
         >
-          <span class="text-gray-400 text-[7px] md:text-[8px] block uppercase tracking-tighter">Oleada</span>
-          <span id="wave-display" class="text-indigo-400 font-bold text-sm md:text-base">0</span>
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Oleada</span>
+          <span id="wave-display" class="text-indigo-400 font-bold">0</span>
         </div>
         <div
-          class="bg-black/80 text-white px-2 md:px-3 py-1 md:py-1.5 rounded border border-white/10 font-mono text-xs md:text-sm shadow-md flex flex-col items-center flex-1 min-w-[45px] md:min-w-[60px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[40px] md:min-w-[55px]"
         >
-          <span class="text-gray-400 text-[7px] md:text-[8px] block uppercase tracking-tighter">Torres</span>
-          <span id="tower-count-display" class="text-blue-400 font-bold text-sm md:text-base">0/30</span>
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Torres</span>
+          <span id="tower-count-display" class="text-blue-400 font-bold">0/30</span>
+        </div>
+      </div>
+
+      <!-- Left Bottom Tools Panel -->
+      <div
+        class="absolute left-2 bottom-2 md:left-4 md:bottom-4 z-30 flex items-center gap-2 pointer-events-auto"
+      >
+        <!-- Fullscreen Button -->
+        <button
+          id="fullscreen-btn"
+          class="w-10 h-10 rounded-xl bg-black/60 backdrop-blur-md border border-white/20 text-white/60 flex items-center justify-center shadow-xl hover:bg-indigo-600/60 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
+          title="Pantalla Completa"
+        >
+          <span class="text-lg group-hover:rotate-12 transition-transform">⛶</span>
+        </button>
+
+        <!-- Config Button -->
+        <button
+          id="config-btn"
+          class="w-10 h-10 rounded-xl bg-black/60 backdrop-blur-md border border-white/20 text-white/60 flex items-center justify-center shadow-xl hover:bg-indigo-600/60 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
+          title="Configuración"
+        >
+          <span class="text-lg group-hover:rotate-90 transition-transform">⚙️</span>
+        </button>
+
+        <div class="h-8 w-[1px] bg-white/10 mx-1"></div>
+
+        <!-- Repair Button -->
+        <button
+          class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-green-900/40 border border-green-500/50 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center shadow-lg"
+          data-type="repair"
+          data-cost="50"
+        >
+          <span class="text-lg md:text-xl">🔧</span>
+          <span
+            class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-amber-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-amber-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+            >50m</span
+          >
+        </button>
+
+        <!-- Upgrade Button -->
+        <button
+          class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-orange-900/40 border border-orange-500/50 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center shadow-lg"
+          data-type="upgrade"
+          data-cost="150"
+        >
+          <span class="text-lg md:text-xl">⬆️</span>
+          <span
+            class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-orange-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+            >150m</span
+          >
+        </button>
+      </div>
+
+      <!-- Config Modal -->
+      <div
+        id="config-modal"
+        class="absolute inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md hidden"
+      >
+        <div
+          class="w-full max-w-xs bg-gray-900 border border-indigo-500/30 rounded-2xl p-6 shadow-2xl"
+        >
+          <h2 class="text-xl font-black text-indigo-400 uppercase tracking-widest mb-6 italic text-center">Configuración</h2>
+          
+          <div class="space-y-6">
+            <div class="flex items-center justify-between">
+              <span class="text-white font-bold uppercase tracking-tighter">Sonidos</span>
+              <button
+                id="toggle-sound"
+                class="w-14 h-7 rounded-full bg-indigo-900/50 border border-indigo-500/50 relative transition-colors"
+              >
+                <div
+                  id="sound-switch"
+                  class="absolute top-1 left-1 w-5 h-5 rounded-full bg-indigo-400 transition-transform translate-x-7"
+                ></div>
+              </button>
+            </div>
+          </div>
+
+          <button
+            id="close-config"
+            class="w-full mt-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest rounded-xl transition-colors shadow-lg shadow-indigo-600/20"
+          >
+            Cerrar
+          </button>
         </div>
       </div>
 
       <!-- Towers Panel (Right) -->
       <div
-        class="absolute right-2 top-2 bottom-2 md:right-4 md:top-4 md:bottom-4 w-20 md:w-24 bg-black/85 backdrop-blur-md border border-indigo-500/30 rounded-xl md:rounded-2xl z-20 flex flex-col items-center py-2 md:py-4 gap-2 md:gap-4 touch-pan-y overflow-y-auto custom-scrollbar shadow-2xl"
+        class="absolute right-2 top-2 bottom-2 md:right-4 md:top-4 md:bottom-4 w-16 md:w-20 bg-black/85 backdrop-blur-md border border-indigo-500/30 rounded-xl md:rounded-2xl z-20 flex flex-col items-center py-2 md:py-4 gap-3 md:gap-4 touch-pan-y overflow-y-auto custom-scrollbar shadow-2xl"
       >
         <span
-          class="text-[8px] md:text-[9px] text-indigo-300 uppercase font-black tracking-[0.2em] text-center leading-tight mb-1 drop-shadow-sm px-1"
+          class="text-[7px] md:text-[8px] text-indigo-300 uppercase font-black tracking-[0.2em] text-center leading-tight mb-1 drop-shadow-sm px-1"
           >Defensas</span
         >
 
-        <!-- Towers Column (Single column) -->
-        <div class="flex flex-col gap-3 md:gap-5 px-1 md:px-2">
+        <!-- Towers Column -->
+        <div class="flex flex-col gap-4 md:gap-6 px-1 md:px-2">
           <!-- Tower 1 -->
           <button
-            class="tower-btn group relative w-12 h-12 shrink-0 rounded-lg md:rounded-xl bg-blue-900/30 border border-blue-500/50 hover:bg-blue-800/50 hover:border-blue-400 transition-all flex items-center justify-center shadow-lg"
+            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-blue-900/30 border border-blue-500/50 hover:bg-blue-800/50 hover:border-blue-400 transition-all flex items-center justify-center shadow-lg"
             data-type="basic"
             data-cost="100"
           >
-            <div class="w-6 h-6 bg-blue-400 rounded-sm group-hover:scale-110 transition-transform"></div>
+            <div class="w-5 h-5 md:w-6 md:h-6 bg-blue-400 rounded-sm group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(96,165,250,0.5)]"></div>
             <span
               class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-blue-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-blue-900/50 z-10 pointer-events-none whitespace-nowrap"
               >25a</span
@@ -106,11 +191,11 @@ import Layout from '../../components/layout/Layout.astro';
 
           <!-- Tower 2 -->
           <button
-            class="tower-btn group relative w-12 h-12 shrink-0 rounded-lg md:rounded-xl bg-purple-900/30 border border-purple-500/50 hover:bg-purple-800/50 hover:border-purple-400 transition-all flex items-center justify-center shadow-lg"
+            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-purple-900/30 border border-purple-500/50 hover:bg-purple-800/50 hover:border-purple-400 transition-all flex items-center justify-center shadow-lg"
             data-type="sniper"
             data-cost="150"
           >
-            <div class="w-4 h-4 bg-purple-400 rounded-full group-hover:scale-110 transition-transform"></div>
+            <div class="w-3.5 h-3.5 md:w-4 md:h-4 bg-purple-400 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
             <span
               class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-purple-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-purple-900/50 z-10 pointer-events-none whitespace-nowrap"
               >150a</span
@@ -119,11 +204,11 @@ import Layout from '../../components/layout/Layout.astro';
 
           <!-- Tower 3 -->
           <button
-            class="tower-btn group relative w-12 h-12 shrink-0 rounded-lg md:rounded-xl bg-red-900/30 border border-red-500/50 hover:bg-red-800/50 hover:border-red-400 transition-all flex items-center justify-center shadow-lg"
+            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-red-900/30 border border-red-500/50 hover:bg-red-800/50 hover:border-red-400 transition-all flex items-center justify-center shadow-lg"
             data-type="splash"
             data-cost="300"
           >
-            <div class="w-5 h-5 bg-red-400 rotate-45 group-hover:scale-110 transition-transform"></div>
+            <div class="w-4 h-4 md:w-5 md:h-5 bg-red-400 rotate-45 group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
             <span
               class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-red-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-red-900/50 z-10 pointer-events-none whitespace-nowrap"
               >300a</span
@@ -132,11 +217,11 @@ import Layout from '../../components/layout/Layout.astro';
 
           <!-- Tower 4 -->
           <button
-            class="tower-btn group relative w-12 h-12 shrink-0 rounded-lg md:rounded-xl bg-cyan-900/30 border border-cyan-500/50 hover:bg-cyan-800/50 hover:border-cyan-400 transition-all flex items-center justify-center shadow-lg"
+            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-cyan-900/30 border border-cyan-500/50 hover:bg-cyan-800/50 hover:border-cyan-400 transition-all flex items-center justify-center shadow-lg"
             data-type="nova"
             data-cost="500"
           >
-            <div class="w-5 h-5 bg-cyan-400 rounded-full group-hover:scale-110 transition-transform flex items-center justify-center">
+            <div class="w-4 h-4 md:w-5 md:h-5 bg-cyan-400 rounded-full group-hover:scale-110 transition-transform flex items-center justify-center shadow-[0_0_8px_rgba(34,211,238,0.5)]">
               <span class="text-[8px] md:text-[10px] text-black font-black">❄️</span>
             </div>
             <span
@@ -146,41 +231,12 @@ import Layout from '../../components/layout/Layout.astro';
           </button>
         </div>
 
-        <div class="w-12 md:w-16 h-[1px] bg-white/10 my-1 md:my-2 shrink-0"></div>
+        <div class="w-12 md:w-14 h-[1px] bg-white/10 my-2 md:my-4 shrink-0"></div>
 
-        <!-- Utilities Column -->
-        <div class="flex flex-col gap-3 md:gap-5 px-1 md:px-2">
-          <!-- Repair Button -->
-          <button
-            class="tower-btn group relative w-12 h-12 shrink-0 rounded-lg md:rounded-xl bg-green-900/30 border border-green-500/50 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="repair"
-            data-cost="50"
-          >
-            <span class="text-xl">🔧</span>
-            <span
-              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-amber-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-amber-900/50 z-10 pointer-events-none repair-cost-tag whitespace-nowrap"
-              >50m</span
-            >
-          </button>
-
-          <!-- Upgrade Button -->
-          <button
-            class="tower-btn group relative w-12 h-12 shrink-0 rounded-lg md:rounded-xl bg-orange-900/30 border border-orange-500/50 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="upgrade"
-            data-cost="150"
-          >
-            <span class="text-xl">⬆️</span>
-            <span
-              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-orange-900/50 z-10 pointer-events-none whitespace-nowrap"
-              >150m</span
-            >
-          </button>
-        </div>
-
-        <!-- Pause Button (Narrower) -->
+        <!-- Pause Button -->
         <button
           id="pause-btn"
-          class="tower-btn group relative w-12 h-12 md:w-14 md:h-14 mt-1 md:mt-2 shrink-0 rounded-lg md:rounded-xl bg-yellow-900/30 border border-yellow-500/50 hover:bg-yellow-800/50 hover:border-yellow-400 transition-all flex items-center justify-center shadow-lg"
+          class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-yellow-900/30 border border-yellow-500/50 hover:bg-yellow-800/50 hover:border-yellow-400 transition-all flex items-center justify-center shadow-lg"
         >
           <span class="text-lg md:text-xl text-white font-bold tracking-wider">⏸️</span>
           <span
@@ -189,19 +245,10 @@ import Layout from '../../components/layout/Layout.astro';
           >
         </button>
 
-        <div class="mt-auto pt-2 md:pt-4 text-center text-[7px] md:text-[8px] text-gray-500 italic px-1 shrink-0 uppercase tracking-tighter">
+        <div class="mt-auto pt-2 md:pt-4 text-center text-[6px] md:text-[7px] text-gray-500 italic px-1 shrink-0 uppercase tracking-tighter">
           Toca torre
         </div>
       </div>
-
-      <!-- Floating Fullscreen Button -->
-      <button
-        id="fullscreen-btn"
-        class="absolute left-4 bottom-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white/60 flex items-center justify-center shadow-xl z-30 hover:bg-indigo-600/60 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
-        title="Pantalla Completa"
-      >
-        <span class="text-lg group-hover:rotate-12 transition-transform">⛶</span>
-      </button>
 
       <!-- Canvas -->
       <canvas
@@ -253,12 +300,14 @@ import Layout from '../../components/layout/Layout.astro';
     let isCityFallen = false; // Tracks if health is 0 but enemies are still arriving
     let isPaused = false;
     let enemiesLeftToSpawn = 0;
-    let passiveUpgradesTimer = 0;
+    let isMouseDown = false;
     let mouseX = 0;
     let mouseY = 0;
-    let isMouseDown = false;
     let isShiftDown = false;
     let screenShake = 0; // Current screen shake intensity
+
+    // Sound state
+    let soundsEnabled = true;
 
     // Drag and Drop Mobile state
     let isDragging = false;
@@ -274,11 +323,11 @@ import Layout from '../../components/layout/Layout.astro';
     let globalFrenzyTimer = 0;
     const TOWER_LIMIT = 30;
 
+    let path = [];
+
     // --- SPRITE ASSETS ---
     const spriteSheet = new Image();
-    spriteSheet.src = '/images/sprites.png';
     const bgImage = new Image();
-    bgImage.src = '/images/fondoDefensa.png';
     
     let spritesLoaded = false;
     let bgLoaded = false;
@@ -289,8 +338,12 @@ import Layout from '../../components/layout/Layout.astro';
     };
     bgImage.onload = () => {
       bgLoaded = true;
-      if (path.length > 0) redrawBackground();
+      if (path && path.length > 0) redrawBackground();
     };
+
+    // Set sources after handlers are attached and variables declared
+    spriteSheet.src = '/images/sprites.png';
+    bgImage.src = '/images/fondoDefensa.png';
 
     const SPRITE_MAP = {
       towers: {
@@ -483,8 +536,6 @@ import Layout from '../../components/layout/Layout.astro';
       },
     ];
 
-    let path = [];
-
     function redrawBackground() {
       bgCanvas.width = canvas.width;
       bgCanvas.height = canvas.height;
@@ -526,33 +577,33 @@ import Layout from '../../components/layout/Layout.astro';
 
       const newPath = [];
 
-      // Start on left edge, avoiding HUD and status bar
-      // HUD is at (0,0) with size approx (480, 140)
-      // Status bar at bottom (0, 500) approx
-      // Safe start area: x=0, y between 160 and 480
+      // Start on left edge, avoiding HUD
+      // HUD is approx (420, 80)
       let currentY = Math.random() * 200 + 200; // Start between 200 and 400
       newPath.push({ x: 0, y: currentY });
 
       let currentX = 0;
 
-      // We want to avoid the Right Panel (x > 900)
-      while (currentX < maxW - 250) {
+      // We want to avoid the Right Panel (x > 940)
+      // We want to avoid the HUD (x < 420, y < 80)
+      // We want to avoid the Tools Panel (x < 180, y > 520)
+      while (currentX < maxW - 200) {
         currentX += Math.random() * (maxW * 0.15) + maxW * 0.15;
-        if (currentX > maxW - 200) currentX = maxW - 200;
+        if (currentX > maxW - 150) currentX = maxW - 150;
 
-        // Vertical safe zone: y between 160 and 480
-        let minY = 160;
-        let maxY = maxH - 120;
+        // Vertical safe zone: y between 100 and 500
+        let minY = 100;
+        let maxY = maxH - 100;
 
         currentY = Math.random() * (maxY - minY) + minY;
         newPath.push({ x: currentX, y: currentY });
       }
 
-      // End path: Go towards the portal but avoiding the panel
-      // The portal is conceptually at the end of the path
-      // Force end to be clear of UI
-      const finalY = currentY > maxH / 2 ? maxH - 120 : 160;
-      newPath.push({ x: currentX, y: finalY });
+      // End path: ALWAYS at the Portal location
+      // Based on fondoDefensa.png, the portal is roughly at x=940, y=280
+      const portalX = 940;
+      const portalY = 280;
+      newPath.push({ x: portalX, y: portalY });
 
       path = newPath;
       redrawBackground();
@@ -665,7 +716,6 @@ import Layout from '../../components/layout/Layout.astro';
           const data = await res.json();
           credits = data.credits;
           document.getElementById('credits-display').innerText = credits;
-          document.getElementById('start-btn').disabled = credits <= 0;
         }
       } catch (e) {
         console.error('Error loading credits', e);
@@ -788,6 +838,36 @@ import Layout from '../../components/layout/Layout.astro';
         
         isDragging = false;
         draggedType = null;
+      });
+
+      // Config Modal Handlers
+      const configBtn = document.getElementById('config-btn');
+      const configModal = document.getElementById('config-modal');
+      const closeConfig = document.getElementById('close-config');
+      const toggleSound = document.getElementById('toggle-sound');
+      const soundSwitch = document.getElementById('sound-switch');
+
+      configBtn.addEventListener('click', () => {
+        configModal.classList.remove('hidden');
+      });
+
+      closeConfig.addEventListener('click', () => {
+        configModal.classList.add('hidden');
+      });
+
+      toggleSound.addEventListener('click', () => {
+        soundsEnabled = !soundsEnabled;
+        if (soundsEnabled) {
+          toggleSound.classList.remove('bg-gray-800', 'border-gray-600');
+          toggleSound.classList.add('bg-indigo-900/50', 'border-indigo-500/50');
+          soundSwitch.classList.remove('translate-x-0');
+          soundSwitch.classList.add('translate-x-7');
+        } else {
+          toggleSound.classList.remove('bg-indigo-900/50', 'border-indigo-500/50');
+          toggleSound.classList.add('bg-gray-800', 'border-gray-600');
+          soundSwitch.classList.remove('translate-x-7');
+          soundSwitch.classList.add('translate-x-0');
+        }
       });
 
       window.addEventListener('keydown', (e) => {
@@ -1034,15 +1114,16 @@ import Layout from '../../components/layout/Layout.astro';
           return;
         }
 
-        // Define UI bounding boxes
-        const inTopLeftUI = gridX < 480 && gridY < 140; // HUD indicators
-        const inRightUI = gridX > canvas.width - 100; // Tower panel
-        const inBottomUI = gridY > canvas.height - 100; // Start button / Status bar area
-        const inLeftEdge = gridX < 40; // Prevent building too close to left edge
+        // Define UI bounding boxes for construction validation
+        const inTopLeftUI = gridX < 420 && gridY < 80; // Compact HUD
+        const inRightUI = gridX > canvas.width - 80; // Slimmer Tower panel
+        const inBottomLeftUI = gridX < 180 && gridY > canvas.height - 80; // Tools panel area
+        const inStartButton = gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height - 140;
+        const inLeftEdge = gridX < 20;
 
-        if (inTopLeftUI || inRightUI || inBottomUI || inLeftEdge) {
+        if (inTopLeftUI || inRightUI || inBottomLeftUI || inStartButton || inLeftEdge) {
           if (!isShiftDown) {
-            showCanvasToast('No puedes construir detrás de la interfaz', 'error');
+            showCanvasToast('No puedes construir sobre la interfaz', 'error');
             playSFX('error');
           }
           return;
@@ -1056,7 +1137,7 @@ import Layout from '../../components/layout/Layout.astro';
 
         for (let i = 0; i < h; i++) {
           const checkY = gridY + i * GRID_SIZE;
-          if (checkY > canvas.height - 100) outOfBounds = true;
+          if (checkY > canvas.height - 40) outOfBounds = true; // Much lower limit now
 
           if (
             towers.some((t) => {
@@ -1132,6 +1213,7 @@ import Layout from '../../components/layout/Layout.astro';
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playSFX(type) {
+      if (!soundsEnabled) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
@@ -1397,6 +1479,7 @@ import Layout from '../../components/layout/Layout.astro';
       document.getElementById('health-display').innerText = health;
       document.getElementById('upgrades-display').innerText = Math.floor(upgrades);
       document.getElementById('upgrade-costs-display').innerText = `(R:${repairCost}m M:${upgradeCost}m)`;
+      document.getElementById('credits-display').innerText = credits;
 
       if (document.getElementById('abyssals-display'))
         document.getElementById('abyssals-display').innerText = Math.floor(abyssals);
@@ -2553,11 +2636,12 @@ import Layout from '../../components/layout/Layout.astro';
           if (isCollidingWithPath(gridX, checkY)) isOnPath = true;
         }
 
-        // Define UI bounding boxes (Top-Left info panel and Right-side tower panel)
-        const inTopLeftUI = gridX < 480 && gridY < 140; // HUD indicators
-        const inRightUI = gridX > canvas.width - 100; // Tower panel
-        const inBottomUI = gridY > canvas.height - 100; // Start button / Status bar area
-        const inLeftEdge = gridX < 40; // Prevent building too close to left edge
+        // Define UI bounding boxes for construction validation
+        const inTopLeftUI = gridX < 420 && gridY < 80; // Compact HUD
+        const inRightUI = gridX > canvas.width - 80; // Slimmer Tower panel
+        const inBottomLeftUI = gridX < 180 && gridY > canvas.height - 80; // Tools panel area
+        const inStartButton = gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height - 140;
+        const inLeftEdge = gridX < 20;
 
         const dynamicCost = previewType === 'repair' ? 50 + wave * 5 : stats.cost;
         const isRepair = previewType === 'repair';
@@ -2569,7 +2653,8 @@ import Layout from '../../components/layout/Layout.astro';
           !isOnPath &&
           !inTopLeftUI &&
           !inRightUI &&
-          !inBottomUI &&
+          !inBottomLeftUI &&
+          !inStartButton &&
           !inLeftEdge &&
           !outOfBounds &&
           (isRepair ? upgrades >= dynamicCost : abyssals >= dynamicCost) &&
@@ -2621,13 +2706,25 @@ import Layout from '../../components/layout/Layout.astro';
         ctx.save();
         ctx.globalAlpha = ft.life / 60; // Fade out
 
-        ctx.translate(ft.x, ft.y);
+        // Reposition notifications based on type (Buffs/Debuffs)
+        // Move them to bottom left area if they are general notifications
+        let fx = ft.x;
+        let fy = ft.y + ft.vy;
+        
+        if (ft.type === 'buff' || ft.type === 'debuff') {
+          // General status notifications move to bottom-left area (above tools)
+          fx = 100;
+          const curseOffset = (curseNotification && curseNotification.life > 0) ? 60 : 0;
+          fy = canvas.height - 110 - curseOffset - (i * 25) + ft.vy;
+        }
+
+        ctx.translate(fx, fy);
 
         // Slightly bigger for important things
-        let fontSize = 16;
+        let fontSize = 14; // Reduced from 16
         if (ft.type === 'buff' || ft.type === 'debuff') {
-          fontSize = 20;
-          ctx.scale(1.2, 1.2); // Pulse slightly
+          fontSize = 18; // Reduced from 20
+          ctx.scale(1.1, 1.1); // Pulse slightly
         }
 
         ctx.font = `900 ${fontSize}px sans-serif`;
@@ -2635,7 +2732,7 @@ import Layout from '../../components/layout/Layout.astro';
         ctx.textBaseline = 'middle';
 
         // Black outline for readability without background
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2; // Reduced from 3
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
         ctx.strokeText(ft.text, 0, 0);
 
@@ -2644,15 +2741,13 @@ import Layout from '../../components/layout/Layout.astro';
 
         ctx.restore();
 
-        ft.y += ft.vy;
+        ft.vy -= 0.1; // Simple gravity/float effect
         ft.life--;
       }
       // Clean up floating texts
       for (let i = floatingTexts.length - 1; i >= 0; i--) {
         if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1);
       }
-
-      ctx.restore(); // Restore from screen shake translation
 
       // --- OVERLAY AND BUTTON DRAWN LAST (STATIC) ---
       if (gameState === 'intro' || gameState === 'gameover') {
@@ -2826,20 +2921,20 @@ import Layout from '../../components/layout/Layout.astro';
           toast.rotation *= 0.6; // Very fast decay rotation back to straight
         }
 
-        ctx.font = '900 24px sans-serif'; // Default to big combo-like font
+        ctx.font = '900 16px sans-serif'; // Reduced from 24px
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
         if (toast.isCombo || toast.isKillCombo) {
-          ctx.font = '900 28px sans-serif'; // Bigger font for combo
+          ctx.font = '900 22px sans-serif'; // Reduced from 28px
           ctx.fillStyle = toast.isKillCombo ? '#EF4444' : '#F59E0B'; // Red for kills, Amber for runes
-          ctx.lineWidth = 4;
+          ctx.lineWidth = 3; // Reduced from 4
           ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
           ctx.strokeText(toast.msg, 0, 0); // Add black outline to combos too
         } else {
           ctx.fillStyle =
             toast.type === 'error' ? '#EF4444' : toast.type === 'success' ? '#34D399' : '#60A5FA';
-          ctx.lineWidth = 4;
+          ctx.lineWidth = 3; // Reduced from 4
           ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
           ctx.strokeText(toast.msg, 0, 0); // Add black outline for readability without background
         }
@@ -2907,10 +3002,10 @@ import Layout from '../../components/layout/Layout.astro';
       // Después de dibujar los status effects, agrega:
       if (curseNotification && curseNotification.life > 0) {
         const alpha = Math.min(1, curseNotification.life / 40);
-        const w = 300,
-          h = 56;
-        const x = canvas.width - w - 16;
-        const y = canvas.height - h - 16;
+        const w = 280,
+          h = 48;
+        const x = 16;
+        const y = canvas.height - h - 85; // Justo encima de los controles (Tools panel)
 
         ctx.save();
         ctx.globalAlpha = alpha;
@@ -2928,16 +3023,16 @@ import Layout from '../../components/layout/Layout.astro';
         ctx.fillStyle = '#7C3AED';
         ctx.beginPath();
         ctx.roundRect
-          ? ctx.roundRect(x, y + h - 5, w * (curseNotification.life / 240), 5, [0, 0, 0, 10])
-          : ctx.fillRect(x, y + h - 5, w * (curseNotification.life / 240), 5);
+          ? ctx.roundRect(x, y + h - 4, w * (curseNotification.life / 240), 4, [0, 0, 0, 10])
+          : ctx.fillRect(x, y + h - 4, w * (curseNotification.life / 240), 4);
         ctx.fill();
 
         // Icono y texto
         ctx.fillStyle = '#E9D5FF';
-        ctx.font = 'bold 13px sans-serif';
+        ctx.font = 'bold 12px sans-serif';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText(`🔮 ${curseNotification.msg}`, x + 12, y + h / 2 - 2);
+        ctx.fillText(`🔮 ${curseNotification.msg}`, x + 12, y + h / 2);
 
         ctx.restore();
         curseNotification.life--;
