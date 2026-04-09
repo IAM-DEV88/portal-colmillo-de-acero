@@ -39,112 +39,121 @@ import Layout from '../../components/layout/Layout.astro';
       id="game-container"
       class="w-full max-w-5xl mx-auto relative rounded-xl overflow-hidden border-2 border-indigo-900/50 shadow-2xl bg-gray-900 aspect-video flex items-center justify-center"
     >
-      <!-- UI Overlay (Top HUD) -->
-      <div class="absolute top-2 left-2 right-28 md:top-3 md:left-3 md:right-auto z-20 flex flex-wrap gap-1 md:gap-1.5 pointer-events-none">
+      <!-- UI Overlay (Bottom HUD - Distributed Evenly) -->
+      <div class="absolute bottom-2 left-14 right-20 md:left-20 md:right-24 z-20 flex justify-between gap-1 pointer-events-none px-4">
         <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[50px] md:min-w-[65px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[45px] md:min-w-[60px]"
         >
           <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Salud</span>
           <span id="health-display" class="text-red-400 font-bold">100</span>
         </div>
         <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[50px] md:min-w-[65px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[45px] md:min-w-[60px]"
         >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter"
-            >Abisales</span
-          >
-          <span id="abyssals-display" class="text-purple-400 font-bold">100</span>
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Acero</span>
+          <span id="abyssals-display" class="text-slate-300 font-bold">100</span>
         </div>
         <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[70px] md:min-w-[90px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[65px] md:min-w-[85px]"
         >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter"
-            >Mejoras</span
-          >
-          <div class="flex flex-col items-center leading-tight">
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Táctica</span>
+          <div class="flex flex-col items-center leading-none">
             <div id="upgrades-display" class="text-amber-400 font-bold">0</div>
             <div class="flex items-center gap-1 mt-0.5">
               <div class="flex items-center gap-0.5">
-                <span class="text-[8px] md:text-[9px]">🔧</span>
-                <span id="repair-cost-display" class="text-green-500 font-bold text-[8px] md:text-[9px]">50</span>
+                <span class="text-[7px] md:text-[8px]">🔧</span>
+                <span id="repair-cost-display" class="text-green-500 font-bold text-[7px] md:text-[8px]">50</span>
               </div>
-              <span class="text-gray-600 text-[8px]">|</span>
+              <span class="text-gray-600 text-[7px]">|</span>
               <div class="flex items-center gap-0.5">
-                <span class="text-[8px] md:text-[9px]">⬆️</span>
-                <span id="upgrade-cost-display" class="text-orange-500 font-bold text-[8px] md:text-[9px]">150</span>
+                <span class="text-[7px] md:text-[8px]">⬆️</span>
+                <span id="upgrade-cost-display" class="text-orange-500 font-bold text-[7px] md:text-[8px]">150</span>
               </div>
             </div>
           </div>
         </div>
         <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[40px] md:min-w-[55px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[35px] md:min-w-[50px]"
         >
           <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Oleada</span>
           <span id="wave-display" class="text-indigo-400 font-bold">0</span>
         </div>
         <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-1 rounded border border-white/10 font-mono text-[10px] md:text-xs shadow-xl flex flex-col items-center flex-1 min-w-[40px] md:min-w-[55px]"
+          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[35px] md:min-w-[50px]"
         >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Torres</span>
+          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Puestos</span>
           <span id="tower-count-display" class="text-blue-400 font-bold">0/30</span>
         </div>
       </div>
 
-      <!-- Left Bottom Tools Panel -->
-    <div
-      class="absolute left-2 bottom-2 md:left-4 md:bottom-4 z-30 flex items-center gap-2 pointer-events-auto"
-    >
-      <!-- Fullscreen Button -->
-      <button
-        id="fullscreen-btn"
-        class="w-10 h-10 rounded-xl bg-black border border-white/20 text-white/60 flex items-center justify-center shadow-lg hover:bg-indigo-900 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
-        title="Pantalla Completa"
+      <!-- Left Vertical Tools Column -->
+      <div
+        class="absolute left-2 top-2 bottom-2 md:left-4 md:top-4 md:bottom-4 w-14 md:w-16 z-30 flex flex-col items-center py-4 gap-4 pointer-events-none"
       >
-        <span class="text-lg group-hover:rotate-12 transition-transform">⛶</span>
-      </button>
-
-      <!-- Config Button -->
-      <button
-        id="config-btn"
-        class="w-10 h-10 rounded-xl bg-black border border-white/20 text-white/60 flex items-center justify-center shadow-lg hover:bg-indigo-900 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
-        title="Configuración"
-      >
-        <span class="text-lg group-hover:rotate-90 transition-transform">⚙️</span>
-      </button>
-
-      <div class="h-8 w-[1px] bg-white/10 mx-1"></div>
-
-        <!-- Repair Button -->
-        <button
-          class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-green-900/40 border border-green-500/50 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center shadow-lg"
-          data-type="repair"
-          data-cost="50"
-        >
-          <span class="text-lg md:text-xl">🔧</span>
-          <span
-            class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-amber-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-amber-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
-            >50m</span
+        <div class="flex flex-col gap-4 pointer-events-auto">
+          <!-- Fullscreen Button -->
+          <button
+            id="fullscreen-btn"
+            class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-black/90 border border-white/20 text-white/60 flex items-center justify-center shadow-lg hover:bg-indigo-900 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
+            title="Pantalla Completa"
           >
-        </button>
+            <span class="text-lg group-hover:rotate-12 transition-transform">⛶</span>
+          </button>
 
-        <!-- Upgrade Button -->
-        <button
-          class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-orange-900/40 border border-orange-500/50 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center shadow-lg"
-          data-type="upgrade"
-          data-cost="150"
-        >
-          <span class="text-lg md:text-xl">⬆️</span>
-          <span
-            class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-orange-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
-            >150m</span
+          <!-- Config Button -->
+          <button
+            id="config-btn"
+            class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-black/90 border border-white/20 text-white/60 flex items-center justify-center shadow-lg hover:bg-indigo-900 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
+            title="Configuración"
           >
-        </button>
+            <span class="text-lg group-hover:rotate-90 transition-transform">⚙️</span>
+          </button>
+
+          <!-- Sell Button -->
+          <button
+            class="tower-btn w-10 h-10 md:w-11 md:h-11 rounded-xl bg-black/90 border border-red-500/20 text-red-500/60 flex items-center justify-center shadow-lg hover:bg-red-950 hover:text-red-400 hover:border-red-500 transition-all hover:scale-110 active:scale-95 group"
+            data-type="sell"
+            title="Vender Torre"
+          >
+            <span class="text-lg group-hover:rotate-12 transition-transform">💰</span>
+          </button>
+        </div>
+
+        <div class="w-8 h-[1px] bg-white/10 my-1"></div>
+
+        <div class="flex flex-col gap-4 pointer-events-auto">
+          <!-- Repair Button -->
+          <button
+            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-green-900/40 border border-green-500/50 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center shadow-lg"
+            data-type="repair"
+            data-cost="50"
+          >
+            <span class="text-lg md:text-xl">🔧</span>
+            <span
+              class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-amber-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-amber-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+              >50m</span
+            >
+          </button>
+
+          <!-- Upgrade Button -->
+          <button
+            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-orange-900/40 border border-orange-500/50 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center shadow-lg"
+            data-type="upgrade"
+            data-cost="150"
+          >
+            <span class="text-lg md:text-xl">⬆️</span>
+            <span
+              class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-orange-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+              >150m</span
+            >
+          </button>
+        </div>
       </div>
 
       <!-- Config Modal -->
       <div
         id="config-modal"
-        class="absolute inset-0 z-[100] flex items-center justify-center bg-black hidden"
+        class="absolute inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden"
       >
         <div
           class="w-full max-w-xs bg-gray-950 border border-indigo-500/50 rounded-2xl p-6 shadow-2xl"
@@ -152,6 +161,7 @@ import Layout from '../../components/layout/Layout.astro';
           <h2 class="text-xl font-black text-indigo-400 uppercase tracking-widest mb-6 italic text-center">Configuración</h2>
           
           <div class="space-y-6">
+            <!-- Sounds Toggle -->
             <div class="flex items-center justify-between">
               <span class="text-white font-bold uppercase tracking-tighter">Sonidos</span>
               <button
@@ -161,6 +171,23 @@ import Layout from '../../components/layout/Layout.astro';
                 <div
                   id="sound-switch"
                   class="absolute top-1 left-1 w-5 h-5 rounded-full bg-indigo-400 transition-transform translate-x-7"
+                ></div>
+              </button>
+            </div>
+
+            <!-- Turbo Toggle -->
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="text-white font-bold uppercase tracking-tighter">Modo Turbo</span>
+                <span class="text-[10px] text-amber-500/70 font-bold uppercase tracking-widest">Velocidad x2</span>
+              </div>
+              <button
+                id="toggle-turbo"
+                class="w-14 h-7 rounded-full bg-gray-800 border border-gray-600 relative transition-colors"
+              >
+                <div
+                  id="turbo-switch"
+                  class="absolute top-1 left-1 w-5 h-5 rounded-full bg-gray-400 transition-transform"
                 ></div>
               </button>
             </div>
@@ -181,20 +208,21 @@ import Layout from '../../components/layout/Layout.astro';
       >
         <span
           class="text-[7px] md:text-[8px] text-indigo-300 uppercase font-black tracking-[0.2em] text-center leading-tight mb-1 drop-shadow-sm px-1"
-          >Defensas</span
+          >Puestos de Avanzada</span
         >
 
         <!-- Towers Column -->
         <div class="flex flex-col gap-4 md:gap-6 px-1 md:px-2">
           <!-- Tower 1 -->
           <button
-            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-blue-900/30 border border-blue-500/50 hover:bg-blue-800/50 hover:border-blue-400 transition-all flex items-center justify-center shadow-lg"
+            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-slate-900/30 border border-slate-500/50 hover:bg-slate-800/50 hover:border-slate-400 transition-all flex items-center justify-center shadow-lg"
             data-type="basic"
             data-cost="20"
+            title="Colmillo Ligero: Defensa rápida y económica"
           >
-            <div class="w-5 h-5 md:w-6 md:h-6 bg-blue-400 rounded-sm group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(96,165,250,0.5)]"></div>
+            <div class="w-5 h-5 md:w-6 md:h-6 bg-slate-400 rounded-sm group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(148,163,184,0.5)]"></div>
             <span
-              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-blue-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-blue-900/50 z-10 pointer-events-none whitespace-nowrap"
+              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-slate-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-slate-900/50 z-10 pointer-events-none whitespace-nowrap"
               >20a</span
             >
           </button>
@@ -204,6 +232,7 @@ import Layout from '../../components/layout/Layout.astro';
             class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-purple-900/30 border border-purple-500/50 hover:bg-purple-800/50 hover:border-purple-400 transition-all flex items-center justify-center shadow-lg"
             data-type="sniper"
             data-cost="100"
+            title="Mirada del Lobo: Gran alcance y daño crítico"
           >
             <div class="w-3.5 h-3.5 md:w-4 md:h-4 bg-purple-400 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
             <span
@@ -217,6 +246,7 @@ import Layout from '../../components/layout/Layout.astro';
             class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-red-900/30 border border-red-500/50 hover:bg-red-800/50 hover:border-red-400 transition-all flex items-center justify-center shadow-lg"
             data-type="splash"
             data-cost="200"
+            title="Rugido de Acero: Daño en área devastador"
           >
             <div class="w-4 h-4 md:w-5 md:h-5 bg-red-400 rotate-45 group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
             <span
@@ -230,6 +260,7 @@ import Layout from '../../components/layout/Layout.astro';
             class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-cyan-900/30 border border-cyan-500/50 hover:bg-cyan-800/50 hover:border-cyan-400 transition-all flex items-center justify-center shadow-lg"
             data-type="nova"
             data-cost="300"
+            title="Aullido Ártico: Ralentiza y daña en el tiempo"
           >
             <div class="w-4 h-4 md:w-5 md:h-5 bg-cyan-400 rounded-full group-hover:scale-110 transition-transform flex items-center justify-center shadow-[0_0_8px_rgba(34,211,238,0.5)]">
               <span class="text-[8px] md:text-[10px] text-black font-black">❄️</span>
@@ -270,17 +301,17 @@ import Layout from '../../components/layout/Layout.astro';
       <!-- Event Warning Overlay (Tension UI) -->
       <div
         id="event-warning"
-        class="absolute inset-0 z-25 pointer-events-none flex items-center justify-center opacity-0 transition-opacity duration-300"
+        class="absolute top-2 z-25 pointer-events-none opacity-0 transition-opacity duration-300 left-1/2 -translate-x-1/2"
       >
         <div
-          class="bg-red-950 border-2 border-red-500 p-6 rounded-2xl shadow-2xl transform scale-90 transition-transform duration-300"
+          class="bg-red-950/95 border border-red-500/40 px-3 py-1 rounded-lg shadow-2xl transform scale-75 transition-transform duration-300"
           id="warning-box"
         >
           <h3
-            class="text-3xl font-black text-red-500 uppercase tracking-widest animate-pulse flex items-center gap-4"
+            class="text-[10px] md:text-xs font-black text-red-500 uppercase tracking-widest animate-pulse flex items-center gap-1.5"
           >
             <span>⚠️</span>
-            <span id="warning-text">¡PELIGRO DETECTADO!</span>
+            <span id="warning-text">¡PELIGRO!</span>
             <span>⚠️</span>
           </h3>
         </div>
@@ -309,10 +340,12 @@ import Layout from '../../components/layout/Layout.astro';
     let isEventActive = false;
     let isCityFallen = false; // Tracks if health is 0 but enemies are still arriving
     let isPaused = false;
+    let isTurbo = false;
     let enemiesLeftToSpawn = 0;
     let isMouseDown = false;
     let mouseX = 0;
     let mouseY = 0;
+    let inspectedTower = null; // Currently inspected tower for info plate
     let isShiftDown = false;
     let screenShake = 0; // Current screen shake intensity
 
@@ -331,6 +364,9 @@ import Layout from '../../components/layout/Layout.astro';
 
     let globalFreezeTimer = 0;
     let globalFrenzyTimer = 0;
+    let globalBloodlust = 0;
+    const BLOODLUST_THRESHOLD = 20;
+    let bloodlustTimer = 0;
     const TOWER_LIMIT = 30;
 
     let path = [];
@@ -491,47 +527,52 @@ import Layout from '../../components/layout/Layout.astro';
     const ENEMY_TYPES = [
       {
         id: 'zombie',
+        name: 'Errante del Vacío',
         color: '#94A3B8',
         speedMod: 1,
-        hpMod: 1,
+        hpMod: 1.1,
         attackType: 'normal',
-        effectText: '¡Horda de zombies!',
+        effectText: '¡La Plaga del Vacío se acerca!',
       },
       {
         id: 'brujo',
+        name: 'Sacerdote de Sombras',
         color: '#A855F7',
         speedMod: 0.7,
-        hpMod: 1.8,
+        hpMod: 2.0,
         attackType: 'shadow',
         isNecromancer: true,
-        effectText: '¡Brujo invocador!',
+        effectText: '¡Un Sacerdote invoca a los caídos!',
       },
       {
         id: 'berserker',
+        name: 'Bestia de Carga Corrupta',
         color: '#F97316',
-        speedMod: 1.4,
-        hpMod: 1.2,
+        speedMod: 1.5,
+        hpMod: 1.3,
         attackType: 'fire',
         isBerserker: true,
-        effectText: '¡Berserker furioso!',
+        effectText: '¡Una Bestia de Carga entra en frenesí!',
       },
       {
         id: 'valkiria',
+        name: 'Caballero Gélido',
         color: '#60A5FA',
-        speedMod: 1.1,
-        hpMod: 0.8,
+        speedMod: 1.2,
+        hpMod: 0.9,
         attackType: 'ice',
         hasRangeBuff: true,
-        effectText: '¡Valkiria de escarcha!',
+        effectText: '¡Un Caballero Gélido congela el aire!',
       },
       {
         id: 'orbe',
+        name: 'Espectro Corrupto',
         color: '#D946EF',
-        speedMod: 1.2,
-        hpMod: 0.5,
+        speedMod: 1.3,
+        hpMod: 0.6,
         attackType: 'shadow',
         isGhost: true,
-        effectText: '¡Orbe oscuro etéreo!',
+        effectText: '¡Un Espectro Corrupto se desvanece!',
       },
     ];
 
@@ -645,63 +686,76 @@ import Layout from '../../components/layout/Layout.astro';
     // --- TOWER CONFIG ---
     const TOWER_STATS = {
       basic: {
-        color: '#60A5FA',
+        name: 'Colmillo Ligero',
+        color: '#94A3B8',
         range: 180,
-        damage: 30,
-        fireRate: 30,
+        damage: 35,
+        fireRate: 25,
         cost: 20,
         size: 24,
-        hp: 100,
-        maxHp: 100,
+        hp: 120,
+        maxHp: 120,
         splash: false,
         gridHeight: 1,
+        critChance: 0.1,
+        quotes: ['¡Por el Colmillo!', '¡Acero y Sangre!', '¡No pasarán!'],
       },
       sniper: {
+        name: 'Mirada del Lobo',
         color: '#C084FC',
-        range: 350,
-        damage: 80,
-        fireRate: 90,
+        range: 380,
+        damage: 120,
+        fireRate: 80,
         cost: 100,
         size: 16,
-        hp: 60,
-        maxHp: 60,
+        hp: 70,
+        maxHp: 70,
         splash: true,
         splashRadius: 100,
         isSlow: true,
-        slowDuration: 180, // 3 seconds at 60fps
+        slowDuration: 180, 
         gridHeight: 2,
+        critChance: 0.25,
+        quotes: ['Blanco fijado.', 'Ojo de lobo...', 'Un disparo, una baja.'],
       },
       splash: {
+        name: 'Rugido de Acero',
         color: '#EF4444',
-        range: 150,
-        damage: 40,
-        fireRate: 60,
+        range: 160,
+        damage: 50,
+        fireRate: 50,
         cost: 200,
         size: 20,
-        hp: 150,
-        maxHp: 150,
+        hp: 180,
+        maxHp: 180,
         splash: true,
-        splashRadius: 80,
+        splashRadius: 90,
         gridHeight: 2,
+        critChance: 0.15,
+        quotes: ['¡Siente el rugido!', '¡Cenizas al vacío!', '¡Explosión táctica!'],
       },
       nova: {
+        name: 'Aullido Ártico',
         color: '#22D3EE',
-        range: 250,
-        damage: 25,
-        fireRate: 150,
+        range: 260,
+        damage: 35,
+        fireRate: 120,
         cost: 300,
         size: 28,
-        hp: 200,
-        maxHp: 200,
+        hp: 250,
+        maxHp: 250,
         splash: true,
-        splashRadius: 200,
+        splashRadius: 220,
         isNova: true,
         isDoT: true,
-        dotDuration: 240, // 4 seconds
+        dotDuration: 240, 
         gridHeight: 2,
-      }, // Nova de Hielo + DoT
-      repair: { cost: 30, color: '#34D399', range: 0 }, 
+        critChance: 0.1,
+        quotes: ['Invierno eterno...', 'Hielo en sus venas.', '¡Que se congelen!'],
+      },
+      repair: { cost: 50, color: '#34D399', range: 0 }, 
       upgrade: { cost: 150, color: '#F59E0B', range: 0 }, 
+      sell: { cost: 0, color: '#EF4444', range: 0 },
     };
 
     function getTowerCost(type) {
@@ -739,6 +793,33 @@ import Layout from '../../components/layout/Layout.astro';
       // UI Listeners
       const fullscreenBtn = document.getElementById('fullscreen-btn');
       const gameContainer = document.getElementById('game-container');
+      // Turbo Toggle Handlers
+      const toggleTurbo = document.getElementById('toggle-turbo');
+      const turboSwitch = document.getElementById('turbo-switch');
+
+      function updateTurboUI() {
+        if (isTurbo) {
+          toggleTurbo.classList.remove('bg-gray-800', 'border-gray-600');
+          toggleTurbo.classList.add('bg-amber-900/50', 'border-amber-500/50');
+          turboSwitch.classList.remove('translate-x-0', 'bg-gray-400');
+          turboSwitch.classList.add('translate-x-7', 'bg-amber-400');
+        } else {
+          toggleTurbo.classList.remove('bg-amber-900/50', 'border-amber-500/50');
+          toggleTurbo.classList.add('bg-gray-800', 'border-gray-600');
+          turboSwitch.classList.remove('translate-x-7', 'bg-amber-400');
+          turboSwitch.classList.add('translate-x-0', 'bg-gray-400');
+        }
+      }
+
+      if (toggleTurbo) {
+        toggleTurbo.addEventListener('click', () => {
+          isTurbo = !isTurbo;
+          updateTurboUI();
+          showCanvasToast(isTurbo ? 'MODO TURBO: ACTIVADO' : 'MODO TURBO: DESACTIVADO', 'info');
+          playSFX('click');
+        });
+      }
+
       const pauseBtn = document.getElementById('pause-btn');
 
       pauseBtn.addEventListener('click', () => {
@@ -781,6 +862,7 @@ import Layout from '../../components/layout/Layout.astro';
             target.classList.remove('ring-4', 'ring-amber-400');
           } else if (type) {
             // Toggle on / Switch
+            inspectedTower = null; // Clear inspection when building
             document
               .querySelectorAll('.tower-btn')
               .forEach((b) => b.classList.remove('ring-4', 'ring-amber-400'));
@@ -851,16 +933,7 @@ import Layout from '../../components/layout/Layout.astro';
       const toggleSound = document.getElementById('toggle-sound');
       const soundSwitch = document.getElementById('sound-switch');
 
-      configBtn.addEventListener('click', () => {
-        configModal.classList.remove('hidden');
-      });
-
-      closeConfig.addEventListener('click', () => {
-        configModal.classList.add('hidden');
-      });
-
-      toggleSound.addEventListener('click', () => {
-        soundsEnabled = !soundsEnabled;
+      function updateSoundUI() {
         if (soundsEnabled) {
           toggleSound.classList.remove('bg-gray-800', 'border-gray-600');
           toggleSound.classList.add('bg-indigo-900/50', 'border-indigo-500/50');
@@ -872,6 +945,22 @@ import Layout from '../../components/layout/Layout.astro';
           soundSwitch.classList.remove('translate-x-7');
           soundSwitch.classList.add('translate-x-0');
         }
+      }
+
+      configBtn.addEventListener('click', () => {
+        configModal.classList.remove('hidden');
+        updateSoundUI();
+        updateTurboUI();
+      });
+
+      closeConfig.addEventListener('click', () => {
+        configModal.classList.add('hidden');
+      });
+
+      toggleSound.addEventListener('click', () => {
+        soundsEnabled = !soundsEnabled;
+        updateSoundUI();
+        playSFX('click');
       });
 
       window.addEventListener('keydown', (e) => {
@@ -934,7 +1023,7 @@ import Layout from '../../components/layout/Layout.astro';
         if (gameState === 'intro' || gameState === 'gameover') {
           if (isMouseDown) {
             const btnX = canvas.width / 2;
-            const btnY = canvas.height - 60;
+            const btnY = canvas.height / 2 + 150;
             if (x > btnX - 120 && x < btnX + 120 && y > btnY - 30 && y < btnY + 30) {
               if (credits > 0) {
                 playSFX('start');
@@ -950,11 +1039,29 @@ import Layout from '../../components/layout/Layout.astro';
 
         if (gameState !== 'playing') return;
 
+        // --- TOWER INSPECTION ---
+        if (isMouseDown && !selectedTowerType) {
+          const clickedTower = towers.find((t) => {
+            const th = t.gridHeight || 1;
+            for (let i = 0; i < th; i++) {
+              if (Math.hypot(t.x - x, (t.y + i * GRID_SIZE) - y) < GRID_SIZE * 0.8) return true;
+            }
+            return false;
+          });
+          if (clickedTower) {
+            inspectedTower = clickedTower;
+            playSFX('click');
+            return;
+          } else {
+            inspectedTower = null;
+          }
+        }
+
         // Check if next wave button clicked (or Ready button in wave 0)
         if ((enemies.length === 0 && !isEventActive) || wave === 0) {
           if (isMouseDown) {
             const btnX = canvas.width / 2;
-            const btnY = canvas.height - 60;
+            const btnY = canvas.height / 2 + 150; // Centered vertically in play area, away from HUD
             if (x > btnX - 120 && x < btnX + 120 && y > btnY - 30 && y < btnY + 30) {
               playSFX('start');
               if (wave === 0) wave = 1;
@@ -973,47 +1080,47 @@ import Layout from '../../components/layout/Layout.astro';
               // Click radius
               if (b.type === 'abyssal_rune') {
                 abyssals += b.reward;
-                showCanvasToast(`¡+${b.reward} Abisales!`, 'success');
-                createExplosion(b.x, b.y, '#A855F7', 20); // Purple explosion
-                addFloatingText(b.x, b.y, `+${b.reward}a`, '#A855F7');
+                showCanvasToast(`¡+${b.reward} Acero!`, 'success');
+                createExplosion(b.x, b.y, '#94A3B8', 20);
+                addFloatingText(b.x, b.y, `+${b.reward}a`, '#94A3B8');
                 addCombo();
               } else if (b.type === 'upgrades') {
                 upgrades += b.reward;
-                showCanvasToast(`¡+${b.reward} Mejoras!`, 'success');
-                createExplosion(b.x, b.y, '#FCD34D', 20); // Upgrades explosion
-                addFloatingText(b.x, b.y, `+${b.reward}m`, '#FCD34D');
-                addCombo(); // Upgrades add to combo
+                showCanvasToast(`¡+${b.reward} Táctica!`, 'success');
+                createExplosion(b.x, b.y, '#FCD34D', 20);
+                addFloatingText(b.x, b.y, `+${b.reward}t`, '#FCD34D');
+                addCombo();
               } else if (b.type === 'heal') {
-                health = health + 20; // Allow overheal
-                showCanvasToast(`¡Ciudadela Curada (+20)!`, 'success');
-                createExplosion(b.x, b.y, '#10B981', 20); // Green explosion
+                health = health + 20;
+                showCanvasToast('¡Ciudadela Reforzada (+20)!', 'success');
+                createExplosion(b.x, b.y, '#10B981', 20);
                 addFloatingText(b.x, b.y, '+20 HP', '#10B981', 'buff');
               } else if (b.type === 'freeze') {
-                enemies.forEach((en) => (en.speed *= 0.5)); // Slow down current enemies
-                globalFreezeTimer = 300; // 5 seconds of UI indicator
-                showCanvasToast(`¡Enemigos ralentizados!`, 'info');
-                createExplosion(b.x, b.y, '#60A5FA', 30); // Blue explosion
+                enemies.forEach((en) => (en.speed *= 0.5));
+                globalFreezeTimer = 300;
+                showCanvasToast('¡Enemigos de la Plaga ralentizados!', 'info');
+                createExplosion(b.x, b.y, '#60A5FA', 30);
                 addFloatingText(b.x, b.y, '❄️ Lentos', '#60A5FA', 'debuff');
               } else if (b.type === 'frenzy') {
-                towers.forEach((t) => (t.buffs.doubleShot = 300)); // 5 seconds of fast fire
-                globalFrenzyTimer = 300; // 5 seconds of UI indicator
-                showCanvasToast(`¡Frenesí! Torres aceleradas.`, 'error');
-                createExplosion(b.x, b.y, '#EF4444', 30); // Red explosion
+                towers.forEach((t) => (t.buffs.doubleShot = 300));
+                globalFrenzyTimer = 300;
+                showCanvasToast('¡Frenesí! Colmillos acelerados.', 'error');
+                createExplosion(b.x, b.y, '#EF4444', 30);
                 addFloatingText(b.x, b.y, '🔥 Frenesí', '#EF4444', 'buff');
               } else if (b.type === 'nuke') {
                 enemies.forEach((en) => {
                   en.hp -= 50;
                   addFloatingText(en.x, en.y, '-50', '#FCD34D');
                 });
-                showCanvasToast(`¡Bomba! Daño masivo a todos.`, 'success');
-                createExplosion(canvas.width / 2, canvas.height / 2, '#F59E0B', 50); // Big orange explosion
-                addFloatingText(b.x, b.y, '💥 Bomba', '#F59E0B', 'buff');
+                showCanvasToast('¡Bombardeo! Daño masivo a la Plaga.', 'success');
+                createExplosion(canvas.width / 2, canvas.height / 2, '#F59E0B', 50);
+                addFloatingText(b.x, b.y, '💥 Bombardeo', '#F59E0B', 'buff');
                 addScreenShake(15);
               }
               updateHUD();
               bonuses.splice(i, 1);
               playSFX('pickup');
-              return; // Stop processing click
+              return;
             }
           }
         }
@@ -1029,6 +1136,39 @@ import Layout from '../../components/layout/Layout.astro';
         const gridX = Math.round(x / GRID_SIZE) * GRID_SIZE;
         const gridY = Math.round(y / GRID_SIZE) * GRID_SIZE;
 
+        // --- SELL MODE ---
+        if (type === 'sell') {
+          const targetTower = towers.find((t) => {
+            const th = t.gridHeight || 1;
+            for (let i = 0; i < th; i++) {
+              if (Math.hypot(t.x - gridX, t.y + i * GRID_SIZE - gridY) < GRID_SIZE * 0.8)
+                return true;
+            }
+            return false;
+          });
+          if (targetTower) {
+            const stats = TOWER_STATS[targetTower.type];
+            const baseCost = stats.cost || 0;
+            const upgradeCost = TOWER_STATS.upgrade.cost;
+            const level = targetTower.level || 1;
+            
+            // Refund 50% of total investment
+            const totalCost = baseCost + (level - 1) * upgradeCost;
+            const refund = Math.floor(totalCost * 0.5);
+            
+            abyssals += refund;
+            const index = towers.indexOf(targetTower);
+            if (index > -1) towers.splice(index, 1);
+            
+            addFloatingText(targetTower.x, targetTower.y, `+${refund}a`, '#34D399');
+            showCanvasToast(`Puesto de Avanzada retirado: +${refund} acero`, 'success');
+            createExplosion(targetTower.x, targetTower.y, '#EF4444', 15);
+            playSFX('pickup');
+            updateHUD();
+          }
+          return;
+        }
+
         // --- REPAIR MODE ---
         if (type === 'repair') {
           const targetTower = towers.find((t) => {
@@ -1041,19 +1181,23 @@ import Layout from '../../components/layout/Layout.astro';
           });
           if (targetTower) {
             if (targetTower.hp >= targetTower.maxHp) {
-              showCanvasToast('La torre ya tiene la salud máxima', 'error');
+              showCanvasToast('El puesto ya tiene la salud máxima', 'error');
               playSFX('error');
               return;
             }
             if (upgrades >= cost) {
               upgrades -= cost;
               targetTower.hp = Math.min(targetTower.maxHp, targetTower.hp + 50); // Heal 50 HP
+              
+              // Apply Steel Reinforcement (Repair Bonus)
+              targetTower.buffs.steelShield = 600; // 10 seconds of bonus
+              showCanvasToast(`¡Refuerzo de Acero! Multidisparo activado`, 'success');
+              
               updateHUD();
-              showCanvasToast(`Torre reparada (+50 HP)`, 'success');
-              createExplosion(targetTower.x, targetTower.y, '#34D399', 15);
+              createExplosion(targetTower.x, targetTower.y, '#94A3B8', 20);
               playSFX('build');
             } else {
-              showCanvasToast('Mejoras insuficientes para reparar', 'error');
+              showCanvasToast('Táctica insuficiente para reparar', 'error');
               playSFX('error');
             }
           }
@@ -1093,7 +1237,7 @@ import Layout from '../../components/layout/Layout.astro';
                 playSFX('build');
               } else {
                 if (i === 0) {
-                  showCanvasToast(`Mejoras insuficientes (${currentUpgradeCost}m)`, 'error');
+                  showCanvasToast(`Táctica insuficiente (${currentUpgradeCost}t)`, 'error');
                   playSFX('error');
                 }
                 break;
@@ -1104,8 +1248,8 @@ import Layout from '../../components/layout/Layout.astro';
               updateHUD();
               showCanvasToast(
                 upgradedLevels > 1
-                  ? `¡Mejora Triple! Nivel ${targetTower.level}`
-                  : `Torre Nivel ${targetTower.level}`,
+                  ? `¡Evolución Táctica! Nivel ${targetTower.level}`
+                  : `Puesto Nivel ${targetTower.level}`,
                 'success'
               );
               createExplosion(targetTower.x, targetTower.y, '#F59E0B', 20 + upgradedLevels * 5);
@@ -1124,13 +1268,12 @@ import Layout from '../../components/layout/Layout.astro';
         }
 
         // Define UI bounding boxes for construction validation
-        const inTopLeftUI = gridX < 420 && gridY < 80; // Compact HUD
-        const inRightUI = gridX > canvas.width - 80; // Slimmer Tower panel
-        const inBottomLeftUI = gridX < 180 && gridY > canvas.height - 80; // Tools panel area
-        const inStartButton = gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height - 100;
-        const inLeftEdge = gridX < 20;
+        const inRightUI = gridX > canvas.width - 80; 
+        const inLeftUI = gridX < 80; 
+        const inBottomHUD = gridY > canvas.height - 60; 
+        const inStartButton = gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height / 2 + 100 && gridY < canvas.height / 2 + 200;
 
-        if (inTopLeftUI || inRightUI || inBottomLeftUI || inStartButton || inLeftEdge) {
+        if (inRightUI || inLeftUI || inBottomHUD || (inStartButton && (enemies.length === 0 || wave === 0))) {
           if (!isShiftDown) {
             showCanvasToast('No puedes construir sobre la interfaz', 'error');
             playSFX('error');
@@ -1192,10 +1335,13 @@ import Layout from '../../components/layout/Layout.astro';
             y: gridY,
             type,
             level: 1,
+            kills: 0,
+            veterancy: 1,
             cooldown: 0,
             buffs: {
               doubleShot: 0,
-              freeze: 0
+              freeze: 0,
+              steelShield: 0
             },
             ...TOWER_STATS[type],
           });
@@ -1353,22 +1499,22 @@ import Layout from '../../components/layout/Layout.astro';
       const repairBtnSpan = document.querySelector('[data-type="repair"] > span:last-child');
       if (repairBtnSpan) repairBtnSpan.innerText = `${50 + wave * 5}m`;
 
-      const enemyCount = 2 + wave * 2;
-      const spawnDelay = 1000 - wave * 50; // Faster spawns
-      const isBossWave = wave % 3 === 0; // Bosses every 3 waves to show mechanics
+      // Progression: more enemies and faster spawns as waves go up
+      const enemyCount = 5 + wave * 3;
+      const spawnDelay = Math.max(300, 1000 - wave * 40); 
+      const isBossWave = wave > 0 && wave % 5 === 0; // Bosses every 5 waves
 
       let spawned = 0;
       enemiesLeftToSpawn = enemyCount;
 
-      // If it's a boss wave, announce it
       if (isBossWave) {
-        showCanvasToast('¡ATENCIÓN! Un Enemigo de Élite se aproxima...', 'error');
+        showCanvasToast('¡ALERTA! Un Comandante de la Plaga se aproxima...', 'error');
+        playSFX('error');
       }
 
-      // Identify 1 to 3 random indices to get the range buff
       const buffedIndices = new Set();
       if (!isBossWave) {
-        const numBuffs = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
+        const numBuffs = Math.floor(Math.random() * (1 + Math.floor(wave / 3))) + 1;
         for (let i = 0; i < numBuffs; i++) {
           buffedIndices.add(Math.floor(Math.random() * enemyCount));
         }
@@ -1381,16 +1527,16 @@ import Layout from '../../components/layout/Layout.astro';
             return;
           }
 
-          // Spawn boss as the last enemy of a boss wave
-          if (isBossWave && spawned === enemyCount - 1) {
+          if (isBossWave && spawned === Math.floor(enemyCount / 2)) {
+            // Spawn boss in the middle of the wave
             const type = ENEMY_TYPES[Math.floor(Math.random() * ENEMY_TYPES.length)];
             const newEnemy = {
-              id: type.id, // Ensure ID is passed for sprite mapping
+              id: type.id,
               x: path[0].x - 20,
               y: path[0].y,
-              hp: (200 + wave * 50) * type.hpMod,
-              maxHp: (200 + wave * 50) * type.hpMod,
-              speed: (0.8 + wave * 0.02) * type.speedMod,
+              hp: (400 + wave * 100) * type.hpMod,
+              maxHp: (400 + wave * 100) * type.hpMod,
+              speed: (0.7 + wave * 0.015) * type.speedMod,
               pathIndex: 0,
               color: type.color,
               isBoss: true,
@@ -1398,10 +1544,10 @@ import Layout from '../../components/layout/Layout.astro';
               isNecromancer: type.isNecromancer || false,
               isBerserker: type.isBerserker || false,
               isGhost: type.isGhost || false,
-              reward: Math.floor((5 + wave * 10) * 0.7),
-              cooldown: 50,
-              attackRange: 200,
-              damage: 25 + wave,
+              reward: Math.floor((20 + wave * 15) * 0.7),
+              cooldown: 40,
+              attackRange: 220,
+              damage: 30 + wave * 2,
               attackType: type.attackType,
             };
             addEnemyLevel(newEnemy);
@@ -1411,12 +1557,12 @@ import Layout from '../../components/layout/Layout.astro';
             const hasBuff = buffedIndices.has(spawned);
 
             const newEnemy = {
-              id: type.id, // Ensure ID is passed for sprite mapping
+              id: type.id,
               x: path[0].x - 20,
               y: path[0].y,
-              hp: (40 + wave * 15) * type.hpMod,
-              maxHp: (40 + wave * 15) * type.hpMod,
-              speed: (1.2 + wave * 0.05) * type.speedMod,
+              hp: (50 + wave * 20) * type.hpMod,
+              maxHp: (50 + wave * 20) * type.hpMod,
+              speed: (1.3 + wave * 0.04) * type.speedMod,
               pathIndex: 0,
               color: type.color,
               isBoss: false,
@@ -1424,10 +1570,10 @@ import Layout from '../../components/layout/Layout.astro';
               isNecromancer: type.isNecromancer || false,
               isBerserker: type.isBerserker || false,
               isGhost: type.isGhost || false,
-              reward: Math.floor((2 + wave * 3) * 0.7),
-              cooldown: Math.random() * 100 + 50,
-              attackRange: hasBuff ? 250 : 180,
-              damage: 10 + Math.floor(wave / 2),
+              reward: Math.floor((3 + wave * 4) * 0.7),
+              cooldown: Math.random() * 80 + 40,
+              attackRange: hasBuff ? 260 : 190,
+              damage: 12 + Math.floor(wave * 0.8),
               attackType: type.attackType,
             };
             addEnemyLevel(newEnemy);
@@ -1438,11 +1584,10 @@ import Layout from '../../components/layout/Layout.astro';
           enemiesLeftToSpawn--;
           if (spawned >= enemyCount) {
             clearInterval(interval);
-            // Wait for wave to clear to start next
             checkWaveClear();
           }
         },
-        Math.max(400, spawnDelay)
+        spawnDelay
       );
     }
 
@@ -1502,7 +1647,7 @@ import Layout from '../../components/layout/Layout.astro';
         const costEl = btn.querySelector('span:last-child');
         if (costEl && type) {
           const cost = getTowerCost(type);
-          costEl.innerText = `${cost}${type === 'repair' || type === 'upgrade' ? 'm' : 'a'}`;
+          costEl.innerText = `${cost}${type === 'repair' || type === 'upgrade' ? 't' : 'a'}`;
         }
       });
     }
@@ -1521,17 +1666,17 @@ import Layout from '../../components/layout/Layout.astro';
       const textEl = document.getElementById('warning-text');
 
       if (chosenEvent === 'meteor') {
-        textEl.innerText = '¡LLUVIA DE FUEGO INMINENTE!';
+        textEl.innerText = '¡FUEGO DEL VACÍO INMINENTE!';
         boxEl.className =
           'bg-red-900/80 border border-red-500 p-6 rounded-2xl backdrop-blur-md shadow-[0_0_50px_rgba(239,68,68,0.5)] transform scale-100 transition-transform duration-300';
       } else if (chosenEvent === 'curse') {
-        textEl.innerText = '¡MALDICIÓN DE SOMBRAS!';
+        textEl.innerText = '¡MALDICIÓN DE LA PLAGA!';
         boxEl.className =
           'bg-purple-900/80 border border-purple-500 p-6 rounded-2xl backdrop-blur-md shadow-[0_0_50px_rgba(168,85,247,0.5)] transform scale-100 transition-transform duration-300';
         textEl.parentElement.classList.replace('text-red-500', 'text-purple-500');
         textEl.parentElement.classList.replace('text-amber-500', 'text-purple-500');
       } else {
-        textEl.innerText = '¡RUNAS ETÉREAS DETECTADAS!';
+        textEl.innerText = '¡BOTÍN DE GUERRA DETECTADO!';
         boxEl.className =
           'bg-amber-900/80 border border-amber-500 p-6 rounded-2xl backdrop-blur-md shadow-[0_0_50px_rgba(245,158,11,0.5)] transform scale-100 transition-transform duration-300';
         textEl.parentElement.classList.replace('text-red-500', 'text-amber-500');
@@ -1565,7 +1710,7 @@ import Layout from '../../components/layout/Layout.astro';
             const t = towers[Math.floor(Math.random() * towers.length)];
             t.buffs.freeze = 300;
             createExplosion(t.x, t.y, '#C084FC', 30);
-            return '¡Torre paralizada por 5 segundos!';
+            return '¡Puesto paralizado por la Plaga!';
           },
         },
         {
@@ -1574,7 +1719,7 @@ import Layout from '../../components/layout/Layout.astro';
             health = Math.max(1, health - 10);
             updateHUD();
             createExplosion(canvas.width / 2, canvas.height / 2, '#8B5CF6', 20);
-            return '¡Temblor en la ciudadela! -10 Salud.';
+            return '¡Temblor en la Ciudadela! -10 Salud.';
           },
         },
         {
@@ -1583,7 +1728,7 @@ import Layout from '../../components/layout/Layout.astro';
             if (towers.length === 0) return false;
             towers.forEach((t) => (t.damage = Math.max(1, Math.floor(t.damage * 0.7))));
             createExplosion(canvas.width / 2, 100, '#8B5CF6', 25);
-            return '¡Torres debilitadas! -30% daño por 1 oleada.';
+            return '¡Puestos debilitados por el Vacío!';
           },
         },
         {
@@ -1594,7 +1739,7 @@ import Layout from '../../components/layout/Layout.astro';
               e.hp += 20;
             });
             createExplosion(canvas.width / 2, canvas.height / 2, '#7C3AED', 30);
-            return '¡Energía oscura! Enemigos más rápidos y resistentes.';
+            return '¡Furia de la Plaga! Enemigos reforzados.';
           },
         },
         {
@@ -1603,7 +1748,7 @@ import Layout from '../../components/layout/Layout.astro';
             if (towers.length === 0) return false;
             towers.forEach((t) => (t.fireRate = Math.floor(t.fireRate * 1.5)));
             createExplosion(canvas.width / 2, 100, '#6D28D9', 20);
-            return '¡Maldición de lentitud! Torres disparan más lento.';
+            return '¡Maldición de Lentitud en los Colmillos!';
           },
         },
       ];
@@ -1622,7 +1767,7 @@ import Layout from '../../components/layout/Layout.astro';
         health -= 20;
         updateHUD();
         createExplosion(canvas.width / 2, canvas.height / 2, '#EF4444', 50);
-        showCanvasToast('La ciudadela recibió el impacto directo (-20 HP)', 'error');
+        showCanvasToast('¡Impacto en la Ciudadela! (-20 HP)', 'error');
         addScreenShake(20);
         if (health <= 0) gameOver();
         return;
@@ -1631,25 +1776,25 @@ import Layout from '../../components/layout/Layout.astro';
       // Destroy random tower
       const targetIndex = Math.floor(Math.random() * towers.length);
       const t = towers[targetIndex];
-      createExplosion(t.x, t.y, '#EF4444', 40); // Big explosion
+      createExplosion(t.x, t.y, '#EF4444', 40); 
       towers.splice(targetIndex, 1);
       updateHUD();
-      showCanvasToast('¡Meteoro! Una torre fue destruida.', 'error');
+      showCanvasToast('¡Impacto Directo! Un puesto fue destruido.', 'error');
       addScreenShake(15);
     }
 
     function executeBonusDrop() {
-      const dropCount = Math.floor(Math.random() * 3) + 2; // 2 to 4 bonuses
-      const types = ['abyssal_rune', 'upgrades', 'heal', 'freeze', 'frenzy', 'nuke']; // upgrades type renamed from gold
+      const dropCount = Math.floor(Math.random() * 3) + 2; 
+      const types = ['abyssal_rune', 'upgrades', 'heal', 'freeze', 'frenzy', 'nuke']; 
 
       for (let i = 0; i < dropCount; i++) {
         const type = types[Math.floor(Math.random() * types.length)];
         bonuses.push({
-          x: Math.random() * (canvas.width - 250) + 50, // Keep away from right UI
-          y: Math.random() * (canvas.height - 100) + 50,
-          vx: (Math.random() - 0.5) * (1 + wave * 0.2), // Moves faster each wave
+          x: Math.random() * (canvas.width - 250) + 125, // Centered horizontally
+          y: Math.random() * (canvas.height - 150) + 75, // Centered vertically, avoid HUD
+          vx: (Math.random() - 0.5) * (1 + wave * 0.2), 
           vy: (Math.random() - 0.5) * (1 + wave * 0.2),
-          life: 300, // Disappears after 5 seconds (60fps)
+          life: 300, 
           type: type,
           reward:
             type === 'upgrades' || type === 'abyssal_rune'
@@ -1657,10 +1802,10 @@ import Layout from '../../components/layout/Layout.astro';
               : 0,
         });
       }
-      showCanvasToast('¡Haz clic en las runas antes de que escapen!', 'info');
+      showCanvasToast('¡Recupera el botín antes de que desaparezca!', 'info');
     }
 
-    function applyDamageToEnemy(e, damage, color) {
+    function applyDamageToEnemy(e, damage, color, sourceTower = null) {
       if (e.shield && e.shield > 0) {
         const shieldDamage = Math.min(e.shield, damage);
         e.shield -= shieldDamage;
@@ -1683,6 +1828,39 @@ import Layout from '../../components/layout/Layout.astro';
         if (index > -1) {
           abyssals += e.reward;
           addKillCombo();
+          
+          // Bloodlust Mechanic
+          globalBloodlust++;
+          if (globalBloodlust >= BLOODLUST_THRESHOLD) {
+            globalBloodlust = 0;
+            bloodlustTimer = 300; // 5 seconds of bloodlust
+            showCanvasToast('¡FRENESÍ DE SANGRE ACTIVADO!', 'success');
+            playSFX('start');
+            addScreenShake(15);
+          }
+
+          // Veterancy System
+          if (sourceTower) {
+            sourceTower.kills = (sourceTower.kills || 0) + 1;
+            if (sourceTower.kills % 5 === 0) {
+              sourceTower.veterancy = (sourceTower.veterancy || 1) + 1;
+              sourceTower.damage *= 1.05; // 5% damage bonus per 5 kills
+              
+              // Auto Level Up at 3 Stars (Threshold changed to 3)
+              if (sourceTower.veterancy > 3) {
+                sourceTower.veterancy = 1;
+                sourceTower.level = (sourceTower.level || 1) + 1;
+                sourceTower.damage *= 1.2; // Extra 20% for level up
+                sourceTower.maxHp += 50;
+                sourceTower.hp += 50;
+                addFloatingText(sourceTower.x, sourceTower.y - 20, '¡EVOLUCIÓN!', '#F59E0B', 'buff');
+                createExplosion(sourceTower.x, sourceTower.y, '#F59E0B', 20);
+              } else {
+                addFloatingText(sourceTower.x, sourceTower.y - 20, '¡VETERANO!', '#FCD34D', 'buff');
+                createExplosion(sourceTower.x, sourceTower.y, '#FCD34D', 10);
+              }
+            }
+          }
 
           // Random rune drop on enemy death (10% chance for normal, 100% for boss)
           if (e.isBoss || Math.random() > 0.9) {
@@ -1727,6 +1905,7 @@ import Layout from '../../components/layout/Layout.astro';
 
       if (gameState === 'playing' && !isPaused) {
         update();
+        if (isTurbo) update(); // Double update for Turbo mode
       }
       draw();
       requestAnimationFrame(gameLoop);
@@ -1775,7 +1954,7 @@ import Layout from '../../components/layout/Layout.astro';
       ) {
         health = 0;
         isCityFallen = true;
-        showCanvasToast('¡Sin defensas ni recursos!', 'error');
+        showCanvasToast('¡Sin puestos ni acero para combatir!', 'error');
         addScreenShake(30);
         playSFX('error');
       }
@@ -1795,7 +1974,7 @@ import Layout from '../../components/layout/Layout.astro';
             const type = types[Math.floor(Math.random() * types.length)];
 
             darkRunes.push({ x: node.x, y: node.y, life: 1200, type }); // 20 seconds life
-            showCanvasToast(`¡Runa Oscura (${type}) detectada!`, 'error');
+            showCanvasToast(`¡Marca de la Plaga (${type}) detectada!`, 'error');
             playSFX('error');
           }
         }
@@ -1858,17 +2037,17 @@ import Layout from '../../components/layout/Layout.astro';
               addScreenShake(30);
               playSFX('error');
             } else {
-              upgrades = Math.max(0, upgrades - 1); // Subtract 1 upgrade instead of 10
-              showCanvasToast('¡Enemigo escapó! -10 HP, -1m', 'error');
-              addScreenShake(10); // Medium shake when an enemy escapes
+              upgrades = Math.max(0, upgrades - 1); 
+              showCanvasToast('¡Enemigo escapó! -10 HP, -1t', 'error');
+              addScreenShake(10); 
               playSFX('error');
             }
           }
 
           if (isCityFallen) {
-            // Drain upgrades for every enemy that arrives after falling
+            // Drain tactics for every enemy that arrives after falling
             upgrades = Math.max(0, upgrades - 20);
-            addFloatingText(e.x, e.y - 20, '-20m', '#EF4444');
+            addFloatingText(e.x, e.y - 20, '-20t', '#EF4444');
           }
 
           enemies.splice(i, 1);
@@ -2036,6 +2215,9 @@ import Layout from '../../components/layout/Layout.astro';
         }
       }
 
+      // Update Bloodlust timer
+      if (bloodlustTimer > 0) bloodlustTimer--;
+
       // Towers shoot
       towers.forEach((t) => {
         if (t.buffs.freeze > 0) {
@@ -2045,6 +2227,10 @@ import Layout from '../../components/layout/Layout.astro';
 
         if (t.buffs.doubleShot > 0) {
           t.buffs.doubleShot--;
+        }
+
+        if (t.buffs.steelShield > 0) {
+          t.buffs.steelShield--;
         }
 
         if (t.cooldown > 0) t.cooldown--;
@@ -2064,23 +2250,51 @@ import Layout from '../../components/layout/Layout.astro';
             return dx * dx + dy * dy <= rangeSq;
           });
           if (target) {
-            projectiles.push({
-              x: t.x,
-              y: visualY,
-              target: target,
-              speed: t.isNova ? 15 : 8,
-              damage: t.damage,
-              color: t.color,
-              splash: t.splash,
-              splashRadius: t.splashRadius,
-              isNova: t.isNova,
-              isSlow: t.isSlow,
-              slowDuration: t.slowDuration,
-              isDoT: t.isDoT,
-              dotDuration: t.dotDuration,
-            });
-            // Faster cooldown if frenzy active
-            t.cooldown = t.buffs.doubleShot > 0 ? t.fireRate / 2 : t.fireRate;
+            const isCrit = Math.random() < (t.critChance || 0.1);
+            const finalDamage = isCrit ? t.damage * 2 : t.damage;
+
+            if (isCrit) {
+              const quote = t.quotes[Math.floor(Math.random() * t.quotes.length)];
+              addFloatingText(t.x, visualY - 30, quote, t.color, 'normal'); // Changed to 'normal' to avoid centering
+              addScreenShake(3);
+              playSFX('hit_shield');
+            }
+
+            const shoot = (targetObj, damageMod = 1) => {
+              projectiles.push({
+                x: t.x,
+                y: visualY,
+                target: targetObj,
+                speed: t.isNova ? 15 : 8,
+                damage: finalDamage * damageMod,
+                color: t.color,
+                splash: t.splash,
+                splashRadius: t.splashRadius,
+                isNova: t.isNova,
+                isSlow: t.isSlow,
+                slowDuration: t.slowDuration,
+                isDoT: t.isDoT,
+                dotDuration: t.dotDuration,
+                sourceTower: t, 
+                isCrit: isCrit,
+              });
+            };
+
+            // Main shot
+            shoot(target);
+
+            // Steel Reinforcement Bonus (Repair): Extra shot to another target
+            if (t.buffs.steelShield > 0) {
+              const secondaryTarget = enemies.find(e => e !== target && Math.hypot(e.x - t.x, e.y - visualY) <= t.range);
+              if (secondaryTarget) shoot(secondaryTarget, 0.7); // 70% damage for secondary
+            }
+
+            // Faster cooldown if frenzy or bloodlust active
+            let fireRateBonus = 1;
+            if (t.buffs.doubleShot > 0) fireRateBonus *= 0.5;
+            if (bloodlustTimer > 0) fireRateBonus *= 0.5;
+            
+            t.cooldown = Math.floor(t.fireRate * fireRateBonus);
             if (t.isNova) playSFX('nova');
             else playSFX('shoot');
           }
@@ -2117,7 +2331,7 @@ import Layout from '../../components/layout/Layout.astro';
                 if (e2.isGhost && Math.random() > 0.5) {
                   addFloatingText(e2.x, e2.y - 10, '¡Evasión!', '#94A3B8', 'normal');
                 } else {
-                  applyDamageToEnemy(e2, p.damage, '#EF4444');
+                  applyDamageToEnemy(e2, p.damage, '#EF4444', p.sourceTower);
                   
                   // Apply Slow Effect
                   if (p.isSlow) {
@@ -2141,7 +2355,7 @@ import Layout from '../../components/layout/Layout.astro';
             if (p.target.isGhost && Math.random() > 0.5) {
               addFloatingText(p.target.x, p.target.y - 10, '¡Evasión!', '#94A3B8', 'normal');
             } else {
-              applyDamageToEnemy(p.target, p.damage, '#FCD34D');
+              applyDamageToEnemy(p.target, p.damage, '#FCD34D', p.sourceTower);
             }
             createExplosion(p.target.x, p.target.y, p.color, 2);
             playSFX('hit');
@@ -2241,9 +2455,16 @@ import Layout from '../../components/layout/Layout.astro';
         b.vx += (Math.random() - 0.5) * 0.5;
         b.vy += (Math.random() - 0.5) * 0.5;
 
-        // Bounce off walls softly
-        if (b.x < 50 || b.x > canvas.width - 50) b.vx *= -1;
-        if (b.y < 50 || b.y > canvas.height - 50) b.vy *= -1;
+        // Constraint within playable area (Avoid HUD at bottom and selection panels)
+        const minX = 100;
+        const maxX = canvas.width - 100;
+        const minY = 50;
+        const maxY = canvas.height - 100; // Leave space for HUD
+
+        if (b.x < minX) { b.x = minX; b.vx *= -1; }
+        if (b.x > maxX) { b.x = maxX; b.vx *= -1; }
+        if (b.y < minY) { b.y = minY; b.vy *= -1; }
+        if (b.y > maxY) { b.y = maxY; b.vy *= -1; }
 
         // Speed limit
         const maxSpeed = 2 + wave * 0.3;
@@ -2330,42 +2551,205 @@ import Layout from '../../components/layout/Layout.astro';
       ctx.fillRect(-20, -20, canvas.width + 40, canvas.height + 40);
       ctx.drawImage(bgCanvas, 0, 0);
 
-      // --- OPTIMIZED Y-SORTING ---
-      const sortedTowers = towers.slice().sort((a, b) => a.y - b.y);
-      const sortedEnemies = enemies.slice().sort((a, b) => a.y - b.y);
+      // --- PHASE 1: Draw Entities ---
+      drawTowers();
+      drawEnemies();
+      drawProjectiles();
+      drawParticles();
+      drawBonuses();
+      drawDarkRunes();
+      
+      // --- PHASE 2: UI Overlays (Always on top) ---
+      drawUIBarsAndLevels();
+      drawTowerInfoPlate(); // Show inspection tooltip
+      drawPreviews();
+      drawFloatingTexts();
+      drawGameStates();
+      drawToasts();
+      drawStatusEffects();
 
-      // --- PHASE 1: Draw Tower Bodies ---
+      ctx.restore();
+    }
+
+    function drawTowerInfoPlate() {
+      if (!inspectedTower) return;
+      
+      const t = inspectedTower;
+      const gh = t.gridHeight || 1;
+      const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
+      
+      // Plate dimensions and position
+      const width = 160;
+      const height = 90;
+      let px = t.x + 30;
+      let py = visualY - height / 2;
+      
+      // Boundary check
+      if (px + width > canvas.width - 90) px = t.x - width - 30;
+      if (py < 20) py = 20;
+      if (py + height > canvas.height - 20) py = canvas.height - height - 20;
+
+      // Draw shadow and background
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 15;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+      ctx.strokeStyle = t.color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      // Manual rounded rect for maximum compatibility
+      const radius = 8;
+      ctx.moveTo(px + radius, py);
+      ctx.lineTo(px + width - radius, py);
+      ctx.quadraticCurveTo(px + width, py, px + width, py + radius);
+      ctx.lineTo(px + width, py + height - radius);
+      ctx.quadraticCurveTo(px + width, py + height, px + width - radius, py + height);
+      ctx.lineTo(px + radius, py + height);
+      ctx.quadraticCurveTo(px, py + height, px, py + height - radius);
+      ctx.lineTo(px, py + radius);
+      ctx.quadraticCurveTo(px, py, px + radius, py);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Draw stats
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'left';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(t.name.toUpperCase(), px + 10, py + 20);
+      
+      ctx.font = '10px sans-serif';
+      ctx.fillStyle = '#94A3B8';
+      ctx.fillText(`Nivel: ${t.level}`, px + 10, py + 38);
+      ctx.fillText(`Daño: ${Math.round(t.damage)}`, px + 10, py + 52);
+      ctx.fillText(`Bajas: ${t.kills}`, px + 10, py + 66);
+      
+      // Veterancy bar
+      const nextVet = 5;
+      const progress = (t.kills % nextVet) / nextVet;
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(px + 10, py + 75, width - 20, 6);
+      ctx.fillStyle = '#FCD34D';
+      ctx.fillRect(px + 10, py + 75, (width - 20) * progress, 6);
+      
+      // Highlight current tower range
+      ctx.beginPath();
+      ctx.arc(t.x, visualY, t.range, 0, Math.PI * 2);
+      ctx.strokeStyle = t.color + '33';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function drawUIBarsAndLevels() {
+      // Health Bars and Levels for Towers
+      towers.forEach((t) => {
+        const gh = t.gridHeight || 1;
+        const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
+        
+        // HP Bar
+        const barW = t.size * 1.5;
+        const barH = 5;
+        const barY = visualY + (gh * GRID_SIZE) / 2 - 5;
+        
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.fillRect(t.x - barW / 2 - 1, barY - 1, barW + 2, barH + 2);
+        ctx.fillStyle = '#7F1D1D';
+        ctx.fillRect(t.x - barW / 2, barY, barW, barH);
+        ctx.fillStyle = '#10B981';
+        ctx.fillRect(t.x - barW / 2, barY, barW * (t.hp / t.maxHp), barH);
+
+        // Steel Reinforcement Indicator (Repair Bonus)
+        if (t.buffs.steelShield > 0) {
+          ctx.strokeStyle = '#94A3B8';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(t.x - barW / 2 - 2, barY - 2, barW + 4, barH + 4);
+        }
+
+        // Level and Veterancy Stars
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '900 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        const vetStars = '★'.repeat(Math.min(5, t.veterancy - 1));
+        const label = `${vetStars} Nv.${t.level || 1}`;
+        ctx.strokeText(label, t.x, barY - 8);
+        ctx.fillText(label, t.x, barY - 8);
+      });
+
+      // Health Bars and Levels for Enemies
+      enemies.forEach((e) => {
+        const barW = e.isBoss ? 44 : 24;
+        const barH = e.isBoss ? 7 : 5;
+        const barY = e.y + (e.isBoss ? 28 : 18);
+        
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.fillRect(e.x - barW / 2 - 1, barY - 1, barW + 2, barH + 2);
+        ctx.fillStyle = '#7F1D1D';
+        ctx.fillRect(e.x - barW / 2, barY, barW, barH);
+        ctx.fillStyle = e.isBoss ? '#F59E0B' : '#10B981';
+        ctx.fillRect(e.x - barW / 2, barY, barW * (e.hp / e.maxHp), barH);
+
+        if (e.shield > 0) {
+          ctx.fillStyle = '#3B82F6';
+          ctx.fillRect(e.x - barW / 2, e.y + (e.isBoss ? 20 : 12), barW * (e.shield / (e.maxHp * 0.5)), 3);
+        }
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '900 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        const label = `Lv.${e.level || 1}`;
+        ctx.strokeText(label, e.x, barY - 8);
+        ctx.fillText(label, e.x, barY - 8);
+      });
+    }
+
+    function drawTowers() {
+      const sortedTowers = towers.slice().sort((a, b) => a.y - b.y);
       sortedTowers.forEach((t) => {
         const gh = t.gridHeight || 1;
         const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
 
-        // Draw Upgrade Range Expansion Pulse
+        // Upgrade Range Expansion Pulse
         if (t.upgradePulse && t.upgradePulse > 0) {
           const oldR = t.oldRange || t.range * 0.9;
-          // Interpolate from old to new range (1 to 0)
           const currentR = oldR + (t.range - oldR) * (1 - t.upgradePulse);
-          
           ctx.beginPath();
           ctx.arc(t.x, visualY, currentR, 0, Math.PI * 2);
-          ctx.strokeStyle = '#FCD34D'; // Golden for upgrade
+          ctx.strokeStyle = '#FCD34D';
           ctx.lineWidth = 3;
           ctx.stroke();
-          
-          // Fading effect for pulse
           ctx.beginPath();
           ctx.arc(t.x, visualY, t.range, 0, Math.PI * 2);
-          ctx.strokeStyle = '#FCD34D33'; // Target range outline
+          ctx.strokeStyle = '#FCD34D33';
           ctx.lineWidth = 1;
           ctx.stroke();
-
           if (!isPaused) t.upgradePulse -= 0.02;
         }
 
-        // Draw Normal Range Pulse (Sutil)
+        // Steel Reinforcement Aura (Repair Bonus)
+        if (t.buffs.steelShield > 0) {
+          ctx.beginPath();
+          ctx.arc(t.x, visualY, t.size * 2, 0, Math.PI * 2);
+          ctx.strokeStyle = '#94A3B8';
+          ctx.lineWidth = 2 + Math.sin(Date.now() / 100) * 1;
+          ctx.setLineDash([5, 5]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        // Normal Range Pulse
         if (t.rangePulse && t.rangePulse > 0 && (!t.upgradePulse || t.upgradePulse <= 0)) {
           ctx.beginPath();
           ctx.arc(t.x, visualY, t.range * (1.5 - t.rangePulse * 0.5), 0, Math.PI * 2);
-          ctx.strokeStyle = '#F59E0B'; // Fixed color
+          ctx.strokeStyle = '#F59E0B';
           ctx.lineWidth = 1;
           ctx.stroke();
           if (!isPaused) t.rangePulse -= 0.02;
@@ -2373,63 +2757,36 @@ import Layout from '../../components/layout/Layout.astro';
 
         if (spritesLoaded && SPRITE_MAP.towers[t.type]) {
           const s = SPRITE_MAP.towers[t.type];
-          
-          // Simplified Glow
           if (t.buffs.freeze > 0 || t.buffs.doubleShot > 0) {
             ctx.beginPath();
             ctx.arc(t.x, visualY, t.size * 1.5, 0, Math.PI * 2);
             ctx.fillStyle = t.buffs.freeze > 0 ? '#60A5FA44' : '#EF444444';
             ctx.fill();
           }
-
           const renderSize = t.size * 2.5;
           const renderH = renderSize * (gh > 1 ? 1.5 : 1);
-          ctx.drawImage(
-            spriteSheet,
-            s.sx,
-            s.sy,
-            s.sw,
-            s.sh,
-            t.x - renderSize / 2,
-            visualY - renderH / 2,
-            renderSize,
-            renderH
-          );
+          ctx.drawImage(spriteSheet, s.sx, s.sy, s.sw, s.sh, t.x - renderSize / 2, visualY - renderH / 2, renderSize, renderH);
         } else {
           ctx.fillStyle = t.color;
-          if (t.type === 'basic') {
-            ctx.fillRect(t.x - t.size / 2, visualY - t.size / 2, t.size, t.size);
-          } else {
-            ctx.beginPath();
-            ctx.arc(t.x, visualY, t.size, 0, Math.PI * 2);
-            ctx.fill();
-          }
+          if (t.type === 'basic') ctx.fillRect(t.x - t.size / 2, visualY - t.size / 2, t.size, t.size);
+          else { ctx.beginPath(); ctx.arc(t.x, visualY, t.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+
+        // Veterancy Aura (Ground effect)
+        if (t.veterancy > 1) {
+          ctx.save();
+          ctx.globalAlpha = 0.2 + (Math.sin(Date.now() / 300) * 0.1);
+          ctx.beginPath();
+          ctx.arc(t.x, visualY, t.size * 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = '#FCD34D';
+          ctx.fill();
+          ctx.restore();
         }
       });
+    }
 
-      // --- PHASE 2: Draw Tower UI ---
-      sortedTowers.forEach((t) => {
-        const gh = t.gridHeight || 1;
-        const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
-
-        // Draw HP Bar
-        const barW = t.size * 1.5;
-        const barH = 4;
-        const barY = visualY + (gh * GRID_SIZE) / 2 - 5;
-        ctx.fillStyle = '#7F1D1D';
-        ctx.fillRect(t.x - barW / 2, barY, barW, barH);
-        ctx.fillStyle = '#10B981';
-        ctx.fillRect(t.x - barW / 2, barY, barW * (t.hp / t.maxHp), barH);
-
-        // Draw Level Indicator
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`Nv.${t.level || 1}`, t.x, visualY - (gh * GRID_SIZE) / 2 - 10);
-      });
-
-      // --- PHASE 3: Draw Enemies ---
+    function drawEnemies() {
+      const sortedEnemies = enemies.slice().sort((a, b) => a.y - b.y);
       sortedEnemies.forEach((e) => {
         if (spritesLoaded && SPRITE_MAP.enemies[e.id]) {
           const s = SPRITE_MAP.enemies[e.id];
@@ -2440,34 +2797,18 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.save();
           if (e.isGhost) ctx.globalAlpha = 0.6;
           ctx.translate(e.x, e.y - bob);
-
-          // Simple Circle Glow
           ctx.beginPath();
           ctx.arc(0, 0, renderSize * 0.6, 0, Math.PI * 2);
           ctx.fillStyle = e.color + '22'; 
           ctx.fill();
-
-          ctx.drawImage(
-            spriteSheet,
-            s.sx,
-            s.sy,
-            s.sw,
-            s.sh,
-            -renderSize / 2,
-            -renderSize / 2,
-            renderSize,
-            renderSize
-          );
+          ctx.drawImage(spriteSheet, s.sx, s.sy, s.sw, s.sh, -renderSize / 2, -renderSize / 2, renderSize, renderSize);
           ctx.restore();
         } else {
           ctx.fillStyle = e.color;
           const size = e.isBoss ? 20 : 10;
           ctx.fillRect(e.x - size, e.y - size, size * 2, size * 2);
         }
-      });
 
-      // --- PHASE 4: Draw Enemy UI ---
-      sortedEnemies.forEach((e) => {
         if (e.hasRangeBuff && !e.isBoss) {
           ctx.strokeStyle = '#FCD34D';
           ctx.lineWidth = 1;
@@ -2475,35 +2816,10 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.arc(e.x, e.y, 16, 0, Math.PI * 2);
           ctx.stroke();
         }
-
-        // HP Bars
-        const barW = e.isBoss ? 40 : 20;
-        const barH = e.isBoss ? 6 : 4;
-        const barY = e.y + (e.isBoss ? 25 : 15);
-        ctx.fillStyle = '#7F1D1D';
-        ctx.fillRect(e.x - barW / 2, barY, barW, barH);
-        ctx.fillStyle = e.isBoss ? '#F59E0B' : '#10B981';
-        ctx.fillRect(e.x - barW / 2, barY, barW * (e.hp / e.maxHp), barH);
-
-        if (e.shield > 0) {
-          ctx.fillStyle = '#3B82F6';
-          ctx.fillRect(
-            e.x - barW / 2,
-            e.y + (e.isBoss ? 20 : 12),
-            barW * (e.shield / (e.maxHp * 0.5)),
-            2
-          );
-        }
-
-        // Level Indicator
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`Nv.${e.level || 1}`, e.x, e.y - (e.isBoss ? 35 : 25));
       });
+    }
 
-      // Draw Projectiles
+    function drawProjectiles() {
       projectiles.forEach((p) => {
         ctx.fillStyle = p.color;
         ctx.beginPath();
@@ -2511,7 +2827,6 @@ import Layout from '../../components/layout/Layout.astro';
         ctx.fill();
       });
 
-      // Draw Enemy Projectiles
       enemyProjectiles.forEach((p) => {
         ctx.fillStyle = p.color;
         ctx.beginPath();
@@ -2520,24 +2835,20 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.lineTo(p.x + 4, p.y + 4);
           ctx.lineTo(p.x - 4, p.y + 4);
           ctx.closePath();
-          ctx.fill();
         } else if (p.attackType === 'ice') {
           ctx.moveTo(p.x, p.y - 5);
           ctx.lineTo(p.x + 5, p.y);
           ctx.lineTo(p.x, p.y + 5);
           ctx.lineTo(p.x - 5, p.y);
           ctx.closePath();
-          ctx.fill();
-        } else if (p.attackType === 'poison') {
-          ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-          ctx.fill();
         } else {
-          ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.arc(p.x, p.y, p.attackType === 'poison' ? 4 : 3, 0, Math.PI * 2);
         }
+        ctx.fill();
       });
+    }
 
-      // Draw Particles (Optimized: No globalAlpha)
+    function drawParticles() {
       particles.forEach((p) => {
         ctx.fillStyle = p.color;
         if (p.isRune) {
@@ -2549,147 +2860,94 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.fill();
         }
       });
+    }
 
-      // Draw Bonuses
+    function drawBonuses() {
       bonuses.forEach((b) => {
         const scale = 1 + Math.sin(Date.now() / 100) * 0.1;
         ctx.save();
         ctx.translate(b.x, b.y);
         ctx.scale(scale, scale);
-
         if (spritesLoaded && SPRITE_MAP.items[b.type]) {
           const s = SPRITE_MAP.items[b.type];
           ctx.drawImage(spriteSheet, s.sx, s.sy, s.sw, s.sh, -20, -24, 40, 48);
         } else {
-          // Fallback to runes
-          let color = '#FCD34D'; // upgrades
-          let rune = 'ᚩ';
-          if (b.type === 'abyssal_rune') {
-            color = '#A855F7';
-            rune = 'ᛈ';
-          } else if (b.type === 'heal') {
-            color = '#34D399';
-            rune = 'ᛉ';
-          } else if (b.type === 'freeze') {
-            color = '#60A5FA';
-            rune = 'ᛁ';
-          } else if (b.type === 'frenzy') {
-            color = '#EF4444';
-            rune = 'ᚱ';
-          } else if (b.type === 'nuke') {
-            color = '#F59E0B';
-            rune = 'ᛒ';
-          }
-
-          ctx.fillStyle = color;
-          ctx.font = 'bold 24px serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(rune, 0, 0);
+          let color = '#FCD34D'; let rune = 'ᚩ';
+          if (b.type === 'abyssal_rune') { color = '#A855F7'; rune = 'ᛈ'; }
+          else if (b.type === 'heal') { color = '#34D399'; rune = 'ᛉ'; }
+          else if (b.type === 'freeze') { color = '#60A5FA'; rune = 'ᛁ'; }
+          else if (b.type === 'frenzy') { color = '#EF4444'; rune = 'ᚱ'; }
+          else if (b.type === 'nuke') { color = '#F59E0B'; rune = 'ᛒ'; }
+          ctx.fillStyle = color; ctx.font = 'bold 24px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(rune, 0, 0);
         }
         ctx.restore();
       });
+    }
 
-      // Draw Dark Runes
+    function drawDarkRunes() {
       darkRunes.forEach((r) => {
-        let color = '#D946EF'; // Power
-        let rune = 'ᛤ';
-        if (r.type === 'shield') {
-          color = '#60A5FA';
-          rune = 'ᚦ';
-        } else if (r.type === 'haste') {
-          color = '#FCD34D';
-          rune = 'ᚢ';
-        } else if (r.type === 'heal') {
-          color = '#10B981';
-          rune = 'ᛉ';
-        }
-
-        ctx.fillStyle = color;
-        ctx.font = 'bold 20px serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(rune, r.x, r.y);
+        let color = '#D946EF'; let rune = 'ᛤ';
+        if (r.type === 'shield') { color = '#60A5FA'; rune = 'ᚦ'; }
+        else if (r.type === 'haste') { color = '#FCD34D'; rune = 'ᚢ'; }
+        else if (r.type === 'heal') { color = '#10B981'; rune = 'ᛉ'; }
+        ctx.fillStyle = color; ctx.font = 'bold 20px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(rune, r.x, r.y);
       });
+    }
 
-      // Draw Hover Range
+    function drawPreviews() {
       if (gameState === 'playing' && enemies.length === 0 && !isPaused && !selectedTowerType) {
         const hoveredTower = towers.find((t) => Math.hypot(t.x - mouseX, t.y - mouseY) < 20);
         if (hoveredTower) {
-          ctx.beginPath();
-          ctx.arc(hoveredTower.x, hoveredTower.y, hoveredTower.range, 0, Math.PI * 2);
-          ctx.strokeStyle = '#60A5FA88';
-          ctx.lineWidth = 1;
-          ctx.stroke();
+          ctx.beginPath(); ctx.arc(hoveredTower.x, hoveredTower.y, hoveredTower.range, 0, Math.PI * 2);
+          ctx.strokeStyle = '#60A5FA88'; ctx.lineWidth = 1; ctx.stroke();
         }
       }
-
-      // Draw Placement Preview
       const previewType = isDragging ? draggedType : selectedTowerType;
       if (previewType) {
         const gridX = Math.round(mouseX / GRID_SIZE) * GRID_SIZE;
         const gridY = Math.round(mouseY / GRID_SIZE) * GRID_SIZE;
         const stats = TOWER_STATS[previewType];
-        
         if (stats) {
           const h = stats.gridHeight || 1;
-          const visualH = h * GRID_SIZE;
-          
-          // Basic Validity Check for Preview
           let isValid = true;
           for (let i = 0; i < h; i++) {
             const checkY = gridY + i * GRID_SIZE;
-            if (checkY > canvas.height - 40) isValid = false;
-            if (isCollidingWithPath(gridX, checkY)) isValid = false;
+            if (checkY > canvas.height - 40 || isCollidingWithPath(gridX, checkY)) isValid = false;
           }
-          if (gridX < 20 || gridX > canvas.width - 80) isValid = false;
-          if (gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height - 100) isValid = false;
+          const inTopCenterUI = Math.abs(gridX - canvas.width / 2) < 250 && gridY < 100;
+          const inRightUI = gridX > canvas.width - 80;
+          const inLeftUI = gridX < 80;
+          const inStartButton = gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height - 100;
+          const inBottomUI = gridY > canvas.height - 60;
+          if (inTopCenterUI || inRightUI || inLeftUI || inStartButton || inBottomUI) isValid = false;
           
-          // Draw Tower Ghost (Requested back with range)
           ctx.save();
           ctx.globalAlpha = 0.5;
           const visualGhostY = gridY + ((h - 1) * GRID_SIZE) / 2;
           if (spritesLoaded && SPRITE_MAP.towers[previewType]) {
             const s = SPRITE_MAP.towers[previewType];
-            const renderSize = stats.size * 2.5;
-            const renderH = renderSize * (h > 1 ? 1.5 : 1);
-            ctx.drawImage(
-              spriteSheet,
-              s.sx,
-              s.sy,
-              s.sw,
-              s.sh,
-              gridX - renderSize / 2,
-              visualGhostY - renderH / 2,
-              renderSize,
-              renderH
-            );
+            const renderSize = stats.size * 2.5; const renderH = renderSize * (h > 1 ? 1.5 : 1);
+            ctx.drawImage(spriteSheet, s.sx, s.sy, s.sw, s.sh, gridX - renderSize / 2, visualGhostY - renderH / 2, renderSize, renderH);
           } else {
             ctx.fillStyle = isValid ? stats.color : '#EF4444';
-            if (previewType === 'basic') {
-              ctx.fillRect(gridX - stats.size / 2, visualGhostY - stats.size / 2, stats.size, stats.size);
-            } else {
-              ctx.beginPath();
-              ctx.arc(gridX, visualGhostY, stats.size, 0, Math.PI * 2);
-              ctx.fill();
-            }
+            if (previewType === 'basic') ctx.fillRect(gridX - stats.size / 2, visualGhostY - stats.size / 2, stats.size, stats.size);
+            else { ctx.beginPath(); ctx.arc(gridX, visualGhostY, stats.size, 0, Math.PI * 2); ctx.fill(); }
           }
           ctx.restore();
-
-          // Draw Range Circle
-          ctx.beginPath();
-          ctx.arc(gridX, gridY, stats.range, 0, Math.PI * 2);
-          ctx.strokeStyle = isValid ? '#34D39944' : '#EF444444'; 
-          ctx.lineWidth = 1;
-          ctx.stroke();
+          ctx.beginPath(); ctx.arc(gridX, gridY, stats.range, 0, Math.PI * 2);
+          ctx.strokeStyle = isValid ? '#34D39944' : '#EF444444'; ctx.lineWidth = 1; ctx.stroke();
         }
       }
+    }
 
-      // Draw Floating Texts (Optimized Style)
+    function drawFloatingTexts() {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-
+      
+      const buffs = floatingTexts.filter(t => t.type === 'buff' || t.type === 'debuff');
+      const shouldAccelerate = buffs.length > 3;
       let buffCount = 0;
+
       for (let i = 0; i < floatingTexts.length; i++) {
         let ft = floatingTexts[i];
         let fx = ft.x;
@@ -2697,89 +2955,60 @@ import Layout from '../../components/layout/Layout.astro';
         
         if (ft.type === 'buff' || ft.type === 'debuff') {
           fx = canvas.width / 2;
-          // Float DOWN towards the bottom UI
           fy = (canvas.height / 2 + 80) + (buffCount * 25) - ft.vy;
           buffCount++;
-          ctx.font = '900 18px sans-serif'; // Unified Toast Style
+          ctx.font = '900 18px sans-serif';
+          if (shouldAccelerate) ft.life -= 1.5;
         } else {
           ctx.font = 'bold 14px sans-serif';
         }
 
-        // Apply accelerated fade for too many buffs
-        if (ft.type === 'buff' || ft.type === 'debuff') {
-          if (floatingTexts.filter(t => t.type === 'buff' || t.type === 'debuff').length > 3) {
-             ft.life -= 1.5;
-          }
-          if (ft.life < 20) {
-            ctx.globalAlpha = ft.life / 20;
-          }
-        }
-
+        if (ft.life < 20) ctx.globalAlpha = ft.life / 20;
         ctx.fillStyle = ft.color;
-        // Text Outline for readability (Matching Toasts style)
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
         ctx.lineWidth = 3;
         ctx.strokeText(ft.text, fx, fy);
         ctx.fillText(ft.text, fx, fy);
         ctx.globalAlpha = 1.0;
-
         ft.vy -= 0.1;
         ft.life--;
       }
-      // Clean up floating texts
-      for (let i = floatingTexts.length - 1; i >= 0; i--) {
-        if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1);
-      }
+      for (let i = floatingTexts.length - 1; i >= 0; i--) if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1);
+    }
 
-      // --- OVERLAY AND BUTTON ---
+    function drawGameStates() {
       if (gameState === 'intro' || gameState === 'gameover') {
         ctx.fillStyle = '#000000DD';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
         ctx.textAlign = 'center';
         ctx.font = '900 40px sans-serif';
         ctx.fillStyle = gameState === 'gameover' ? '#EF4444' : '#FFFFFF';
-        ctx.fillText(
-          gameState === 'gameover' ? 'La Ciudadela ha Caído' : 'Prepara tus Defensas',
-          canvas.width / 2,
-          canvas.height / 2
-        );
+        ctx.fillText(gameState === 'gameover' ? 'La Ciudadela ha Caído' : 'Prepara tus Defensas', canvas.width / 2, canvas.height / 2);
       }
 
-      // Draw Start Button
-      if (
-        (gameState === 'playing' && enemies.length === 0 && !isEventActive) ||
-        gameState === 'intro' ||
-        gameState === 'gameover'
-      ) {
+      if ((gameState === 'playing' && enemies.length === 0 && !isEventActive) || gameState === 'intro' || gameState === 'gameover') {
         const btnX = canvas.width / 2;
-        const btnY = canvas.height - 60;
+        const btnY = canvas.height / 2 + 150;
         ctx.fillStyle = '#4F46E5';
         ctx.fillRect(btnX - 120, btnY - 30, 240, 60);
         ctx.fillStyle = '#FFFFFF';
         ctx.font = '900 18px sans-serif';
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.lineWidth = 2;
-        const btnText = gameState === 'intro' ? 'INICIAR PARTIDA' : 'SIGUIENTE OLEADA';
+        const btnText = gameState === 'intro' ? 'INICIAR PARTIDA' : gameState === 'gameover' ? 'REINTENTAR' : 'SIGUIENTE OLEADA';
         ctx.strokeText(btnText, btnX, btnY);
         ctx.fillText(btnText, btnX, btnY);
       }
+    }
 
-      // Draw In-Canvas Toasts (Optimized Stacking)
+    function drawToasts() {
       for (let i = 0; i < canvasToasts.length; i++) {
         const toast = canvasToasts[i];
         let xPos = canvas.width / 2;
-        // Use index 'i' to push them up vertically
         let yPos = canvas.height / 2 - (i * 25) + (toast.yOffset -= 1);
-
         ctx.font = '900 18px sans-serif';
         ctx.fillStyle = toast.type === 'error' ? '#EF4444' : '#34D399';
-        
-        // Final fade out based on life
-        if (toast.life < 20) {
-           ctx.globalAlpha = toast.life / 20;
-        }
-        
+        if (toast.life < 20) ctx.globalAlpha = toast.life / 20;
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
         ctx.lineWidth = 3;
         ctx.strokeText(toast.msg, xPos, yPos);
@@ -2787,39 +3016,36 @@ import Layout from '../../components/layout/Layout.astro';
         ctx.globalAlpha = 1.0;
         toast.life--;
       }
-      for (let i = canvasToasts.length - 1; i >= 0; i--) {
-        if (canvasToasts[i].life <= 0) canvasToasts.splice(i, 1);
-      }
+      for (let i = canvasToasts.length - 1; i >= 0; i--) if (canvasToasts[i].life <= 0) canvasToasts.splice(i, 1);
+    }
 
-      // Status Effects (Matching Toast Style, Floating Down)
+    function drawStatusEffects() {
       if (globalFreezeTimer > 0) {
         ctx.save();
         ctx.font = '900 18px sans-serif';
-        ctx.fillStyle = '#60A5FA'; // Ice blue
-        const yOffset = Math.max(0, (30 - globalFreezeTimer) * 0.5); // Moves down at the end
-         if (globalFreezeTimer < 20) ctx.globalAlpha = globalFreezeTimer / 20;
-         ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
-         ctx.lineWidth = 3;
-         ctx.strokeText('❄️ HIELO ACTIVO', canvas.width / 2, canvas.height - 180 + yOffset);
-         ctx.fillText('❄️ HIELO ACTIVO', canvas.width / 2, canvas.height - 180 + yOffset);
-         ctx.restore();
-       }
- 
-       if (curseNotification && curseNotification.life > 0) {
-         ctx.save();
-         ctx.font = '900 18px sans-serif';
-         ctx.fillStyle = '#A855F7'; // Purple
-         const yOffset = Math.max(0, (20 - curseNotification.life) * 0.5); // Moves down at the end
-         if (curseNotification.life < 20) ctx.globalAlpha = curseNotification.life / 20;
-         ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
-         ctx.lineWidth = 3;
-         ctx.strokeText(`🔮 ${curseNotification.msg}`, canvas.width / 2, canvas.height - 210 + yOffset);
-         ctx.fillText(`🔮 ${curseNotification.msg}`, canvas.width / 2, canvas.height - 210 + yOffset);
-         ctx.restore();
-         curseNotification.life--;
-       }
+        ctx.fillStyle = '#60A5FA';
+        const yOffset = Math.max(0, (30 - globalFreezeTimer) * 0.5);
+        if (globalFreezeTimer < 20) ctx.globalAlpha = globalFreezeTimer / 20;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.lineWidth = 3;
+        ctx.strokeText('❄️ HIELO ACTIVO', canvas.width / 2, canvas.height - 180 + yOffset);
+        ctx.fillText('❄️ HIELO ACTIVO', canvas.width / 2, canvas.height - 180 + yOffset);
+        ctx.restore();
+      }
 
-      ctx.restore();
+      if (curseNotification && curseNotification.life > 0) {
+        ctx.save();
+        ctx.font = '900 18px sans-serif';
+        ctx.fillStyle = '#A855F7';
+        const yOffset = Math.max(0, (20 - curseNotification.life) * 0.5);
+        if (curseNotification.life < 20) ctx.globalAlpha = curseNotification.life / 20;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.lineWidth = 3;
+        ctx.strokeText(`🔮 ${curseNotification.msg}`, canvas.width / 2, canvas.height - 210 + yOffset);
+        ctx.fillText(`🔮 ${curseNotification.msg}`, canvas.width / 2, canvas.height - 210 + yOffset);
+        ctx.restore();
+        curseNotification.life--;
+      }
     }
   </script>
 </Layout>
