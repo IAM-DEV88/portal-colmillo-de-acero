@@ -9,7 +9,7 @@ import Layout from '../../components/layout/Layout.astro';
   <main class="relative z-10 flex flex-col items-center py-12 px-2 md:px-4 min-h-screen overflow-x-hidden">
     <!-- Header -->
     <div
-      class="w-full max-w-5xl mx-auto mb-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-black/90 p-4 rounded-xl border border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.2)]"
+      class="w-full max-w-6xl mx-auto mb-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-black/90 p-4 rounded-xl border border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.2)]"
     >
       <div>
         <h1
@@ -37,7 +37,7 @@ import Layout from '../../components/layout/Layout.astro';
     <!-- Game Area -->
     <div
       id="game-container"
-      class="w-full max-w-5xl mx-auto relative rounded-xl overflow-hidden border-2 border-indigo-900/50 shadow-2xl bg-gray-900 aspect-video flex items-center justify-center"
+      class="w-full max-w-6xl mx-auto relative rounded-xl overflow-hidden border-2 border-indigo-900/50 shadow-2xl bg-gray-900 aspect-video flex items-center justify-center"
     >
       <!-- UI Overlay (Bottom HUD - Optimized & Floating) -->
       <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 w-auto pointer-events-none">
@@ -93,7 +93,7 @@ import Layout from '../../components/layout/Layout.astro';
 
       <!-- Unit Info Plate (Top Center - Inspect) -->
       <div id="unit-info-plate" class="absolute top-2 left-1/2 -translate-x-1/2 z-50 hidden pointer-events-auto">
-        <div class="bg-black/95 border border-indigo-500/50 rounded-xl p-2 shadow-2xl flex items-center gap-4 min-w-[280px] backdrop-blur-md">
+        <div class="bg-black/95 border border-indigo-500/50 rounded-xl p-2 shadow-2xl flex items-center gap-4 min-w-[300px] md:min-w-[280px] backdrop-blur-md">
           <!-- Tower View -->
           <div id="tower-inspect-view" class="flex items-center gap-4 w-full">
             <div class="flex flex-col gap-0.5 flex-1">
@@ -435,7 +435,8 @@ import Layout from '../../components/layout/Layout.astro';
     };
     let isShiftDown = false;
     let screenShake = 0; // Current screen shake intensity
-
+    let lastInteractionPos = null; // {x, y, radius, life} for visual feedback
+    
     // Sound state
     let soundsEnabled = true;
 
@@ -1555,8 +1556,13 @@ import Layout from '../../components/layout/Layout.astro';
         
         // Fat Finger Compensation: Use larger radius for touch
         const isTouch = e.type && e.type.startsWith('touch');
-        const clickRadius = isTouch ? 50 : 30;
-        const towerHitRadius = isTouch ? GRID_SIZE * 1.2 : GRID_SIZE * 0.8;
+        const clickRadius = isTouch ? 65 : 30; // Increased for mobile
+        const towerHitRadius = isTouch ? GRID_SIZE * 1.6 : GRID_SIZE * 0.8; // Increased for mobile
+
+        // Visual Feedback for touch interaction
+        if (isMouseDown && isTouch) {
+          lastInteractionPos = { x, y, radius: clickRadius, life: 20 };
+        }
 
         // Check if start button clicked
         if (gameState === 'intro' || gameState === 'gameover') {
@@ -1578,55 +1584,7 @@ import Layout from '../../components/layout/Layout.astro';
 
         if (gameState !== 'playing') return;
 
-        if (isMouseDown && !selectedTowerType) {
-          // 1. Check for Towers
-          const clickedTower = towers.find((t) => {
-            const th = t.gridHeight || 1;
-            for (let i = 0; i < th; i++) {
-              if (Math.hypot(t.x - x, (t.y + i * GRID_SIZE) - y) < towerHitRadius) return true;
-            }
-            return false;
-          });
-          
-          if (clickedTower) {
-            inspectedTower = clickedTower;
-            inspectedEnemy = null; 
-            playSFX('click');
-            return;
-          }
-
-          // 2. Check for Enemies
-          const clickedEnemy = enemies.find((en) => {
-            return Math.hypot(en.x - x, en.y - y) < clickRadius; 
-          });
-
-          if (clickedEnemy) {
-            inspectedEnemy = clickedEnemy;
-            inspectedTower = null; 
-            playSFX('click');
-            return;
-          }
-
-          // 3. Clicked empty space
-          inspectedTower = null;
-          inspectedEnemy = null;
-        }
-
-        // Check if next wave button clicked (or Ready button in wave 0)
-        if ((enemies.length === 0 && !isEventActive) || wave === 0) {
-          if (isMouseDown) {
-            const btnX = canvas.width / 2;
-            const btnY = canvas.height / 2 + 150; // Centered vertically in play area, away from HUD
-            if (x > btnX - 150 && x < btnX + 150 && y > btnY - 50 && y < btnY + 50) {
-              playSFX('start');
-              if (wave === 0) wave = 1;
-              spawnWave();
-              return;
-            }
-          }
-        }
-
-        // Check for bonus clicks
+        // PRIORITIZE BONUSES (Runes) - Especially on mobile
         if (isMouseDown) {
           for (let i = bonuses.length - 1; i >= 0; i--) {
             const b = bonuses[i];
@@ -1675,6 +1633,64 @@ import Layout from '../../components/layout/Layout.astro';
               updateHUD();
               bonuses.splice(i, 1);
               playSFX('pickup');
+              return;
+            }
+          }
+        }
+
+        // SMART SELECTION CYCLING (TAB-LIKE)
+        if (isMouseDown && !selectedTowerType) {
+          const nearbyTowers = towers.filter((t) => {
+            const th = t.gridHeight || 1;
+            for (let i = 0; i < th; i++) {
+              if (Math.hypot(t.x - x, (t.y + i * GRID_SIZE) - y) < towerHitRadius) return true;
+            }
+            return false;
+          });
+
+          const nearbyEnemies = enemies.filter((en) => {
+            return Math.hypot(en.x - x, en.y - y) < clickRadius; 
+          });
+
+          const candidates = [...nearbyTowers, ...nearbyEnemies];
+
+          if (candidates.length > 0) {
+            let nextIndex = 0;
+            // If something is already selected and it's in our candidates, pick the next one
+            const currentSelected = inspectedTower || inspectedEnemy;
+            if (currentSelected) {
+              const currentIndex = candidates.indexOf(currentSelected);
+              if (currentIndex !== -1) {
+                nextIndex = (currentIndex + 1) % candidates.length;
+              }
+            }
+
+            const selection = candidates[nextIndex];
+            if (towers.includes(selection)) {
+              inspectedTower = selection;
+              inspectedEnemy = null;
+            } else {
+              inspectedEnemy = selection;
+              inspectedTower = null;
+            }
+            playSFX('click');
+            return;
+          }
+
+          // Clicked empty space
+          inspectedTower = null;
+          inspectedEnemy = null;
+        }
+
+        // Check if next wave button clicked (or Ready button in wave 0)
+        if ((enemies.length === 0 && !isEventActive) || wave === 0) {
+          if (isMouseDown) {
+            const btnX = canvas.width / 2;
+            const btnY = canvas.height / 2 + 150; // Centered vertically in play area, away from HUD
+            if (x > btnX - 150 && x < btnX + 150 && y > btnY - 50 && y < btnY + 50) {
+              playSFX('start');
+              if (wave === 0) wave = 1;
+              spawnWave();
               return;
             }
           }
@@ -3577,8 +3593,32 @@ import Layout from '../../components/layout/Layout.astro';
       drawGameStates();
       drawToasts();
       drawStatusEffects();
+      drawInteractionFeedback();
 
       ctx.restore();
+    }
+
+    function drawInteractionFeedback() {
+      if (!lastInteractionPos || lastInteractionPos.life <= 0) return;
+      
+      const { x, y, radius, life } = lastInteractionPos;
+      const alpha = life / 20;
+      
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, radius * (1 + (20 - life) * 0.05), 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(129, 140, 248, ${alpha})`;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.5 * (life / 20), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(129, 140, 248, ${alpha * 0.2})`;
+      ctx.fill();
+      
+      ctx.restore();
+      lastInteractionPos.life--;
     }
 
     function drawTowerInfoPlate() {
