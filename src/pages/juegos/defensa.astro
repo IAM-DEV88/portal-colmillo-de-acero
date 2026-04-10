@@ -113,19 +113,19 @@ import Layout from '../../components/layout/Layout.astro';
             </div>
             <div class="w-[1px] h-8 bg-white/10"></div>
             <div class="flex items-center gap-2">
-              <button id="inspect-repair" class="flex flex-col items-center justify-center min-w-[32px] h-10 rounded-lg bg-green-900/40 border border-green-500/50 hover:bg-green-800 transition-all shadow-lg active:scale-90" title="Reparar">
-                <span class="text-sm">🔧</span>
-                <span id="inspect-repair-cost" class="text-[7px] font-bold text-green-400">50t</span>
+              <button id="inspect-repair" class="flex flex-col items-center justify-center min-w-[40px] md:min-w-[32px] h-12 md:h-10 rounded-lg bg-green-900/40 border border-green-500/50 hover:bg-green-800 transition-all shadow-lg active:scale-90" title="Reparar">
+                <span class="text-base md:text-sm">🔧</span>
+                <span id="inspect-repair-cost" class="text-[8px] md:text-[7px] font-bold text-green-400">50t</span>
               </button>
-              <button id="inspect-upgrade" class="flex flex-col items-center justify-center min-w-[32px] h-10 rounded-lg bg-orange-900/40 border border-orange-500/50 hover:bg-orange-800 transition-all shadow-lg active:scale-90" title="Mejorar">
-                <span class="text-sm">⬆️</span>
-                <span id="inspect-upgrade-cost" class="text-[7px] font-bold text-orange-400">150t</span>
+              <button id="inspect-upgrade" class="flex flex-col items-center justify-center min-w-[40px] md:min-w-[32px] h-12 md:h-10 rounded-lg bg-orange-900/40 border border-orange-500/50 hover:bg-orange-800 transition-all shadow-lg active:scale-90" title="Mejorar">
+                <span class="text-base md:text-sm">⬆️</span>
+                <span id="inspect-upgrade-cost" class="text-[8px] md:text-[7px] font-bold text-orange-400">150t</span>
               </button>
-              <button id="inspect-sell" class="flex flex-col items-center justify-center min-w-[32px] h-10 rounded-lg bg-red-900/40 border border-red-500/50 hover:bg-red-800 transition-all shadow-lg active:scale-90" title="Vender">
-                <span class="text-sm">💰</span>
-                <span id="inspect-sell-value" class="text-[7px] font-bold text-red-400">0a</span>
+              <button id="inspect-sell" class="flex flex-col items-center justify-center min-w-[40px] md:min-w-[32px] h-12 md:h-10 rounded-lg bg-red-900/40 border border-red-500/50 hover:bg-red-800 transition-all shadow-lg active:scale-90" title="Vender">
+                <span class="text-base md:text-sm">💰</span>
+                <span id="inspect-sell-value" class="text-[8px] md:text-[7px] font-bold text-red-400">0a</span>
               </button>
-              <button id="inspect-close" class="w-6 h-6 rounded-lg bg-red-900/40 border border-red-500/50 hover:bg-red-800 transition-all flex items-center justify-center text-[10px] opacity-60 hover:opacity-100" title="Cerrar">✕</button>
+              <button id="inspect-close" class="w-8 h-8 md:w-6 md:h-6 rounded-lg bg-red-900/40 border border-red-500/50 hover:bg-red-800 transition-all flex items-center justify-center text-xs md:text-[10px] opacity-60 hover:opacity-100" title="Cerrar">✕</button>
             </div>
           </div>
 
@@ -152,57 +152,57 @@ import Layout from '../../components/layout/Layout.astro';
 
       <!-- Tools Menu (Left Floating Dock) -->
       <div
-        class="absolute left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
+        class="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
       >
-        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-4 pointer-events-auto border-l-indigo-500/50">
-          <div class="flex flex-col gap-3">
+        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-2 md:p-1.5 shadow-2xl flex flex-col gap-4 md:gap-4 pointer-events-auto border-l-indigo-500/50">
+          <div class="flex flex-col gap-4 md:gap-3">
             <!-- Fullscreen -->
             <button
               id="fullscreen-btn"
-              class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
+              class="w-11 h-11 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
               title="Pantalla Completa"
             >
-              <span class="text-base group-hover:scale-110 transition-transform">⛶</span>
+              <span class="text-lg md:text-base group-hover:scale-110 transition-transform">⛶</span>
             </button>
 
             <!-- Config -->
             <button
               id="config-btn"
-              class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
+              class="w-11 h-11 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
               title="Configuración"
             >
-              <span class="text-base group-hover:rotate-45 transition-transform">⚙️</span>
+              <span class="text-lg md:text-base group-hover:rotate-45 transition-transform">⚙️</span>
             </button>
           </div>
 
-          <div class="w-6 h-[1px] bg-white/10 mx-auto"></div>
+          <div class="w-8 md:w-6 h-[1px] bg-white/10 mx-auto"></div>
 
-          <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-5 md:gap-4">
             <!-- Repair -->
             <button
-              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-green-900/30 border border-green-500/40 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center"
+              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-green-900/30 border border-green-500/40 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center"
               data-type="repair"
             >
-              <span class="text-base">🔧</span>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-green-400 text-[7px] font-black px-1 rounded border border-green-900/50 z-10 pointer-events-none">FIX</span>
+              <span class="text-lg md:text-base">🔧</span>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-green-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-green-900/50 z-10 pointer-events-none">FIX</span>
             </button>
 
             <!-- Upgrade -->
             <button
-              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-orange-900/30 border border-orange-500/40 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center"
+              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-orange-900/30 border border-orange-500/40 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center"
               data-type="upgrade"
             >
-              <span class="text-base">⬆️</span>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[7px] font-black px-1 rounded border border-orange-900/50 z-10 pointer-events-none">UP</span>
+              <span class="text-lg md:text-base">⬆️</span>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-orange-900/50 z-10 pointer-events-none">UP</span>
             </button>
 
             <!-- Sell -->
             <button
-              class="tower-btn w-9 h-9 md:w-10 md:h-10 rounded-xl bg-red-900/30 border border-red-500/40 text-red-500/60 flex items-center justify-center hover:bg-red-800/50 hover:text-red-400 hover:border-red-400 transition-all group"
+              class="tower-btn w-11 h-11 md:w-10 md:h-10 rounded-xl bg-red-900/30 border border-red-500/40 text-red-500/60 flex items-center justify-center hover:bg-red-800/50 hover:text-red-400 hover:border-red-400 transition-all group"
               data-type="sell"
               title="Vender Torre"
             >
-              <span class="text-base group-hover:scale-110 transition-transform">💰</span>
+              <span class="text-lg md:text-base group-hover:scale-110 transition-transform">💰</span>
             </button>
           </div>
         </div>
@@ -282,67 +282,67 @@ import Layout from '../../components/layout/Layout.astro';
 
       <!-- Build Menu (Right Floating Dock) -->
       <div
-        class="absolute right-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
+        class="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
       >
-        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-4 pointer-events-auto border-r-indigo-500/50">
-          <div class="flex flex-col gap-5">
+        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-2 md:p-1.5 shadow-2xl flex flex-col gap-4 md:gap-4 pointer-events-auto border-r-indigo-500/50">
+          <div class="flex flex-col gap-6 md:gap-5">
             <!-- Tower 1 -->
             <button
-              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-slate-900/30 border border-slate-500/40 hover:bg-slate-800/50 hover:border-slate-400 transition-all flex items-center justify-center shadow-lg"
+              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-slate-900/30 border border-slate-500/40 hover:bg-slate-800/50 hover:border-slate-400 transition-all flex items-center justify-center shadow-lg"
               data-type="basic"
               data-cost="40"
               title="Colmillo Ligero: Defensa rápida y económica"
             >
-              <div class="w-4 h-4 md:w-5 md:h-5 bg-slate-400 rounded-sm group-hover:scale-110 transition-transform"></div>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-slate-400 text-[7px] font-black px-1 rounded border border-slate-900/50 z-10 pointer-events-none">40a</span>
+              <div class="w-5 h-5 md:w-5 md:h-5 bg-slate-400 rounded-sm group-hover:scale-110 transition-transform"></div>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-slate-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-slate-900/50 z-10 pointer-events-none">40a</span>
             </button>
 
             <!-- Tower 2 -->
             <button
-              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-purple-900/30 border border-purple-500/40 hover:bg-purple-800/50 hover:border-purple-400 transition-all flex items-center justify-center shadow-lg"
+              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-purple-900/30 border border-purple-500/40 hover:bg-purple-800/50 hover:border-purple-400 transition-all flex items-center justify-center shadow-lg"
               data-type="sniper"
               data-cost="150"
               title="Mirada del Lobo: Gran alcance y daño crítico"
             >
-              <div class="w-3 h-3 md:w-3.5 md:h-3.5 bg-purple-400 rounded-full group-hover:scale-110 transition-transform"></div>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-purple-400 text-[7px] font-black px-1 rounded border border-purple-900/50 z-10 pointer-events-none">150a</span>
+              <div class="w-4 h-4 md:w-3.5 md:h-3.5 bg-purple-400 rounded-full group-hover:scale-110 transition-transform"></div>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-purple-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-purple-900/50 z-10 pointer-events-none">150a</span>
             </button>
 
             <!-- Tower 3 -->
             <button
-              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-red-900/30 border border-red-500/40 hover:bg-red-800/50 hover:border-red-400 transition-all flex items-center justify-center shadow-lg"
+              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-red-900/30 border border-red-500/40 hover:bg-red-800/50 hover:border-red-400 transition-all flex items-center justify-center shadow-lg"
               data-type="splash"
               data-cost="300"
               title="Rugido de Acero: Daño en área devastador"
             >
-              <div class="w-3.5 h-3.5 md:w-4 md:h-4 bg-red-400 rotate-45 group-hover:scale-110 transition-transform"></div>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-red-400 text-[7px] font-black px-1 rounded border border-red-900/50 z-10 pointer-events-none">300a</span>
+              <div class="w-4.5 h-4.5 md:w-4 md:h-4 bg-red-400 rotate-45 group-hover:scale-110 transition-transform"></div>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-red-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-red-900/50 z-10 pointer-events-none">300a</span>
             </button>
 
             <!-- Tower 4 -->
             <button
-              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-emerald-900/30 border border-emerald-500/40 hover:bg-emerald-800/50 hover:border-emerald-400 transition-all flex items-center justify-center shadow-lg"
+              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-emerald-900/30 border border-emerald-500/40 hover:bg-emerald-800/50 hover:border-emerald-400 transition-all flex items-center justify-center shadow-lg"
               data-type="nova"
               data-cost="70"
               title="Santuario de Vida: Sana a los puestos cercanos"
             >
-              <div class="w-4 h-4 md:w-5 md:h-5 bg-emerald-400 rounded-sm group-hover:scale-110 transition-transform flex items-center justify-center">
-                <span class="text-[8px] md:text-[10px] text-black font-black">➕</span>
+              <div class="w-5 h-5 md:w-5 md:h-5 bg-emerald-400 rounded-sm group-hover:scale-110 transition-transform flex items-center justify-center">
+                <span class="text-[9px] md:text-[10px] text-black font-black">➕</span>
               </div>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-emerald-400 text-[7px] font-black px-1 rounded border border-emerald-900/50 z-10 pointer-events-none">70a</span>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-emerald-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-emerald-900/50 z-10 pointer-events-none">70a</span>
             </button>
           </div>
 
-          <div class="w-6 h-[1px] bg-white/10 mx-auto"></div>
+          <div class="w-8 md:w-6 h-[1px] bg-white/10 mx-auto"></div>
 
           <!-- Pause -->
           <button
             id="pause-btn"
-            class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-yellow-900/30 border border-yellow-500/40 hover:bg-yellow-800/50 hover:border-yellow-400 transition-all flex items-center justify-center"
+            class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-yellow-900/30 border border-yellow-500/40 hover:bg-yellow-800/50 hover:border-yellow-400 transition-all flex items-center justify-center"
             data-type="pause"
           >
-            <span class="text-base">⏸️</span>
-            <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-yellow-400 text-[7px] font-black px-1 rounded border border-yellow-900/50 z-10 pointer-events-none">10t</span>
+            <span class="text-lg md:text-base">⏸️</span>
+            <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-yellow-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-yellow-900/50 z-10 pointer-events-none">10t</span>
           </button>
         </div>
       </div>
@@ -1201,7 +1201,7 @@ import Layout from '../../components/layout/Layout.astro';
           const x = (touch.clientX - rect.left) * scaleX;
           const y = (touch.clientY - rect.top) * scaleY;
           
-          handleConstruction(x, y, draggedType);
+          handleConstruction(x, y, draggedType, GRID_SIZE * 1.2); // Use mobile hit radius
         }
         
         isDragging = false;
@@ -1513,7 +1513,24 @@ import Layout from '../../components/layout/Layout.astro';
         handleCanvasAction(e);
       });
 
+      canvas.addEventListener('touchstart', (e) => {
+        isMouseDown = true;
+        const touch = e.touches[0];
+        // Create a fake event object that handleCanvasAction expects
+        const fakeEvent = {
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+          type: 'touchstart'
+        };
+        handleCanvasAction(fakeEvent);
+        if (e.cancelable) e.preventDefault();
+      }, { passive: false });
+
       window.addEventListener('mouseup', () => {
+        isMouseDown = false;
+      });
+
+      window.addEventListener('touchend', () => {
         isMouseDown = false;
       });
 
@@ -1535,13 +1552,18 @@ import Layout from '../../components/layout/Layout.astro';
         const scaleY = canvas.height / rect.height;
         const x = (e.clientX - rect.left) * scaleX;
         const y = (e.clientY - rect.top) * scaleY;
+        
+        // Fat Finger Compensation: Use larger radius for touch
+        const isTouch = e.type && e.type.startsWith('touch');
+        const clickRadius = isTouch ? 50 : 30;
+        const towerHitRadius = isTouch ? GRID_SIZE * 1.2 : GRID_SIZE * 0.8;
 
         // Check if start button clicked
         if (gameState === 'intro' || gameState === 'gameover') {
           if (isMouseDown) {
             const btnX = canvas.width / 2;
             const btnY = canvas.height / 2 + 150;
-            if (x > btnX - 120 && x < btnX + 120 && y > btnY - 30 && y < btnY + 30) {
+            if (x > btnX - 150 && x < btnX + 150 && y > btnY - 50 && y < btnY + 50) {
               if (credits > 0) {
                 playSFX('start');
                 startGame();
@@ -1561,7 +1583,7 @@ import Layout from '../../components/layout/Layout.astro';
           const clickedTower = towers.find((t) => {
             const th = t.gridHeight || 1;
             for (let i = 0; i < th; i++) {
-              if (Math.hypot(t.x - x, (t.y + i * GRID_SIZE) - y) < GRID_SIZE * 0.8) return true;
+              if (Math.hypot(t.x - x, (t.y + i * GRID_SIZE) - y) < towerHitRadius) return true;
             }
             return false;
           });
@@ -1575,7 +1597,7 @@ import Layout from '../../components/layout/Layout.astro';
 
           // 2. Check for Enemies
           const clickedEnemy = enemies.find((en) => {
-            return Math.hypot(en.x - x, en.y - y) < 30; 
+            return Math.hypot(en.x - x, en.y - y) < clickRadius; 
           });
 
           if (clickedEnemy) {
@@ -1595,7 +1617,7 @@ import Layout from '../../components/layout/Layout.astro';
           if (isMouseDown) {
             const btnX = canvas.width / 2;
             const btnY = canvas.height / 2 + 150; // Centered vertically in play area, away from HUD
-            if (x > btnX - 120 && x < btnX + 120 && y > btnY - 30 && y < btnY + 30) {
+            if (x > btnX - 150 && x < btnX + 150 && y > btnY - 50 && y < btnY + 50) {
               playSFX('start');
               if (wave === 0) wave = 1;
               spawnWave();
@@ -1609,7 +1631,7 @@ import Layout from '../../components/layout/Layout.astro';
           for (let i = bonuses.length - 1; i >= 0; i--) {
             const b = bonuses[i];
             const dist = Math.hypot(b.x - x, b.y - y);
-            if (dist < 30) {
+            if (dist < clickRadius) {
               // Click radius
               if (b.type === 'abyssal_rune') {
                 abyssals += b.reward;
@@ -1659,10 +1681,10 @@ import Layout from '../../components/layout/Layout.astro';
         }
 
         if (!selectedTowerType) return;
-        handleConstruction(x, y, selectedTowerType);
+        handleConstruction(x, y, selectedTowerType, towerHitRadius);
       }
 
-      function handleConstruction(x, y, type) {
+      function handleConstruction(x, y, type, hitRadius = GRID_SIZE * 0.8) {
         const cost = getTowerCost(type);
 
         // Snap to Grid
@@ -1674,7 +1696,7 @@ import Layout from '../../components/layout/Layout.astro';
           const targetTower = towers.find((t) => {
             const th = t.gridHeight || 1;
             for (let i = 0; i < th; i++) {
-              if (Math.hypot(t.x - gridX, t.y + i * GRID_SIZE - gridY) < GRID_SIZE * 0.8)
+              if (Math.hypot(t.x - gridX, t.y + i * GRID_SIZE - gridY) < hitRadius)
                 return true;
             }
             return false;
@@ -1705,7 +1727,7 @@ import Layout from '../../components/layout/Layout.astro';
           const targetTower = towers.find((t) => {
             const th = t.gridHeight || 1;
             for (let i = 0; i < th; i++) {
-              if (Math.hypot(t.x - gridX, t.y + i * GRID_SIZE - gridY) < GRID_SIZE * 0.8)
+              if (Math.hypot(t.x - gridX, t.y + i * GRID_SIZE - gridY) < hitRadius)
                 return true;
             }
             return false;
@@ -1740,7 +1762,7 @@ import Layout from '../../components/layout/Layout.astro';
           const targetTower = towers.find((t) => {
             const th = t.gridHeight || 1;
             for (let i = 0; i < th; i++) {
-              if (Math.hypot(t.x - gridX, t.y + i * GRID_SIZE - gridY) < GRID_SIZE * 0.8)
+              if (Math.hypot(t.x - gridX, t.y + i * GRID_SIZE - gridY) < hitRadius)
                 return true;
             }
             return false;
@@ -4205,10 +4227,26 @@ import Layout from '../../components/layout/Layout.astro';
       if ((gameState === 'playing' && enemies.length === 0 && !isEventActive) || gameState === 'intro' || gameState === 'gameover') {
         const btnX = canvas.width / 2;
         const btnY = canvas.height / 2 + 150;
+        
+        // Draw Button Shadow/Glow
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'rgba(79, 70, 229, 0.5)';
+        
+        // Draw Button Background
         ctx.fillStyle = '#4F46E5';
-        ctx.fillRect(btnX - 120, btnY - 30, 240, 60);
+        ctx.beginPath();
+        ctx.roundRect(btnX - 150, btnY - 50, 300, 100, 15);
+        ctx.fill();
+        
+        ctx.shadowBlur = 0; // Reset shadow
+
+        // Draw Button Border
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
         ctx.fillStyle = '#FFFFFF';
-        ctx.font = '900 18px sans-serif';
+        ctx.font = '900 24px sans-serif'; // Larger font for larger button
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.lineWidth = 2;
         const btnText = gameState === 'intro' ? 'INICIAR PARTIDA' : gameState === 'gameover' ? 'REINTENTAR' : 'SIGUIENTE OLEADA';
