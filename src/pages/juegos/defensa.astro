@@ -39,255 +39,311 @@ import Layout from '../../components/layout/Layout.astro';
       id="game-container"
       class="w-full max-w-5xl mx-auto relative rounded-xl overflow-hidden border-2 border-indigo-900/50 shadow-2xl bg-gray-900 aspect-video flex items-center justify-center"
     >
-      <!-- UI Overlay (Bottom HUD - Distributed Evenly) -->
-      <div class="absolute bottom-2 left-14 right-20 md:left-20 md:right-24 z-20 flex justify-between gap-1 pointer-events-none px-4">
-        <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[45px] md:min-w-[60px]"
-        >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Salud</span>
-          <span id="health-display" class="text-red-400 font-bold">100</span>
-        </div>
-        <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[45px] md:min-w-[60px]"
-        >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Acero</span>
-          <span id="abyssals-display" class="text-slate-300 font-bold">100</span>
-        </div>
-        <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[65px] md:min-w-[85px]"
-        >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Táctica</span>
-          <div class="flex flex-col items-center leading-none">
-            <div id="upgrades-display" class="text-amber-400 font-bold">0</div>
-            <div class="flex items-center gap-1 mt-0.5">
-              <div class="flex items-center gap-0.5">
-                <span class="text-[7px] md:text-[8px]">🔧</span>
-                <span id="repair-cost-display" class="text-green-500 font-bold text-[7px] md:text-[8px]">50</span>
+      <!-- UI Overlay (Bottom HUD - Optimized & Floating) -->
+      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 w-auto pointer-events-none">
+        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl flex items-center gap-4 px-5 border-b-indigo-500/50 pointer-events-auto">
+          <!-- Main Stats Group -->
+          <div class="flex items-center gap-4">
+            <!-- Health -->
+            <div class="flex items-center gap-2" title="Salud Ciudadela">
+              <span class="text-xs">❤️</span>
+              <span id="health-display" class="text-red-500 font-black text-sm font-mono">100</span>
+            </div>
+            
+            <div class="w-[1px] h-4 bg-white/10"></div>
+
+            <!-- Steel -->
+            <div class="flex items-center gap-2" title="Acero (Construcción)">
+              <span class="text-xs">⚙️</span>
+              <span id="abyssals-display" class="text-slate-200 font-black text-sm font-mono">100</span>
+            </div>
+
+            <div class="w-[1px] h-4 bg-white/10"></div>
+
+            <!-- Tactics -->
+            <div class="flex flex-col items-center justify-center min-w-[60px]" title="Táctica (Acciones)">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px]">⚡</span>
+                <span id="upgrades-display" class="text-amber-400 font-black text-sm font-mono">0</span>
               </div>
-              <span class="text-gray-600 text-[7px]">|</span>
-              <div class="flex items-center gap-0.5">
-                <span class="text-[7px] md:text-[8px]">⬆️</span>
-                <span id="upgrade-cost-display" class="text-orange-500 font-bold text-[7px] md:text-[8px]">150</span>
+              <div class="flex items-center gap-2 mt-0.5 opacity-60 scale-90">
+                <span class="text-[8px] text-green-500 font-bold">🔧<span id="repair-cost-display">50</span></span>
+                <span class="text-[8px] text-orange-500 font-bold">⬆️<span id="upgrade-cost-display">150</span></span>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[35px] md:min-w-[50px]"
-        >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Oleada</span>
-          <span id="wave-display" class="text-indigo-400 font-bold">0</span>
-        </div>
-        <div
-          class="bg-black/85 text-white px-1.5 md:px-2 py-0.5 rounded border border-white/10 font-mono text-[9px] md:text-xs shadow-xl flex flex-col items-center min-w-[35px] md:min-w-[50px]"
-        >
-          <span class="text-gray-400 text-[6px] md:text-[7px] block uppercase tracking-tighter">Puestos</span>
-          <span id="tower-count-display" class="text-blue-400 font-bold">0/30</span>
+
+          <div class="w-[1px] h-6 bg-indigo-500/30"></div>
+
+          <!-- Progress Group -->
+          <div class="flex items-center gap-4">
+            <!-- Wave -->
+            <div class="flex flex-col items-center">
+              <span class="text-[6px] text-indigo-400 font-black uppercase tracking-tighter">Oleada</span>
+              <span id="wave-display" class="text-white font-black text-sm leading-none">0</span>
+            </div>
+            <!-- Towers -->
+            <div class="flex flex-col items-center">
+              <span class="text-[6px] text-blue-400 font-black uppercase tracking-tighter">Puestos</span>
+              <span id="tower-count-display" class="text-white font-black text-xs leading-none">0/30</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Left Vertical Tools Column -->
-      <div
-        class="absolute left-2 top-2 bottom-2 md:left-4 md:top-4 md:bottom-4 w-14 md:w-16 z-30 flex flex-col items-center py-4 gap-4 pointer-events-none"
-      >
-        <div class="flex flex-col gap-4 pointer-events-auto">
-          <!-- Fullscreen Button -->
-          <button
-            id="fullscreen-btn"
-            class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-black/90 border border-white/20 text-white/60 flex items-center justify-center shadow-lg hover:bg-indigo-900 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
-            title="Pantalla Completa"
-          >
-            <span class="text-lg group-hover:rotate-12 transition-transform">⛶</span>
-          </button>
+      <!-- Unit Info Plate (Top Center - Inspect) -->
+      <div id="unit-info-plate" class="absolute top-2 left-1/2 -translate-x-1/2 z-50 hidden pointer-events-auto">
+        <div class="bg-black/95 border border-indigo-500/50 rounded-xl p-2 shadow-2xl flex items-center gap-4 min-w-[280px] backdrop-blur-md">
+          <!-- Tower View -->
+          <div id="tower-inspect-view" class="flex items-center gap-4 w-full">
+            <div class="flex flex-col gap-0.5 flex-1">
+              <div class="flex items-center gap-2">
+                <span id="inspect-name" class="text-[10px] font-black text-indigo-400 uppercase italic">NOMBRE</span>
+                <span id="inspect-level" class="text-[9px] bg-indigo-900/50 text-white px-1 rounded border border-indigo-500/30">Nv.1</span>
+              </div>
+              <div class="flex gap-3 text-[9px] text-gray-400 font-mono">
+                <span>DMG: <span id="inspect-dmg" class="text-white">0</span></span>
+                <span>BAJAS: <span id="inspect-kills" class="text-white">0</span></span>
+                <span class="text-amber-500/80">⚡ <span id="inspect-stamina" class="text-amber-400">100</span>%</span>
+              </div>
+              <div id="inspect-effects" class="flex gap-1 mt-1 empty:hidden"></div>
+              <div class="w-full h-1 bg-gray-800 rounded-full mt-1 overflow-hidden">
+                <div id="inspect-vet-bar" class="h-full bg-amber-500" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="w-[1px] h-8 bg-white/10"></div>
+            <div class="flex items-center gap-2">
+              <button id="inspect-repair" class="flex flex-col items-center justify-center min-w-[32px] h-10 rounded-lg bg-green-900/40 border border-green-500/50 hover:bg-green-800 transition-all shadow-lg active:scale-90" title="Reparar">
+                <span class="text-sm">🔧</span>
+                <span id="inspect-repair-cost" class="text-[7px] font-bold text-green-400">50t</span>
+              </button>
+              <button id="inspect-upgrade" class="flex flex-col items-center justify-center min-w-[32px] h-10 rounded-lg bg-orange-900/40 border border-orange-500/50 hover:bg-orange-800 transition-all shadow-lg active:scale-90" title="Mejorar">
+                <span class="text-sm">⬆️</span>
+                <span id="inspect-upgrade-cost" class="text-[7px] font-bold text-orange-400">150t</span>
+              </button>
+              <button id="inspect-sell" class="flex flex-col items-center justify-center min-w-[32px] h-10 rounded-lg bg-red-900/40 border border-red-500/50 hover:bg-red-800 transition-all shadow-lg active:scale-90" title="Vender">
+                <span class="text-sm">💰</span>
+                <span id="inspect-sell-value" class="text-[7px] font-bold text-red-400">0a</span>
+              </button>
+              <button id="inspect-close" class="w-6 h-6 rounded-lg bg-red-900/40 border border-red-500/50 hover:bg-red-800 transition-all flex items-center justify-center text-[10px] opacity-60 hover:opacity-100" title="Cerrar">✕</button>
+            </div>
+          </div>
 
-          <!-- Config Button -->
-          <button
-            id="config-btn"
-            class="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-black/90 border border-white/20 text-white/60 flex items-center justify-center shadow-lg hover:bg-indigo-900 hover:text-white hover:border-indigo-400 transition-all hover:scale-110 active:scale-95 group"
-            title="Configuración"
-          >
-            <span class="text-lg group-hover:rotate-90 transition-transform">⚙️</span>
-          </button>
-
-          <!-- Sell Button -->
-          <button
-            class="tower-btn w-10 h-10 md:w-11 md:h-11 rounded-xl bg-black/90 border border-red-500/20 text-red-500/60 flex items-center justify-center shadow-lg hover:bg-red-950 hover:text-red-400 hover:border-red-500 transition-all hover:scale-110 active:scale-95 group"
-            data-type="sell"
-            title="Vender Torre"
-          >
-            <span class="text-lg group-hover:rotate-12 transition-transform">💰</span>
-          </button>
+          <!-- Enemy View -->
+          <div id="enemy-inspect-view" class="hidden flex items-center gap-4 w-full">
+            <div class="flex flex-col gap-0.5 flex-1">
+              <div class="flex items-center gap-2">
+                <span id="enemy-inspect-name" class="text-[10px] font-black text-red-400 uppercase italic">ENEMIGO</span>
+                <span id="enemy-inspect-level" class="text-[9px] bg-red-900/50 text-white px-1 rounded border border-red-500/30">Nv.1</span>
+              </div>
+              <div class="flex gap-3 text-[9px] text-gray-400 font-mono">
+                <span class="text-red-500/80">HP: <span id="enemy-inspect-hp" class="text-red-400">100</span>%</span>
+                <span class="text-blue-500/80">SPD: <span id="enemy-inspect-speed" class="text-blue-400">1.0</span>x</span>
+              </div>
+              <div class="w-full h-1 bg-gray-800 rounded-full mt-1 overflow-hidden">
+                <div id="enemy-inspect-hp-bar" class="h-full bg-red-600" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="w-[1px] h-8 bg-white/10"></div>
+            <button id="enemy-inspect-close" class="w-6 h-6 rounded-lg bg-red-900/40 border border-red-500/50 hover:bg-red-800 transition-all flex items-center justify-center text-[10px] opacity-60 hover:opacity-100" title="Cerrar">✕</button>
+          </div>
         </div>
+      </div>
 
-        <div class="w-8 h-[1px] bg-white/10 my-1"></div>
-
-        <div class="flex flex-col gap-4 pointer-events-auto">
-          <!-- Repair Button -->
-          <button
-            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-green-900/40 border border-green-500/50 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="repair"
-            data-cost="50"
-          >
-            <span class="text-lg md:text-xl">🔧</span>
-            <span
-              class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-amber-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-amber-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
-              >50m</span
+      <!-- Tools Menu (Left Floating Dock) -->
+      <div
+        class="absolute left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
+      >
+        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-4 pointer-events-auto border-l-indigo-500/50">
+          <div class="flex flex-col gap-3">
+            <!-- Fullscreen -->
+            <button
+              id="fullscreen-btn"
+              class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
+              title="Pantalla Completa"
             >
-          </button>
+              <span class="text-base group-hover:scale-110 transition-transform">⛶</span>
+            </button>
 
-          <!-- Upgrade Button -->
-          <button
-            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-orange-900/40 border border-orange-500/50 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="upgrade"
-            data-cost="150"
-          >
-            <span class="text-lg md:text-xl">⬆️</span>
-            <span
-              class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-orange-900/50 z-10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
-              >150m</span
+            <!-- Config -->
+            <button
+              id="config-btn"
+              class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
+              title="Configuración"
             >
-          </button>
+              <span class="text-base group-hover:rotate-45 transition-transform">⚙️</span>
+            </button>
+          </div>
+
+          <div class="w-6 h-[1px] bg-white/10 mx-auto"></div>
+
+          <div class="flex flex-col gap-4">
+            <!-- Repair -->
+            <button
+              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-green-900/30 border border-green-500/40 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center"
+              data-type="repair"
+            >
+              <span class="text-base">🔧</span>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-green-400 text-[7px] font-black px-1 rounded border border-green-900/50 z-10 pointer-events-none">FIX</span>
+            </button>
+
+            <!-- Upgrade -->
+            <button
+              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-orange-900/30 border border-orange-500/40 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center"
+              data-type="upgrade"
+            >
+              <span class="text-base">⬆️</span>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[7px] font-black px-1 rounded border border-orange-900/50 z-10 pointer-events-none">UP</span>
+            </button>
+
+            <!-- Sell -->
+            <button
+              class="tower-btn w-9 h-9 md:w-10 md:h-10 rounded-xl bg-red-900/30 border border-red-500/40 text-red-500/60 flex items-center justify-center hover:bg-red-800/50 hover:text-red-400 hover:border-red-400 transition-all group"
+              data-type="sell"
+              title="Vender Torre"
+            >
+              <span class="text-base group-hover:scale-110 transition-transform">💰</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Config Modal -->
       <div
         id="config-modal"
-        class="absolute inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden"
+        class="absolute inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-2"
       >
         <div
-          class="w-full max-w-xs bg-gray-950 border border-indigo-500/50 rounded-2xl p-6 shadow-2xl"
+          class="w-full max-w-lg max-h-[95vh] bg-gray-950 border border-indigo-500/40 rounded-xl shadow-2xl flex flex-col overflow-hidden"
         >
-          <h2 class="text-xl font-black text-indigo-400 uppercase tracking-widest mb-6 italic text-center">Configuración</h2>
-          
-          <div class="space-y-6">
-            <!-- Sounds Toggle -->
-            <div class="flex items-center justify-between">
-              <span class="text-white font-bold uppercase tracking-tighter">Sonidos</span>
-              <button
-                id="toggle-sound"
-                class="w-14 h-7 rounded-full bg-indigo-950 border border-indigo-500/50 relative transition-colors"
-              >
-                <div
-                  id="sound-switch"
-                  class="absolute top-1 left-1 w-5 h-5 rounded-full bg-indigo-400 transition-transform translate-x-7"
-                ></div>
-              </button>
-            </div>
-
-            <!-- Turbo Toggle -->
-            <div class="flex items-center justify-between">
-              <div class="flex flex-col">
-                <span class="text-white font-bold uppercase tracking-tighter">Modo Turbo</span>
-                <span class="text-[10px] text-amber-500/70 font-bold uppercase tracking-widest">Velocidad x2</span>
+          <div class="p-4 overflow-y-auto custom-scrollbar flex-1">
+            <h2 class="text-lg font-black text-indigo-400 uppercase tracking-widest mb-4 italic text-center">Configuración</h2>
+            
+            <div class="space-y-4">
+              <!-- Keybinds Section -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between border-b border-white/5 pb-1">
+                  <span class="text-[10px] text-white font-bold uppercase tracking-tight">Atajos de Teclado</span>
+                  <span class="text-[7px] text-indigo-400 font-black italic">CLIC PARA REASIGNAR</span>
+                </div>
+                
+                <div class="grid grid-cols-3 sm:grid-cols-4 gap-1.5" id="keybinds-list">
+                  <!-- Keybinds will be injected here -->
+                </div>
               </div>
-              <button
-                id="toggle-turbo"
-                class="w-14 h-7 rounded-full bg-gray-800 border border-gray-600 relative transition-colors"
-              >
-                <div
-                  id="turbo-switch"
-                  class="absolute top-1 left-1 w-5 h-5 rounded-full bg-gray-400 transition-transform"
-                ></div>
-              </button>
+
+              <!-- Toggles Section -->
+              <div class="grid grid-cols-2 gap-2 mt-2">
+                <!-- Sounds -->
+                <div class="flex items-center justify-between bg-white/[0.03] p-2 rounded-lg border border-white/5">
+                  <span class="text-[9px] text-gray-400 font-bold uppercase">Sonidos</span>
+                  <button id="toggle-sound" class="w-10 h-5 rounded-full bg-indigo-950 border border-indigo-500/30 relative transition-colors">
+                    <div id="sound-switch" class="absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full bg-indigo-400 transition-transform translate-x-5"></div>
+                  </button>
+                </div>
+
+                <!-- Turbo -->
+                <div class="flex items-center justify-between bg-white/[0.03] p-2 rounded-lg border border-white/5">
+                  <span class="text-[9px] text-gray-400 font-bold uppercase">Turbo x2</span>
+                  <button id="toggle-turbo" class="w-10 h-5 rounded-full bg-gray-800 border border-gray-600 relative transition-colors">
+                    <div id="turbo-switch" class="absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full bg-gray-400 transition-transform"></div>
+                  </button>
+                </div>
+
+                <!-- Fog of War -->
+                <div class="flex items-center justify-between bg-white/[0.03] p-2 rounded-lg border border-white/5">
+                  <span class="text-[9px] text-gray-400 font-bold uppercase">Niebla de Guerra</span>
+                  <button id="toggle-fog" class="w-10 h-5 rounded-full bg-indigo-950 border border-indigo-500/30 relative transition-colors">
+                    <div id="fog-switch" class="absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full bg-indigo-400 transition-transform translate-x-7"></div>
+                  </button>
+                </div>
+
+                <!-- Show Ranges -->
+                <div class="flex items-center justify-between bg-white/[0.03] p-2 rounded-lg border border-white/5">
+                  <span class="text-[9px] text-gray-400 font-bold uppercase">Ver Rangos</span>
+                  <button id="toggle-ranges" class="w-10 h-5 rounded-full bg-gray-800 border border-gray-600 relative transition-colors">
+                    <div id="ranges-switch" class="absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full bg-gray-400 transition-transform"></div>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <button
-            id="close-config"
-            class="w-full mt-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest rounded-xl transition-colors shadow-lg shadow-indigo-600/20"
-          >
-            Cerrar
-          </button>
+          <div class="p-3 bg-gray-900/50 border-t border-white/5">
+            <button
+              id="close-config"
+              class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black uppercase tracking-widest rounded-lg transition-colors shadow-lg shadow-indigo-600/20"
+            >
+              Cerrar
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Towers Panel (Right) -->
+      <!-- Build Menu (Right Floating Dock) -->
       <div
-        class="absolute right-2 top-2 bottom-2 md:right-4 md:top-4 md:bottom-4 w-16 md:w-20 bg-black border border-indigo-500/30 rounded-xl md:rounded-2xl z-20 flex flex-col items-center py-2 md:py-4 gap-3 md:gap-4 touch-pan-y overflow-y-auto custom-scrollbar shadow-2xl"
+        class="absolute right-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
       >
-        <span
-          class="text-[7px] md:text-[8px] text-indigo-300 uppercase font-black tracking-[0.2em] text-center leading-tight mb-1 drop-shadow-sm px-1"
-          >Puestos de Avanzada</span
-        >
-
-        <!-- Towers Column -->
-        <div class="flex flex-col gap-4 md:gap-6 px-1 md:px-2">
-          <!-- Tower 1 -->
-          <button
-            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-slate-900/30 border border-slate-500/50 hover:bg-slate-800/50 hover:border-slate-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="basic"
-            data-cost="20"
-            title="Colmillo Ligero: Defensa rápida y económica"
-          >
-            <div class="w-5 h-5 md:w-6 md:h-6 bg-slate-400 rounded-sm group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(148,163,184,0.5)]"></div>
-            <span
-              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-slate-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-slate-900/50 z-10 pointer-events-none whitespace-nowrap"
-              >20a</span
+        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-4 pointer-events-auto border-r-indigo-500/50">
+          <div class="flex flex-col gap-5">
+            <!-- Tower 1 -->
+            <button
+              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-slate-900/30 border border-slate-500/40 hover:bg-slate-800/50 hover:border-slate-400 transition-all flex items-center justify-center shadow-lg"
+              data-type="basic"
+              data-cost="40"
+              title="Colmillo Ligero: Defensa rápida y económica"
             >
-          </button>
+              <div class="w-4 h-4 md:w-5 md:h-5 bg-slate-400 rounded-sm group-hover:scale-110 transition-transform"></div>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-slate-400 text-[7px] font-black px-1 rounded border border-slate-900/50 z-10 pointer-events-none">40a</span>
+            </button>
 
-          <!-- Tower 2 -->
-          <button
-            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-purple-900/30 border border-purple-500/50 hover:bg-purple-800/50 hover:border-purple-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="sniper"
-            data-cost="100"
-            title="Mirada del Lobo: Gran alcance y daño crítico"
-          >
-            <div class="w-3.5 h-3.5 md:w-4 md:h-4 bg-purple-400 rounded-full group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(168,85,247,0.5)]"></div>
-            <span
-              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-purple-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-purple-900/50 z-10 pointer-events-none whitespace-nowrap"
-              >100a</span
+            <!-- Tower 2 -->
+            <button
+              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-purple-900/30 border border-purple-500/40 hover:bg-purple-800/50 hover:border-purple-400 transition-all flex items-center justify-center shadow-lg"
+              data-type="sniper"
+              data-cost="150"
+              title="Mirada del Lobo: Gran alcance y daño crítico"
             >
-          </button>
+              <div class="w-3 h-3 md:w-3.5 md:h-3.5 bg-purple-400 rounded-full group-hover:scale-110 transition-transform"></div>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-purple-400 text-[7px] font-black px-1 rounded border border-purple-900/50 z-10 pointer-events-none">150a</span>
+            </button>
 
-          <!-- Tower 3 -->
-          <button
-            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-red-900/30 border border-red-500/50 hover:bg-red-800/50 hover:border-red-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="splash"
-            data-cost="200"
-            title="Rugido de Acero: Daño en área devastador"
-          >
-            <div class="w-4 h-4 md:w-5 md:h-5 bg-red-400 rotate-45 group-hover:scale-110 transition-transform shadow-[0_0_8px_rgba(239,68,68,0.5)]"></div>
-            <span
-              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-red-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-red-900/50 z-10 pointer-events-none whitespace-nowrap"
-              >200a</span
+            <!-- Tower 3 -->
+            <button
+              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-red-900/30 border border-red-500/40 hover:bg-red-800/50 hover:border-red-400 transition-all flex items-center justify-center shadow-lg"
+              data-type="splash"
+              data-cost="300"
+              title="Rugido de Acero: Daño en área devastador"
             >
-          </button>
+              <div class="w-3.5 h-3.5 md:w-4 md:h-4 bg-red-400 rotate-45 group-hover:scale-110 transition-transform"></div>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-red-400 text-[7px] font-black px-1 rounded border border-red-900/50 z-10 pointer-events-none">300a</span>
+            </button>
 
-          <!-- Tower 4 -->
-          <button
-            class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-cyan-900/30 border border-cyan-500/50 hover:bg-cyan-800/50 hover:border-cyan-400 transition-all flex items-center justify-center shadow-lg"
-            data-type="nova"
-            data-cost="300"
-            title="Aullido Ártico: Ralentiza y daña en el tiempo"
-          >
-            <div class="w-4 h-4 md:w-5 md:h-5 bg-cyan-400 rounded-full group-hover:scale-110 transition-transform flex items-center justify-center shadow-[0_0_8px_rgba(34,211,238,0.5)]">
-              <span class="text-[8px] md:text-[10px] text-black font-black">❄️</span>
-            </div>
-            <span
-              class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-black/90 text-cyan-400 text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded border border-cyan-900/50 z-10 pointer-events-none whitespace-nowrap"
-              >300a</span
+            <!-- Tower 4 -->
+            <button
+              class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-emerald-900/30 border border-emerald-500/40 hover:bg-emerald-800/50 hover:border-emerald-400 transition-all flex items-center justify-center shadow-lg"
+              data-type="nova"
+              data-cost="70"
+              title="Santuario de Vida: Sana a los puestos cercanos"
             >
-          </button>
-        </div>
+              <div class="w-4 h-4 md:w-5 md:h-5 bg-emerald-400 rounded-sm group-hover:scale-110 transition-transform flex items-center justify-center">
+                <span class="text-[8px] md:text-[10px] text-black font-black">➕</span>
+              </div>
+              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-emerald-400 text-[7px] font-black px-1 rounded border border-emerald-900/50 z-10 pointer-events-none">70a</span>
+            </button>
+          </div>
 
-        <div class="w-12 md:w-14 h-[1px] bg-white/10 my-2 md:my-4 shrink-0"></div>
+          <div class="w-6 h-[1px] bg-white/10 mx-auto"></div>
 
-        <!-- Pause Button -->
-        <button
-          id="pause-btn"
-          class="tower-btn group relative w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-lg md:rounded-xl bg-yellow-900/30 border border-yellow-500/50 hover:bg-yellow-800/50 hover:border-yellow-400 transition-all flex items-center justify-center shadow-lg"
-        >
-          <span class="text-lg md:text-xl text-white font-bold tracking-wider">⏸️</span>
-          <span
-            class="absolute -left-16 top-1/2 -translate-y-1/2 bg-black text-amber-400 text-[10px] font-bold px-2 rounded border border-yellow-500 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap"
-            >-10m</span
+          <!-- Pause -->
+          <button
+            id="pause-btn"
+            class="tower-btn group relative w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-xl bg-yellow-900/30 border border-yellow-500/40 hover:bg-yellow-800/50 hover:border-yellow-400 transition-all flex items-center justify-center"
+            data-type="pause"
           >
-        </button>
-
-        <div class="mt-auto pt-2 md:pt-4 text-center text-[6px] md:text-[7px] text-gray-500 italic px-1 shrink-0 uppercase tracking-tighter">
-          Toca torre
+            <span class="text-base">⏸️</span>
+            <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-yellow-400 text-[7px] font-black px-1 rounded border border-yellow-900/50 z-10 pointer-events-none">10t</span>
+          </button>
         </div>
       </div>
 
@@ -304,11 +360,11 @@ import Layout from '../../components/layout/Layout.astro';
         class="absolute top-2 z-25 pointer-events-none opacity-0 transition-opacity duration-300 left-1/2 -translate-x-1/2"
       >
         <div
-          class="bg-red-950/95 border border-red-500/40 px-3 py-1 rounded-lg shadow-2xl transform scale-75 transition-transform duration-300"
+          class="bg-red-950/95 border border-red-500/40 px-2 py-0.5 rounded-lg shadow-2xl transform scale-[0.65] transition-transform duration-300"
           id="warning-box"
         >
           <h3
-            class="text-[10px] md:text-xs font-black text-red-500 uppercase tracking-widest animate-pulse flex items-center gap-1.5"
+            class="text-[8px] md:text-[10px] font-black text-red-500 uppercase tracking-widest animate-pulse flex items-center gap-1"
           >
             <span>⚠️</span>
             <span id="warning-text">¡PELIGRO!</span>
@@ -346,6 +402,37 @@ import Layout from '../../components/layout/Layout.astro';
     let mouseX = 0;
     let mouseY = 0;
     let inspectedTower = null; // Currently inspected tower for info plate
+    let inspectedEnemy = null; // Currently inspected enemy for info plate
+    let lastInspectUpdate = 0; // Throttle UI updates
+    const fogCanvas = document.createElement('canvas');
+    const fogCtx = fogCanvas.getContext('2d');
+    let showFog = false; 
+    let showRanges = true;
+    let isRebinding = null; // Key being currently rebound
+
+    const KEYBINDS = {
+      tower1: 'a',
+      tower2: 's',
+      tower3: 'd',
+      tower4: 'f',
+      repair: 'r',
+      upgrade: 'e',
+      action: ' ', // Space
+      fullscreen: 'w',
+      sounds: 'q',
+    };
+
+    const KEY_LABELS = {
+      tower1: 'Colmillo',
+      tower2: 'Mirada',
+      tower3: 'Rugido',
+      tower4: 'Aullido',
+      repair: 'Reparar',
+      upgrade: 'Mejorar',
+      action: 'Pausa/Inicio',
+      fullscreen: 'Pantalla Completa',
+      sounds: 'Sonidos',
+    };
     let isShiftDown = false;
     let screenShake = 0; // Current screen shake intensity
 
@@ -401,8 +488,8 @@ import Layout from '../../components/layout/Layout.astro';
 
       enemies: {
         zombie: { sx: 16, sy: 130, sw: 40, sh: 60 }, // Ghoul (Left)
-        brujo: { sx: 250, sy: 65, sw: 60, sh: 70 }, // Fantasma/Banshee (Right)
-        valkiria: { sx: 250, sy: 130, sw: 50, sh: 70 }, // Nigromante (Middle-Left)
+        brujo: { sx: 250, sy: 65, sw: 60, sh: 70 }, //  Nigromante (Right)
+        valkiria: { sx: 250, sy: 130, sw: 50, sh: 70 }, // Fantasma/Banshee (Middle-Left)
         berserker: { sx: 250, sy: 0, sw: 60, sh: 70 }, // Berserker (Middle-Right)
         orbe: { sx: 70, sy: 165, sw: 40, sh: 40 }, // Orbe Oscuro (Below Sniper)
       },
@@ -430,10 +517,16 @@ import Layout from '../../components/layout/Layout.astro';
             let spriteContainer = btn.querySelector('.btn-sprite-icon');
             if (!spriteContainer) {
               spriteContainer = document.createElement('div');
-              spriteContainer.className = 'btn-sprite-icon w-10 h-10 group-hover:scale-110 transition-transform pointer-events-none';
+              spriteContainer.className = 'btn-sprite-icon w-10 h-10 group-hover:scale-110 transition-transform pointer-events-none flex items-center justify-center relative';
               btn.prepend(spriteContainer);
               // Hide the original placeholder icon
               iconEl.style.display = 'none';
+
+              // Add special ability bar container
+              const abilityBar = document.createElement('div');
+              abilityBar.className = 'special-bar absolute -bottom-1 left-0 w-full h-1 bg-gray-800 rounded-full overflow-hidden opacity-0 transition-opacity';
+              abilityBar.innerHTML = '<div class="special-progress h-full bg-amber-400 w-0 shadow-[0_0_5px_rgba(251,191,36,0.5)]"></div>';
+              spriteContainer.appendChild(abilityBar);
             }
 
             const btnSize = 40; // Target size in pixels
@@ -529,50 +622,80 @@ import Layout from '../../components/layout/Layout.astro';
         id: 'zombie',
         name: 'Errante del Vacío',
         color: '#94A3B8',
-        speedMod: 1,
-        hpMod: 1.1,
-        attackType: 'normal',
+        speedMod: 0.8,
+        hpMod: 14.25,
+        attackType: 'plague', 
+        castTime: 120, // Reduced from 240
+        cooldown: 420, 
+        basicDamage: 8,
+        basicRate: 60, // 1s
         effectText: '¡La Plaga del Vacío se acerca!',
+        quote: '¡Siente la podredumbre!',
+        sprintQuotes: ['¡Carne fresca!', '¡Cereeeebros!', '¡Hambre eterna!'],
       },
       {
         id: 'brujo',
         name: 'Sacerdote de Sombras',
         color: '#A855F7',
         speedMod: 0.7,
-        hpMod: 2.0,
-        attackType: 'shadow',
+        hpMod: 21.0,
+        attackType: 'inferno', 
+        castTime: 150, // Reduced from 300
+        cooldown: 540, 
+        basicDamage: 12,
+        basicRate: 90, // 1.5s
         isNecromancer: true,
         effectText: '¡Un Sacerdote invoca a los caídos!',
+        quote: '¡Almas encadenadas, servidme!',
+        sprintQuotes: ['¡La oscuridad avanza!', '¡Vuestras almas son mías!', '¡Corred, mortales!'],
       },
       {
         id: 'berserker',
         name: 'Bestia de Carga Corrupta',
         color: '#F97316',
-        speedMod: 1.5,
-        hpMod: 1.3,
-        attackType: 'fire',
+        speedMod: 1.1,
+        hpMod: 16.5,
+        attackType: 'axe', 
+        castTime: 90, // Reduced from 180
+        cooldown: 360, 
+        basicDamage: 15,
+        basicRate: 45, // 0.75s
         isBerserker: true,
         effectText: '¡Una Bestia de Carga entra en frenesí!',
+        quote: '¡POR EL CAOS!',
+        sprintQuotes: ['¡SANGRE PARA EL CAOS!', '¡NADA ME DETENDRÁ!', '¡MÁS RÁPIDO!'],
       },
       {
         id: 'valkiria',
         name: 'Caballero Gélido',
         color: '#60A5FA',
-        speedMod: 1.2,
-        hpMod: 0.9,
+        speedMod: 1.0,
+        hpMod: 12.75,
         attackType: 'ice',
+        castTime: 120, // Reduced from 240
+        cooldown: 480, 
+        basicDamage: 10,
+        basicRate: 75, // 1.25s
         hasRangeBuff: true,
         effectText: '¡Un Caballero Gélido congela el aire!',
+        quote: '¡El frío os consumirá!',
+        sprintQuotes: ['¡Como el viento del norte!', '¡Hielo y muerte!', '¡No escaparéis!'],
       },
       {
         id: 'orbe',
         name: 'Espectro Corrupto',
         color: '#D946EF',
-        speedMod: 1.3,
-        hpMod: 0.6,
-        attackType: 'shadow',
+        speedMod: 1.0,
+        hpMod: 11.25,
+        attackType: 'clones', 
+        castTime: 100, // Reduced from 210
+        cooldown: 420, 
+        basicDamage: 6,
+        basicRate: 60, // 1s
         isGhost: true,
         effectText: '¡Un Espectro Corrupto se desvanece!',
+        quote: '¿A quién disparas?',
+        sprintQuotes: ['¡Solo soy una sombra!', '¡Inalcanzable!', '¡Ya estoy allí!'],
       },
     ];
 
@@ -617,23 +740,21 @@ import Layout from '../../components/layout/Layout.astro';
 
       const newPath = [];
 
-      // Start on left edge, avoiding HUD
-      // HUD is approx (420, 80)
-      let currentY = Math.random() * 200 + 200; // Start between 200 and 400
-      newPath.push({ x: 0, y: currentY });
-
-      let currentX = 0;
+      // Start after the Left Tools Panel (approx x=80)
+      let currentX = 80;
+      let currentY = Math.random() * (maxH - 300) + 150; // Avoid top and bottom UI
+      newPath.push({ x: currentX, y: currentY });
 
       // We want to avoid the Right Panel (x > 940)
-      // We want to avoid the HUD (x < 420, y < 80)
-      // We want to avoid the Tools Panel (x < 180, y > 520)
+      // We want to avoid the HUD at bottom (y > maxH - 80)
+      // We want to avoid the Left Tools Panel (x < 80)
       while (currentX < maxW - 200) {
         currentX += Math.random() * (maxW * 0.15) + maxW * 0.15;
         if (currentX > maxW - 150) currentX = maxW - 150;
 
-        // Vertical safe zone: y between 100 and 500
+        // Vertical safe zone: y between 100 and maxH - 120
         let minY = 100;
-        let maxY = maxH - 100;
+        let maxY = maxH - 120;
 
         currentY = Math.random() * (maxY - minY) + minY;
         newPath.push({ x: currentX, y: currentY });
@@ -689,27 +810,29 @@ import Layout from '../../components/layout/Layout.astro';
         name: 'Colmillo Ligero',
         color: '#94A3B8',
         range: 180,
-        damage: 35,
-        fireRate: 25,
-        cost: 20,
+        damage: 95,
+        fireRate: 27,
+        cost: 40,
         size: 24,
-        hp: 120,
-        maxHp: 120,
+        hp: 450,
+        maxHp: 450,
         splash: false,
         gridHeight: 1,
         critChance: 0.1,
         quotes: ['¡Por el Colmillo!', '¡Acero y Sangre!', '¡No pasarán!'],
+        specialThreshold: 40,
+        specialQuote: '¡DISPARO RÁPIDO!',
       },
       sniper: {
         name: 'Mirada del Lobo',
         color: '#C084FC',
-        range: 380,
-        damage: 120,
+        range: 250,
+        damage: 60,
         fireRate: 80,
-        cost: 100,
+        cost: 150,
         size: 16,
-        hp: 70,
-        maxHp: 70,
+        hp: 120,
+        maxHp: 120,
         splash: true,
         splashRadius: 100,
         isSlow: true,
@@ -717,53 +840,162 @@ import Layout from '../../components/layout/Layout.astro';
         gridHeight: 2,
         critChance: 0.25,
         quotes: ['Blanco fijado.', 'Ojo de lobo...', 'Un disparo, una baja.'],
+        specialThreshold: 20,
+        specialQuote: '¡DISPARO PERFORANTE!',
       },
       splash: {
         name: 'Rugido de Acero',
         color: '#EF4444',
         range: 160,
-        damage: 50,
+        damage: 10,
         fireRate: 50,
-        cost: 200,
+        cost: 300,
         size: 20,
-        hp: 180,
-        maxHp: 180,
+        hp: 300,
+        maxHp: 300,
         splash: true,
         splashRadius: 90,
         gridHeight: 2,
         critChance: 0.15,
         quotes: ['¡Siente el rugido!', '¡Cenizas al vacío!', '¡Explosión táctica!'],
+        specialThreshold: 30,
+        specialQuote: '¡BOMBARDEO!',
       },
       nova: {
-        name: 'Aullido Ártico',
-        color: '#22D3EE',
-        range: 260,
-        damage: 35,
-        fireRate: 120,
-        cost: 300,
-        size: 28,
-        hp: 250,
-        maxHp: 250,
-        splash: true,
-        splashRadius: 220,
-        isNova: true,
-        isDoT: true,
-        dotDuration: 240, 
+        name: 'Santuario de Vida',
+        color: '#10B981',
+        range: 100, // Small starting area
+        damage: 15, // Healing amount
+        fireRate: 90,
+        cost: 70, // Adjusted price
+        size: 24,
+        hp: 400,
+        maxHp: 400,
+        isHealer: true,
         gridHeight: 2,
         critChance: 0.1,
-        quotes: ['Invierno eterno...', 'Hielo en sus venas.', '¡Que se congelen!'],
+        quotes: ['La luz nos guía.', 'Sanando heridas...', '¡Resistid!'],
+        specialThreshold: 20,
+        specialQuote: '¡BENDICIÓN ANCESTRAL!',
       },
       repair: { cost: 50, color: '#34D399', range: 0 }, 
       upgrade: { cost: 150, color: '#F59E0B', range: 0 }, 
+      pause: { cost: 10, color: '#F59E0B', range: 0 },
       sell: { cost: 0, color: '#EF4444', range: 0 },
     };
 
+    // --- SPRINT QUOTES POOLS ---
+    const SPRINT_QUOTES = {
+      zombie: ['¡Carne fresca!', '¡Cereeeebros!', '¡Hambre eterna!'],
+      brujo: ['¡La oscuridad avanza!', '¡Vuestras almas son mías!', '¡Corred, mortales!'],
+      berserker: ['¡SANGRE PARA EL CAOS!', '¡NADA ME DETENDRÁ!', '¡MÁS RÁPIDO!'],
+      valkiria: ['¡Como el viento del norte!', '¡Hielo y muerte!', '¡No escaparéis!'],
+      orbe: ['¡Solo soy una sombra!', '¡Inalcanzable!', '¡Ya estoy allí!'],
+    };
+
     function getTowerCost(type) {
-      if (type === 'repair') return 50 + wave * 5;
-      if (type === 'upgrade') return 150 + wave * 10;
+      if (type === 'repair') return Math.floor(50 + wave * 3.5);
+      if (type === 'upgrade') return Math.floor(150 + wave * 7);
+      if (type === 'pause') return 10;
+      if (type === 'sell') return 0;
       const baseCost = TOWER_STATS[type].cost;
       // Inflation: +5% cost per wave after wave 1
       return Math.floor(baseCost * (1 + Math.max(0, wave - 1) * 0.05));
+    }
+
+    function applyDamageToTower(t, damage) {
+      if (!t || damage <= 0) return;
+      
+      let finalDamage = damage;
+      // Steel Bond Armor Bonus: -30% damage if paired
+      if (t.type === 'basic' && t.isPaired) {
+        finalDamage *= 0.7;
+      }
+      
+      t.hp -= finalDamage;
+      
+      if (t.hp <= 0) {
+        const index = towers.indexOf(t);
+        if (index > -1) {
+          towers.splice(index, 1);
+          if (inspectedTower === t) inspectedTower = null;
+          createExplosion(t.x, t.y, '#EF4444', 15);
+          showCanvasToast('¡Puesto defensivo destruido!', 'error');
+          playSFX('explosion');
+          // Recalculate pairs after a tower is destroyed
+          updateTowerPairing();
+        }
+      }
+    }
+
+    function updateTowerPairing() {
+      // Reset pairing for all basic towers
+      towers.forEach(t => {
+        if (t.type === 'basic') t.isPaired = false;
+      });
+
+      const basicTowers = towers.filter(t => t.type === 'basic');
+      const paired = new Set();
+
+      for (let i = 0; i < basicTowers.length; i++) {
+        if (paired.has(i)) continue;
+        
+        const t1 = basicTowers[i];
+        const vY1 = t1.y + (((t1.gridHeight || 1) - 1) * GRID_SIZE) / 2;
+        
+        let bestPair = -1;
+        let minDistSq = Infinity;
+
+        for (let j = 0; j < basicTowers.length; j++) {
+          if (i === j || paired.has(j)) continue;
+          
+          const t2 = basicTowers[j];
+          const vY2 = t2.y + (((t2.gridHeight || 1) - 1) * GRID_SIZE) / 2;
+          
+          const dx = t2.x - t1.x;
+          const dy = vY2 - vY1;
+          const distSq = dx * dx + dy * dy;
+          
+          // Must be within influence (range) of each other
+          // We use the smaller range for safety or just a fixed link range
+          const linkRange = t1.range; 
+          if (distSq <= linkRange * linkRange && distSq < minDistSq) {
+            minDistSq = distSq;
+            bestPair = j;
+          }
+        }
+
+        if (bestPair !== -1) {
+          t1.isPaired = true;
+          basicTowers[bestPair].isPaired = true;
+          paired.add(i);
+          paired.add(bestPair);
+        }
+      }
+    }
+
+    function calculateSellValue(t) {
+      if (!t) return 0;
+      const stats = TOWER_STATS[t.type];
+      const baseCost = stats.cost || 0;
+      const upgradeCost = 150; // Base upgrade cost
+      const level = t.level || 1;
+      
+      // Base value: construction + level upgrades
+      const totalInvestment = baseCost + (level - 1) * upgradeCost;
+      
+      // Veterancy multiplier: +5% per star (kill since last level up)
+      const stars = t.veterancy - 1;
+      const veterancyBonus = 1 + (stars * 0.05);
+      
+      // Health penalty: Selling a damaged tower is less profitable
+      // (Linear scale: 100% HP = full value, 50% HP = 75% value, 0% HP = 50% value)
+      const healthFactor = 0.5 + (t.hp / t.maxHp) * 0.5;
+      
+      // Base refund is 50% of total investment
+      const baseRefundRate = 0.5;
+      
+      return Math.floor(totalInvestment * baseRefundRate * veterancyBonus * healthFactor);
     }
 
     // --- INIT ---
@@ -820,6 +1052,56 @@ import Layout from '../../components/layout/Layout.astro';
         });
       }
 
+      // Fog Toggle Handlers
+      const toggleFog = document.getElementById('toggle-fog');
+      const fogSwitch = document.getElementById('fog-switch');
+
+      function updateFogUI() {
+        if (showFog) {
+          toggleFog.classList.remove('bg-gray-800', 'border-gray-600');
+          toggleFog.classList.add('bg-indigo-900/50', 'border-indigo-500/50');
+          fogSwitch.classList.add('translate-x-7');
+        } else {
+          toggleFog.classList.remove('bg-indigo-900/50', 'border-indigo-500/50');
+          toggleFog.classList.add('bg-gray-800', 'border-gray-600');
+          fogSwitch.classList.remove('translate-x-7');
+        }
+      }
+
+      if (toggleFog) {
+        toggleFog.addEventListener('click', () => {
+          showFog = !showFog;
+          updateFogUI();
+          showCanvasToast(showFog ? 'NIEBLA DE GUERRA: ACTIVADA' : 'NIEBLA DE GUERRA: DESACTIVADA', 'info');
+          playSFX('click');
+        });
+      }
+
+      // Ranges Toggle Handlers
+      const toggleRanges = document.getElementById('toggle-ranges');
+      const rangesSwitch = document.getElementById('ranges-switch');
+
+      function updateRangesUI() {
+        if (showRanges) {
+          toggleRanges.classList.remove('bg-gray-800', 'border-gray-600');
+          toggleRanges.classList.add('bg-indigo-900/50', 'border-indigo-500/50');
+          rangesSwitch.classList.add('translate-x-7');
+        } else {
+          toggleRanges.classList.remove('bg-indigo-900/50', 'border-indigo-500/50');
+          toggleRanges.classList.add('bg-gray-800', 'border-gray-600');
+          rangesSwitch.classList.remove('translate-x-7');
+        }
+      }
+
+      if (toggleRanges) {
+        toggleRanges.addEventListener('click', () => {
+          showRanges = !showRanges;
+          updateRangesUI();
+          showCanvasToast(showRanges ? 'RANGOS VISIBLES: SI' : 'RANGOS VISIBLES: NO', 'info');
+          playSFX('click');
+        });
+      }
+
       const pauseBtn = document.getElementById('pause-btn');
 
       pauseBtn.addEventListener('click', () => {
@@ -832,7 +1114,7 @@ import Layout from '../../components/layout/Layout.astro';
             updateHUD();
             showCanvasToast('Juego Pausado (-10m)', 'info');
           } else {
-            showCanvasToast('Mejoras insuficientes para pausar', 'error');
+            showCanvasToast('Táctica insuficiente para pausar', 'error');
             playSFX('error');
           }
         } else {
@@ -933,6 +1215,102 @@ import Layout from '../../components/layout/Layout.astro';
       const toggleSound = document.getElementById('toggle-sound');
       const soundSwitch = document.getElementById('sound-switch');
 
+      // Unit Info Plate Action Listeners
+      const inspectPlate = document.getElementById('unit-info-plate');
+      const closeInspectBtn = document.getElementById('inspect-close');
+      const repairInspectBtn = document.getElementById('inspect-repair');
+      const upgradeInspectBtn = document.getElementById('inspect-upgrade');
+
+      if (closeInspectBtn) {
+          closeInspectBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            inspectedTower = null;
+            playSFX('click');
+          });
+        }
+
+        const enemyInspectCloseBtn = document.getElementById('enemy-inspect-close');
+        if (enemyInspectCloseBtn) {
+          enemyInspectCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            inspectedEnemy = null;
+            playSFX('click');
+          });
+        }
+
+      if (repairInspectBtn) {
+        repairInspectBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!inspectedTower) return;
+          const cost = getTowerCost('repair');
+          if (inspectedTower.hp >= inspectedTower.maxHp) {
+            showCanvasToast('El puesto ya tiene la salud máxima', 'error');
+            playSFX('error');
+            return;
+          }
+          if (upgrades >= cost) {
+            upgrades -= cost;
+            inspectedTower.hp = Math.min(inspectedTower.maxHp, inspectedTower.hp + 50);
+            inspectedTower.buffs.steelShield = 600;
+            updateHUD();
+            showCanvasToast('¡Refuerzo de Acero!', 'success');
+            createExplosion(inspectedTower.x, inspectedTower.y, '#94A3B8', 20);
+            playSFX('build');
+          } else {
+            showCanvasToast('Táctica insuficiente', 'error');
+            playSFX('error');
+          }
+        });
+      }
+
+      const sellInspectBtn = document.getElementById('inspect-sell');
+      if (sellInspectBtn) {
+        sellInspectBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!inspectedTower) return;
+          const refund = calculateSellValue(inspectedTower);
+          abyssals += refund;
+          const index = towers.indexOf(inspectedTower);
+          if (index > -1) {
+            const visualY = inspectedTower.y + (((inspectedTower.gridHeight || 1) - 1) * GRID_SIZE) / 2;
+            createExplosion(inspectedTower.x, visualY, '#EF4444', 15);
+            addFloatingText(inspectedTower.x, visualY, `+${refund}a`, '#34D399');
+            towers.splice(index, 1);
+            inspectedTower = null;
+            updateHUD();
+            playSFX('pickup');
+            showCanvasToast(`Puesto retirado: +${refund} acero`, 'success');
+            updateTowerPairing();
+          }
+        });
+      }
+
+      if (upgradeInspectBtn) {
+        upgradeInspectBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!inspectedTower) return;
+          const cost = getTowerCost('upgrade');
+          if (upgrades >= cost) {
+            upgrades -= cost;
+            inspectedTower.level++;
+            inspectedTower.damage = Math.floor(inspectedTower.damage * 1.5);
+            const oldRange = inspectedTower.range;
+            inspectedTower.range = Math.floor(inspectedTower.range * 1.1);
+            inspectedTower.oldRange = oldRange;
+            inspectedTower.upgradePulse = 1.0;
+            inspectedTower.maxHp += 50;
+            inspectedTower.hp += 50;
+            updateHUD();
+            showCanvasToast(`Puesto Nivel ${inspectedTower.level}`, 'success');
+            createExplosion(inspectedTower.x, inspectedTower.y, '#F59E0B', 25);
+            playSFX('build');
+          } else {
+            showCanvasToast('Táctica insuficiente', 'error');
+            playSFX('error');
+          }
+        });
+      }
+
       function updateSoundUI() {
         if (soundsEnabled) {
           toggleSound.classList.remove('bg-gray-800', 'border-gray-600');
@@ -947,10 +1325,42 @@ import Layout from '../../components/layout/Layout.astro';
         }
       }
 
+      function renderKeybinds() {
+        const list = document.getElementById('keybinds-list');
+        if (!list) return;
+        list.innerHTML = '';
+        Object.keys(KEYBINDS).forEach(key => {
+          const btn = document.createElement('button');
+          btn.className = `flex flex-col items-center p-1.5 rounded-md border transition-all ${isRebinding === key ? 'bg-indigo-600 border-white ring-1 ring-indigo-400' : 'bg-white/5 border-white/10 hover:bg-white/10'}`;
+          
+          const label = document.createElement('span');
+          label.className = 'text-[6px] text-gray-500 uppercase font-black leading-tight';
+          label.innerText = KEY_LABELS[key];
+          
+          const val = document.createElement('span');
+          val.className = 'text-[10px] text-white font-bold uppercase';
+          const keyVal = KEYBINDS[key];
+          val.innerText = keyVal === ' ' ? 'ESP' : keyVal.toUpperCase();
+          
+          btn.appendChild(label);
+          btn.appendChild(val);
+          
+          btn.onclick = () => {
+            isRebinding = key;
+            renderKeybinds();
+          };
+          
+          list.appendChild(btn);
+        });
+      }
+
       configBtn.addEventListener('click', () => {
         configModal.classList.remove('hidden');
         updateSoundUI();
         updateTurboUI();
+        updateFogUI();
+        updateRangesUI();
+        renderKeybinds();
       });
 
       closeConfig.addEventListener('click', () => {
@@ -965,25 +1375,132 @@ import Layout from '../../components/layout/Layout.astro';
 
       window.addEventListener('keydown', (e) => {
         if (gameState !== 'playing' && gameState !== 'intro') return;
+
+        // --- REBINDING LOGIC ---
+        if (isRebinding) {
+          e.preventDefault();
+          const key = e.key.toLowerCase();
+          
+          // Basic validation
+          if (key === 'escape') {
+            isRebinding = null;
+            renderKeybinds();
+            return;
+          }
+
+          // Check for duplicates
+          const exists = Object.entries(KEYBINDS).find(([k, v]) => v === key && k !== isRebinding);
+          if (exists) {
+            showCanvasToast(`¡Tecla ${key} ya en uso por ${KEY_LABELS[exists[0]]}!`, 'error');
+            playSFX('error');
+            return;
+          }
+
+          KEYBINDS[isRebinding] = key;
+          isRebinding = null;
+          renderKeybinds();
+          showCanvasToast('¡Control reasignado!', 'success');
+          playSFX('click');
+          return;
+        }
+
         if (e.key === 'Shift') isShiftDown = true;
-        const key = e.key;
+        const key = e.key.toLowerCase();
+
+        // --- TAB NAVIGATION (Cycle focus by lowest HP) ---
+        if (key === 'tab') {
+          e.preventDefault();
+          if (towers.length === 0) return;
+
+          // Sort towers by health percentage (ascending)
+          const sorted = [...towers].sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp));
+          
+          if (!inspectedTower) {
+            inspectedTower = sorted[0];
+          } else {
+            // Find next in sorted list
+            const currentIndex = sorted.indexOf(inspectedTower);
+            const nextIndex = (currentIndex + 1) % sorted.length;
+            inspectedTower = sorted[nextIndex];
+          }
+          
+          selectedTowerType = null;
+          playSFX('click');
+          return;
+        }
+
+        // --- SPACE / ACTION KEY (Pause/Resume/Start) ---
+        if (key === KEYBINDS.action) {
+          e.preventDefault();
+          if (gameState === 'intro' || gameState === 'gameover') {
+            // Start game if possible
+            if (credits > 0) {
+              playSFX('start');
+              startGame();
+            } else {
+              playSFX('error');
+              if (window.showToast) window.showToast('No tienes turnos suficientes', 'error');
+            }
+          } else if (gameState === 'playing') {
+            if ((enemies.length === 0 && !isEventActive) || wave === 0) {
+              // Start next wave
+              playSFX('start');
+              if (wave === 0) wave = 1;
+              spawnWave();
+            } else {
+              // Toggle Pause
+              const pb = document.getElementById('pause-btn');
+              if (pb) pb.click();
+            }
+          }
+          return;
+        }
+
+        // --- REPAIR / UPGRADE KEYS ---
+        if (key === KEYBINDS.repair) {
+          if (inspectedTower) {
+            const rb = document.getElementById('inspect-repair');
+            if (rb) rb.click();
+          } else {
+            const btn = document.querySelector(`[data-type="repair"]`);
+            if (btn) btn.click();
+          }
+          return;
+        }
+
+        if (key === KEYBINDS.upgrade) {
+          if (inspectedTower) {
+            const ub = document.getElementById('inspect-upgrade');
+            if (ub) ub.click();
+          } else {
+            const btn = document.querySelector(`[data-type="upgrade"]`);
+            if (btn) btn.click();
+          }
+          return;
+        }
+
+        // --- TOWER SELECTION KEYS ---
         const towerMap = {
-          '1': 'basic',
-          '2': 'sniper',
-          '3': 'splash',
-          '4': 'nova',
-          '5': 'repair',
-          '6': 'upgrade',
+          [KEYBINDS.tower1]: 'basic',
+          [KEYBINDS.tower2]: 'sniper',
+          [KEYBINDS.tower3]: 'splash',
+          [KEYBINDS.tower4]: 'nova',
         };
+
         if (towerMap[key]) {
           const btn = document.querySelector(`[data-type="${towerMap[key]}"]`);
           if (btn) btn.click();
-        } else if (key === '7') {
-          const pb = document.getElementById('pause-btn');
-          if (pb) pb.click();
-        } else if (key === '8') {
+        }
+
+        // --- FULLSCREEN & SOUND TOGGLES ---
+        if (key === KEYBINDS.fullscreen) {
           const fb = document.getElementById('fullscreen-btn');
           if (fb) fb.click();
+        }
+
+        if (key === KEYBINDS.sounds) {
+          const sb = document.getElementById('toggle-sound');
+          if (sb) sb.click();
         }
       });
 
@@ -1039,8 +1556,8 @@ import Layout from '../../components/layout/Layout.astro';
 
         if (gameState !== 'playing') return;
 
-        // --- TOWER INSPECTION ---
         if (isMouseDown && !selectedTowerType) {
+          // 1. Check for Towers
           const clickedTower = towers.find((t) => {
             const th = t.gridHeight || 1;
             for (let i = 0; i < th; i++) {
@@ -1048,13 +1565,29 @@ import Layout from '../../components/layout/Layout.astro';
             }
             return false;
           });
+          
           if (clickedTower) {
             inspectedTower = clickedTower;
+            inspectedEnemy = null; 
             playSFX('click');
             return;
-          } else {
-            inspectedTower = null;
           }
+
+          // 2. Check for Enemies
+          const clickedEnemy = enemies.find((en) => {
+            return Math.hypot(en.x - x, en.y - y) < 30; 
+          });
+
+          if (clickedEnemy) {
+            inspectedEnemy = clickedEnemy;
+            inspectedTower = null; 
+            playSFX('click');
+            return;
+          }
+
+          // 3. Clicked empty space
+          inspectedTower = null;
+          inspectedEnemy = null;
         }
 
         // Check if next wave button clicked (or Ready button in wave 0)
@@ -1147,24 +1680,22 @@ import Layout from '../../components/layout/Layout.astro';
             return false;
           });
           if (targetTower) {
-            const stats = TOWER_STATS[targetTower.type];
-            const baseCost = stats.cost || 0;
-            const upgradeCost = TOWER_STATS.upgrade.cost;
-            const level = targetTower.level || 1;
-            
-            // Refund 50% of total investment
-            const totalCost = baseCost + (level - 1) * upgradeCost;
-            const refund = Math.floor(totalCost * 0.5);
+            const refund = calculateSellValue(targetTower);
+            const visualY = targetTower.y + (((targetTower.gridHeight || 1) - 1) * GRID_SIZE) / 2;
             
             abyssals += refund;
             const index = towers.indexOf(targetTower);
-            if (index > -1) towers.splice(index, 1);
+            if (index > -1) {
+              towers.splice(index, 1);
+              if (inspectedTower === targetTower) inspectedTower = null;
+            }
             
-            addFloatingText(targetTower.x, targetTower.y, `+${refund}a`, '#34D399');
-            showCanvasToast(`Puesto de Avanzada retirado: +${refund} acero`, 'success');
-            createExplosion(targetTower.x, targetTower.y, '#EF4444', 15);
+            addFloatingText(targetTower.x, visualY, `+${refund}a`, '#34D399');
+            showCanvasToast(`Puesto retirado: +${refund} acero`, 'success');
+            createExplosion(targetTower.x, visualY, '#EF4444', 15);
             playSFX('pickup');
             updateHUD();
+            updateTowerPairing();
           }
           return;
         }
@@ -1341,13 +1872,19 @@ import Layout from '../../components/layout/Layout.astro';
             buffs: {
               doubleShot: 0,
               freeze: 0,
-              steelShield: 0
+              steelShield: 0,
+              weakened: 0, // Debuff: Reduced damage
+              blinded: 0,  // Debuff: Reduced range
+              rusted: 0    // Debuff: Very reduced damage
             },
             ...TOWER_STATS[type],
           });
           abyssals -= cost;
           updateHUD();
           playSFX('build');
+          
+          // Recalculate pairs after a new tower is built
+          updateTowerPairing();
 
           // Deselect if shift is not pressed
           if (!isShiftDown) {
@@ -1358,7 +1895,7 @@ import Layout from '../../components/layout/Layout.astro';
           }
         } else {
           if (!isShiftDown) {
-            showCanvasToast('Abisales insuficientes', 'error');
+            showCanvasToast('Acero insuficiente', 'error');
           }
         }
       }
@@ -1480,32 +2017,22 @@ import Layout from '../../components/layout/Layout.astro';
     }
 
     function addEnemyLevel(enemy) {
-      // Base level from wave
-      let level = Math.floor(wave / 2) + 1;
-      // Bonus level for special types
-      if (enemy.isBoss) level += 3;
-      if (enemy.hasRangeBuff && !enemy.isBoss) level += 1;
-      // Scale with relative health
-      const baseHp = 40 + wave * 15;
-      const hpRatio = enemy.maxHp / baseHp;
-      if (hpRatio > 1.5) level += 1;
-      if (hpRatio > 2.5) level += 2;
-
-      enemy.level = level;
+      // Rule: Level 1 for the first 7 waves, then strictly increase (Wave 8 = Lvl 2)
+      enemy.level = wave <= 7 ? 1 : wave - 6;
     }
 
     function spawnWave() {
+      const currentEnemyLevel = wave <= 7 ? 1 : wave - 6;
+      
       // Update Repair Cost UI
-      const repairBtnSpan = document.querySelector('[data-type="repair"] > span:last-child');
-      if (repairBtnSpan) repairBtnSpan.innerText = `${50 + wave * 5}m`;
+      const repairBtnSpan = document.querySelector('[data-type="repair"] .cost-tag');
+      if (repairBtnSpan) repairBtnSpan.innerText = `${Math.floor(50 + wave * 3.5)}t`;
 
-      // Progression: more enemies and faster spawns as waves go up
-      const enemyCount = 5 + wave * 3;
-      const spawnDelay = Math.max(300, 1000 - wave * 40); 
-      const isBossWave = wave > 0 && wave % 5 === 0; // Bosses every 5 waves
+      // Progression: n enemies in wave n
+      const enemyCount = wave; 
+      const isBossWave = wave > 0 && wave % 5 === 0;
 
-      let spawned = 0;
-      enemiesLeftToSpawn = enemyCount;
+      enemiesLeftToSpawn = 0; // All spawned at once
 
       if (isBossWave) {
         showCanvasToast('¡ALERTA! Un Comandante de la Plaga se aproxima...', 'error');
@@ -1514,81 +2041,82 @@ import Layout from '../../components/layout/Layout.astro';
 
       const buffedIndices = new Set();
       if (!isBossWave) {
-        const numBuffs = Math.floor(Math.random() * (1 + Math.floor(wave / 3))) + 1;
+        const numBuffs = Math.floor(Math.random() * (1 + Math.floor(wave / 4)));
         for (let i = 0; i < numBuffs; i++) {
           buffedIndices.add(Math.floor(Math.random() * enemyCount));
         }
       }
 
-      const interval = setInterval(
-        () => {
-          if (gameState !== 'playing') {
-            clearInterval(interval);
-            return;
-          }
+      // Spawn all enemies at once
+      for (let spawned = 0; spawned < enemyCount; spawned++) {
+        // Position offset to prevent perfect stacking
+        const offsetX = (Math.random() - 0.5) * 40;
+        const offsetY = (Math.random() - 0.5) * 40;
 
-          if (isBossWave && spawned === Math.floor(enemyCount / 2)) {
-            // Spawn boss in the middle of the wave
-            const type = ENEMY_TYPES[Math.floor(Math.random() * ENEMY_TYPES.length)];
-            const newEnemy = {
-              id: type.id,
-              x: path[0].x - 20,
-              y: path[0].y,
-              hp: (400 + wave * 100) * type.hpMod,
-              maxHp: (400 + wave * 100) * type.hpMod,
-              speed: (0.7 + wave * 0.015) * type.speedMod,
-              pathIndex: 0,
-              color: type.color,
-              isBoss: true,
-              hasRangeBuff: true,
-              isNecromancer: type.isNecromancer || false,
-              isBerserker: type.isBerserker || false,
-              isGhost: type.isGhost || false,
-              reward: Math.floor((20 + wave * 15) * 0.7),
-              cooldown: 40,
-              attackRange: 220,
-              damage: 30 + wave * 2,
-              attackType: type.attackType,
-            };
-            addEnemyLevel(newEnemy);
-            enemies.push(newEnemy);
-          } else {
-            const type = ENEMY_TYPES[Math.floor(Math.random() * ENEMY_TYPES.length)];
-            const hasBuff = buffedIndices.has(spawned);
+        if (isBossWave && spawned === Math.floor(enemyCount / 2)) {
+          // Boss spawn: Random type
+          const type = ENEMY_TYPES[Math.floor(Math.random() * ENEMY_TYPES.length)];
+          
+          const newEnemy = {
+            id: type.id,
+            x: path[0].x - 10 + offsetX,
+            y: path[0].y + offsetY,
+            hp: (500 + currentEnemyLevel * 150) * type.hpMod,
+            maxHp: (500 + currentEnemyLevel * 150) * type.hpMod,
+            speed: (0.7 + currentEnemyLevel * 0.015) * type.speedMod,
+            pathIndex: 0,
+            color: type.color,
+            isBoss: true,
+            hasRangeBuff: true,
+            isNecromancer: type.isNecromancer || false,
+            isBerserker: type.isBerserker || false,
+            isGhost: type.isGhost || false,
+            reward: Math.floor((20 + currentEnemyLevel * 15) * 0.85),
+            cooldown: 40,
+            attackRange: 220,
+            damage: 35 + currentEnemyLevel * 3,
+            attackType: type.attackType,
+            noDamageTimer: 0,
+            isCasting: 0,
+          };
+          addEnemyLevel(newEnemy);
+          enemies.push(newEnemy);
+        } else {
+          // RANDOM ENEMY SPAWN
+          const type = ENEMY_TYPES[Math.floor(Math.random() * ENEMY_TYPES.length)];
+          const hasBuff = buffedIndices.has(spawned);
 
-            const newEnemy = {
-              id: type.id,
-              x: path[0].x - 20,
-              y: path[0].y,
-              hp: (50 + wave * 20) * type.hpMod,
-              maxHp: (50 + wave * 20) * type.hpMod,
-              speed: (1.3 + wave * 0.04) * type.speedMod,
-              pathIndex: 0,
-              color: type.color,
-              isBoss: false,
-              hasRangeBuff: hasBuff,
-              isNecromancer: type.isNecromancer || false,
-              isBerserker: type.isBerserker || false,
-              isGhost: type.isGhost || false,
-              reward: Math.floor((3 + wave * 4) * 0.7),
-              cooldown: Math.random() * 80 + 40,
-              attackRange: hasBuff ? 260 : 190,
-              damage: 12 + Math.floor(wave * 0.8),
-              attackType: type.attackType,
-            };
-            addEnemyLevel(newEnemy);
-            enemies.push(newEnemy);
-          }
+          const newEnemy = {
+            id: type.id,
+            x: path[0].x - 10 + offsetX,
+            y: path[0].y + offsetY,
+            hp: (60 + currentEnemyLevel * 30) * type.hpMod,
+            maxHp: (60 + currentEnemyLevel * 30) * type.hpMod,
+            speed: (1.3 + currentEnemyLevel * 0.04) * type.speedMod,
+            pathIndex: 0,
+            color: type.color,
+            isBoss: false,
+            hasRangeBuff: hasBuff,
+            isNecromancer: type.isNecromancer || false,
+            isBerserker: type.isBerserker || false,
+            isGhost: type.isGhost || false,
+            reward: Math.floor((3 + currentEnemyLevel * 4) * 0.85),
+            cooldown: Math.random() * 80 + 40,
+            basicCooldown: type.basicRate || 60,
+            maxBasicCooldown: type.basicRate || 60,
+            basicDamage: type.basicDamage || 10,
+            attackRange: hasBuff ? 260 : 190,
+            damage: 15 + Math.floor(currentEnemyLevel * 1.2),
+            attackType: type.attackType,
+            noDamageTimer: 0,
+            isCasting: 0,
+          };
+          addEnemyLevel(newEnemy);
+          enemies.push(newEnemy);
+        }
+      }
 
-          spawned++;
-          enemiesLeftToSpawn--;
-          if (spawned >= enemyCount) {
-            clearInterval(interval);
-            checkWaveClear();
-          }
-        },
-        spawnDelay
-      );
+      checkWaveClear();
     }
 
     function checkWaveClear() {
@@ -1604,17 +2132,43 @@ import Layout from '../../components/layout/Layout.astro';
           // Check map generation milestone (every 7 waves, triggers AFTER wave clear)
           if (wave > 0 && wave % 7 === 0) {
             path = generateRandomPath();
-            towers.length = 0; // Destroy all towers when map shifts
-            showCanvasToast('¡Terremoto! Terreno cambiado y defensas destruidas.', 'error');
+            
+            // Destruir solo las torres que se interpongan en el nuevo camino
+            let destroyedCount = 0;
+            for (let i = towers.length - 1; i >= 0; i--) {
+              const t = towers[i];
+              const gh = t.gridHeight || 1;
+              let collides = false;
+              for (let j = 0; j < gh; j++) {
+                if (isCollidingWithPath(t.x, t.y + j * GRID_SIZE)) {
+                  collides = true;
+                  break;
+                }
+              }
+              
+              if (collides) {
+                createExplosion(t.x, t.y, '#EF4444', 15);
+                towers.splice(i, 1);
+                destroyedCount++;
+              }
+            }
+
+            if (destroyedCount > 0) {
+              showCanvasToast(`¡Terremoto! ${destroyedCount} puestos destruidos por el nuevo camino.`, 'error');
+            } else {
+              showCanvasToast('¡Terremoto! El terreno ha cambiado.', 'info');
+            }
+            
             addScreenShake(30); // Massive shake for map reset
+            if (inspectedTower && !towers.includes(inspectedTower)) inspectedTower = null;
           }
 
           wave++;
           updateHUD();
           showCanvasToast(`¡Oleada ${wave - 1} completada!`, 'success');
 
-          // Random events between waves (90% chance after wave 1 to show off mechanics)
-          if (wave > 1 && Math.random() > 0.1) {
+          // Random events between waves (70% chance after wave 1)
+          if (wave > 1 && Math.random() < 0.7) {
             triggerRandomEvent();
           }
           // The next wave is now triggered manually by the button on canvas
@@ -1641,15 +2195,52 @@ import Layout from '../../components/layout/Layout.astro';
       document.getElementById('wave-display').innerText = wave;
       document.getElementById('tower-count-display').innerText = `${towers.length}/${TOWER_LIMIT}`;
 
-      // Update tower buttons costs
+      // Update tower buttons costs and visual feedback (Sidebars)
       document.querySelectorAll('.tower-btn').forEach((btn) => {
         const type = btn.getAttribute('data-type');
-        const costEl = btn.querySelector('span:last-child');
-        if (costEl && type) {
+        const costEl = btn.querySelector('.cost-tag');
+        if (type) {
           const cost = getTowerCost(type);
-          costEl.innerText = `${cost}${type === 'repair' || type === 'upgrade' ? 't' : 'a'}`;
+          if (costEl) {
+            costEl.innerText = `${cost}${type === 'repair' || type === 'upgrade' ? 't' : 'a'}`;
+          }
+
+          // Visual Feedback: Red if cannot afford, Green if can
+          const isTactic = type === 'repair' || type === 'upgrade' || type === 'pause';
+          const canAfford = isTactic ? upgrades >= cost : abyssals >= cost;
+          
+          if (type !== 'sell') { // Skip sell only
+            // Remove all potential border colors
+            const borderClasses = [
+              'border-red-500/50', 'border-green-500/50', 'border-slate-500/50', 
+              'border-purple-500/50', 'border-cyan-500/50', 'border-yellow-500/50',
+              'border-emerald-500/50', 'border-orange-500/50', 'border-slate-500/40',
+              'border-purple-500/40', 'border-red-500/40', 'border-emerald-500/40',
+              'border-green-500/40', 'border-orange-500/40', 'border-yellow-500/40'
+            ];
+            btn.classList.remove(...borderClasses);
+
+            if (canAfford) {
+              btn.classList.add('border-green-500/50');
+              btn.classList.remove('opacity-50');
+            } else {
+              btn.classList.add('border-red-500/50');
+              btn.classList.add('opacity-50');
+            }
+          }
         }
       });
+
+      // Update inspection plate action buttons
+      const repairBtn = document.getElementById('inspect-repair');
+      const upgradeBtn = document.getElementById('inspect-upgrade');
+      const repairCostEl = document.getElementById('inspect-repair-cost');
+      const upgradeCostEl = document.getElementById('inspect-upgrade-cost');
+
+      if (repairBtn) repairBtn.title = `Reparar (${repairCost}t)`;
+      if (upgradeBtn) upgradeBtn.title = `Mejorar (${upgradeCost}t)`;
+      if (repairCostEl) repairCostEl.innerText = `${repairCost}t`;
+      if (upgradeCostEl) upgradeCostEl.innerText = `${upgradeCost}t`;
     }
 
     // --- RANDOM EVENTS ---
@@ -1658,7 +2249,7 @@ import Layout from '../../components/layout/Layout.astro';
       if (gameState !== 'playing' || wave === 0 || (enemies.length === 0 && enemiesLeftToSpawn === 0)) return;
       
       isEventActive = true;
-      const events = ['meteor', 'bonus', 'curse'];
+      const events = ['meteor', 'bonus', 'curse', 'blessing'];
       const chosenEvent = events[Math.floor(Math.random() * events.length)];
 
       const warningEl = document.getElementById('event-warning');
@@ -1675,12 +2266,19 @@ import Layout from '../../components/layout/Layout.astro';
           'bg-purple-900/80 border border-purple-500 p-6 rounded-2xl backdrop-blur-md shadow-[0_0_50px_rgba(168,85,247,0.5)] transform scale-100 transition-transform duration-300';
         textEl.parentElement.classList.replace('text-red-500', 'text-purple-500');
         textEl.parentElement.classList.replace('text-amber-500', 'text-purple-500');
+      } else if (chosenEvent === 'blessing') {
+        textEl.innerText = '¡BENDICIÓN DE LA LUZ!';
+        boxEl.className =
+          'bg-emerald-900/80 border border-emerald-500 p-6 rounded-2xl backdrop-blur-md shadow-[0_0_50px_rgba(16,185,129,0.5)] transform scale-100 transition-transform duration-300';
+        textEl.parentElement.classList.replace('text-red-500', 'text-emerald-500');
+        textEl.parentElement.classList.replace('text-amber-500', 'text-emerald-500');
       } else {
         textEl.innerText = '¡BOTÍN DE GUERRA DETECTADO!';
         boxEl.className =
           'bg-amber-900/80 border border-amber-500 p-6 rounded-2xl backdrop-blur-md shadow-[0_0_50px_rgba(245,158,11,0.5)] transform scale-100 transition-transform duration-300';
         textEl.parentElement.classList.replace('text-red-500', 'text-amber-500');
         textEl.parentElement.classList.replace('text-purple-500', 'text-amber-500');
+        textEl.parentElement.classList.replace('text-emerald-500', 'text-amber-500');
       }
 
       warningEl.classList.remove('opacity-0');
@@ -1694,11 +2292,78 @@ import Layout from '../../components/layout/Layout.astro';
         // Execute event
         if (chosenEvent === 'meteor') executeMeteorStrike();
         else if (chosenEvent === 'curse') executeCurse();
+        else if (chosenEvent === 'blessing') executeBlessing();
         else executeBonusDrop();
 
         isEventActive = false;
         // Manual start instead of automatic
       }, 3000);
+    }
+
+    function executeBlessing() {
+      const blessings = [
+        {
+          id: 'divine_shield',
+          apply: () => {
+            if (towers.length === 0) return false;
+            towers.forEach(t => {
+              t.buffs.steelShield = 600; // 10 seconds of shield
+              t.hp = Math.min(t.maxHp, t.hp + t.maxHp * 0.2); // Small heal too
+            });
+            createExplosion(canvas.width / 2, 100, '#60A5FA', 40);
+            return '¡Escudo Divino sobre todos los puestos!';
+          }
+        },
+        {
+          id: 'tactical_genius',
+          apply: () => {
+            const gain = 150 + wave * 10;
+            upgrades += gain;
+            updateHUD();
+            createExplosion(canvas.width / 2, canvas.height / 2, '#F59E0B', 30);
+            return `¡Genio Táctico! +${Math.round(gain)} Táctica.`;
+          }
+        },
+        {
+          id: 'steel_supply',
+          apply: () => {
+            const gain = 100 + wave * 5;
+            abyssals += gain;
+            updateHUD();
+            createExplosion(canvas.width / 2, canvas.height / 2, '#94A3B8', 30);
+            return `¡Suministros de Acero! +${Math.round(gain)} Acero.`;
+          }
+        },
+        {
+          id: 'inspiration',
+          apply: () => {
+            if (towers.length === 0) return false;
+            towers.forEach(t => {
+              t.buffs.doubleShot = 420; // 7 seconds of frenzy
+            });
+            createExplosion(canvas.width / 2, 100, '#EF4444', 40);
+            return '¡Inspiración Heroica! Todos los puestos ganan Frenesí.';
+          }
+        },
+        {
+          id: 'healing_light',
+          apply: () => {
+            const heal = 15;
+            const oldHealth = health;
+            health = Math.min(100, health + heal);
+            updateHUD();
+            createExplosion(canvas.width / 2, canvas.height / 2, '#10B981', 30);
+            return health > oldHealth ? `¡Luz Sanadora! +${Math.round(health - oldHealth)} Salud.` : '¡Luz Sanadora! Ciudadela purificada.';
+          }
+        }
+      ];
+
+      const blessing = blessings[Math.floor(Math.random() * blessings.length)];
+      const result = blessing.apply();
+      if (result) {
+        showCanvasToast(result, 'success');
+        playSFX('start');
+      }
     }
 
     function executeCurse() {
@@ -1726,9 +2391,11 @@ import Layout from '../../components/layout/Layout.astro';
           id: 'weaken_towers',
           apply: () => {
             if (towers.length === 0) return false;
-            towers.forEach((t) => (t.damage = Math.max(1, Math.floor(t.damage * 0.7))));
+            towers.forEach((t) => {
+              t.buffs.weakened = 300; // Reduced from 600 (5 seconds)
+            });
             createExplosion(canvas.width / 2, 100, '#8B5CF6', 25);
-            return '¡Puestos debilitados por el Vacío!';
+            return '¡Puestos debilitados temporalmente por el Vacío!';
           },
         },
         {
@@ -1746,9 +2413,34 @@ import Layout from '../../components/layout/Layout.astro';
           id: 'slow_fire',
           apply: () => {
             if (towers.length === 0) return false;
-            towers.forEach((t) => (t.fireRate = Math.floor(t.fireRate * 1.5)));
+            towers.forEach((t) => {
+              t.buffs.weakened = 240; // Reduced from 480 (4 seconds)
+              // Repurposing weakened for slow fire too if I don't want too many timers
+              // Or add a dedicated fireRate debuff if needed.
+            });
             createExplosion(canvas.width / 2, 100, '#6D28D9', 20);
-            return '¡Maldición de Lentitud en los Colmillos!';
+            return '¡Maldición de Lentitud temporal en los Colmillos!';
+          },
+        },
+        {
+          id: 'dark_fog',
+          apply: () => {
+            if (towers.length === 0) return false;
+            towers.forEach((t) => {
+              t.buffs.blinded = 300; // Reduced from 600 (5 seconds)
+            });
+            createExplosion(canvas.width / 2, canvas.height / 2, '#4A1D96', 40);
+            return '¡Niebla Abisal! Rango de visión reducido temporalmente.';
+          },
+        },
+        {
+          id: 'rust',
+          apply: () => {
+            if (towers.length === 0) return false;
+            const t = towers[Math.floor(Math.random() * towers.length)];
+            t.buffs.rusted = 300; // Reduced from 600 (5 seconds)
+            createExplosion(t.x, t.y, '#7C2D12', 15);
+            return '¡Oxidación Temporal! El daño del puesto se reduce.';
           },
         },
       ];
@@ -1773,14 +2465,19 @@ import Layout from '../../components/layout/Layout.astro';
         return;
       }
 
-      // Destroy random tower
+      // Damage random tower instead of destroying it instantly
       const targetIndex = Math.floor(Math.random() * towers.length);
       const t = towers[targetIndex];
+      const damage = t.maxHp * 0.6; // 60% of max HP
+      
       createExplosion(t.x, t.y, '#EF4444', 40); 
-      towers.splice(targetIndex, 1);
+      addFloatingText(t.x, t.y - 30, `-${Math.round(damage)} ¡IMPACTO!`, '#EF4444', 'large');
+      
+      applyDamageToTower(t, damage);
+      
       updateHUD();
-      showCanvasToast('¡Impacto Directo! Un puesto fue destruido.', 'error');
       addScreenShake(15);
+      playSFX('explosion');
     }
 
     function executeBonusDrop() {
@@ -1798,7 +2495,7 @@ import Layout from '../../components/layout/Layout.astro';
           type: type,
           reward:
             type === 'upgrades' || type === 'abyssal_rune'
-              ? Math.floor((Math.random() * 100 + 50) * 0.7)
+              ? Math.floor((Math.random() * 100 + 50) * 0.85)
               : 0,
         });
       }
@@ -1806,6 +2503,7 @@ import Layout from '../../components/layout/Layout.astro';
     }
 
     function applyDamageToEnemy(e, damage, color, sourceTower = null) {
+      e.noDamageTimer = 0; // Reset sprint timer
       if (e.shield && e.shield > 0) {
         const shieldDamage = Math.min(e.shield, damage);
         e.shield -= shieldDamage;
@@ -1826,6 +2524,7 @@ import Layout from '../../components/layout/Layout.astro';
       if (e.hp <= 0) {
         const index = enemies.indexOf(e);
         if (index > -1) {
+          if (inspectedEnemy === e) inspectedEnemy = null;
           abyssals += e.reward;
           addKillCombo();
           
@@ -1839,26 +2538,27 @@ import Layout from '../../components/layout/Layout.astro';
             addScreenShake(15);
           }
 
-          // Veterancy System
+          // Veterancy System: 1 Killing Blow = 1 Star
           if (sourceTower) {
             sourceTower.kills = (sourceTower.kills || 0) + 1;
-            if (sourceTower.kills % 5 === 0) {
-              sourceTower.veterancy = (sourceTower.veterancy || 1) + 1;
-              sourceTower.damage *= 1.05; // 5% damage bonus per 5 kills
+            sourceTower.veterancy = (sourceTower.veterancy || 1) + 1;
+            sourceTower.damage *= 1.02; // 2% bonus per star (kill) - Reduced from 5%
+
+            // Auto Level Up at 9 Stars (Triggered on 10th kill) - Increased from 5
+            if (sourceTower.veterancy > 10) {
+              sourceTower.veterancy = 1;
+              sourceTower.level = (sourceTower.level || 1) + 1;
+              sourceTower.damage *= 1.1; // 10% bonus per level - Reduced from 20%
+              sourceTower.maxHp += 50;
+              // Evolution recovers 25% of health
+              const recovery = sourceTower.maxHp * 0.25;
+              sourceTower.hp = Math.min(sourceTower.maxHp, sourceTower.hp + recovery);
               
-              // Auto Level Up at 3 Stars (Threshold changed to 3)
-              if (sourceTower.veterancy > 3) {
-                sourceTower.veterancy = 1;
-                sourceTower.level = (sourceTower.level || 1) + 1;
-                sourceTower.damage *= 1.2; // Extra 20% for level up
-                sourceTower.maxHp += 50;
-                sourceTower.hp += 50;
-                addFloatingText(sourceTower.x, sourceTower.y - 20, '¡EVOLUCIÓN!', '#F59E0B', 'buff');
-                createExplosion(sourceTower.x, sourceTower.y, '#F59E0B', 20);
-              } else {
-                addFloatingText(sourceTower.x, sourceTower.y - 20, '¡VETERANO!', '#FCD34D', 'buff');
-                createExplosion(sourceTower.x, sourceTower.y, '#FCD34D', 10);
-              }
+              addFloatingText(sourceTower.x, sourceTower.y - 20, '¡EVOLUCIÓN!', '#F59E0B', 'buff');
+              createExplosion(sourceTower.x, sourceTower.y, '#F59E0B', 12);
+            } else {
+              addFloatingText(sourceTower.x, sourceTower.y - 20, '+1 ⭐', '#FCD34D', 'normal');
+              createExplosion(sourceTower.x, sourceTower.y, '#FCD34D', 6);
             }
           }
 
@@ -1873,7 +2573,7 @@ import Layout from '../../components/layout/Layout.astro';
               vy: (Math.random() - 0.5) * 2,
               life: 300,
               type: type,
-              reward: type === 'abyssal_rune' ? Math.floor((Math.random() * 50 + 20) * 0.7) : 0,
+              reward: type === 'abyssal_rune' ? Math.floor((Math.random() * 50 + 20) * 0.85) : 0,
             });
           }
 
@@ -1923,38 +2623,44 @@ import Layout from '../../components/layout/Layout.astro';
         !isPaused &&
         (enemies.length > 0 || enemiesLeftToSpawn > 0)
       ) {
-        // Random Event Chance (Only during wave)
-        if (Math.random() < 0.001) { // Approx once every 15-20 seconds
+        // Random Event Chance (During wave - Increased Frequency)
+        if (Math.random() < 0.003) { // Tripled frequency (~every 5-7 seconds)
            triggerRandomEvent();
         }
 
         passiveUpgradesTimer++;
         if (passiveUpgradesTimer >= 60) {
           passiveUpgradesTimer = 0;
-          if (upgrades < 500) {
-            upgrades += 1;
-          } else if (upgrades >= 550) {
-            upgrades -= 5;
+          
+          // Passive generation (Increased by 250% from base tension)
+          // Táctica (0.36 * 3.5 = 1.26)
+          if (upgrades < 400) { 
+            upgrades += 1.26; 
+          } else if (upgrades >= 450) {
+            upgrades -= 2;
           }
-          if (abyssals >= 600) {
-            abyssals -= 10;
+
+          // Acero (0.16 * 3.5 = 0.56)
+          abyssals += 0.56; 
+
+          if (abyssals >= 500) {
+            abyssals -= 5;
           }
           updateHUD();
         }
       }
 
-      // Check Game Over by starvation (No towers + No money to buy/repair)
+      // Check Game Over by starvation (No towers + No money to buy any tower)
       if (
         towers.length === 0 &&
         abyssals < TOWER_STATS.basic.cost &&
-        upgrades < getTowerCost('repair') &&
         wave > 0 &&
         gameState === 'playing' &&
         !isCityFallen
       ) {
         health = 0;
         isCityFallen = true;
-        showCanvasToast('¡Sin puestos ni acero para combatir!', 'error');
+        showCanvasToast('¡RECURSOS AGOTADOS! La Ciudadela ha quedado indefensa.', 'error');
         addScreenShake(30);
         playSFX('error');
       }
@@ -1990,6 +2696,17 @@ import Layout from '../../components/layout/Layout.astro';
       // Move enemies
       for (let i = enemies.length - 1; i >= 0; i--) {
         let e = enemies[i];
+
+        // Check Clone Expiration
+        if (e.isClone && e.lifeTimer > 0) {
+          e.lifeTimer--;
+          if (e.lifeTimer <= 0) {
+            createExplosion(e.x, e.y, e.color, 10);
+            addFloatingText(e.x, e.y - 20, 'Desvanecido', '#9CA3AF');
+            enemies.splice(i, 1);
+            continue;
+          }
+        }
 
         // Check Dark Power expiration
         if (e.darkPowerTimer > 0) {
@@ -2050,6 +2767,7 @@ import Layout from '../../components/layout/Layout.astro';
             addFloatingText(e.x, e.y - 20, '-20t', '#EF4444');
           }
 
+          if (inspectedEnemy === e) inspectedEnemy = null;
           enemies.splice(i, 1);
           updateHUD();
           createExplosion(e.x, e.y, '#EF4444');
@@ -2108,37 +2826,62 @@ import Layout from '../../components/layout/Layout.astro';
         }
 
         // Necromancer Ability: Spawn Skeletons
+        // Necromancer Ability: Spawn skeletons
         if (e.isNecromancer && !isPaused) {
           e.spawnTimer = (e.spawnTimer || 0) + 1;
           if (e.spawnTimer >= 240) {
             // Every 4 seconds
             e.spawnTimer = 0;
+            const currentEnemyLevel = wave <= 7 ? 1 : wave - 6;
             const skeleton = {
               id: 'zombie', // Use zombie sprite for skeletons
               x: e.x,
               y: e.y,
-              hp: 20 + wave * 5,
-              maxHp: 20 + wave * 5,
+              hp: (20 + currentEnemyLevel * 5) * 5, // Scaled with current level balance
+              maxHp: (20 + currentEnemyLevel * 5) * 5,
               speed: 1.5,
               pathIndex: e.pathIndex,
               color: '#F9FAFB', // White/Bone
               isBoss: false,
               reward: 0,
-              level: 1,
+              level: currentEnemyLevel,
               attackRange: 150,
-              damage: 5,
+              basicCooldown: 60,
+              maxBasicCooldown: 60,
+              basicDamage: 5 + Math.floor(currentEnemyLevel * 0.5),
+              damage: 5 + Math.floor(currentEnemyLevel * 0.5),
               attackType: 'normal',
+              lifeTimer: 300, // 5 seconds at 60fps
+              isClone: true, // Reuse the vanishing logic
+              noDamageTimer: 0,
+              isCasting: 0,
             };
             enemies.push(skeleton);
-            createExplosion(e.x, e.y, '#F9FAFB', 10);
+            
+            // Focus redirection: Towers lose focus on the Warlock
+            projectiles.forEach(p => {
+              if (p.target === e) {
+                p.target = skeleton;
+              }
+            });
+
+            // Move Warlock to end of array so towers pick skeleton first next frame
+            const idx = enemies.indexOf(e);
+            if (idx > -1) {
+              enemies.splice(idx, 1);
+              enemies.push(e);
+            }
+
+            createExplosion(e.x, e.y, '#F9FAFB', 6);
             addFloatingText(e.x, e.y, '¡Levántate!', '#F9FAFB', 'buff');
           }
         }
 
         // Berserker Ability: Rage speed
         if (e.isBerserker) {
+          const currentEnemyLevel = wave <= 7 ? 1 : wave - 6;
           const healthRatio = e.hp / e.maxHp;
-          const baseSpeed = (1.5 + wave * 0.05);
+          const baseSpeed = (1.5 + currentEnemyLevel * 0.05);
           e.speed = baseSpeed * (1.5 - healthRatio * 0.5); // Faster when low hp
           if (e.slowTimer > 0) e.speed *= 0.5; // Apply slow even to berserkers
         }
@@ -2164,53 +2907,169 @@ import Layout from '../../components/layout/Layout.astro';
           e.ghostAlpha = (e.ghostAlpha || 0.5) + Math.sin(Date.now() / 200) * 0.05;
         }
 
-        const dx = target.x - e.x;
-        const dy = target.y - e.y;
-        const dist = Math.hypot(dx, dy);
+        // --- TARGETING (Nearest Tower) ---
+        const rangeSq = e.attackRange * e.attackRange;
+        let targetTower = null;
+        let minDistanceSq = Infinity;
 
-        if (dist < e.speed) {
-          e.x = target.x;
-          e.y = target.y;
-          e.pathIndex++;
-        } else {
-          e.x += (dx / dist) * e.speed;
-          e.y += (dy / dist) * e.speed;
+        towers.forEach(t => {
+          const tdx = e.x - t.x;
+          const gh = t.gridHeight || 1;
+          const targetY = t.y + ((gh - 1) * GRID_SIZE) / 2;
+          const tdy = e.y - targetY;
+          const distSq = tdx * tdx + tdy * tdy;
+
+          if (distSq <= rangeSq && distSq < minDistanceSq) {
+            minDistanceSq = distSq;
+            targetTower = t;
+          }
+        });
+
+        // --- SPRINT & MOVEMENT ---
+        e.noDamageTimer = (e.noDamageTimer || 0) + 1;
+        
+        if (e.isCasting <= 0) {
+          // NOT CASTING: Can move (even if attacking slowly)
+          const dx = target.x - e.x;
+          const dy = target.y - e.y;
+          const dist = Math.hypot(dx, dy);
+          
+          let moveSpeed = e.speed;
+          
+          if (targetTower) {
+            // IN COMBAT: Advance much slower (25% speed) to stay in range of more towers
+            moveSpeed *= 0.25;
+            e.noDamageTimer = 0;
+            e.hasSprinted = false; // Reset sprint flag
+          } else if (e.noDamageTimer > 180) { // 3s
+            // SPRINT: 40% faster when not receiving damage for 3 seconds
+            moveSpeed *= 1.4;
+            if (!e.hasSprinted) {
+              e.hasSprinted = true;
+              const quotes = SPRINT_QUOTES[e.id] || ['¡A por ellos!', '¡Rápido!', '¡No paréis!'];
+              const quote = quotes[Math.floor(Math.random() * quotes.length)];
+              addFloatingText(e.x, e.y - 30, quote, '#FCD34D', 'large');
+              playSFX('start');
+            }
+            if (e.noDamageTimer % 20 === 0) {
+              createExplosion(e.x, e.y, '#FCD34D', 2);
+            }
+          }
+
+          if (dist < moveSpeed) {
+            e.x = target.x;
+            e.y = target.y;
+            e.pathIndex++;
+          } else {
+            e.x += (dx / dist) * moveSpeed;
+            e.y += (dy / dist) * moveSpeed;
+          }
         }
 
         // Enemy attacks towers
         if (e.cooldown > 0 && !isPaused) e.cooldown--;
-        if (e.cooldown <= 0 && towers.length > 0) {
-          const closestTower = towers.reduce(
-            (closest, t) => {
-              const dx = e.x - t.x;
-              const dy = e.y - t.y;
-              const dSq = dx * dx + dy * dy;
-              return dSq < closest.dSq ? { t, dSq } : closest;
-            },
-            { t: null, dSq: Infinity }
-          );
+        if (e.basicCooldown > 0 && !isPaused) e.basicCooldown--;
+        
+        // --- CASTING LOGIC (Special Attack) ---
+        if (e.isCasting > 0) {
+          e.isCasting--;
+          if (e.isCasting <= 0) {
+            // FINISH CASTING: Special Ability!
+            if (e.attackType === 'clones') {
+              // Shadow Clones: Spawn 2 smaller ghosts that last 3 seconds
+              const spawnedClones = [];
+              for (let j = 0; j < 2; j++) {
+                const clone = {
+                  ...e,
+                  isCasting: 0,
+                  cooldown: 180,
+                  basicCooldown: 60,
+                  hp: e.hp/5,
+                  maxHp: e.hp/5,
+                  isBoss: false,
+                  reward: 0,
+                  lifeTimer: 180, 
+                  isClone: true,
+                  x: e.x + (Math.random() - 0.5) * 40,
+                  y: e.y + (Math.random() - 0.5) * 40,
+                  noDamageTimer: 0,
+                };
+                enemies.push(clone);
+                spawnedClones.push(clone);
+              }
 
-          if (closestTower.t) {
-            const gh = closestTower.t.gridHeight || 1;
-            const targetY = closestTower.t.y + ((gh - 1) * GRID_SIZE) / 2;
-            const distSq =
-              Math.pow(e.x - closestTower.t.x, 2) + Math.pow(e.y - targetY, 2);
+              projectiles.forEach(p => {
+                if (p.target === e && spawnedClones.length > 0) {
+                  p.target = spawnedClones[Math.floor(Math.random() * spawnedClones.length)];
+                }
+              });
 
-            if (distSq <= e.attackRange * e.attackRange) {
+              const idx = enemies.indexOf(e);
+              if (idx > -1) {
+                enemies.splice(idx, 1);
+                enemies.push(e);
+              }
+
+              addFloatingText(e.x, e.y - 30, '¡CLONES DE SOMBRA!', '#D946EF', 'large');
+              playSFX('ghost');
+            } else {
+              // Projectile Special Attacks
               enemyProjectiles.push({
                 x: e.x,
                 y: e.y,
-                target: closestTower.t,
-                targetY: targetY, // Store visual target Y
-                speed: 4,
-                damage: e.damage,
+                target: e.castTarget,
+                targetY: e.castTargetY,
+                speed: e.attackType === 'axe' ? 7 : 4,
+                damage: e.damage * 2.5, // Special deals more damage
                 color: e.color,
                 attackType: e.attackType,
               });
-              e.cooldown = Math.floor(
-                (120 + Math.random() * 60) * (e.cooldownMultiplier || 1)
-              );
+              if (e.attackType === 'inferno') playSFX('explosion');
+              else if (e.attackType === 'plague') playSFX('hit_shield');
+              else playSFX('shoot');
             }
+            e.cooldown = e.maxCooldown || 360;
+            e.castTarget = null;
+          }
+          continue; 
+        }
+
+        // Logic for basic and starting special attacks
+        if (targetTower) {
+          const gh = targetTower.gridHeight || 1;
+          const targetY = targetTower.y + ((gh - 1) * GRID_SIZE) / 2;
+
+          // Check for Special Attack first
+          if (e.cooldown <= 0) {
+            const baseType = ENEMY_TYPES.find(t => t.id === e.id);
+            e.isCasting = baseType ? baseType.castTime : 180;
+            e.maxCooldown = baseType ? baseType.cooldown : 360;
+            e.castTarget = targetTower;
+            e.castTargetY = targetY;
+            
+            // Show custom quote if available
+            if (baseType && baseType.quote) {
+              addFloatingText(e.x, e.y - 35, baseType.quote, e.color, 'large');
+            } else {
+              addFloatingText(e.x, e.y - 20, '¡CANALIZANDO!', e.color, 'normal');
+            }
+            continue; 
+          }
+          
+          // Basic Attack while not casting and on basic cooldown
+          if (e.basicCooldown <= 0) {
+            enemyProjectiles.push({
+              x: e.x,
+              y: e.y,
+              target: targetTower,
+              targetY: targetY,
+              speed: 5,
+              damage: e.basicDamage || 10,
+              color: e.color,
+              attackType: 'normal',
+            });
+            e.basicCooldown = e.maxBasicCooldown || 60;
+            playSFX('shoot');
           }
         }
       }
@@ -2233,70 +3092,176 @@ import Layout from '../../components/layout/Layout.astro';
           t.buffs.steelShield--;
         }
 
+        if (t.buffs.weakened > 0) t.buffs.weakened--;
+        if (t.buffs.blinded > 0) t.buffs.blinded--;
+        if (t.buffs.rusted > 0) t.buffs.rusted--;
+
         if (t.cooldown > 0) t.cooldown--;
         else {
           const gh = t.gridHeight || 1;
           const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
 
-          // Find target using fast square distance and pre-filter
-          const rangeSq = t.range * t.range;
-          const target = enemies.find((e) => {
-            // Fast bounding box check before hypotenuse
-            if (Math.abs(e.x - t.x) > t.range) return false;
-            if (Math.abs(e.y - visualY) > t.range) return false;
-            
-            const dx = e.x - t.x;
-            const dy = e.y - visualY;
-            return dx * dx + dy * dy <= rangeSq;
-          });
+          // Target calculations
+          let effectiveRange = t.range;
+          if (t.buffs.blinded > 0) effectiveRange *= 0.6;
+          const rangeSq = effectiveRange * effectiveRange;
+
+          // Find target based on role
+          let target = null;
+          if (t.isHealer) {
+            // RESTRICTION: Healers only work during active waves
+            if (enemies.length === 0) return;
+
+            // Find most damaged nearby tower
+            let minHpRatio = 1;
+            towers.forEach(other => {
+              if (other === t) return;
+              const dx = other.x - t.x;
+              const ghOther = other.gridHeight || 1;
+              const vyOther = other.y + ((ghOther - 1) * GRID_SIZE) / 2;
+              const dy = vyOther - visualY;
+              if (dx * dx + dy * dy <= rangeSq) {
+                const ratio = other.hp / other.maxHp;
+                if (ratio < 1 && ratio < minHpRatio) {
+                  minHpRatio = ratio;
+                  target = other;
+                }
+              }
+            });
+          } else {
+            // Find nearest enemy
+            let minDistanceSq = Infinity;
+            enemies.forEach((e) => {
+              if (Math.abs(e.x - t.x) > effectiveRange) return;
+              if (Math.abs(e.y - visualY) > effectiveRange) return;
+              const dx = e.x - t.x;
+              const dy = e.y - visualY;
+              const distSq = dx * dx + dy * dy;
+              if (distSq <= rangeSq && distSq < minDistanceSq) {
+                minDistanceSq = distSq;
+                target = e;
+              }
+            });
+          }
+
           if (target) {
             const isCrit = Math.random() < (t.critChance || 0.1);
-            const finalDamage = isCrit ? t.damage * 2 : t.damage;
-
+            let finalValue = isCrit ? t.damage * 2 : t.damage;
+            
+            // Apply Debuffs only if not healing (or maybe they affect heal too?)
+            if (!t.isHealer) {
+              if (t.buffs.weakened > 0) finalValue *= 0.6;
+              if (t.buffs.rusted > 0) finalValue *= 0.4;
+            }
+            
             if (isCrit) {
               const quote = t.quotes[Math.floor(Math.random() * t.quotes.length)];
-              addFloatingText(t.x, visualY - 30, quote, t.color, 'normal'); // Changed to 'normal' to avoid centering
+              addFloatingText(t.x, visualY - 30, quote, t.color, 'normal');
               addScreenShake(3);
               playSFX('hit_shield');
             }
 
-            const shoot = (targetObj, damageMod = 1) => {
-              projectiles.push({
-                x: t.x,
-                y: visualY,
-                target: targetObj,
-                speed: t.isNova ? 15 : 8,
-                damage: finalDamage * damageMod,
-                color: t.color,
-                splash: t.splash,
-                splashRadius: t.splashRadius,
-                isNova: t.isNova,
-                isSlow: t.isSlow,
-                slowDuration: t.slowDuration,
-                isDoT: t.isDoT,
-                dotDuration: t.dotDuration,
-                sourceTower: t, 
-                isCrit: isCrit,
-              });
-            };
+            // --- SPECIAL ABILITY LOGIC ---
+            const stats = TOWER_STATS[t.type];
+            if (stats.specialThreshold) {
+              t.shotsFired = (t.shotsFired || 0) + 1;
 
-            // Main shot
-            shoot(target);
+              if (inspectedTower === t) {
+                const percent = Math.min(100, (t.shotsFired / stats.specialThreshold) * 100);
+                const vetBar = document.getElementById('inspect-vet-bar');
+                if (vetBar) {
+                  vetBar.style.width = `${percent}%`;
+                  vetBar.className = percent >= 100 ? 'h-full bg-amber-400 animate-pulse' : 'h-full bg-amber-500';
+                }
+              }
 
-            // Steel Reinforcement Bonus (Repair): Extra shot to another target
-            if (t.buffs.steelShield > 0) {
-              const secondaryTarget = enemies.find(e => e !== target && Math.hypot(e.x - t.x, e.y - visualY) <= t.range);
-              if (secondaryTarget) shoot(secondaryTarget, 0.7); // 70% damage for secondary
+              if (t.shotsFired >= stats.specialThreshold) {
+                t.shotsFired = 0;
+                addFloatingText(t.x, visualY - 40, stats.specialQuote, t.color, 'large');
+                createExplosion(t.x, visualY, t.color, 25);
+                playSFX('start');
+                
+                if (t.type === 'basic') {
+                  t.buffs.doubleShot = 180;
+                } else if (t.type === 'sniper') {
+                  applyDamageToEnemy(target, t.damage * 4, '#FCD34D', t);
+                  addScreenShake(6);
+                } else if (t.type === 'splash') {
+                  for (let i = 0; i < 3; i++) {
+                    const ox = (Math.random() - 0.5) * 80;
+                    const oy = (Math.random() - 0.5) * 80;
+                    setTimeout(() => {
+                      createExplosion(target.x + ox, target.y + oy, '#EF4444', 20);
+                      enemies.forEach(en => {
+                        if (Math.hypot(en.x - (target.x + ox), en.y - (target.y + oy)) < 80) {
+                          applyDamageToEnemy(en, t.damage * 0.8, '#EF4444', t);
+                        }
+                      });
+                    }, i * 100);
+                  }
+                } else if (t.type === 'nova') {
+                  // Special Healer: Mass Restore
+                  towers.forEach(other => {
+                    const dx = other.x - t.x;
+                    const dy = other.y - visualY;
+                    if (dx * dx + dy * dy <= t.range * t.range * 4) { // double area for special
+                      const heal = other.maxHp * 0.25;
+                      other.hp = Math.min(other.maxHp, other.hp + heal);
+                      addFloatingText(other.x, other.y, `+${Math.round(heal)}`, '#10B981');
+                      createExplosion(other.x, other.y, '#10B981', 10);
+                    }
+                  });
+                }
+              }
             }
 
-            // Faster cooldown if frenzy or bloodlust active
+            if (t.isHealer) {
+              // Healer logic: Heal target immediately
+              target.hp = Math.min(target.maxHp, target.hp + finalValue);
+              addFloatingText(target.x, target.y, `+${Math.round(finalValue)}`, t.color);
+              createExplosion(target.x, target.y, t.color, 5);
+              playSFX('blessing');
+            } else {
+              const shoot = (targetObj, damageMod = 1) => {
+                projectiles.push({
+                  x: t.x,
+                  y: visualY,
+                  target: targetObj,
+                  speed: t.isNova ? 15 : 8,
+                  damage: finalValue * damageMod,
+                  color: t.color,
+                  splash: t.splash,
+                  splashRadius: t.splashRadius,
+                  isNova: t.isNova,
+                  isSlow: t.isSlow,
+                  slowDuration: t.slowDuration,
+                  isDoT: t.isDoT,
+                  dotDuration: t.dotDuration,
+                  sourceTower: t, 
+                  isCrit: isCrit,
+                });
+              };
+
+              shoot(target);
+
+              if (t.buffs.steelShield > 0) {
+                const rangeSq = t.range * t.range;
+                const secondaryTarget = enemies.find(e => {
+                  if (e === target) return false;
+                  const dx = e.x - t.x;
+                  const dy = e.y - visualY;
+                  return dx * dx + dy * dy <= rangeSq;
+                });
+                if (secondaryTarget) shoot(secondaryTarget, 0.7);
+              }
+              playSFX('shoot');
+            }
+
             let fireRateBonus = 1;
             if (t.buffs.doubleShot > 0) fireRateBonus *= 0.5;
             if (bloodlustTimer > 0) fireRateBonus *= 0.5;
             
             t.cooldown = Math.floor(t.fireRate * fireRateBonus);
-            if (t.isNova) playSFX('nova');
-            else playSFX('shoot');
           }
         }
       });
@@ -2316,16 +3281,19 @@ import Layout from '../../components/layout/Layout.astro';
         if (dist < p.speed) {
           // Hit
           if (p.splash) {
-            createExplosion(p.target.x, p.target.y, p.color, 4);
+            createExplosion(p.target.x, p.target.y, p.color, 3);
             if (p.isNova) playSFX('hit_shield');
             else playSFX('hit');
 
-            // Damage all enemies in radius using fast bounds
+            // Damage all enemies in radius using fast squared distance
             const sqSplash = p.splashRadius * p.splashRadius;
+            const tx = p.target.x;
+            const ty = p.target.y;
+            
             for (let j = enemies.length - 1; j >= 0; j--) {
               let e2 = enemies[j];
-              const dx2 = e2.x - p.target.x;
-              const dy2 = e2.y - p.target.y;
+              const dx2 = e2.x - tx;
+              const dy2 = e2.y - ty;
               if (dx2 * dx2 + dy2 * dy2 <= sqSplash) {
                 // Ghost Damage Mitigation: 50% chance to miss
                 if (e2.isGhost && Math.random() > 0.5) {
@@ -2357,7 +3325,7 @@ import Layout from '../../components/layout/Layout.astro';
             } else {
               applyDamageToEnemy(p.target, p.damage, '#FCD34D', p.sourceTower);
             }
-            createExplosion(p.target.x, p.target.y, p.color, 2);
+            createExplosion(p.target.x, p.target.y, p.color, 1);
             playSFX('hit');
           }
           projectiles.splice(i, 1);
@@ -2381,34 +3349,47 @@ import Layout from '../../components/layout/Layout.astro';
 
         if (dist < p.speed) {
           // Impact on tower visual center
-          p.target.hp -= p.damage;
+          applyDamageToTower(p.target, p.damage);
           addFloatingText(p.target.x, p.targetY - 15, `-${Math.round(p.damage)}`, '#EF4444');
-          createExplosion(p.target.x, p.targetY, p.color, 3);
+          createExplosion(p.target.x, p.targetY, p.color, 2);
           playSFX('hit');
 
           // Apply effects based on attack type
           if (p.attackType === 'ice') {
-            p.target.buffs.freeze = Math.max(p.target.buffs.freeze, 60); // Freeze tower for 1 second
+            p.target.buffs.freeze = Math.max(p.target.buffs.freeze, 90); // Freeze tower for 1.5s
             addFloatingText(p.target.x, p.targetY - 25, '❄️', '#60A5FA');
-          } else if (p.attackType === 'poison') {
-            p.target.hp -= p.damage * 0.5; // Extra poison damage over time (simulated as instant for now)
-            createExplosion(p.target.x, p.targetY, '#10B981', 1);
-            addFloatingText(p.target.x, p.targetY - 25, '☠️', '#10B981');
-          } else if (p.attackType === 'fire') {
-            p.target.hp -= p.damage * 0.2; // Extra fire burst damage
-            createExplosion(p.target.x, p.targetY, '#F59E0B', 1);
-            addFloatingText(p.target.x, p.targetY - 25, '🔥', '#F59E0B');
+          } else if (p.attackType === 'plague') {
+            // Plague Spit: Area DoT balanceado
+            const plagueRadius = 80;
+            const plagueDmg = p.damage * 0.5; // Damage spread across area
+            
+            towers.forEach(t => {
+              const tgh = t.gridHeight || 1;
+              const ty = t.y + ((tgh - 1) * GRID_SIZE) / 2;
+              const dx = t.x - p.x;
+              const dy = ty - p.targetY;
+              const distSq = dx * dx + dy * dy;
+              
+              if (distSq <= plagueRadius * plagueRadius) {
+                applyDamageToTower(t, plagueDmg);
+                createExplosion(t.x, ty, '#10B981', 1);
+                addFloatingText(t.x, ty - 25, '☠️ PESTE', '#10B981');
+              }
+            });
+            createExplosion(p.x, p.targetY, '#10B981', 8); // Visual area effect
+          } else if (p.attackType === 'inferno') {
+            // Infernal Impact: Huge area burst around tower
+            applyDamageToTower(p.target, p.damage * 1.5); 
+            createExplosion(p.target.x, p.targetY, '#EF4444', 6);
+            addScreenShake(5);
+            addFloatingText(p.target.x, p.targetY - 30, '🔥 IMPACTO INFERNAL', '#F59E0B');
+          } else if (p.attackType === 'axe') {
+            // Axe Throw: Pure physical burst
+            applyDamageToTower(p.target, p.damage * 0.4);
+            createExplosion(p.target.x, p.targetY, '#D1D5DB', 1);
+            addFloatingText(p.target.x, p.targetY - 20, '🪓', '#D1D5DB');
           }
 
-          if (p.target.hp <= 0) {
-            const index = towers.indexOf(p.target);
-            if (index > -1) {
-              towers.splice(index, 1);
-              updateHUD();
-              createExplosion(p.target.x, p.targetY, '#9CA3AF', 20); // Tower destroyed
-              addScreenShake(8);
-            }
-          }
           enemyProjectiles.splice(i, 1);
         } else {
           p.x += (dx / dist) * p.speed;
@@ -2489,8 +3470,8 @@ import Layout from '../../components/layout/Layout.astro';
       }
     }
 
-    function createExplosion(x, y, color, count = 15) {
-      // Increased default particle count
+    function createExplosion(x, y, color, count = 6) {
+      // Reduced default particle count
       const runes = ['᚛', '᚜', 'ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚩ'];
 
       // Calculate how many particles we can actually add without exceeding the limit
@@ -2553,15 +3534,22 @@ import Layout from '../../components/layout/Layout.astro';
 
       // --- PHASE 1: Draw Entities ---
       drawTowers();
+      drawLinks(); // Visual Steel Bond links
       drawEnemies();
       drawProjectiles();
       drawParticles();
-      drawBonuses();
-      drawDarkRunes();
+
+      // --- PHASE 1.5: Fog of War ---
+      if (showFog) drawFog();
+
+      // --- PHASE 1.7: Post-Fog Entities (Visible through fog) ---
+      drawBonuses(); // War loot and enemy drops
+      drawDarkRunes(); // Plague marks
       
       // --- PHASE 2: UI Overlays (Always on top) ---
       drawUIBarsAndLevels();
       drawTowerInfoPlate(); // Show inspection tooltip
+      drawEnemyInfoPlate(); // Show enemy inspection tooltip
       drawPreviews();
       drawFloatingTexts();
       drawGameStates();
@@ -2572,68 +3560,85 @@ import Layout from '../../components/layout/Layout.astro';
     }
 
     function drawTowerInfoPlate() {
-      if (!inspectedTower) return;
+      const container = document.getElementById('unit-info-plate');
+      const towerView = document.getElementById('tower-inspect-view');
+      const enemyView = document.getElementById('enemy-inspect-view');
+      
+      if (!inspectedTower) {
+        if (towerView) towerView.classList.add('hidden');
+        if (!inspectedEnemy && container) container.classList.add('hidden');
+        return;
+      }
       
       const t = inspectedTower;
+      if (container) container.classList.remove('hidden');
+      if (towerView) towerView.classList.remove('hidden');
+      if (enemyView) enemyView.classList.add('hidden');
+      
+      // OPTIMIZATION: Update DOM only every 10 frames or if tower changed
+      const now = Date.now();
+      if (now - lastInspectUpdate < 160 && container.dataset.lastId === String(t.x + t.y)) {
+        // Just draw the range indicator
+        drawRangeIndicator(t);
+        return;
+      }
+      lastInspectUpdate = now;
+      container.dataset.lastId = String(t.x + t.y);
+
+      // Update HTML content
+      document.getElementById('inspect-name').innerText = t.name;
+      document.getElementById('inspect-level').innerText = `Nv.${t.level}`;
+      document.getElementById('inspect-dmg').innerText = Math.round(t.damage);
+      document.getElementById('inspect-kills').innerText = t.kills;
+      
+      // Update Stamina (Health % for now)
+      const stamina = Math.floor((t.hp / t.maxHp) * 100);
+      document.getElementById('inspect-stamina').innerText = stamina;
+
+      // Update Effects Badges
+      const effectsContainer = document.getElementById('inspect-effects');
+      let badges = '';
+      if (t.isPaired) badges += '<span class="text-[7px] px-1 bg-indigo-900/50 text-indigo-300 rounded border border-indigo-500/30">🔗 VÍNCULO</span>';
+      if (t.buffs.steelShield > 0) badges += '<span class="text-[7px] px-1 bg-slate-700 text-slate-200 rounded border border-slate-500/50">🛡️ ACERO</span>';
+      if (t.buffs.doubleShot > 0) badges += '<span class="text-[7px] px-1 bg-red-900/50 text-red-400 rounded border border-red-500/30">🔥 FRENESÍ</span>';
+      if (t.buffs.freeze > 0) badges += '<span class="text-[7px] px-1 bg-cyan-900/50 text-cyan-400 rounded border border-cyan-500/30">❄️ CONGELADO</span>';
+      if (effectsContainer.innerHTML !== badges) effectsContainer.innerHTML = badges;
+      
+      // Update Special Ability Progress Bar
+      const stats = TOWER_STATS[t.type];
+      const progress = stats.specialThreshold ? Math.min(100, (t.shotsFired / stats.specialThreshold) * 100) : 0;
+      const vetBar = document.getElementById('inspect-vet-bar');
+      if (vetBar) {
+        vetBar.style.width = `${progress}%`;
+        vetBar.className = progress >= 100 ? 'h-full bg-amber-400 animate-pulse' : 'h-full bg-amber-500';
+      }
+
+      // Update tooltips and cost labels with current costs
+      const repairCost = getTowerCost('repair');
+      const upgradeCost = getTowerCost('upgrade');
+      const repairBtn = document.getElementById('inspect-repair');
+      const upgradeBtn = document.getElementById('inspect-upgrade');
+      const sellBtn = document.getElementById('inspect-sell');
+      const repairCostEl = document.getElementById('inspect-repair-cost');
+      const upgradeCostEl = document.getElementById('inspect-upgrade-cost');
+      const sellValueEl = document.getElementById('inspect-sell-value');
+
+      const sellValue = calculateSellValue(t);
+
+      if (repairBtn) repairBtn.title = `Reparar (${repairCost}t)`;
+      if (upgradeBtn) upgradeBtn.title = `Mejorar (${upgradeCost}t)`;
+      if (sellBtn) sellBtn.title = `Vender (${sellValue}a)`;
+      if (repairCostEl) repairCostEl.innerText = `${repairCost}t`;
+      if (upgradeCostEl) upgradeCostEl.innerText = `${upgradeCost}t`;
+      if (sellValueEl) sellValueEl.innerText = `${sellValue}a`;
+
+      drawRangeIndicator(t);
+    }
+
+    function drawRangeIndicator(t) {
+      // Visual range indicator on canvas
       const gh = t.gridHeight || 1;
       const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
-      
-      // Plate dimensions and position
-      const width = 160;
-      const height = 90;
-      let px = t.x + 30;
-      let py = visualY - height / 2;
-      
-      // Boundary check
-      if (px + width > canvas.width - 90) px = t.x - width - 30;
-      if (py < 20) py = 20;
-      if (py + height > canvas.height - 20) py = canvas.height - height - 20;
-
-      // Draw shadow and background
-      ctx.save();
-      ctx.shadowColor = 'rgba(0,0,0,0.5)';
-      ctx.shadowBlur = 15;
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
-      ctx.strokeStyle = t.color;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      // Manual rounded rect for maximum compatibility
-      const radius = 8;
-      ctx.moveTo(px + radius, py);
-      ctx.lineTo(px + width - radius, py);
-      ctx.quadraticCurveTo(px + width, py, px + width, py + radius);
-      ctx.lineTo(px + width, py + height - radius);
-      ctx.quadraticCurveTo(px + width, py + height, px + width - radius, py + height);
-      ctx.lineTo(px + radius, py + height);
-      ctx.quadraticCurveTo(px, py + height, px, py + height - radius);
-      ctx.lineTo(px, py + radius);
-      ctx.quadraticCurveTo(px, py, px + radius, py);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-
-      // Draw stats
-      ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'left';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillText(t.name.toUpperCase(), px + 10, py + 20);
-      
-      ctx.font = '10px sans-serif';
-      ctx.fillStyle = '#94A3B8';
-      ctx.fillText(`Nivel: ${t.level}`, px + 10, py + 38);
-      ctx.fillText(`Daño: ${Math.round(t.damage)}`, px + 10, py + 52);
-      ctx.fillText(`Bajas: ${t.kills}`, px + 10, py + 66);
-      
-      // Veterancy bar
-      const nextVet = 5;
-      const progress = (t.kills % nextVet) / nextVet;
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(px + 10, py + 75, width - 20, 6);
-      ctx.fillStyle = '#FCD34D';
-      ctx.fillRect(px + 10, py + 75, (width - 20) * progress, 6);
-      
-      // Highlight current tower range
       ctx.beginPath();
       ctx.arc(t.x, visualY, t.range, 0, Math.PI * 2);
       ctx.strokeStyle = t.color + '33';
@@ -2641,6 +3646,140 @@ import Layout from '../../components/layout/Layout.astro';
       ctx.setLineDash([5, 5]);
       ctx.stroke();
       ctx.setLineDash([]);
+    }
+
+    function drawLinks() {
+      ctx.save();
+      ctx.setLineDash([2, 4]);
+      ctx.lineWidth = 1;
+      
+      const basicTowers = towers.filter(t => t.type === 'basic' && t.isPaired);
+      const processed = new Set();
+
+      basicTowers.forEach(t1 => {
+        processed.add(t1);
+        const vY1 = t1.y + (((t1.gridHeight || 1) - 1) * GRID_SIZE) / 2;
+        
+        // Find its pair
+        basicTowers.forEach(t2 => {
+          if (processed.has(t2)) return;
+          
+          const vY2 = t2.y + (((t2.gridHeight || 1) - 1) * GRID_SIZE) / 2;
+          const dx = t2.x - t1.x;
+          const dy = vY2 - vY1;
+          const distSq = dx * dx + dy * dy;
+          
+          if (distSq <= t1.range * t1.range) {
+            // Draw energy link
+            const grad = ctx.createLinearGradient(t1.x, vY1, t2.x, vY2);
+            grad.addColorStop(0, 'rgba(148, 163, 184, 0.1)');
+            grad.addColorStop(0.5, 'rgba(148, 163, 184, 0.4)');
+            grad.addColorStop(1, 'rgba(148, 163, 184, 0.1)');
+            
+            ctx.beginPath();
+            ctx.moveTo(t1.x, vY1);
+            ctx.lineTo(t2.x, vY2);
+            ctx.strokeStyle = grad;
+            ctx.stroke();
+            
+            // Draw small glow at centers
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.2)';
+            ctx.beginPath();
+            ctx.arc(t1.x, vY1, 4, 0, Math.PI * 2);
+            ctx.arc(t2.x, vY2, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
+      });
+      ctx.restore();
+    }
+
+    function drawFog() {
+      if (fogCanvas.width !== canvas.width || fogCanvas.height !== canvas.height) {
+        fogCanvas.width = canvas.width;
+        fogCanvas.height = canvas.height;
+      }
+
+      // 1. Fill with darkness
+      fogCtx.globalCompositeOperation = 'source-over';
+      fogCtx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+      fogCtx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
+
+      // 2. Clear circles around towers (revealed areas)
+      fogCtx.globalCompositeOperation = 'destination-out';
+      
+      // Always reveal around the start and end of path
+      const startRadius = 160;
+      const endRadius = 220;
+      
+      const startGrad = fogCtx.createRadialGradient(path[0].x, path[0].y, 0, path[0].x, path[0].y, startRadius);
+      startGrad.addColorStop(0, 'rgba(0,0,0,1)');
+      startGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      fogCtx.fillStyle = startGrad;
+      fogCtx.beginPath();
+      fogCtx.arc(path[0].x, path[0].y, startRadius, 0, Math.PI * 2);
+      fogCtx.fill();
+
+      const endGrad = fogCtx.createRadialGradient(path[path.length-1].x, path[path.length-1].y, 0, path[path.length-1].x, path[path.length-1].y, endRadius);
+      endGrad.addColorStop(0, 'rgba(0,0,0,1)');
+      endGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      fogCtx.fillStyle = endGrad;
+      fogCtx.beginPath();
+      fogCtx.arc(path[path.length-1].x, path[path.length-1].y, endRadius, 0, Math.PI * 2);
+      fogCtx.fill();
+
+      towers.forEach(t => {
+        const gh = t.gridHeight || 1;
+        const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
+        const revealRadius = t.range * 1.2; 
+        
+        const grad = fogCtx.createRadialGradient(t.x, visualY, revealRadius * 0.4, t.x, visualY, revealRadius);
+        grad.addColorStop(0, 'rgba(0,0,0,1)');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        fogCtx.fillStyle = grad;
+        fogCtx.beginPath();
+        fogCtx.arc(t.x, visualY, revealRadius, 0, Math.PI * 2);
+        fogCtx.fill();
+      });
+
+      // 3. Draw fog canvas onto main canvas
+      ctx.drawImage(fogCanvas, 0, 0);
+    }
+
+    function drawEnemyInfoPlate() {
+      const container = document.getElementById('unit-info-plate');
+      const towerView = document.getElementById('tower-inspect-view');
+      const enemyView = document.getElementById('enemy-inspect-view');
+      
+      if (!inspectedEnemy) {
+        if (enemyView) enemyView.classList.add('hidden');
+        if (!inspectedTower && container) container.classList.add('hidden');
+        return;
+      }
+      
+      const e = inspectedEnemy;
+      if (container) container.classList.remove('hidden');
+      if (enemyView) enemyView.classList.remove('hidden');
+      if (towerView) towerView.classList.add('hidden');
+      
+      const now = Date.now();
+      if (now - lastInspectUpdate < 100) return;
+      lastInspectUpdate = now;
+
+      // Update HTML content
+      const type = ENEMY_TYPES.find(t => t.id === e.id) || { name: 'Enemigo' };
+      document.getElementById('enemy-inspect-name').innerText = type.name;
+      document.getElementById('enemy-inspect-level').innerText = `NV. ${e.level || wave}`;
+      
+      const hpPercent = Math.max(0, Math.floor((e.hp / e.maxHp) * 100));
+      document.getElementById('enemy-inspect-hp').innerText = hpPercent;
+      document.getElementById('enemy-inspect-hp-bar').style.width = `${hpPercent}%`;
+      
+      // Calculate visual speed (including sprint)
+      let visualSpeed = e.speed;
+      if (e.noDamageTimer > 180) visualSpeed *= 1.4;
+      document.getElementById('enemy-inspect-speed').innerText = visualSpeed.toFixed(1);
     }
 
     function drawUIBarsAndLevels() {
@@ -2666,6 +3805,51 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.strokeStyle = '#94A3B8';
           ctx.lineWidth = 2;
           ctx.strokeRect(t.x - barW / 2 - 2, barY - 2, barW + 4, barH + 4);
+
+          // Label and Timer Container (Above health/level) - MOVED HERE FOR TOP LAYERING
+          const seconds = Math.ceil(t.buffs.steelShield / 60);
+          const label = `🛡️ REFORZADO ${seconds}s`;
+          ctx.font = 'bold 8px sans-serif';
+          const textW = ctx.measureText(label).width;
+          
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+          ctx.fillRect(t.x - textW / 2 - 4, barY - 22, textW + 8, 12);
+          ctx.strokeStyle = '#94A3B8';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(t.x - textW / 2 - 4, barY - 22, textW + 8, 12);
+
+          ctx.fillStyle = '#94A3B8';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(label, t.x, barY - 16);
+        }
+
+        // Steel Bond Armor Bonus (Basic Tower Pairing)
+        if (t.type === 'basic' && t.isPaired) {
+          ctx.strokeStyle = '#6366F1'; // Indigo color
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(t.x - barW / 2 - 1.5, barY - 1.5, barW + 3, barH + 3);
+          
+          ctx.fillStyle = '#818CF8';
+          ctx.font = 'bold 7px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('🔗 VÍNCULO', t.x, barY - 16);
+        }
+
+        // Debuff Indicators
+        if (t.buffs.weakened > 0 || t.buffs.blinded > 0 || t.buffs.rusted > 0 || t.buffs.freeze > 0) {
+          let debuffLabel = '';
+          if (t.buffs.freeze > 0) debuffLabel = '❄️ CONGELADO';
+          else if (t.buffs.rusted > 0) debuffLabel = '⚙️ OXIDADO';
+          else if (t.buffs.blinded > 0) debuffLabel = '🌫️ CEGADO';
+          else if (t.buffs.weakened > 0) debuffLabel = '📉 DÉBIL';
+
+          ctx.font = 'bold 9px sans-serif';
+          const textW = ctx.measureText(debuffLabel).width;
+          ctx.fillStyle = 'rgba(127, 29, 29, 0.9)'; // Dark red bg
+          ctx.fillRect(t.x - textW / 2 - 4, barY - 34, textW + 8, 12);
+          ctx.fillStyle = '#FCA5A5'; // Light red text
+          ctx.fillText(debuffLabel, t.x, barY - 28);
         }
 
         // Level and Veterancy Stars
@@ -2675,10 +3859,20 @@ import Layout from '../../components/layout/Layout.astro';
         ctx.textBaseline = 'middle';
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 2;
-        const vetStars = '★'.repeat(Math.min(5, t.veterancy - 1));
-        const label = `${vetStars} Nv.${t.level || 1}`;
+        const starsCount = t.veterancy - 1;
+        const label = starsCount > 0 ? `${starsCount}★ Nv.${t.level || 1}` : `Nv.${t.level || 1}`;
         ctx.strokeText(label, t.x, barY - 8);
         ctx.fillText(label, t.x, barY - 8);
+
+        // Low Health Alert
+        if (t.hp / t.maxHp < 0.3) {
+          const blink = Math.sin(Date.now() / 150) > 0;
+          if (blink) {
+            ctx.fillStyle = '#EF4444';
+            ctx.font = 'black 9px sans-serif';
+            ctx.fillText('¡REPARAR!', t.x, barY - 34); // Higher if reinforced label exists
+          }
+        }
       });
 
       // Health Bars and Levels for Enemies
@@ -2716,6 +3910,7 @@ import Layout from '../../components/layout/Layout.astro';
       sortedTowers.forEach((t) => {
         const gh = t.gridHeight || 1;
         const visualY = t.y + ((gh - 1) * GRID_SIZE) / 2;
+        const barY = visualY + (gh * GRID_SIZE) / 2 - 5;
 
         // Upgrade Range Expansion Pulse
         if (t.upgradePulse && t.upgradePulse > 0) {
@@ -2737,10 +3932,10 @@ import Layout from '../../components/layout/Layout.astro';
         // Steel Reinforcement Aura (Repair Bonus)
         if (t.buffs.steelShield > 0) {
           ctx.beginPath();
-          ctx.arc(t.x, visualY, t.size * 2, 0, Math.PI * 2);
+          ctx.arc(t.x, visualY, t.size * 1.0, 0, Math.PI * 2); // Reduced from 1.2 to 1.0
           ctx.strokeStyle = '#94A3B8';
           ctx.lineWidth = 2 + Math.sin(Date.now() / 100) * 1;
-          ctx.setLineDash([5, 5]);
+          ctx.setLineDash([3, 3]);
           ctx.stroke();
           ctx.setLineDash([]);
         }
@@ -2753,6 +3948,17 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.lineWidth = 1;
           ctx.stroke();
           if (!isPaused) t.rangePulse -= 0.02;
+        }
+
+        // Permanent Range Visualization
+        if (showRanges) {
+          ctx.beginPath();
+          ctx.arc(t.x, visualY, t.range, 0, Math.PI * 2);
+          ctx.strokeStyle = t.color + '44'; // Use tower color with low alpha
+          ctx.lineWidth = 1;
+          ctx.setLineDash([5, 5]);
+          ctx.stroke();
+          ctx.setLineDash([]);
         }
 
         if (spritesLoaded && SPRITE_MAP.towers[t.type]) {
@@ -2777,7 +3983,7 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.save();
           ctx.globalAlpha = 0.2 + (Math.sin(Date.now() / 300) * 0.1);
           ctx.beginPath();
-          ctx.arc(t.x, visualY, t.size * 1.8, 0, Math.PI * 2);
+          ctx.arc(t.x, visualY, t.size * 1.0, 0, Math.PI * 2); // 50% smaller
           ctx.fillStyle = '#FCD34D';
           ctx.fill();
           ctx.restore();
@@ -2796,6 +4002,10 @@ import Layout from '../../components/layout/Layout.astro';
           
           ctx.save();
           if (e.isGhost) ctx.globalAlpha = 0.6;
+          if (e.isClone && e.lifeTimer) {
+            // Fade out as life expires
+            ctx.globalAlpha *= Math.min(1.0, e.lifeTimer / 30); 
+          }
           ctx.translate(e.x, e.y - bob);
           ctx.beginPath();
           ctx.arc(0, 0, renderSize * 0.6, 0, Math.PI * 2);
@@ -2841,10 +4051,16 @@ import Layout from '../../components/layout/Layout.astro';
           ctx.lineTo(p.x, p.y + 5);
           ctx.lineTo(p.x - 5, p.y);
           ctx.closePath();
+        } else if (p.attackType === 'plague') {
+          // Area plague: larger bubble with glow
+          ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
         } else {
           ctx.arc(p.x, p.y, p.attackType === 'poison' ? 4 : 3, 0, Math.PI * 2);
         }
         ctx.fill();
+        ctx.shadowBlur = 0; // Reset shadow
       });
     }
 
