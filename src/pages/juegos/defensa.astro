@@ -39,231 +39,296 @@ import Layout from '../../components/layout/Layout.astro';
       id="game-container"
       class="w-full max-w-6xl mx-auto relative rounded-xl overflow-hidden border-2 border-indigo-900/50 shadow-2xl bg-gray-900 aspect-video flex items-center justify-center"
     >
-      <!-- UI Overlay (Bottom HUD - Optimized & Floating) -->
-      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 w-auto pointer-events-none flex flex-col items-center gap-2">
-        <!-- Modern Start/Wave Button (Floating Above) -->
-        <div class="flex items-center gap-3 pointer-events-auto">
-          <button
-            id="main-action-btn"
-            class="opacity-0 translate-y-2 px-6 py-1.5 bg-black/85 backdrop-blur-xl border border-white/10 border-b-indigo-500/50 rounded-xl shadow-2xl transition-all duration-700 pointer-events-none z-50 group active:scale-95"
-          >
-            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-indigo-400 group-hover:text-white transition-colors">INICIAR PARTIDA</span>
-          </button>
+      <!-- UI Overlay (Bottom HUD - Optimized & Compact) -->
+      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 w-auto pointer-events-none">
+        <div class="bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl p-0 shadow-2xl flex items-center justify-center border-b-indigo-500/50 pointer-events-auto relative h-11 group/hud overflow-hidden">
+          <!-- Animated Accent Background -->
+          <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/5 to-indigo-500/0 -translate-x-full group-hover/hud:translate-x-full transition-transform duration-1000 ease-in-out"></div>
           
-          <button
-            id="restart-btn"
-            class="hidden px-4 py-1.5 bg-red-950/40 backdrop-blur-xl border border-red-500/30 rounded-xl shadow-2xl transition-all group active:scale-95 z-50"
-            title="Reiniciar partida (Consume 1 turno)"
-          >
-            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-red-400 group-hover:text-white transition-colors">REINICIAR</span>
-          </button>
-        </div>
-
-        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl flex items-center justify-center border-b-indigo-500/50 pointer-events-auto relative min-h-[46px] min-w-[320px]">
           <!-- Main Stats Group -->
-          <div id="hud-stats-content" class="flex items-center gap-4 px-5">
-            <div class="flex items-center gap-4">
+          <div id="hud-stats-content" class="flex items-center gap-3 px-4 relative z-10 h-full">
+            <!-- Game Action Button (Integrated & Tactical) -->
+            <div class="flex items-center">
+              <button
+                id="main-action-btn"
+                class="opacity-0 translate-y-1 px-4 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/40 rounded-xl shadow-[inset_0_0_10px_rgba(79,70,229,0.2)] transition-all duration-500 pointer-events-none group active:scale-95 flex items-center gap-2 relative overflow-hidden"
+              >
+                <div class="absolute inset-0 bg-gradient-to-t from-indigo-500/10 to-transparent"></div>
+                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-indigo-100 drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]">INICIAR</span>
+                <!-- Scanner Effect -->
+                <div class="absolute top-0 left-0 w-full h-[1px] bg-indigo-400/50 animate-[scan_2s_linear_infinite]"></div>
+              </button>
+            </div>
+
+            <div class="w-[1px] h-6 bg-white/10 opacity-50"></div>
+
+            <!-- Vitals Group (HP & Wave) -->
+            <div class="flex items-center gap-6">
               <!-- Health -->
-              <div class="flex items-center gap-2" title="Salud Ciudadela">
-                <span class="text-xs">❤️</span>
-                <span id="health-display" class="text-red-500 font-black text-sm font-mono">100</span>
+              <div class="flex flex-col items-center justify-center -space-y-0.5" title="Salud de la Ciudadela">
+                <span class="text-[7px] text-red-400 font-black uppercase tracking-[0.1em] opacity-80">Salud</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs">❤️</span>
+                  <span id="health-display" class="text-red-500 font-black text-xl font-mono leading-none tracking-tighter drop-shadow-[0_0_10px_rgba(239,68,68,0.3)]">100</span>
+                </div>
               </div>
-              
-              <div class="w-[1px] h-4 bg-white/10"></div>
 
+              <!-- Wave -->
+              <div class="flex flex-col items-center justify-center -space-y-0.5" title="Oleada">
+                <span class="text-[7px] text-indigo-400 font-black uppercase tracking-[0.1em] opacity-80">Oleada</span>
+                <div class="flex items-center gap-1.5">
+                  <span id="wave-display" class="text-white font-black text-xl font-mono leading-none tracking-tighter drop-shadow-[0_0_10px_rgba(129,140,248,0.3)]">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-[1px] h-7 bg-indigo-500/20 mx-1"></div>
+
+            <!-- Resources Group (Steel & Tactics) -->
+            <div class="flex items-center gap-6">
               <!-- Steel -->
-              <div class="flex items-center gap-2" title="Acero (Construcción)">
-                <span class="text-xs">⚙️</span>
-                <span id="abyssals-display" class="text-slate-200 font-black text-sm font-mono">8</span>
+              <div class="flex flex-col items-center justify-center -space-y-0.5" title="Acero">
+                <span class="text-[7px] text-slate-400 font-black uppercase tracking-[0.1em] opacity-80">Acero</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs">⚙️</span>
+                  <span id="abyssals-display" class="text-slate-100 font-black text-xl font-mono leading-none tracking-tighter drop-shadow-[0_0_10px_rgba(148,163,184,0.3)]">8</span>
+                </div>
               </div>
-
-              <div class="w-[1px] h-4 bg-white/10"></div>
 
               <!-- Tactics -->
-              <div class="flex flex-col items-center justify-center min-w-[60px]" title="Táctica (Acciones)">
+              <div class="flex flex-col items-center justify-center -space-y-0.5" title="Táctica">
+                <span class="text-[7px] text-amber-400 font-black uppercase tracking-[0.1em] opacity-80">Táctica</span>
                 <div class="flex items-center gap-1.5">
-                  <span class="text-[10px]">⚡</span>
-                  <span id="upgrades-display" class="text-amber-400 font-black text-sm font-mono">5</span>
-                </div>
-                <div class="flex items-center gap-2 mt-0.5 opacity-60 scale-90">
-                  <span class="text-[8px] text-green-500 font-bold">🔧<span id="repair-cost-display">1.2</span></span>
-                  <span class="text-[8px] text-orange-500 font-bold">⬆️<span id="upgrade-cost-display">3</span></span>
+                  <span class="text-xs">⚡</span>
+                  <span id="upgrades-display" class="text-amber-400 font-black text-xl font-mono leading-none tracking-tighter drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]">5</span>
                 </div>
               </div>
             </div>
 
-            <div class="w-[1px] h-6 bg-indigo-500/30"></div>
+            <div class="w-[1px] h-7 bg-indigo-500/20 mx-1"></div>
 
-            <!-- Progress Group -->
-            <div class="flex items-center gap-4">
-              <!-- Wave -->
-              <div class="flex flex-col items-center">
-                <span class="text-[6px] text-indigo-400 font-black uppercase tracking-tighter">Oleada</span>
-                <span id="wave-display" class="text-white font-black text-sm leading-none">0</span>
-              </div>
-              <!-- Towers -->
-              <div class="flex flex-col items-center">
-                <span class="text-[6px] text-blue-400 font-black uppercase tracking-tighter">Puestos</span>
-                <span id="tower-count-display" class="text-white font-black text-xs leading-none">0/15</span>
-              </div>
+            <!-- Logistics Action Center -->
+            <div class="flex items-center gap-3 bg-white/5 px-3 py-1 rounded-xl border border-white/5 shadow-inner h-[80%]" title="Logística">
+              <!-- Repair Shortcut -->
+              <button class="tower-btn flex flex-col items-center justify-center -space-y-0.5 group/btn active:scale-90" data-type="repair">
+                <span class="text-[6px] text-green-500 font-black uppercase opacity-60 group-hover/btn:opacity-100 tracking-wider">Reparar</span>
+                <span class="text-base">🔧</span>
+              </button>
+
+              <div class="w-[1px] h-5 bg-white/10 mx-0.5"></div>
+
+              <!-- Upgrade Shortcut -->
+              <button class="tower-btn flex flex-col items-center justify-center -space-y-0.5 group/btn active:scale-90" data-type="upgrade">
+                <span class="text-[6px] text-orange-500 font-black uppercase opacity-60 group-hover/btn:opacity-100 tracking-wider">Mejorar</span>
+                <span class="text-base">⬆️</span>
+              </button>
+
+              <div class="w-[1px] h-4 bg-white/10 mx-0.5 opacity-30"></div>
+
+              <!-- Sell Shortcut -->
+              <button class="tower-btn flex flex-col items-center justify-center -space-y-0.5 group/btn active:scale-90" data-type="sell" title="Vender Torre">
+                <span class="text-[6px] text-red-500 font-black uppercase opacity-60 group-hover/btn:opacity-100 tracking-wider">Vender</span>
+                <span class="text-base">💰</span>
+              </button>
+            </div>
+
+            <div class="w-[1px] h-7 bg-indigo-500/20 mx-1"></div>
+
+            <!-- Deployment Status -->
+            <div class="flex flex-col items-center justify-center -space-y-0.5" title="Puestos">
+              <span class="text-[7px] text-blue-400 font-black uppercase opacity-80 tracking-wider">Puestos</span>
+              <span id="tower-count-display" class="text-white font-black text-sm font-mono leading-none tracking-tighter">0/15</span>
+            </div>
+
+            <div class="w-[1px] h-6 bg-white/10 opacity-50"></div>
+
+            <!-- Restart Button (Integrated & Tactical) -->
+            <div class="flex items-center">
+              <button
+                id="restart-btn"
+                class="hidden px-3 py-1.5 bg-red-900/20 hover:bg-red-800/40 border border-red-500/40 rounded-xl transition-all group active:scale-95 flex items-center gap-1.5 shadow-[inset_0_0_10px_rgba(239,68,68,0.1)]"
+                title="Reiniciar partida"
+              >
+                <span class="text-[9px]">🔄</span>
+                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-red-400 group-hover:text-white drop-shadow-[0_0_5px_rgba(239,68,68,0.3)]">REINTENTAR</span>
+              </button>
             </div>
           </div>
         </div>
       </div>
+ 
+      <!-- Unit Info Plate (Wide Top HUD Version) -->
+      <div id="unit-info-plate" class="absolute top-0 left-0 w-full z-50 hidden pointer-events-none">
+        <div class="bg-black/95 border-b border-indigo-500/40 shadow-[0_4px_30px_rgba(79,70,229,0.3)] backdrop-blur-2xl flex items-center h-14 relative group/plate overflow-hidden pointer-events-auto">
+          <!-- Animated Top Accent Line -->
+          <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-400 to-transparent opacity-50"></div>
+          
+          <!-- Tactical HUD Decor (Left) -->
+          <div class="absolute left-4 top-1/2 -translate-y-1/2 flex gap-1 opacity-30 select-none">
+            <div class="w-1 h-6 bg-indigo-500/50 rounded-full"></div>
+            <div class="w-1 h-4 bg-indigo-500/30 rounded-full mt-1"></div>
+            <div class="w-1 h-2 bg-indigo-500/20 rounded-full mt-2"></div>
+          </div>
 
-      <!-- Unit Info Plate (Top Center - Inspect) -->
-      <div id="unit-info-plate" class="absolute top-2 left-1/2 -translate-x-1/2 z-50 hidden pointer-events-auto">
-        <div class="bg-black/90 border border-indigo-500/40 rounded-2xl p-3 shadow-[0_0_40px_rgba(79,70,229,0.25)] flex items-center gap-4 min-w-[320px] backdrop-blur-xl">
-          <!-- Tower View -->
-          <div id="tower-inspect-view" class="flex items-center gap-4 w-full">
-            <div class="flex flex-col gap-1.5 flex-1">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span id="inspect-name" class="text-xs font-black text-indigo-400 uppercase tracking-wider italic">NOMBRE</span>
-                  <div class="flex gap-1">
-                    <span id="inspect-level" class="text-[9px] bg-indigo-900/40 text-white px-1.5 py-0.5 rounded border border-indigo-500/30 font-black">NV.1</span>
-                    <span id="inspect-stars" class="text-[10px] text-amber-400 font-black drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]">0★</span>
+          <!-- Tower View (Wide Layout) -->
+          <div id="tower-inspect-view" class="flex items-center w-full px-12 gap-8">
+            <!-- Identification & Stats Grid -->
+            <div class="flex items-center gap-12 flex-1">
+              <div class="flex flex-col min-w-[180px]">
+                <div class="flex items-center gap-3">
+                  <span id="inspect-name" class="text-sm font-black text-indigo-400 uppercase tracking-[0.2em] italic drop-shadow-[0_0_8px_rgba(129,140,248,0.4)]">NOMBRE</span>
+                  <span id="inspect-synergy" class="text-[7px] font-black text-blue-400 bg-blue-900/30 px-1.5 py-0.5 rounded border border-blue-500/30 hidden animate-pulse">🔗 VÍNCULO</span>
+                </div>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <span id="inspect-level" class="text-[9px] text-white/60 font-black uppercase tracking-widest">Nivel <span class="text-white">1</span></span>
+                  <div class="w-1 h-1 bg-white/20 rounded-full"></div>
+                  <span id="inspect-stars" class="text-[10px] text-amber-400 font-black drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]">0★</span>
+                </div>
+              </div>
+
+              <div class="w-[1px] h-8 bg-white/10"></div>
+
+              <div class="grid grid-cols-4 gap-x-8 gap-y-1 flex-1">
+                <div class="flex flex-col">
+                  <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Potencia de Fuego</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] opacity-70">💥</span>
+                    <span id="inspect-dmg" class="text-xs text-white font-black font-mono">0</span>
                   </div>
                 </div>
-                <span id="inspect-synergy" class="text-[8px] font-black text-blue-400 bg-blue-900/30 px-1.5 py-0.5 rounded border border-blue-500/30 hidden animate-pulse">🔗 VÍNCULO</span>
-              </div>
-
-              <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] text-gray-400 font-mono">
-                <div class="flex justify-between border-b border-white/5 pb-0.5"><span>DAÑO:</span><span id="inspect-dmg" class="text-white font-bold">0</span></div>
-                <div class="flex justify-between border-b border-white/5 pb-0.5"><span>BAJAS:</span><span id="inspect-kills" class="text-white font-bold">0</span></div>
-                <div class="flex justify-between border-b border-white/5 pb-0.5"><span>RANGO:</span><span id="inspect-range" class="text-indigo-300 font-bold">0</span></div>
-                <div class="flex justify-between border-b border-white/5 pb-0.5"><span>SALUD:</span><span id="inspect-hp-text" class="text-red-400 font-bold">0/0</span></div>
-              </div>
-
-              <!-- Special Ability Progress -->
-              <div class="space-y-1 mt-1">
-                <div class="flex justify-between items-center px-0.5">
-                  <span class="text-[7px] text-amber-500/70 font-black uppercase tracking-widest">Habilidad Especial</span>
-                  <span id="inspect-ability-percent" class="text-[7px] text-amber-400 font-mono">0%</span>
+                <div class="flex flex-col">
+                  <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Rango Táctico</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] opacity-70">👁️</span>
+                    <span id="inspect-range" class="text-xs text-indigo-300 font-black font-mono">0</span>
+                  </div>
                 </div>
-                <div class="w-full h-1.5 bg-gray-900/80 rounded-full overflow-hidden border border-white/5">
-                  <div id="inspect-vet-bar" class="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-300 shadow-[0_0_10px_rgba(251,191,36,0.3)]" style="width: 0%"></div>
+                <div class="flex flex-col">
+                  <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Bajas Confirmadas</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] opacity-70">💀</span>
+                    <span id="inspect-kills" class="text-xs text-white font-black font-mono">0</span>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Integridad Estructural</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] opacity-70">🛡️</span>
+                    <span id="inspect-hp-text" class="text-xs text-red-400 font-black font-mono">0/0</span>
+                  </div>
                 </div>
               </div>
-
-              <!-- Status Effects -->
-              <div id="inspect-effects" class="flex flex-wrap gap-1 mt-1 empty:hidden"></div>
             </div>
 
-            <div class="w-[1px] h-16 bg-white/10 mx-1"></div>
+            <div class="w-[1px] h-8 bg-white/10"></div>
 
-            <div class="flex flex-col gap-1.5">
-              <div class="flex items-center gap-1.5">
-                <button id="inspect-repair" class="flex flex-col items-center justify-center w-10 h-10 rounded-xl bg-green-900/30 border border-green-500/40 hover:bg-green-800/50 hover:border-green-400 transition-all shadow-lg active:scale-90 group" title="Reparar">
-                  <span class="text-sm group-hover:scale-110 transition-transform">🔧</span>
-                  <span id="inspect-repair-cost" class="text-[7px] font-black text-green-400">2t</span>
+            <!-- 3. Special & Status -->
+            <div class="flex flex-col min-w-[150px] gap-1.5">
+              <div class="flex justify-between items-center">
+                <span class="text-[7px] text-amber-500/70 font-black uppercase tracking-widest">Capacidad Especial</span>
+                <span id="inspect-ability-percent" class="text-[8px] text-amber-400 font-mono">0%</span>
+              </div>
+              <div class="w-full h-1 bg-gray-900 rounded-full overflow-hidden border border-white/5">
+                <div id="inspect-vet-bar" class="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-300 shadow-[0_0_10px_rgba(251,191,36,0.3)]" style="width: 0%"></div>
+              </div>
+              <div id="inspect-effects" class="flex flex-wrap gap-1 mt-0.5 empty:hidden"></div>
+            </div>
+
+            <div class="w-[1px] h-8 bg-white/10"></div>
+
+            <!-- 4. Actions -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/5">
+                <button id="inspect-repair" class="w-11 h-11 rounded-lg bg-green-900/30 border border-green-500/40 hover:bg-green-800/50 flex flex-col items-center justify-center transition-all group/btn" title="Reparar">
+                  <span class="text-xs">🔧</span>
+                  <span id="inspect-repair-cost" class="text-[9px] font-black text-green-400 leading-none">2t</span>
                 </button>
-                <button id="inspect-upgrade" class="flex flex-col items-center justify-center w-10 h-10 rounded-xl bg-orange-900/30 border border-orange-500/40 hover:bg-orange-800/50 hover:border-orange-400 transition-all shadow-lg active:scale-90 group" title="Mejorar">
-                  <span class="text-sm group-hover:scale-110 transition-transform">⬆️</span>
-                  <span id="inspect-upgrade-cost" class="text-[7px] font-black text-orange-400">5t</span>
+                <button id="inspect-upgrade" class="w-11 h-11 rounded-lg bg-orange-900/30 border border-orange-500/40 hover:bg-orange-800/50 flex flex-col items-center justify-center transition-all group/btn" title="Mejorar">
+                  <span class="text-xs">⬆️</span>
+                  <span id="inspect-upgrade-cost" class="text-[9px] font-black text-orange-400 leading-none">5t</span>
+                </button>
+                <button id="inspect-sell" class="w-11 h-11 rounded-lg bg-red-900/30 border border-red-500/40 hover:bg-red-800/50 flex flex-col items-center justify-center transition-all group/btn" title="Vender">
+                  <span class="text-xs">💰</span>
+                  <span id="inspect-sell-value" class="text-[9px] font-black text-red-400 leading-none">0a</span>
                 </button>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button id="inspect-sell" class="flex flex-col items-center justify-center w-10 h-10 rounded-xl bg-red-900/30 border border-red-500/40 hover:bg-red-800/50 hover:border-red-400 transition-all shadow-lg active:scale-90 group" title="Vender">
-                  <span class="text-sm group-hover:scale-110 transition-transform">💰</span>
-                  <span id="inspect-sell-value" class="text-[7px] font-black text-red-400">0a</span>
-                </button>
-                <button id="inspect-close" class="w-10 h-10 rounded-xl bg-slate-900/40 border border-white/10 hover:bg-red-900/40 hover:border-red-500/50 transition-all flex items-center justify-center text-xs opacity-60 hover:opacity-100" title="Cerrar">✕</button>
-              </div>
+              <button id="inspect-close" class="w-10 h-10 rounded-lg bg-slate-900/40 border border-white/10 hover:bg-red-900/40 hover:border-red-500/50 transition-all flex items-center justify-center text-xs opacity-60 hover:opacity-100">✕</button>
             </div>
           </div>
 
-          <!-- Enemy View -->
-          <div id="enemy-inspect-view" class="hidden flex items-center gap-4 w-full">
-            <div class="flex flex-col gap-1.5 flex-1">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span id="enemy-inspect-name" class="text-xs font-black text-red-400 uppercase tracking-wider italic">ENEMIGO</span>
-                  <span id="enemy-inspect-level" class="text-[9px] bg-red-900/40 text-white px-1.5 py-0.5 rounded border border-red-500/30 font-black">NV.1</span>
-                </div>
-                <span id="enemy-inspect-type" class="text-[8px] font-black text-purple-400 bg-purple-900/30 px-1.5 py-0.5 rounded border border-purple-500/30 uppercase">NORMAL</span>
+          <!-- Enemy View (Wide Layout) -->
+          <div id="enemy-inspect-view" class="hidden flex items-center w-full px-12 gap-8">
+            <div class="flex flex-col min-w-[180px]">
+              <div class="flex items-center gap-3">
+                <span id="enemy-inspect-name" class="text-sm font-black text-red-500 uppercase tracking-[0.2em] italic drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]">ENEMIGO</span>
+                <span id="enemy-inspect-type" class="text-[7px] font-black text-gray-400 bg-gray-900/50 px-1.5 py-0.5 rounded border border-white/10 tracking-widest uppercase">NORMAL</span>
               </div>
-
-              <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] text-gray-400 font-mono">
-                <div class="flex justify-between border-b border-white/5 pb-0.5"><span>SALUD:</span><span id="enemy-inspect-hp-text" class="text-red-400 font-bold">0/0</span></div>
-                <div class="flex justify-between border-b border-white/5 pb-0.5"><span>VELOC.:</span><span id="enemy-inspect-speed" class="text-blue-400 font-bold">1.0x</span></div>
-                <div class="flex justify-between border-b border-white/5 pb-0.5 col-span-2"><span>ESTADO:</span><span id="enemy-inspect-status" class="text-amber-400 font-bold italic">ESTABLE</span></div>
-              </div>
-
-              <div class="w-full h-1.5 bg-gray-900/80 rounded-full mt-1 overflow-hidden border border-white/5 shadow-inner">
-                <div id="enemy-inspect-hp-bar" class="h-full bg-gradient-to-r from-red-700 to-red-500 transition-all duration-300 shadow-[0_0_10px_rgba(239,68,68,0.3)]" style="width: 100%"></div>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span id="enemy-inspect-level" class="text-[9px] text-white/60 font-black uppercase tracking-widest">Rango Amenaza <span class="text-white">1</span></span>
               </div>
             </div>
-            <div class="w-[1px] h-16 bg-white/10 mx-1"></div>
-            <button id="enemy-inspect-close" class="w-12 h-12 rounded-xl bg-slate-900/40 border border-white/10 hover:bg-red-900/40 hover:border-red-500/50 transition-all flex items-center justify-center text-sm opacity-60 hover:opacity-100 shadow-lg" title="Cerrar">✕</button>
+
+            <div class="w-[1px] h-8 bg-white/10"></div>
+
+            <div class="flex-1 max-w-xl flex flex-col gap-1.5">
+              <div class="flex justify-between items-center px-1">
+                <span class="text-[7px] text-red-400/70 font-black uppercase tracking-widest">Estado Vital</span>
+                <span id="enemy-inspect-hp-text" class="text-[9px] text-white font-mono">0/0</span>
+              </div>
+              <div class="w-full h-1.5 bg-gray-900 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                <div id="enemy-inspect-hp-bar" class="h-full bg-gradient-to-r from-red-600 to-orange-500 transition-all duration-300 shadow-[0_0_10px_rgba(239,68,68,0.3)]" style="width: 100%"></div>
+              </div>
+            </div>
+
+            <div class="w-[1px] h-8 bg-white/10"></div>
+
+            <div class="flex flex-col min-w-[120px]">
+              <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Velocidad Relativa</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] opacity-70">🏃</span>
+                <span id="enemy-inspect-speed" class="text-xs text-white font-black font-mono">1.0x</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col min-w-[120px]">
+              <span class="text-[7px] text-gray-500 font-black uppercase tracking-tighter">Condición</span>
+              <span id="enemy-inspect-status" class="text-[9px] font-bold italic text-amber-400">ESTABLE</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button id="enemy-inspect-close" class="w-8 h-8 rounded-lg bg-slate-900/40 border border-white/10 hover:bg-red-900/40 hover:border-red-500/50 transition-all flex items-center justify-center text-[10px] opacity-60 hover:opacity-100">✕</button>
+            </div>
+          </div>
+          
+          <!-- Tactical HUD Decor (Right) -->
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1 opacity-30 select-none rotate-180">
+            <div class="w-1 h-6 bg-indigo-500/50 rounded-full"></div>
+            <div class="w-1 h-4 bg-indigo-500/30 rounded-full mt-1"></div>
+            <div class="w-1 h-2 bg-indigo-500/20 rounded-full mt-2"></div>
           </div>
         </div>
       </div>
 
-      <!-- Tools Menu (Left Floating Dock) -->
-      <div
-        class="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none"
-      >
-        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-2 md:p-1.5 shadow-2xl flex flex-col gap-4 md:gap-4 pointer-events-auto border-l-indigo-500/50">
-          <div class="flex flex-col gap-4 md:gap-3">
-            <!-- Fullscreen -->
-            <button
-              id="fullscreen-btn"
-              class="w-11 h-11 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
-              title="Pantalla Completa"
-            >
-              <span class="text-lg md:text-base group-hover:scale-110 transition-transform">⛶</span>
-            </button>
+      <!-- Tools Menu (Left Floating Dock - System Options) -->
+      <div class="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none">
+        <div class="bg-black/85 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-3 pointer-events-auto border-l-indigo-500/50">
+          <!-- Fullscreen -->
+          <button
+            id="fullscreen-btn"
+            class="w-10 h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
+            title="Pantalla Completa"
+          >
+            <span class="text-base group-hover:scale-110 transition-transform">⛶</span>
+          </button>
 
-            <!-- Config -->
-            <button
-              id="config-btn"
-              class="w-11 h-11 md:w-10 md:h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
-              title="Configuración"
-            >
-              <span class="text-lg md:text-base group-hover:rotate-45 transition-transform">⚙️</span>
-            </button>
-
-            <!-- Reset (In Tools Menu) -->
-            <button
-              id="tools-restart-btn"
-              class="w-11 h-11 md:w-10 md:h-10 rounded-xl bg-red-900/20 border border-red-500/20 text-red-500/40 flex items-center justify-center hover:bg-red-800/40 hover:text-red-400 hover:border-red-400 transition-all group"
-              title="Reiniciar partida (Consume 1 turno)"
-            >
-              <span class="text-lg md:text-base group-hover:scale-110 transition-transform">🔄</span>
-            </button>
-          </div>
-
-          <div class="w-8 md:w-6 h-[1px] bg-white/10 mx-auto"></div>
-
-          <div class="flex flex-col gap-5 md:gap-4">
-            <!-- Repair -->
-            <button
-              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-green-900/30 border border-green-500/40 hover:bg-green-800/50 hover:border-green-400 transition-all flex items-center justify-center"
-              data-type="repair"
-            >
-              <span class="text-lg md:text-base">🔧</span>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-green-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-green-900/50 z-10 pointer-events-none">FIX</span>
-            </button>
-
-            <!-- Upgrade -->
-            <button
-              class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-orange-900/30 border border-orange-500/40 hover:bg-orange-800/50 hover:border-orange-400 transition-all flex items-center justify-center"
-              data-type="upgrade"
-            >
-              <span class="text-lg md:text-base">⬆️</span>
-              <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-orange-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-orange-900/50 z-10 pointer-events-none">UP</span>
-            </button>
-
-            <!-- Sell -->
-            <button
-              class="tower-btn w-11 h-11 md:w-10 md:h-10 rounded-xl bg-red-900/30 border border-red-500/40 text-red-500/60 flex items-center justify-center hover:bg-red-800/50 hover:text-red-400 hover:border-red-400 transition-all group"
-              data-type="sell"
-              title="Vender Torre"
-            >
-              <span class="text-lg md:text-base group-hover:scale-110 transition-transform">💰</span>
-            </button>
-          </div>
+          <!-- Config -->
+          <button
+            id="config-btn"
+            class="w-10 h-10 rounded-xl bg-slate-900/40 border border-white/10 text-white/60 flex items-center justify-center hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500/50 transition-all group"
+            title="Configuración"
+          >
+            <span class="text-base group-hover:rotate-45 transition-transform">⚙️</span>
+          </button>
         </div>
       </div>
 
@@ -432,15 +497,7 @@ import Layout from '../../components/layout/Layout.astro';
 
           <div class="w-8 md:w-6 h-[1px] bg-white/10 mx-auto"></div>
 
-          <!-- Pause -->
-          <button
-            id="pause-btn"
-            class="tower-btn group relative w-11 h-11 md:w-10 md:h-10 shrink-0 rounded-xl bg-yellow-900/30 border border-yellow-500/40 hover:bg-yellow-800/50 hover:border-yellow-400 transition-all flex items-center justify-center"
-            data-type="pause"
-          >
-            <span class="text-lg md:text-base">⏸️</span>
-            <span class="cost-tag absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-black/90 text-yellow-400 text-[8px] md:text-[7px] font-black px-1 rounded border border-yellow-900/50 z-10 pointer-events-none">1t</span>
-          </button>
+          <!-- (Pause button removed from sidebar) -->
         </div>
       </div>
 
@@ -846,8 +903,6 @@ import Layout from '../../components/layout/Layout.astro';
     const UI = {
       health: null,
       upgrades: null,
-      repairCost: null,
-      upgradeCost: null,
       credits: null,
       abyssals: null,
       wave: null,
@@ -861,8 +916,6 @@ import Layout from '../../components/layout/Layout.astro';
     function initUICache() {
       UI.health = document.getElementById('health-display');
       UI.upgrades = document.getElementById('upgrades-display');
-      UI.repairCost = document.getElementById('repair-cost-display');
-      UI.upgradeCost = document.getElementById('upgrade-cost-display');
       UI.credits = document.getElementById('credits-display');
       UI.abyssals = document.getElementById('abyssals-display');
       UI.wave = document.getElementById('wave-display');
@@ -1624,19 +1677,40 @@ import Layout from '../../components/layout/Layout.astro';
       const mainActionBtn = document.getElementById('main-action-btn');
       if (mainActionBtn) {
         mainActionBtn.addEventListener('click', () => {
+          if (activeCinematic) return;
+
           if (gameState === 'intro' || gameState === 'gameover') {
             if (credits > 0) {
               playSFX('start');
-              // If we are in intro, we WANT to keep the path generated on load
               startGame(gameState === 'intro'); 
             } else {
               playSFX('error');
               if (window.showToast) window.showToast('No tienes turnos suficientes', 'error');
             }
-          } else if ((enemies.length === 0 && !isEventActive) || wave === 0) {
-            playSFX('start');
-            if (wave === 0) wave = 1;
-            spawnWave();
+          } else if (gameState === 'playing') {
+            const isWaiting = (enemies.length === 0 && !isEventActive) || wave === 0;
+            if (isWaiting) {
+              playSFX('start');
+              if (wave === 0) wave = 1;
+              spawnWave();
+            } else {
+              // ACTIVE GAME: Handle Pause Toggle
+              const cost = GAME_CONFIG.economy.tactics.pauseCost || 1;
+              if (isPaused) {
+                isPaused = false;
+                playSFX('click');
+                showCanvasToast('Partida Reanudada', 'success');
+              } else if (upgrades >= cost) {
+                upgrades -= cost;
+                isPaused = true;
+                playSFX('click');
+                showCanvasToast(`Pausa Táctica: -${cost}t`, 'warning');
+              } else {
+                showCanvasToast(`Táctica insuficiente (${cost}t)`, 'error');
+                playSFX('error');
+              }
+              updateHUD();
+            }
           }
         });
       }
@@ -1648,35 +1722,7 @@ import Layout from '../../components/layout/Layout.astro';
         });
       }
 
-      const toolsRestartBtn = document.getElementById('tools-restart-btn');
-      if (toolsRestartBtn) {
-        toolsRestartBtn.addEventListener('click', () => {
-          showRestartConfirm();
-        });
-      }
-
-      const pauseBtn = document.getElementById('pause-btn');
-
-      pauseBtn.addEventListener('click', () => {
-        if (gameState !== 'playing') return;
-        const cost = getTowerCost('pause');
-        if (!isPaused) {
-          if (upgrades >= cost) {
-            upgrades -= cost;
-            isPaused = true;
-            pauseBtn.querySelector('span').innerText = '▶️';
-            updateHUD();
-            showCanvasToast(`Juego Pausado (-${cost}t)`, 'info');
-          } else {
-            showCanvasToast(`Táctica insuficiente (${cost}t)`, 'error');
-            playSFX('error');
-          }
-        } else {
-          isPaused = false;
-          pauseBtn.querySelector('span').innerText = '⏸️';
-          showCanvasToast('Juego Reanudado', 'info');
-        }
-      });
+      // (Tools menu and manual pause button listeners removed)
 
       fullscreenBtn.addEventListener('click', () => {
         if (!document.fullscreenElement) {
@@ -1997,7 +2043,7 @@ import Layout from '../../components/layout/Layout.astro';
           return;
         }
 
-        // --- SPACE / ACTION KEY (Start Game / Next Wave) ---
+        // --- SPACE / ACTION KEY (Start Game / Next Wave / Pause) ---
         if (key === KEYBINDS.action) {
           e.preventDefault();
           
@@ -2014,11 +2060,29 @@ import Layout from '../../components/layout/Layout.astro';
               if (window.showToast) window.showToast('No tienes turnos suficientes', 'error');
             }
           } else if (gameState === 'playing') {
-            if ((enemies.length === 0 && !isEventActive) || wave === 0) {
+            const isWaiting = (enemies.length === 0 && !isEventActive) || wave === 0;
+            if (isWaiting) {
               // Start next wave
               playSFX('start');
               if (wave === 0) wave = 1;
               spawnWave();
+            } else {
+              // ACTIVE GAME: Handle Pause
+              const cost = GAME_CONFIG.economy.tactics.pauseCost || 1;
+              if (isPaused) {
+                isPaused = false;
+                playSFX('click');
+                showCanvasToast('Partida Reanudada', 'success');
+              } else if (upgrades >= cost) {
+                upgrades -= cost;
+                isPaused = true;
+                playSFX('click');
+                showCanvasToast(`Pausa Táctica: -${cost}t`, 'warning');
+                updateHUD();
+              } else {
+                showCanvasToast(`Táctica insuficiente (${cost}t)`, 'error');
+                playSFX('error');
+              }
             }
           }
           return;
@@ -2034,12 +2098,11 @@ import Layout from '../../components/layout/Layout.astro';
           return;
         }
 
-        // --- PAUSE KEY (Cost 10t) ---
+        // --- PAUSE KEY (Cost 1t) ---
         if (key === KEYBINDS.pause) {
           e.preventDefault();
-          if (gameState === 'playing') {
-            const pb = document.getElementById('pause-btn');
-            if (pb) pb.click();
+          if (gameState === 'playing' && UI.mainActionBtn) {
+            UI.mainActionBtn.click();
           }
           return;
         }
@@ -2403,13 +2466,12 @@ import Layout from '../../components/layout/Layout.astro';
           return;
         }
 
-        // Define UI bounding boxes for construction validation
-        const inRightUI = gridX > canvas.width - 80; 
-        const inLeftUI = gridX < 80; 
-        const inBottomHUD = gridY > canvas.height - 60; 
-        const inStartButton = gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height / 2 + 100 && gridY < canvas.height / 2 + 200;
+        // Define UI bounding boxes for construction validation (Optimized for New HUDs)
+        const inRightUI = gridX > canvas.width - 60; 
+        const inLeftUI = gridX < 60; 
+        const inBottomHUD = gridY > canvas.height - 80; 
 
-        if (inRightUI || inLeftUI || inBottomHUD || (inStartButton && (enemies.length === 0 || wave === 0))) {
+        if (inRightUI || inLeftUI || inBottomHUD) {
           if (!isShiftDown) {
             showCanvasToast('No puedes construir sobre la interfaz', 'error');
             playSFX('error');
@@ -2670,7 +2732,6 @@ import Layout from '../../components/layout/Layout.astro';
       isEventActive = false;
       isCityFallen = false;
       isPaused = false;
-      document.getElementById('pause-btn').querySelector('span').innerText = '⏸️';
       globalFreezeTimer = 0;
       globalFrenzyTimer = 0;
 
@@ -2715,8 +2776,7 @@ import Layout from '../../components/layout/Layout.astro';
       const isBossWave = wave > 0 && wave % 5 === 0;
 
       // Update Repair Cost UI immediately
-      const repairBtnSpan = document.querySelector('[data-type="repair"] .cost-tag');
-      if (repairBtnSpan) repairBtnSpan.innerText = `${formatNumber(getTowerCost('repair'))}t`;
+      updateHUD();
 
       // Function to actually spawn enemies
       const executeSpawn = () => {
@@ -2967,9 +3027,6 @@ import Layout from '../../components/layout/Layout.astro';
       if (Number.isNaN(upgrades)) upgrades = 0;
       if (Number.isNaN(health)) health = 0;
 
-      const repairCost = getTowerCost('repair');
-      const upgradeCost = inspectedTower ? getTowerCost('upgrade', inspectedTower) : getTowerCost('upgrade');
-
       // Check for newly affordable towers
       const towerStatsKeys = Object.keys(TOWER_STATS);
       for (let i = 0; i < towerStatsKeys.length; i++) {
@@ -2991,8 +3048,6 @@ import Layout from '../../components/layout/Layout.astro';
 
       if (UI.health) UI.health.innerText = health;
       if (UI.upgrades) UI.upgrades.innerText = formatNumber(upgrades);
-      if (UI.repairCost) UI.repairCost.innerText = formatNumber(repairCost);
-      if (UI.upgradeCost) UI.upgradeCost.innerText = formatNumber(upgradeCost);
       if (UI.credits) UI.credits.innerText = credits;
       if (UI.abyssals) UI.abyssals.innerText = formatNumber(abyssals);
       if (UI.wave) UI.wave.innerText = wave;
@@ -3006,20 +3061,32 @@ import Layout from '../../components/layout/Layout.astro';
         }
       }
 
-      // Update Main Action Button (Floating Above HUD)
+      // Update Main Action Button (Integrated in HUD)
       if (UI.mainActionBtn) {
         const isWaiting = (enemies.length === 0 && !isEventActive) || wave === 0;
         const isIntroOrGameOver = gameState === 'intro' || gameState === 'gameover';
         
         if (isWaiting || isIntroOrGameOver) {
-          UI.mainActionBtn.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+          UI.mainActionBtn.classList.remove('opacity-0', 'translate-y-1', 'pointer-events-none');
           UI.mainActionBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
           
-          const btnText = gameState === 'intro' ? 'INICIAR PARTIDA' : gameState === 'gameover' ? 'REINTENTAR' : 'SIGUIENTE OLEADA';
+          const btnText = gameState === 'intro' ? 'INICIAR' : gameState === 'gameover' ? 'REINTENTAR' : 'SIGUIENTE';
           if (UI.mainActionSpan) UI.mainActionSpan.innerText = btnText;
+
+          // AAA: Add extra glow/pulse when waiting
+          UI.mainActionBtn.classList.add('shadow-[0_0_20px_rgba(79,70,229,0.4)]');
+          UI.mainActionBtn.classList.remove('bg-amber-600/20', 'border-amber-500/40');
+          UI.mainActionBtn.classList.add('bg-indigo-600/20', 'border-indigo-500/40');
         } else {
-          UI.mainActionBtn.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
-          UI.mainActionBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+          // ACTIVE GAME: Switch to PAUSE mode
+          UI.mainActionBtn.classList.remove('opacity-0', 'translate-y-1', 'pointer-events-none');
+          UI.mainActionBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+          
+          if (UI.mainActionSpan) UI.mainActionSpan.innerText = isPaused ? 'REANUDAR' : 'PAUSAR (1t)';
+          
+          // Visual change for Pause
+          UI.mainActionBtn.classList.remove('shadow-[0_0_20px_rgba(79,70,229,0.4)]', 'bg-indigo-600/20', 'border-indigo-500/40');
+          UI.mainActionBtn.classList.add('bg-amber-600/20', 'border-amber-500/40');
         }
       }
 
@@ -5750,13 +5817,11 @@ import Layout from '../../components/layout/Layout.astro';
             }
           }
           
-          // 2. UI Overlay Collision Check
-          const inTopCenterUI = Math.abs(gridX - canvas.width / 2) < 250 && gridY < 100;
-          const inRightUI = gridX > canvas.width - 80;
-          const inLeftUI = gridX < 80;
-          const inStartButton = gridX > canvas.width / 2 - 130 && gridX < canvas.width / 2 + 130 && gridY > canvas.height - 100;
-          const inBottomUI = gridY > canvas.height - 60;
-          if (inTopCenterUI || inRightUI || inLeftUI || inStartButton || inBottomUI) isValid = false;
+          // 2. UI Overlay Collision Check (Optimized for New HUDs)
+          const inRightUI = gridX > canvas.width - 60;
+          const inLeftUI = gridX < 60;
+          const inBottomUI = gridY > canvas.height - 80;
+          if (inRightUI || inLeftUI || inBottomUI) isValid = false;
 
           // 3. Existing Tower Collision Check (Corrected)
           if (isValid) {
