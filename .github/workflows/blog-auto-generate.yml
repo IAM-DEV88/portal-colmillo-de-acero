@@ -2,8 +2,8 @@ name: Auto-Generate Blog Posts
 
 on:
   schedule:
-    # Se ejecuta cada 4 horas (6 veces al día: 0, 4, 8, 12, 16, 20 UTC)
-    - cron: '0 */4 * * *'
+    # Se ejecuta cada 12 horas (2 veces al día: 0 y 12 UTC)
+    - cron: '0 */12 * * *'
   workflow_dispatch: # Permite ejecución manual desde la pestaña Actions
 
 jobs:

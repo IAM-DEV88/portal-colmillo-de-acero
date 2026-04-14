@@ -28,7 +28,7 @@ export class BlogService {
   static async generatePost(topic?: string, isTest: boolean = false): Promise<Partial<BlogPost>> {
     if (!groqApiKey) throw new Error('GROQ_API_KEY no configurada');
 
-    // 1. Verificar límite diario (6 posts máx) si no es test
+    // 1. Verificar límite diario (2 posts máx) si no es test
     if (!isTest) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -39,8 +39,8 @@ export class BlogService {
         .gte('created_at', today.toISOString());
 
       if (countError) throw countError;
-      if (count !== null && count >= 6) {
-        throw new Error('Límite diario de crónicas alcanzado (máx 6 por día)');
+      if (count !== null && count >= 2) {
+        throw new Error('Límite diario de crónicas alcanzado (máx 2 por día)');
       }
     }
 
@@ -54,7 +54,17 @@ export class BlogService {
       'servidores privados vs oficiales: la lucha eterna por el 3.3.5',
       'el jugador que alcanzó nivel máximo sin salir de la zona de inicio',
       'mitos urbanos de Rasganorte que resultaron ser ciertos',
-      'la evolución del meta-juego: de simples talentos a Theorycrafting extremo'
+      'la evolución del meta-juego: de simples talentos a Theorycrafting extremo',
+      'la misteriosa Isla de los Programadores: el easter egg más difícil de alcanzar',
+      'por qué Ulduar es considerada la mejor banda de toda la historia de WoW',
+      'el impacto de los addons en el equilibrio del juego: ¿comodidad o ventaja injusta?',
+      'la tragedia de Arthas Menethil: ¿un héroe caído o un villano inevitable?',
+      'el mercado negro de monturas raras: lo que los jugadores están dispuestos a pagar',
+      'historias de amor y amistad que nacieron en las tabernas de Ventormenta y Orgrimmar',
+      'cómo el parche 3.3.5 cambió para siempre la forma de jugar clases híbridas',
+      'los jefes de banda que nunca llegaron al juego final pero están en el código',
+      'el arte de la "Ninja Loot": anécdotas de los robos más legendarios en raids',
+      'la comunidad de rol en WoW: cómo mantienen viva la inmersión en servidores privados'
     ];
 
     const narrativeStyles = [
@@ -64,7 +74,12 @@ export class BlogService {
       'Recopilación de curiosidades tipo "Sabías que..."',
       'Entrevista ficticia a un veterano de la versión 3.3.5',
       'Crónica de un evento histórico del juego',
-      'Ensayo filosófico sobre la comunidad de Northrend'
+      'Ensayo filosófico sobre la comunidad de Northrend',
+      'Manual de supervivencia para un recluta novato',
+      'Leyenda susurrada por un anciano en una taberna de Dalaran',
+      'Debate acalorado entre dos expertos en theorycrafting',
+      'Poema épico o balada sobre un héroe olvidado',
+      'Documento "filtrado" de los archivos de la Ciudadela de la Corona de Hielo'
     ];
 
     const randomTopic = trendingTopics[Math.floor(Math.random() * trendingTopics.length)];
@@ -82,16 +97,19 @@ export class BlogService {
     REGLAS DE ORO PARA EVITAR LA MONOTONÍA:
     1. PROHIBIDO empezar con "En el vasto mundo de Azeroth..." o introducciones genéricas.
     2. ESTRUCTURA LIBRE: No sigas el esquema clásico de Introducción -> Secciones -> Conclusión. 
-    3. Si el estilo es un reportaje, usa entrevistas o datos crudos. Si es un diario, usa emociones y descripciones vívidas.
-    4. Usa un lenguaje que solo un jugador veterano entendería, pero con un estilo literario de alta calidad.
-    5. Enfócate en el LADO HUMANO y CURIOSO del juego, no solo en mecánicas.
+    3. Si el estilo es un reportaje, usa entrevistas o datos crudos. Si es un diario, usa emociones y descripciones vívidas. Si es un debate, usa diferentes puntos de vista.
+    4. Usa un lenguaje que solo un jugador veterano entendería (menciona ítems, hechizos, zonas específicas), pero con un estilo literario de alta calidad.
+    5. Enfócate en el LADO HUMANO, lo bizarro y lo CURIOSO del juego. 
+    6. EVITA el tono condescendiente. Habla como un veterano a otro.
+    7. No uses más de 3 párrafos de la misma longitud seguidos. Rompe el ritmo.
 
     REQUISITOS TÉCNICOS:
     1. Título: Magnético, diferente, que incite a hacer clic inmediatamente.
     2. Slug: URL amigable.
     3. Excerpt: Un gancho que deje al lector con ganas de más.
-    4. Content: HTML profesional. Usa elementos variados (<blockquote> para citas, <b>, <ul>, <h2> solo si es necesario). El contenido debe ser extenso y absorbente.
+    4. Content: HTML profesional. Usa elementos variados (<blockquote> para citas, <b>, <ul>, <h2> solo si es necesario). El contenido debe ser extenso, absorbente y visualmente dinámico.
     5. Categoría: Elige entre 'lore', 'addons', 'raids', 'class-guide', 'community'.
+    6. Nuestra comunidad juega en la versión 3.3.5a (WotLK).
     
     RESPONDE ÚNICAMENTE EN FORMATO JSON:
     {
