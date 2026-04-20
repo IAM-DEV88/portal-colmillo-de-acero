@@ -127,16 +127,27 @@ if (!session || (userRole !== 'admin' && userRole !== 'official')) {
                 </div>
               </div>
 
-              <!-- Feather -->
-              <div class="space-y-5">
-                <div class="flex justify-between items-center">
-                  <label class="text-[9px] font-black text-white/40 uppercase tracking-[0.2em]">Suavizado Alpha</label>
-                  <span id="feather-value" class="text-cyan-400 font-mono text-[10px] bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20">0</span>
-                </div>
-                <div class="relative flex items-center group">
-                  <input type="range" id="feather-slider" min="0" max="10" value="0" class="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500" />
-                </div>
+            <!-- Feather -->
+            <div class="space-y-5">
+              <div class="flex justify-between items-center">
+                <label class="text-[9px] font-black text-white/40 uppercase tracking-[0.2em]">Suavizado Alpha</label>
+                <span id="feather-value" class="text-cyan-400 font-mono text-[10px] bg-cyan-500/10 px-2 py-0.5 rounded-md border border-cyan-500/20">0</span>
               </div>
+              <div class="relative flex items-center group">
+                <input type="range" id="feather-slider" min="0" max="10" value="0" class="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-cyan-500" />
+              </div>
+            </div>
+
+            <!-- Erosion (Contracción) -->
+            <div class="space-y-5">
+              <div class="flex justify-between items-center">
+                <label class="text-[9px] font-black text-white/40 uppercase tracking-[0.2em]">Pulido de Borde</label>
+                <span id="erosion-value" class="text-emerald-400 font-mono text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">0</span>
+              </div>
+              <div class="relative flex items-center group">
+                <input type="range" id="erosion-slider" min="0" max="5" value="0" class="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+            </div>
             </div>
           </div>
 
@@ -189,6 +200,8 @@ if (!session || (userRole !== 'admin' && userRole !== 'official')) {
   const thresholdValue = document.getElementById('threshold-value');
   const featherSlider = document.getElementById('feather-slider') as HTMLInputElement;
   const featherValue = document.getElementById('feather-value');
+  const erosionSlider = document.getElementById('erosion-slider') as HTMLInputElement;
+  const erosionValue = document.getElementById('erosion-value');
 
   // State
   let currentFile: File | null = null;
@@ -349,6 +362,7 @@ if (!session || (userRole !== 'admin' && userRole !== 'official')) {
     formData.append('image', baseImage);
     formData.append('threshold', thresholdSlider.value);
     formData.append('feather', featherSlider.value);
+    formData.append('erosion', erosionSlider.value); // Enviar erosión
     formData.append('mode', currentMode);
 
     if (clickCoords) {
@@ -460,6 +474,11 @@ if (!session || (userRole !== 'admin' && userRole !== 'official')) {
 
   featherSlider?.addEventListener('input', () => {
     if (featherValue) featherValue.textContent = featherSlider.value;
+    if (currentFile) debouncedProcess();
+  });
+
+  erosionSlider?.addEventListener('input', () => {
+    if (erosionValue) erosionValue.textContent = erosionSlider.value;
     if (currentFile) debouncedProcess();
   });
 

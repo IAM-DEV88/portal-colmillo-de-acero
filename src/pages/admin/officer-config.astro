@@ -54,19 +54,39 @@ Object.values(rosterData.players || {}).forEach((player: any) => {
 
       const scheduleStr = String(core.schedule).toLowerCase();
       let raidTime = "00:00";
-      let raidDay = "";
+      let raidDays: string[] = [];
       
       const timeMatch = scheduleStr.match(/(\d{1,2}:\d{2})/);
       if (timeMatch) raidTime = timeMatch[1].padStart(5, '0');
       
-      const dayMatch = scheduleStr.match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
+      const dayMatch = scheduleStr.match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)(-)?(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)?/);
       
       if (dayMatch) {
-        const foundDayNorm = normalizeDayStr(dayMatch[1]);
-        raidDay = DAYS.find(d => normalizeDayStr(d) === foundDayNorm) || "";
+        const startDayNorm = normalizeDayStr(dayMatch[1]);
+        const isRange = dayMatch[2] === '-';
+        const endDayNorm = dayMatch[3] ? normalizeDayStr(dayMatch[3]) : null;
+        
+        const dayMap = DAYS.map(d => ({ original: d, norm: normalizeDayStr(d) }));
+
+        if (isRange && endDayNorm) {
+          const startIndex = dayMap.findIndex(d => d.norm === startDayNorm);
+          const endIndex = dayMap.findIndex(d => d.norm === endDayNorm);
+          
+          if (startIndex !== -1 && endIndex !== -1) {
+            if (startIndex <= endIndex) {
+              for (let i = startIndex; i <= endIndex; i++) raidDays.push(dayMap[i].original);
+            } else {
+              for (let i = startIndex; i < dayMap.length; i++) raidDays.push(dayMap[i].original);
+              for (let i = 0; i <= endIndex; i++) raidDays.push(dayMap[i].original);
+            }
+          }
+        } else {
+          const found = dayMap.find(d => d.norm === startDayNorm);
+          if (found) raidDays = [found.original];
+        }
       }
 
-      if (raidDay) {
+      raidDays.forEach(raidDay => {
         // Unique ID for this specific raid slot
         const slotId = `${player.name}-${core.raid}-${raidDay}-${raidTime}`.toLowerCase().trim();
         const isHidden = hiddenRaidSlots.includes(slotId);
@@ -81,7 +101,7 @@ Object.values(rosterData.players || {}).forEach((player: any) => {
           isHidden,
           day: raidDay
         });
-      }
+      });
     });
   }
 });

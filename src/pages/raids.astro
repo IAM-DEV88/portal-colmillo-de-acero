@@ -219,35 +219,59 @@ if (rosterData && rosterData.players) {
       
       // Extract day and time for slot tracking
       let normalizedTime = "00:00";
-      let normalizedDay = "Sin día";
+      let normalizedDays = ["Sin día"];
       const scheduleStr = String(core.schedule).toLowerCase();
 
       const timeMatch = scheduleStr.match(/(\d{1,2}:\d{2})/);
       if (timeMatch) normalizedTime = timeMatch[1].padStart(5, '0');
       
-      const dayMatch = scheduleStr.match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
+      const dayMatch = scheduleStr.match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)(-)?(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)?/);
+      
       if (dayMatch) {
-        const foundDayNorm = normalizeDayStr(dayMatch[1]);
-        // Match against our display days to get correct case (no accents for search consistency)
+        const startDayNorm = normalizeDayStr(dayMatch[1]);
+        const isRange = dayMatch[2] === '-';
+        const endDayNorm = dayMatch[3] ? normalizeDayStr(dayMatch[3]) : null;
+        
         const displayDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
-        normalizedDay = displayDays.find(d => normalizeDayStr(d) === foundDayNorm) || "Sin día";
+        const dayMap = displayDays.map(d => ({ original: d, norm: normalizeDayStr(d) }));
+
+        if (isRange && endDayNorm) {
+          const startIndex = dayMap.findIndex(d => d.norm === startDayNorm);
+          const endIndex = dayMap.findIndex(d => d.norm === endDayNorm);
+          
+          if (startIndex !== -1 && endIndex !== -1) {
+            const range = [];
+            if (startIndex <= endIndex) {
+              for (let i = startIndex; i <= endIndex; i++) range.push(dayMap[i].original);
+            } else {
+              // Rango circular (ej. Sabado-Lunes)
+              for (let i = startIndex; i < dayMap.length; i++) range.push(dayMap[i].original);
+              for (let i = 0; i <= endIndex; i++) range.push(dayMap[i].original);
+            }
+            normalizedDays = range;
+          }
+        } else {
+          normalizedDays = [dayMap.find(d => d.norm === startDayNorm)?.original || "Sin día"];
+        }
       }
 
-      // Generate the same unique ID as in admin panel
-      const slotId = `${playerName}-${core.raid}-${normalizedDay}-${normalizedTime}`.toLowerCase().trim();
-      const isHidden = hiddenRaidSlots.includes(slotId);
+      normalizedDays.forEach(normalizedDay => {
+        // Generate the same unique ID as in admin panel
+        const slotId = `${playerName}-${core.raid}-${normalizedDay}-${normalizedTime}`.toLowerCase().trim();
+        const isHidden = hiddenRaidSlots.includes(slotId);
 
-      if (isHidden) {
-        // Track this key to filter later in the main schedule map
-        const key = `${coreRaidKey}-${normalizeDayStr(normalizedDay)}-${normalizedTime}`;
-        hiddenSlots.add(key);
-        return; 
-      }
+        if (isHidden) {
+          // Track this key to filter later in the main schedule map
+          const key = `${coreRaidKey}-${normalizeDayStr(normalizedDay)}-${normalizedTime}`;
+          hiddenSlots.add(key);
+          return; 
+        }
 
-      if (!seenRaids.has(coreRaidKey)) {
-        seenRaids.add(coreRaidKey);
-        allAvailableRaids.push(createRaidFromName(core.raid, core.gs || 5000));
-      }
+        if (!seenRaids.has(coreRaidKey)) {
+          seenRaids.add(coreRaidKey);
+          allAvailableRaids.push(createRaidFromName(core.raid, core.gs || 5000));
+        }
+      });
     });
   });
 }
@@ -632,112 +656,136 @@ if (Astro.request.method === 'POST') {
 
         // Normalize schedule: try to extract time and day
         let normalizedTime = "Sin hora";
-        let normalizedDay = "Sin día"; // Default if not found
+        let normalizedDays = ["Sin día"]; // Default if not found
 
         const timeMatch = String(core.schedule).match(/(\d{1,2}:\d{2})/);
         if (timeMatch) normalizedTime = timeMatch[1].padStart(5, '0');
 
-        const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)/);
+        const dayMatch = String(core.schedule).toLowerCase().match(/(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)(-)?(lunes|martes|miercoles|miércoles|jueves|viernes|sabado|sábado|domingo)?/);
+        
         if (dayMatch) {
-          const foundDayNorm = normalizeDayStr(dayMatch[1]);
+          const startDayNorm = normalizeDayStr(dayMatch[1]);
+          const isRange = dayMatch[2] === '-';
+          const endDayNorm = dayMatch[3] ? normalizeDayStr(dayMatch[3]) : null;
+          
           const displayDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
-          normalizedDay = displayDays.find(d => normalizeDayStr(d) === foundDayNorm) || "Sin día";
-        }
+          const dayMap = displayDays.map(d => ({ original: d, norm: normalizeDayStr(d) }));
 
-        // Check if this specific slot is hidden
-        const slotId = `${playerName}-${core.raid}-${normalizedDay}-${normalizedTime}`.toLowerCase().trim();
-        if (hiddenRaidSlots.includes(slotId)) return;
-
-        // Buscar coincidencia exacta por nombre original (insensible a mayúsculas)
-        const raid = allAvailableRaids.find((r) => r.id === normalizeRaidId(core.raid));
-
-        if (!raid) return;
-
-        const key = `${raid.id}-${normalizeDayStr(normalizedDay)}-${normalizedTime}`;
-
-        if (!schedulesMap.has(key)) {
-          schedulesMap.set(key, {
-            id: raid.id,
-            raid_id: raid.id,
-            raid_name: raid.name,
-            difficulty: raid.name.includes('10') ? '10' : '25',
-            day_of_week: normalizedDay,
-            start_time: normalizedTime,
-            players: [],
-            is_official_core: true, // Mark as official core from roster
-          });
-        }
-
-        const schedule = schedulesMap.get(key);
-        schedule.is_official_core = true; // Ensure it's marked if combined with others
-
-        // Add the leader themselves to the players array
-        if (!schedule.players.some(p => p.name.toLowerCase() === playerName.toLowerCase())) {
-          schedule.players.push({
-          name: playerName,
-          class: member.class || 'Desconocida',
-          role: 'DPS', // Default, will be updated if in members
-          raid_role: 'lider',
-          status: 'aceptado',
-          raid_status: 'aceptado',
-          registration_status: 'aceptado',
-          note: member.publicNote || '',
-          achievements: member.reconocimientos || 0,
-          raids_count: member.raidsCompletadas || 0,
-          is_guild_member: member.guildLeave !== true,
-          guild_leave: member.guildLeave === true,
-          is_sanctioned: member.isSanctioned === 1 || member.isSanctioned === true || member.guildLeave === true,
-        });
-        } else {
-          // If already there, ensure raid_role is 'lider'
-          const existingPlayer = schedule.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
-          if (existingPlayer) existingPlayer.raid_role = 'lider';
-        }
-
-        // Add members from the core to this schedule
-        if (core.members && Array.isArray(core.members)) {
-          core.members.forEach((m) => {
-            if (!m.name) return;
+          if (isRange && endDayNorm) {
+            const startIndex = dayMap.findIndex(d => d.norm === startDayNorm);
+            const endIndex = dayMap.findIndex(d => d.norm === endDayNorm);
             
-            // Look for full member info in roster
-            const rosterPlayerKey = Object.keys(rosterData.players).find(
-              (key) => key.toLowerCase() === m.name.trim().toLowerCase()
-            );
-            const rosterPlayer = rosterPlayerKey ? rosterData.players[rosterPlayerKey] : null;
-
-            const existingPlayerIndex = schedule.players.findIndex(p => p.name.toLowerCase() === m.name.toLowerCase());
-            
-            if (existingPlayerIndex !== -1) {
-              // Update existing player info if they were already added as leader
-              const existingPlayer = schedule.players[existingPlayerIndex];
-              existingPlayer.role = m.role || existingPlayer.role;
-              // Don't overwrite raid_role: 'lider' if they are already leader
-              if (existingPlayer.raid_role !== 'lider') {
-                existingPlayer.raid_role = m.isLeader ? 'lider' : 'asistente';
+            if (startIndex !== -1 && endIndex !== -1) {
+              const range = [];
+              if (startIndex <= endIndex) {
+                for (let i = startIndex; i <= endIndex; i++) range.push(dayMap[i].original);
+              } else {
+                for (let i = startIndex; i < dayMap.length; i++) range.push(dayMap[i].original);
+                for (let i = 0; i <= endIndex; i++) range.push(dayMap[i].original);
               }
-            } else {
-              schedule.players.push({
-                name: m.name,
-                class: m.class || rosterPlayer?.class || 'Desconocida',
-                role: m.role || 'DPS',
-                raid_role: m.isLeader ? 'lider' : 'asistente',
-                status: 'aceptado',
-                raid_status: 'aceptado',
-                registration_status: 'aceptado',
-                note: rosterPlayer?.publicNote || '',
-                achievements: rosterPlayer?.reconocimientos || 0,
-                raids_count: rosterPlayer?.raidsCompletadas || 0,
-                is_guild_member: rosterPlayer ? rosterPlayer.guildLeave !== true : false,
-                guild_leave: rosterPlayer?.guildLeave === true,
-                is_sanctioned: m.isSanctioned === 1 || 
-                               m.isSanctioned === true || 
-                               rosterPlayer?.isSanctioned === 1 || 
-                               rosterPlayer?.isSanctioned === true || 
-                               rosterPlayer?.guildLeave === true,
-              });
+              normalizedDays = range;
             }
-          });
+          } else {
+            normalizedDays = [dayMap.find(d => d.norm === startDayNorm)?.original || "Sin día"];
+          }
         }
+
+        normalizedDays.forEach(normalizedDay => {
+          // Check if this specific slot is hidden
+          const slotId = `${playerName}-${core.raid}-${normalizedDay}-${normalizedTime}`.toLowerCase().trim();
+          if (hiddenRaidSlots.includes(slotId)) return;
+
+          // Buscar coincidencia exacta por nombre original (insensible a mayúsculas)
+          const raid = allAvailableRaids.find((r) => r.id === normalizeRaidId(core.raid));
+
+          if (!raid) return;
+
+          const key = `${raid.id}-${normalizeDayStr(normalizedDay)}-${normalizedTime}`;
+
+          if (!schedulesMap.has(key)) {
+            schedulesMap.set(key, {
+              id: raid.id,
+              raid_id: raid.id,
+              raid_name: raid.name,
+              difficulty: raid.name.includes('10') ? '10' : '25',
+              day_of_week: normalizedDay,
+              start_time: normalizedTime,
+              players: [],
+              is_official_core: true, // Mark as official core from roster
+            });
+          }
+
+          const schedule = schedulesMap.get(key);
+          schedule.is_official_core = true; // Ensure it's marked if combined with others
+
+          // Add the leader themselves to the players array
+          if (!schedule.players.some(p => p.name.toLowerCase() === playerName.toLowerCase())) {
+            schedule.players.push({
+              name: playerName,
+              class: member.class || 'Desconocida',
+              role: 'DPS', // Default, will be updated if in members
+              raid_role: 'lider',
+              status: 'aceptado',
+              raid_status: 'aceptado',
+              registration_status: 'aceptado',
+              note: member.publicNote || '',
+              achievements: member.reconocimientos || 0,
+              raids_count: member.raidsCompletadas || 0,
+              is_guild_member: member.guildLeave !== true,
+              guild_leave: member.guildLeave === true,
+              is_sanctioned: member.isSanctioned === 1 || member.isSanctioned === true || member.guildLeave === true,
+            });
+          } else {
+            // If already there, ensure raid_role is 'lider'
+            const existingPlayer = schedule.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+            if (existingPlayer) existingPlayer.raid_role = 'lider';
+          }
+
+          // Add members from the core to this schedule
+          if (core.members && Array.isArray(core.members)) {
+            core.members.forEach((m) => {
+              if (!m.name) return;
+              
+              // Look for full member info in roster
+              const rosterPlayerKey = Object.keys(rosterData.players).find(
+                (key) => key.toLowerCase() === m.name.trim().toLowerCase()
+              );
+              const rosterPlayer = rosterPlayerKey ? rosterData.players[rosterPlayerKey] : null;
+
+              const existingPlayerIndex = schedule.players.findIndex(p => p.name.toLowerCase() === m.name.toLowerCase());
+              
+              if (existingPlayerIndex !== -1) {
+                // Update existing player info if they were already added as leader
+                const existingPlayer = schedule.players[existingPlayerIndex];
+                existingPlayer.role = m.role || existingPlayer.role;
+                // Don't overwrite raid_role: 'lider' if they are already leader
+                if (existingPlayer.raid_role !== 'lider') {
+                  existingPlayer.raid_role = m.isLeader ? 'lider' : 'asistente';
+                }
+              } else {
+                schedule.players.push({
+                  name: m.name,
+                  class: m.class || rosterPlayer?.class || 'Desconocida',
+                  role: m.role || 'DPS',
+                  raid_role: m.isLeader ? 'lider' : 'asistente',
+                  status: 'aceptado',
+                  raid_status: 'aceptado',
+                  registration_status: 'aceptado',
+                  note: rosterPlayer?.publicNote || '',
+                  achievements: rosterPlayer?.reconocimientos || 0,
+                  raids_count: rosterPlayer?.raidsCompletadas || 0,
+                  is_guild_member: rosterPlayer ? rosterPlayer.guildLeave !== true : false,
+                  guild_leave: rosterPlayer?.guildLeave === true,
+                  is_sanctioned: m.isSanctioned === 1 || 
+                                 m.isSanctioned === true || 
+                                 rosterPlayer?.isSanctioned === 1 || 
+                                 rosterPlayer?.isSanctioned === true || 
+                                 rosterPlayer?.guildLeave === true,
+                });
+              }
+            });
+          }
+        });
       });
     });
   }

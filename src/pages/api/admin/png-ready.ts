@@ -7,6 +7,7 @@ export const POST: APIRoute = async ({ request }) => {
     const file = formData.get('image') as File;
     const threshold = parseInt(formData.get('threshold') as string || '230');
     const feather = parseInt(formData.get('feather') as string || '0');
+    const erosion = parseInt(formData.get('erosion') as string || '0'); // Nuevo parámetro
     const mode = formData.get('mode') as string || 'global';
     const clickX = formData.get('clickX') ? parseInt(formData.get('clickX') as string) : null;
     const clickY = formData.get('clickY') ? parseInt(formData.get('clickY') as string) : null;
@@ -93,7 +94,42 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
+    // --- Iniciar Sharp con los datos procesados ---
     let finalSharp = sharp(outputData, { raw: { width, height, channels } });
+
+    // --- Pulido de Siluetas (Erosión de Alpha Real) ---
+    // Si hay halos claros, contraemos el canal alpha manualmente píxel a píxel (Min-Filter)
+    if (erosion > 0) {
+      const alphaBuffer = await sharp(outputData, { raw: { width, height, channels } })
+        .extractChannel(3)
+        .toBuffer();
+      
+      const newAlpha = Buffer.from(alphaBuffer);
+      const size = erosion; // Cantidad de píxeles a erosionar
+
+      for (let y = size; y < height - size; y++) {
+        for (let x = size; x < width - size; x++) {
+          let minAlpha = 255;
+          // Buscar el valor mínimo de alpha en el vecindario
+          for (let dy = -size; dy <= size; dy++) {
+            for (let dx = -size; dx <= size; dx++) {
+              const val = alphaBuffer[(y + dy) * width + (x + dx)];
+              if (val < minAlpha) minAlpha = val;
+            }
+          }
+          newAlpha[y * width + x] = minAlpha;
+        }
+      }
+
+      // Reinyectar el alpha erosionado
+      const rawImage = await sharp(outputData, { raw: { width, height, channels } })
+        .removeAlpha()
+        .toBuffer();
+
+      finalSharp = sharp(rawImage, { raw: { width, height, channels: 3 } })
+        .joinChannel(newAlpha, { raw: { width, height, channels: 1 } });
+    }
+
     if (feather > 0) finalSharp = finalSharp.blur(feather * 0.4);
 
     const finalBuffer = await finalSharp
