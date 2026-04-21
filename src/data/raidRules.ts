@@ -11,19 +11,24 @@ export interface RaidRule {
 }
 
 export const GENERAL_RULES = [
-  "PRIORIDAD DE LOTEO: MAIN > DUAL.",
-  "Armas 2.6 pueden ser loteadas por tanques.",
-  "Todos los TOP son cerrados.",
-  "Si en algún top no necesitan el ítem o no cumplen la regla para lotear, pasará al siguiente en el top.",
-  "Se rollea 20 min antes del ligado. Al dar Raid Off en orden de obtención.",
-  "Puntualidad, consumibles, encantamientos y gemas al día.",
-  "Mala mecánica -10 en dados.",
-  "AFK/OFF/PVP o no respetar pull/mecánicas = Sin botín/Expulsión.",
-  "DPS/Healer/Tank con bajo rendimiento = Sin botín/Expulsión.",
-  "No Discord/Desconexión = Sin botín/Expulsión.",
+  "Prioridad de Loteo: Especialización Principal (Main) > Especialización Secundaria (Dual).",
+  "Las armas con velocidad 2.6 pueden ser loteadas por tanques si lo requieren.",
+  "Todos los requerimientos de 'TOP' son cerrados (sin excepciones).",
+  "Si un jugador en el TOP no requiere el ítem o no cumple los requisitos, el derecho de loteo pasará al siguiente jugador calificado.",
+  "El sorteo de ítems se realizará 20 minutos antes de su vinculación, siguiendo el orden de obtención tras el 'Raid Off'.",
+  "Se exige puntualidad, uso de consumibles, y equipo correctamente encantado y engemado.",
+  "El incumplimiento de mecánicas resultará en una penalización de -10 en las tiradas de dados.",
+  "Estar ausente (AFK), desconectarse sin aviso o ignorar mecánicas/pulls conlleva la pérdida de botín o expulsión.",
+  "Un rendimiento significativamente bajo en el rol asignado (DPS/Heal/Tank) podrá ser motivo de exclusión del botín.",
+  "Es obligatorio el uso de Discord. La desconexión prolongada o falta de comunicación resultará en sanción.",
 ];
 
 export const RAID_RULES: RaidRule[] = [
+  {
+    raidId: "GUILD",
+    title: "Hermandad",
+    specificRules: [],
+  },
   {
     raidId: "ICC10H",
     alias: ["ICC10H ABAS"],
@@ -117,11 +122,6 @@ export const RAID_RULES: RaidRule[] = [
     title: "ICC 10 N",
     specificRules: [
     ]
-  },
-  {
-    raidId: "GUILD",
-    title: "Hermandad",
-    specificRules: [],
   }
 ];
 
@@ -176,44 +176,51 @@ export const GUILD_RULES = [
   {
     title: "Código de Nota",
     rules: [
-      "WISP función y gear score al General Admin u Oficial en línea para subir de rango.",
-      "Así garantizan su participación en raids, ruletas y sorteos."
+      "Para ascender de rango, informa tu Función y GearScore (GS) mediante mensaje privado (Wisp) al General Admin o a un Oficial disponible.",
+      "Mantener tu nota actualizada es requisito para participar en raids oficiales, sorteos y acceder a los premios de la ruleta."
     ]
   },
   {
     title: "Baúl de Sorteos",
     rules: [
-      "Se realizan sorteos aleatorios para recompensar a los jugadores en línea.",
-      "Se reciben donaciones para mantener el baúl funcionando."
+      "Sorteos aleatorios periódicos para incentivar y premiar la actividad de los miembros conectados.",
+      "Las donaciones voluntarias al banco son fundamentales para mantener el flujo de premios del baúl."
     ]
   },
   {
-    title: "Farm lvl 74+",
+    title: "Sostenimiento",
     rules: [
-      "Materiales e items lvl 74+ como orbes congelados, fragmento onírico, consumibles, etc.",
-      "Se reciben donaciones para mantener el baúl funcionando."
+      "Aportes de materiales de nivel 74+ (Orbes, Fragmentos Oníricos, consumibles, etc.) para el sostenimiento de la hermandad.",
+      "Estos recursos se utilizan exclusivamente para el beneficio común y la organización de eventos."
     ]
   },
   {
     title: "Reconocimientos",
     rules: [
-      "Los jugadores que contribuyen activamente al flujo de la hermandad son reconocidos mensualmente.",
-      "Se anima a todos los miembros a liderar actividades y eventos."
+      "Menciones y premios mensuales para los miembros que destaquen por su contribución y compromiso.",
+      "Fomentamos la iniciativa: cualquier miembro puede proponer y liderar actividades o eventos internos."
     ]
   },
   {
     title: "Baúl de Equipamiento",
     rules: [
-      "Acceso instantáneo a los elementos del baúl de equipamiento.",
-      "Solicitar al GM en el servidor de Discord kMK2ZRRCza."
+      "Disponibilidad de equipo base para ayudar al progreso de personajes secundarios o nuevos miembros.",
+      "Para solicitar ítems, contacta con el GM a través de nuestro servidor de Discord oficial."
     ]
   },
   {
-    title: "Respeto",
+    title: "Rangos y Premios",
     rules: [
-      "Respeto y cooperación entre todos los miembros.",
-      "No se tolerará el racismo, discriminación o acoso de ningún tipo.",
-      "Mantener un ambiente sano y de respeto mutuo."
+      "La reclamación de premios obtenidos en la Ruleta de la Fortuna está sujeta a poseer el rango de Explorador o superior.",
+      "El rango Explorador se otorga a miembros con asistencia constante en raids oficiales y un desempeño técnico óptimo (conocimiento de clase, estabilidad de conexión y puntualidad)."
+    ]
+  },
+  {
+    title: "Convivencia",
+    rules: [
+      "Fomentamos un ambiente de respeto mutuo, compañerismo y cooperación en todo momento.",
+      "Cero tolerancia ante cualquier forma de racismo, discriminación, acoso o toxicidad.",
+      "Nuestra prioridad es mantener una comunidad sana donde todos se sientan bienvenidos."
     ]
   }
 ];
