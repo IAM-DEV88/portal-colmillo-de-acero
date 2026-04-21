@@ -11,16 +11,16 @@ export interface RaidRule {
 }
 
 export const GENERAL_RULES = [
-  "Prioridad de Loteo: Especialización Principal (Main) > Especialización Secundaria (Dual).",
-  "Las armas con velocidad 2.6 pueden ser loteadas por tanques si lo requieren.",
-  "Todos los requerimientos de 'TOP' son cerrados (sin excepciones).",
+  "Prioridad de Loteo: <span class='text-amber-400'>Especialización Principal (Main)</span> > <span class='text-amber-400'>Especialización Secundaria (Dual)</span>.",
+  "Las armas con velocidad <span class='text-amber-400'>2.6</span> pueden ser loteadas por tanques si lo requieren.",
+  "Todos los requerimientos de <span class='text-amber-400'>TOP</span> son cerrados (sin excepciones).",
   "Si un jugador en el TOP no requiere el ítem o no cumple los requisitos, el derecho de loteo pasará al siguiente jugador calificado.",
-  "El sorteo de ítems se realizará 20 minutos antes de su vinculación, siguiendo el orden de obtención tras el 'Raid Off'.",
+  "El sorteo de ítems se realizará 20 minutos antes de su vinculación, siguiendo el orden de obtención tras el <span class='text-amber-400'>Raid Off</span>.",
   "Se exige puntualidad, uso de consumibles, y equipo correctamente encantado y engemado.",
-  "El incumplimiento de mecánicas resultará en una penalización de -10 en las tiradas de dados.",
-  "Estar ausente (AFK), desconectarse sin aviso o ignorar mecánicas/pulls conlleva la pérdida de botín o expulsión.",
-  "Un rendimiento significativamente bajo en el rol asignado (DPS/Heal/Tank) podrá ser motivo de exclusión del botín.",
-  "Es obligatorio el uso de Discord. La desconexión prolongada o falta de comunicación resultará en sanción.",
+  "El incumplimiento de mecánicas resultará en una penalización de <span class='text-red-400'>-10</span> en las tiradas de dados.",
+  "Estar ausente (AFK), desconectarse sin aviso o ignorar mecánicas conlleva la <span class='text-red-400'>pérdida de botín o expulsión</span>.",
+  "Un rendimiento significativamente bajo en el rol asignado podrá ser motivo de exclusión del botín.",
+  "Es obligatorio el uso de <a href='https://discord.gg/BwdpNV9sky' target='_blank' class='text-indigo-400 hover:underline'>Discord</a> durante toda la estancia.",
 ];
 
 export const RAID_RULES: RaidRule[] = [
@@ -174,53 +174,50 @@ export const FARM_PRICES = [
 
 export const GUILD_RULES = [
   {
-    title: "Código de Nota",
+    title: "Código de Identidad (Nota)",
     rules: [
-      "Para ascender de rango, informa tu Función y GearScore (GS) mediante mensaje privado (Wisp) al General Admin o a un Oficial disponible.",
-      "Mantener tu nota actualizada es requisito para participar en raids oficiales, sorteos y acceder a los premios de la ruleta."
+      "Tu <a href='/guides/nota-publica' class='text-amber-400 hover:underline'>Nota de Hermandad</a> es tu pasaporte. Informa tu Función y GearScore (GS) a un Oficial o Administrador para mantener tu rango y perfil actualizados.",
+      "Mantener tu nota al día garantiza tu prioridad en las convocatorias de <a href='/raids' class='text-amber-400 hover:underline'>Raids Oficiales</a> y el acceso inmediato a sorteos y beneficios exclusivos."
     ]
   },
   {
-    title: "Baúl de Sorteos",
+    title: "Jerarquía de Rangos",
     rules: [
-      "Sorteos aleatorios periódicos para incentivar y premiar la actividad de los miembros conectados.",
-      "Las donaciones voluntarias al banco son fundamentales para mantener el flujo de premios del baúl."
+      "Nuestra estructura se organiza de la siguiente manera (de mayor a menor autoridad):",
+      "1. <span class='text-amber-400'>Administrador</span>: Liderazgo global y gestión estratégica de la hermandad.",
+      "2. <span class='text-amber-400'>Oficial</span>: Supervisión de raids, gestión de recursos y soporte directo a los miembros.",
+      "3. <span class='text-amber-400'>Explorador</span>: Miembro core con compromiso comprobado y acceso total a beneficios.",
+      "4. <span class='text-amber-400'>Iniciado</span>: Jugador en fase de consolidación y participación activa en la comunidad.",
+      "5. <span class='text-amber-400'>Aspirante</span>: Rango de entrada para nuevos integrantes en periodo de evaluación."
     ]
   },
   {
-    title: "Sostenimiento",
+    title: "El Camino del Explorador",
     rules: [
-      "Aportes de materiales de nivel 74+ (Orbes, Fragmentos Oníricos, consumibles, etc.) para el sostenimiento de la hermandad.",
-      "Estos recursos se utilizan exclusivamente para el beneficio común y la organización de eventos."
+      "El rango <span class='text-amber-400'>Explorador</span> es nuestro estándar de compromiso. Se otorga a quienes demuestran asistencia constante, puntualidad y un desempeño técnico sólido en <a href='/raids' class='text-amber-400 hover:underline'>Raids Oficiales</a>.",
+      "Alcanzar este rango desbloquea la capacidad de reclamar los premios de mayor valor obtenidos en nuestra <a href='/ruleta' class='text-amber-400 hover:underline'>Ruleta de la Fortuna</a>."
     ]
   },
   {
-    title: "Reconocimientos",
+    title: "Dinámica de la Ruleta",
     rules: [
-      "Menciones y premios mensuales para los miembros que destaquen por su contribución y compromiso.",
-      "Fomentamos la iniciativa: cualquier miembro puede proponer y liderar actividades o eventos internos."
+      "La <a href='/ruleta' class='text-amber-400 hover:underline'>Ruleta de la Fortuna</a> es un sistema de recompensas diseñado para premiar la lealtad. Los turnos se obtienen (+5) diariamente y (+1) por cada reacción en nuestro <a href='/blog' class='text-amber-400 hover:underline'>Blog</a> o nuestras <a href='/guides' class='text-amber-400 hover:underline'>Guías</a>.",
+      "Para reclamar un premio, asegúrate de cumplir con el rango mínimo requerido y compartir el ticket a través de <a href='https://chat.whatsapp.com/BahYOaTMZfHIwYQGey3G91' target='_blank' class='text-green-400 hover:underline'>WhatsApp</a>."
     ]
   },
   {
-    title: "Baúl de Equipamiento",
+    title: "Economía y Bienestar Común",
     rules: [
-      "Disponibilidad de equipo base para ayudar al progreso de personajes secundarios o nuevos miembros.",
-      "Para solicitar ítems, contacta con el GM a través de nuestro servidor de Discord oficial."
+      "El Banco de Hermandad se nutre de aportes voluntarios de materiales (nivel 74+) y recursos. Todo lo recaudado se reinvierte en reparaciones, consumibles y eventos internos.",
+      "El Baúl de Equipamiento está disponible para apoyar el progreso de personajes secundarios (Alts) o nuevos integrantes. Solicita lo que necesites coordinando con el equipo de oficiales en <a href='https://discord.gg/BwdpNV9sky' target='_blank' class='text-indigo-400 hover:underline'>Discord</a>."
     ]
   },
   {
-    title: "Rangos y Premios",
+    title: "Cultura y Convivencia",
     rules: [
-      "La reclamación de premios obtenidos en la Ruleta de la Fortuna está sujeta a poseer el rango de Explorador o superior.",
-      "El rango Explorador se otorga a miembros con asistencia constante en raids oficiales y un desempeño técnico óptimo (conocimiento de clase, estabilidad de conexión y puntualidad)."
-    ]
-  },
-  {
-    title: "Convivencia",
-    rules: [
-      "Fomentamos un ambiente de respeto mutuo, compañerismo y cooperación en todo momento.",
-      "Cero tolerancia ante cualquier forma de racismo, discriminación, acoso o toxicidad.",
-      "Nuestra prioridad es mantener una comunidad sana donde todos se sientan bienvenidos."
+      "Fomentamos un ambiente de respeto mutuo, compañerismo y cooperación. Colmillo de Acero es un espacio para disfrutar del juego en comunidad.",
+      "Cero tolerancia ante cualquier forma de racismo, discriminación, acoso o toxicidad. Priorizamos una comunidad sana donde cada guerrero sea valorado.",
+      "Invitamos a todos los miembros a proponer ideas, liderar actividades y contribuir al crecimiento de nuestra hermandad."
     ]
   }
 ];

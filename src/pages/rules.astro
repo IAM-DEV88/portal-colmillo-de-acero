@@ -76,7 +76,7 @@ const description = "Consulta las reglas de loteo y normas de conducta para las 
                           {section.rules.map((rule) => (
                             <li class="flex items-start text-[11px] md:text-xs text-gray-300 font-bold leading-relaxed">
                               <span class="text-amber-600 mr-2">›</span>
-                              {rule}
+                              <span set:html={rule} />
                             </li>
                           ))}
                         </ul>
@@ -250,7 +250,7 @@ const description = "Consulta las reglas de loteo y normas de conducta para las 
                   {GENERAL_RULES.map((rule) => (
                     <div class="flex items-center space-x-3 p-3 bg-blue-950/50 rounded-lg border border-amber-800/30 hover:bg-amber-900/30 transition-all group/rule">
                       <div class="w-1.5 h-1.5 rounded-full bg-amber-500 group-hover/rule:scale-125 transition-transform flex-shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
-                      <p class="text-gray-100 text-[11px] md:text-xs font-bold leading-tight uppercase tracking-tight">{rule}</p>
+                      <p class="text-gray-100 text-[11px] md:text-xs font-bold leading-tight uppercase tracking-tight" set:html={rule} />
                     </div>
                   ))}
                 </div>
