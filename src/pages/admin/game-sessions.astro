@@ -1,0 +1,372 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import AdminNav from '../../components/admin/AdminNav.astro';
+import { supabase } from '../../lib/supabase';
+
+const session = Astro.cookies.get('admin_session')?.value;
+const userRole = Astro.cookies.get('admin_role')?.value || 'admin';
+
+let errorMessage = '';
+let successMessage = '';
+let gameSessionsData = [];
+let isLoading = true;
+
+if (!session) {
+  return Astro.redirect('/admin'); // Force login through main admin page
+} else {
+  try {
+    const { data: gsData, error: gsError } = await supabase
+      .from('game_sessions')
+      .select('*')
+      .order('last_active', { ascending: false });
+
+    if (gsError) {
+      errorMessage = 'Error al cargar las sesiones: ' + gsError.message;
+    } else {
+      gameSessionsData = gsData || [];
+    }
+
+    const success = Astro.url.searchParams.get('success');
+    if (success === 'session_updated') successMessage = 'Sesión actualizada correctamente';
+    const error = Astro.url.searchParams.get('error');
+    if (error === 'session_update_failed') errorMessage = 'Error al actualizar sesión';
+  } catch (e) {
+    errorMessage = 'Error inesperado';
+  } finally {
+    isLoading = false;
+  }
+}
+---
+
+<Layout title="Admin - Sesiones Ruleta">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <AdminNav userRole={userRole} activePage="game-sessions" />
+
+    <div class="space-y-8">
+      {
+        errorMessage && (
+          <div class="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-xl flex items-center animate-fade-in">
+            <i class="fas fa-exclamation-circle mr-3" /> {errorMessage}
+          </div>
+        )
+      }
+      {
+        successMessage && (
+          <div class="bg-green-900/50 border border-green-700 text-green-200 px-4 py-3 rounded-xl flex items-center animate-fade-in">
+            <i class="fas fa-check-circle mr-3" /> {successMessage}
+          </div>
+        )
+      }
+
+      {
+        isLoading ? (
+          <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500" />
+          </div>
+        ) : (
+          <div class="bg-gray-800/40 rounded-lg border border-white/5 overflow-hidden shadow-2xl">
+            <div class="flex items-center justify-between p-4 bg-gray-900/60 border-b border-white/5">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-gamepad text-amber-500" />
+                <h2 class="text-sm sm:text-base font-black text-white uppercase tracking-[0.2em] italic">
+                  Administración de Ruleta
+                </h2>
+              </div>
+              <span class="text-xs text-gray-400 bg-black/40 px-3 py-1 rounded-full border border-white/5">
+                {gameSessionsData.length} Sesiones
+              </span>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="min-w-full divide-y divide-white/5">
+                <thead class="bg-black/20">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest"
+                    >
+                      Jugador / Hash IP
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest"
+                    >
+                      Estado
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest"
+                    >
+                      Control
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5 bg-gray-800/20">
+                  {gameSessionsData.length === 0 ? (
+                    <tr>
+                      <td
+                        colspan="3"
+                        class="px-6 py-12 text-center text-xs text-gray-500 font-medium italic"
+                      >
+                        No hay sesiones registradas.
+                      </td>
+                    </tr>
+                  ) : (
+                    gameSessionsData.map((gs) => {
+                      const lastActive = new Date(gs.last_active || Date.now());
+                      const diffMinutes = (Date.now() - lastActive.getTime()) / 60000;
+                      let statusText = 'Inactivo';
+                      let borderColor = 'border-gray-700/50';
+                      let dotColor = 'bg-gray-600';
+                      let textColor = 'text-gray-500';
+
+                      if (diffMinutes < 60) {
+                        statusText = 'Activo Recientemente';
+                        borderColor =
+                          'border-green-500 shadow-[inset_2px_0_10px_rgba(34,197,94,0.1)]';
+                        dotColor =
+                          'bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]';
+                        textColor = 'text-green-500';
+                      } else if (diffMinutes < 1440) {
+                        statusText = 'Activo Hoy';
+                        borderColor =
+                          'border-amber-500 shadow-[inset_2px_0_10px_rgba(245,158,11,0.1)]';
+                        dotColor = 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]';
+                        textColor = 'text-amber-500';
+                      }
+
+                      return (
+                        <tr
+                          class={`hover:bg-white/5 transition-colors group/row border-l-[3px] ${borderColor}`}
+                          data-hash={gs.ip_hash}
+                        >
+                          <td class="px-6 py-4">
+                            <div class="flex flex-col space-y-1">
+                              <div class="flex items-center space-x-2">
+                                <div class="text-sm font-bold text-white char-names-display">
+                                  {gs.character_names || (
+                                    <span class="text-gray-500 italic">Desconocido</span>
+                                  )}
+                                </div>
+                                <div
+                                  class={`w-2 h-2 rounded-full ${dotColor}`}
+                                  title={statusText}
+                                />
+                              </div>
+                              <div class="flex items-center space-x-2">
+                                <div class="text-[10px] text-gray-500 font-mono" title={gs.ip_hash}>
+                                  {gs.ip_hash.substring(0, 16)}...
+                                </div>
+                                <span
+                                  class={`text-[9px] font-black uppercase tracking-tighter ${textColor}`}
+                                >
+                                  {statusText}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-6 py-4">
+                            <div class="flex items-center space-x-3 sm:space-x-6">
+                              <div class="flex flex-col">
+                                <span class="text-[9px] text-gray-500 uppercase font-bold">
+                                  Turnos
+                                </span>
+                                <span class="text-xs text-white font-medium credits-display">
+                                  {gs.credits}
+                                </span>
+                              </div>
+                              <div class="flex flex-col">
+                                <span class="text-[9px] text-amber-500/70 uppercase font-bold">
+                                  Pozo
+                                </span>
+                                <span class="text-xs text-amber-400 font-bold">
+                                  {gs.gold_pool} ⚜️
+                                </span>
+                              </div>
+                              <div class="flex flex-col">
+                                <span class="text-[9px] text-green-500/70 uppercase font-bold">
+                                  Últ. Ticket
+                                </span>
+                                <span class="text-xs text-green-400 font-bold">
+                                  {gs.last_gold_claimed} ⚜️
+                                </span>
+                              </div>
+                              {gs.has_won_choker && (
+                                <div class="flex flex-col">
+                                  <span class="text-[9px] text-purple-500/70 uppercase font-bold">
+                                    Item Legendario
+                                  </span>
+                                  <span class="text-xs text-purple-400 font-bold">
+                                    Gargantilla 📿
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right">
+                            <button
+                              type="button"
+                              data-session={JSON.stringify(gs)}
+                              onclick="window.openEditSessionModal(this.dataset.session)"
+                              class="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all shadow-lg shadow-blue-500/10 hover:scale-105 active:scale-95"
+                            >
+                              <i class="fas fa-edit mr-1" /> Editar
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  {/* Edit Session Modal */}
+  <div
+    id="edit-session-modal"
+    class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+  >
+    <div class="bg-gray-800 rounded-md shadow-2xl max-w-lg w-full border border-gray-700">
+      <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-gamepad text-amber-500"></i>
+          <h2 class="text-xl font-bold text-white">Editar Sesión</h2>
+        </div>
+        <button
+          type="button"
+          onclick="window.closeEditSessionModal()"
+          class="text-gray-400 hover:text-white transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path></svg
+          >
+        </button>
+      </div>
+      <form id="edit-session-form" class="p-5 space-y-4">
+        <input type="hidden" name="ip_hash" id="edit-session-hash" />
+        <div>
+          <label class="block text-xs font-medium text-gray-400 mb-1">IP Hash / ID</label>
+          <input
+            type="text"
+            id="edit-session-hash-display"
+            disabled
+            class="w-full px-3 py-2 text-sm bg-gray-900 border border-gray-700 rounded-md text-gray-500 font-mono"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-400 mb-1"
+            >Nombre Personaje(s) Principal</label
+          >
+          <input
+            type="text"
+            name="character_names"
+            id="edit-session-chars"
+            placeholder="Ej: Arthas, Jaina"
+            class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-400 mb-1">Turnos (Creditos)</label>
+          <input
+            type="number"
+            name="credits"
+            id="edit-session-credits"
+            min="0"
+            class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+          />
+        </div>
+        <div class="flex justify-end space-x-2 pt-4">
+          <button
+            type="button"
+            onclick="window.closeEditSessionModal()"
+            class="px-5 py-2 text-sm font-bold tracking-widest uppercase text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors border border-gray-600 shadow-md"
+            >Cancelar</button
+          >
+          <button
+            type="submit"
+            class="px-5 py-2 text-sm font-black tracking-widest uppercase bg-amber-600 hover:bg-amber-700 text-white rounded-md transition-colors border border-amber-500 shadow-lg shadow-amber-900/30"
+            >Guardar</button
+          >
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script is:inline>
+    window.openEditSessionModal = function (sessionData) {
+      const session = typeof sessionData === 'string' ? JSON.parse(sessionData) : sessionData;
+      document.getElementById('edit-session-hash').value = session.ip_hash || '';
+      document.getElementById('edit-session-hash-display').value = session.ip_hash || '';
+      document.getElementById('edit-session-chars').value = session.character_names || '';
+      document.getElementById('edit-session-credits').value = session.credits || 0;
+      document.getElementById('edit-session-modal').classList.remove('hidden');
+    };
+    window.closeEditSessionModal = function () {
+      document.getElementById('edit-session-modal').classList.add('hidden');
+    };
+
+    function showLiveToast(message, isError = false) {
+      const div = document.createElement('div');
+      div.className = `fixed bottom-4 right-4 ${isError ? 'bg-red-600 border-red-500' : 'bg-green-600 border-green-500'} border text-white px-6 py-3 rounded-lg shadow-2xl font-bold animate-fade-in z-[100] flex items-center`;
+      div.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-3 text-xl"></i> ${message}`;
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 3500);
+    }
+
+    document.getElementById('edit-session-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Guardando...';
+
+      try {
+        const res = await fetch('/api/admin/update-game-session', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          const row = document.querySelector(`tr[data-hash="${data.ip_hash}"]`);
+          if (row) {
+            if (data.character_names !== undefined) {
+              row.querySelector('.char-names-display').innerHTML =
+                data.character_names || '<span class="text-gray-500 italic">Desconocido</span>';
+            }
+            if (data.credits !== undefined) {
+              row.querySelector('.credits-display').textContent = data.credits;
+            }
+            // Update the dataset so next edit keeps the modified data
+            const btn = row.querySelector('button[data-session]');
+            if (btn) {
+              let d = JSON.parse(btn.dataset.session);
+              d.character_names = data.character_names;
+              d.credits = data.credits;
+              btn.dataset.session = JSON.stringify(d);
+            }
+          }
+          window.closeEditSessionModal();
+          showLiveToast('Sesión actualizada correctamente');
+        } else {
+          showLiveToast(data.error || 'Error al actualizar sesión', true);
+        }
+      } catch (err) {
+        showLiveToast('Error de conexión al procesar AJAX', true);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    });
+  </script>
+</Layout>

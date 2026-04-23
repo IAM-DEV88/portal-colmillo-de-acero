@@ -38,7 +38,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
             hasWonChoker = false; // Reset choker status after claim
             newGoldPool = 0; // Choker claim usually also resets gold pool
         } else {
-          return new Response(JSON.stringify({ error: 'Nothing to claim' }), { status: 400 });
+            return new Response(JSON.stringify({ error: 'Nothing to claim' }), { status: 400 });
         }
 
         // 3. Update Supabase
@@ -47,6 +47,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
             .update({
                 gold_pool: newGoldPool,
                 has_won_choker: hasWonChoker,
+                last_gold_claimed: claimedAmount,
                 last_active: new Date().toISOString()
             })
             .eq('ip_hash', sessionId);
