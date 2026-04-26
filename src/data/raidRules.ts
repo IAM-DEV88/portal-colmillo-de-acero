@@ -157,17 +157,17 @@ export const BOE_PRICES = [
 ];
 
 export const FARM_PRICES = [
-  { item: "Pelaje ártico", price: "5800g", unit: "Stack" },
-  { item: "Tejido de hechizos", price: "1800g", unit: "Stack" },
-  { item: "Dragontina helada", price: "1800g", unit: "Stack" },
-  { item: "Gema Epica", price: "1800g", unit: "Stack" },
-  { item: "Cristal abisal", price: "1500g", unit: "Stack" },
-  { item: "Loto de escarcha", price: "1400g", unit: "Stack" },
-  { item: "Fragmento onírico", price: "1400g", unit: "Stack" },
-  { item: "Vida, Sombra, Aire, Fuego, Orbe Congelado", price: "1300g", unit: "Stack" },
-  { item: "Calcedonia", price: "700g", unit: "Stack" },
-  { item: "Cardopresto", price: "600g", unit: "Stack" },
-  { item: "Seda de araña tejehielo", price: "400g", unit: "Stack" },
+  { item: "Pelaje ártico", price: "3500g", unit: "Stack" },
+  { item: "Tejido de hechizos", price: "1500g", unit: "Stack" },
+  { item: "Dragontina helada", price: "1500g", unit: "Stack" },
+  { item: "Gema Epica", price: "1500g", unit: "Stack" },
+  { item: "Cristal abisal", price: "1200g", unit: "Stack" },
+  { item: "Loto de escarcha", price: "1000g", unit: "Stack" },
+  { item: "Fragmento onírico", price: "1000g", unit: "Stack" },
+  { item: "Vida, Sombra, Aire, Fuego, Orbe Congelado", price: "1000g", unit: "Stack" },
+  { item: "Calcedonia", price: "600g", unit: "Stack" },
+  { item: "Cardopresto", price: "800g", unit: "Stack" },
+  { item: "Seda de araña tejehielo", price: "600g", unit: "Stack" },
   { item: "Mena de titanio", price: "200g", unit: "Stack" },
   { item: "Flor exánime", price: "200g", unit: "Stack" },
 ];
