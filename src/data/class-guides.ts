@@ -401,7 +401,7 @@ export const classGuidesData: Record<string, ClassGuideData> = {
       { slot: "Arma 1H Opcion 3", name: "Hoja de veneno de sangre", source: "ICC 25H - Libramorte", quality: "epic", id: 50738, icon: "inv_mace_116" },
       { slot: "Escudo", name: "Muro glacial de la Corona de Hielo", source: "ICC 25H - Reina de Sangre", quality: "epic", id: 50729, icon: "inv_shield_73" },
       { slot: "Escudo Opcion 2", name: "Invierno interminable ", source: "ICC 25H - Barco", quality: "epic", id: 50729, icon: "inv_shield_73" },
-      { slot: "Rango", name: "Mosquetón de cazador de sueños", source: "ICC 25H - Valithria", quality: "epic", id: 50733, icon: "inv_weapon_rifle_33" }
+      { slot: "Rango", name: "Mosquetón de cazador de sueños", source: "ICC 25H - Valithria", quality: "epic", id: 50733, icon: "inv_weapon_rifle_33" },
       { slot: "Rango Opcion 2", name: "Rifle de balas de plata de Rowan", source: "ICC 25H - Barco", quality: "epic", id: 50733, icon: "inv_weapon_rifle_33" }
     ],
     gems: [
