@@ -191,7 +191,7 @@ export const classGuidesData: Record<string, ClassGuideData> = {
       { slot: "Arma 1H", name: "Cetro real de Terenas II", source: "ICC 25H - Lich King", quality: "epic", id: 50734, icon: "inv_mace_116" },
       { slot: "Arma 1H 2", name: "Martillo de los antiguos reyes", source: "Ulduar 25 - Yogg-Saron", quality: "epic", id: 50734, icon: "inv_mace_116" },
       { slot: "Escudo", name: "Baluarte de acero incandescente", source: "ICC 25H - Lord Tuétano", quality: "epic", id: 50616, icon: "inv_shield_72" },
-      { slot: "Totem", name: "Tótem de la marea calmante", source: "Emblemas de Escarcha", quality: "epic", id: 50464, icon: "inv_misc_totem_02" }
+      { slot: "Totem", name: "Tótem de la marea calmante", source: "Emblemas de Escarcha", quality: "epic", id: 50464, icon: "inv_misc_totem_02" },
       { slot: "Totem 2", name: "Tótem de la marea calmante", source: "Emblemas de Escarcha", quality: "epic", id: 50464, icon: "inv_misc_totem_02" }
     ],
     gems: [
@@ -331,7 +331,7 @@ export const classGuidesData: Record<string, ClassGuideData> = {
       { slot: "Espalda", name: "Astucia de Sylvanas", source: "TOC 25H", quality: "epic", id: 50628, icon: "item_icecrowncloakb" },
       { slot: "Espalda Opcion 2", name: "Maña de Vereesa", source: "TOC 25H", quality: "epic", id: 50628, icon: "item_icecrowncloakb" },
       { slot: "Pecho", name: "Coraza de señor Ymirjar santificada", source: "ICC 25H - Set T10", quality: "epic", id: 51225, icon: "inv_chest_plate_26" },
-      { slot: "Muñeca", name: "Brazales de saliva de gárgola", source: "ICC 25H - Lady Susurramuerte", quality: "epic", id: 50611, icon: "inv_bracer_37" },
+      { slot: "Muñeca", name: "Bandas agraviadas", source: "Halion 25H", quality: "epic", id: 50611, icon: "inv_bracer_37" },
       { slot: "Manos", name: "Guantes de secretos de Aldriana", source: "ICC 25H - Carapútrea", quality: "epic", id: 51226, icon: "inv_gauntlets_81" },
       { slot: "Cintura", name: "Cincho suturado de Astilla", source: "ICC 25H - Panzachancro", quality: "epic", id: 50620, icon: "inv_belt_61" },
       { slot: "Piernas", name: "Quijotes de señor de Ymirjar santificados", source: "ICC 25H - Set T10", quality: "epic", id: 51228, icon: "inv_pants_plate_30" },
