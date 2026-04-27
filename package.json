@@ -24,6 +24,7 @@
     "alpinejs": "^3.13.3",
     "astro": "^4.13.1",
     "html2canvas": "^1.4.1",
+    "jose": "^6.2.2",
     "onnxruntime-web": "^1.21.0",
     "sharp": "^0.34.5",
     "typescript": "^5.9.2"

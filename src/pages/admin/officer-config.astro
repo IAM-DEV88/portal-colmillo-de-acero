@@ -5,10 +5,8 @@ import { supabase } from '../../lib/supabase';
 import { rosterService } from '../../services/rosterService';
 
 // Solo permitir acceso a administradores
-const session = Astro.cookies.get('admin_session')?.value;
-const userRole = Astro.cookies.get('admin_role')?.value;
-
-if (!session || userRole !== 'admin') {
+const userRole = Astro.locals.userRole || 'admin';
+if (userRole !== 'admin') {
   return Astro.redirect('/admin');
 }
 

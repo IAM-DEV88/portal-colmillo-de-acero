@@ -2,178 +2,27 @@
 // src/pages/admin.astro
 import Layout from '../components/layout/Layout.astro';
 import AdminNav from '../components/admin/AdminNav.astro';
-import { supabase } from '../lib/supabase';
-import { getRaidName, normalizeRaidName } from '../lib/raids';
 import { rosterService } from '../services/rosterService';
-
-// Import roster utils
+import { adminService } from '../services/adminService';
+import { getRaidName } from '../lib/raids';
 import { validatePublicNote } from '../utils/rosterUtils';
 
-// Use rosterService to fetch data with caching
+// Data fetching is now centralized in adminService
+const userRole = Astro.locals.userRole || 'admin';
 const rosterData = await rosterService.getFormattedRoster();
-const rosterError = null;
+const { data: registrations, error: regError } = await adminService.fetchRaidRegistrations();
 
-// Define a default raid structure for when we only have a name
-const createRaidFromName = (name: string, id: string = '', gs: number = 5000): any => {
-  const nameLower = name.toLowerCase();
-  let image = '/images/raids/iccfarm.jpg';
-  if (nameLower.includes('toc')) image = '/images/raids/tocfarm.jpg';
-  else if (nameLower.includes('sr') || nameLower.includes('sagrario')) image = '/images/raids/sr.jpg';
-  else if (nameLower.includes('lk')) image = '/images/raids/icclk.jpg';
+let errorMessage = regError ? `Error al cargar las solicitudes: ${regError}` : '';
+let successMessage = Astro.url.searchParams.get('success') === 'updated' ? 'Solicitud actualizada correctamente' : '';
 
-  return {
-    id: id || name, // El ID técnico (normalizado si se provee)
-    name,           // El nombre original para mostrar
-    image,
-    description: 'Raid oficial de la hermandad.',
-    minGearScore: gs,
-    rules: ''
-  };
-};
+const wotlkRaids = await adminService.assembleWotlkRaids(rosterData, registrations || []);
 
-// Initialize messages
-let errorMessage = '';
-let successMessage = '';
-let registrations = [];
-let isLoading = true;
-
-// Session and Role info
-const session = Astro.cookies.get('admin_session')?.value;
-const userRole = Astro.cookies.get('admin_role')?.value || 'admin'; // 'admin' or 'official'
-
-// Handle POST requests
-let formData: FormData | null = null;
-if (Astro.request.method === 'POST') {
-  try {
-    formData = await Astro.request.formData();
-  } catch (e) {
-    console.error('Error handling POST:', e);
-  }
-}
-
-// Create a list of all possible raids
-const wotlkRaids: any[] = [];
-const seenRaids = new Set<string>();
-
-// 1. First populate from rosterData (Supabase)
-if (rosterData && rosterData.players) {
-  Object.values(rosterData.players).forEach((member: any) => {
-    const leaderData = member.leaderData;
-    if (!leaderData || !leaderData.cores || !Array.isArray(leaderData.cores)) return;
-
-    leaderData.cores.forEach((core) => {
-      if (!core.raid) return;
-
-      const coreRaidKey = core.raid.toUpperCase().trim(); // Usar versión en mayúsculas para deduplicar
-      
-      if (!seenRaids.has(coreRaidKey)) {
-        seenRaids.add(coreRaidKey);
-        // Usamos el nombre original tanto para mostrar como para ID técnico para evitar filtrado excesivo
-        wotlkRaids.push(createRaidFromName(core.raid, core.raid, core.gs || 5000));
-      }
-    });
-  });
-}
-
-// Check if we still need more raids from wotlkRaids global (if any predefined)
-// wotlkRaids.length logic...
-
-// Check for admin password
-const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD || import.meta.env.VITE_ADMIN_PASSWORD;
-
-// Validate that the admin password is set in production
-if (import.meta.env.PROD && !ADMIN_PASSWORD) {
-  console.error('Error: ADMIN_PASSWORD is not set in environment variables');
-  throw new Error('Server configuration error: Admin password not set');
-}
-
-// For development, use a default password if not set
-const devPassword = 'dev123'; // Change this to your preferred default dev password
-const isDev = import.meta.env.DEV;
-
-// Password for Official role
-const OFFICIAL_PASSWORD = import.meta.env.OFFICIAL_PASSWORD;
-
-if (!session) {
-  // If form was submitted
-  if (Astro.request.method === 'POST' && formData) {
-    const password = formData.get('password');
-    const currentAdminPassword = isDev && !ADMIN_PASSWORD ? devPassword : ADMIN_PASSWORD;
-
-    if (password === currentAdminPassword) {
-      Astro.cookies.set('admin_session', 'authenticated', {
-        path: '/',
-        maxAge: 60 * 60 * 8, // 8 hours
-        httpOnly: true,
-        secure: import.meta.env.PROD,
-      });
-      Astro.cookies.set('admin_role', 'admin', { path: '/' });
-      return Astro.redirect('/admin');
-    } else if (password === OFFICIAL_PASSWORD) {
-      Astro.cookies.set('admin_session', 'authenticated', {
-        path: '/',
-        maxAge: 60 * 60 * 8, // 8 hours
-        httpOnly: true,
-        secure: import.meta.env.PROD,
-      });
-      Astro.cookies.set('admin_role', 'official', { path: '/' });
-      return Astro.redirect('/admin');
-    } else {
-      return Astro.redirect('/admin?error=invalid');
-    }
-  }
-
-  // Set login form messages
-  const error = Astro.url.searchParams.get('error');
-  errorMessage = error === 'invalid' ? 'Contraseña incorrecta' : '';
-  const success = Astro.url.searchParams.get('success');
-  successMessage = success === 'updated' ? 'Solicitud actualizada correctamente' : '';
-  isLoading = false;
-} else {
-  try {
-    const { data, error } = await supabase
-      .from('raid_registrations')
-      .select('*')
-      .order('id', { ascending: false });
-
-    if (error) {
-      errorMessage = `Error al cargar las solicitudes: ${error.message}`;
-    } else {
-      registrations = data || [];
-      
-      // 2. Second populate from supabase registrations
-      registrations.forEach((reg) => {
-        if (!reg.raid_id) return;
-        
-        const raidName = getRaidName(reg.raid_id);
-        const raidId = reg.raid_id;
-        const raidKey = raidId.toUpperCase().trim(); 
-        
-        if (!seenRaids.has(raidKey)) {
-          seenRaids.add(raidKey);
-          wotlkRaids.push(createRaidFromName(raidName, raidId, 5000));
-        }
-      });
-    }
-  } catch (err) {
-    errorMessage = 'Error inesperado al cargar los datos';
-  } finally {
-    isLoading = false;
-  }
-}
-
-// If still empty after both sources, add a default
-if (wotlkRaids.length === 0) {
-  wotlkRaids.push(createRaidFromName('ICC25N', 5000));
-}
-
-// Process roster data to get eligible members per raid (available for all contexts)
+// Process roster data to get eligible members per raid
 const parsedMembers = Object.entries(rosterData.players || {})
-  .filter(([_, member]: [string, any]) => !member.guildLeave) // Filtrar jugadores que han salido
+  .filter(([_, member]: [string, any]) => !member.guildLeave)
   .map(([playerName, member]: [string, any]) => {
   const publicNote = member.publicNote || '';
   const validation = validatePublicNote(publicNote, playerName);
-
   const charBlock = validation.blocks?.find((b) => b.type === 'character')?.parsedData;
 
   let gs = 0;
@@ -198,72 +47,15 @@ const parsedMembers = Object.entries(rosterData.players || {})
   };
 });
 
-// Calculate eligible members for each raid (all members with GS >= minGearScore)
+// Calculate eligible members for each raid
 const raidEligibleMembers: Record<string, typeof parsedMembers> = {};
 wotlkRaids.forEach((raid) => {
   const minGs = raid.minGearScore;
-  
-  // Usamos el ID original para el mapeo
-  raidEligibleMembers[raid.id] = parsedMembers.filter((m) => 
-    m.gearScore >= minGs
-  );
+  raidEligibleMembers[raid.id] = parsedMembers.filter((m) => m.gearScore >= minGs);
 });
 ---
 
-{/* If not authenticated, show login form */}
-{
-  !session ? (
-    <Layout title="Admin - Iniciar Sesión">
-      <div class="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div class="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
-            Panel de Administración
-          </h2>
-          {errorMessage && (
-            <div class="mt-4 bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded">
-              {errorMessage}
-            </div>
-          )}
-          {successMessage && (
-            <div class="mt-4 bg-green-900/50 border border-green-700 text-green-200 px-4 py-3 rounded">
-              {successMessage}
-            </div>
-          )}
-        </div>
-
-        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div class="bg-gray-800/50 backdrop-blur-sm py-8 px-4 shadow sm:rounded-md sm:px-10">
-            <form class="space-y-6" method="POST">
-              <div>
-                <label for="password" class="block text-sm font-medium text-gray-300">
-                  Contraseña de administrador
-                </label>
-                <div class="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    class="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm bg-gray-900 text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-                >
-                  Iniciar sesión
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </Layout>
-  ) : (
-    <Layout title="Admin - Gestión de Solicitudes">
+<Layout title="Admin - Gestión de Solicitudes">
       <div class="max-w-7xl mx-auto space-y-8">
         <AdminNav userRole={userRole} activePage="dashboard" />
 
@@ -282,11 +74,7 @@ wotlkRaids.forEach((raid) => {
             </div>
           )}
 
-          {isLoading ? (
-            <div class="flex justify-center items-center h-64">
-              <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500" />
-            </div>
-          ) : (
+
             <>
               {/* Listado de Raids con Filtros Ultra Compactos */}
               <div class="space-y-6">
@@ -878,7 +666,7 @@ wotlkRaids.forEach((raid) => {
                 )}
               </div>
             </>
-          )}
+
         </div>
 
         {/* Edit Player Modal */}
@@ -1558,5 +1346,4 @@ wotlkRaids.forEach((raid) => {
         }
       };
     </script>
-  )
-}
+</Layout>

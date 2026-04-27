@@ -3,9 +3,7 @@ import Layout from '../../components/layout/Layout.astro';
 import AdminNav from '../../components/admin/AdminNav.astro';
 import { supabase } from '../../lib/supabase';
 
-const session = Astro.cookies.get('admin_session')?.value;
-const userRole = Astro.cookies.get('admin_role')?.value || 'admin';
-
+const userRole = Astro.locals.userRole || 'admin';
 let errorMessage = '';
 let successMessage = '';
 let gameSessionsData = [];
@@ -15,9 +13,7 @@ let recentSessions: any[] = [];
 let todaySessions: any[] = [];
 let inactiveSessions: any[] = [];
 
-if (!session) {
-  return Astro.redirect('/admin'); // Force login through main admin page
-} else {
+if (true) {
   try {
     const { data: gsData, error: gsError } = await supabase
       .from('game_sessions')

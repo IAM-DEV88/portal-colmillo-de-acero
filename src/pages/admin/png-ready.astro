@@ -2,12 +2,8 @@
 import Layout from '../../components/layout/Layout.astro';
 import AdminNav from '../../components/admin/AdminNav.astro';
 
-const userRole = Astro.cookies.get('admin_role')?.value;
-const session = Astro.cookies.get('admin_session')?.value;
+const userRole = Astro.locals.userRole || 'admin';
 
-if (!session || (userRole !== 'admin' && userRole !== 'official')) {
-  return Astro.redirect('/admin');
-}
 ---
 
 <Layout title="PNG Ready PRO - Editor Elite">

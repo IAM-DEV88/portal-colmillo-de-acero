@@ -6,3 +6,9 @@ declare module '*.astro' {
   const component: AstroComponentFactory;
   export default component;
 }
+
+declare namespace App {
+  interface Locals {
+    userRole: string;
+  }
+}

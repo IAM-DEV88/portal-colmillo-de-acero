@@ -4,12 +4,8 @@ import AdminNav from '../../components/admin/AdminNav.astro';
 import { supabase } from '../../lib/supabase';
 
 // Solo permitir acceso a administradores u oficiales
-const session = Astro.cookies.get('admin_session')?.value;
-const userRole = Astro.cookies.get('admin_role')?.value;
+const userRole = Astro.locals.userRole || 'admin';
 
-if (!session || (userRole !== 'admin' && userRole !== 'official')) {
-  return Astro.redirect('/admin');
-}
 
 let errorMessage = '';
 let successMessage = '';
