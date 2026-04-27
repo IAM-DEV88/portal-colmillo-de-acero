@@ -11,6 +11,10 @@ let successMessage = '';
 let gameSessionsData = [];
 let isLoading = true;
 
+let recentSessions: any[] = [];
+let todaySessions: any[] = [];
+let inactiveSessions: any[] = [];
+
 if (!session) {
   return Astro.redirect('/admin'); // Force login through main admin page
 } else {
@@ -24,6 +28,20 @@ if (!session) {
       errorMessage = 'Error al cargar las sesiones: ' + gsError.message;
     } else {
       gameSessionsData = gsData || [];
+
+      const now = Date.now();
+      gameSessionsData.forEach((gs) => {
+        const lastActive = new Date(gs.last_active || now).getTime();
+        const diffMinutes = (now - lastActive) / 60000;
+
+        if (diffMinutes < 60) {
+          recentSessions.push(gs);
+        } else if (diffMinutes < 1440) {
+          todaySessions.push(gs);
+        } else {
+          inactiveSessions.push(gs);
+        }
+      });
     }
 
     const success = Astro.url.searchParams.get('success');
@@ -36,23 +54,36 @@ if (!session) {
     isLoading = false;
   }
 }
+
+const formatDate = (dateStr: string | number | Date | undefined) => {
+  if (!dateStr) return 'N/A';
+  const d = new Date(dateStr);
+  return d.toLocaleString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};
 ---
 
 <Layout title="Admin - Sesiones Ruleta">
   <div class="max-w-7xl mx-auto space-y-8">
     <AdminNav userRole={userRole} activePage="game-sessions" />
 
-    <div class="space-y-8">
+    <div class="space-y-4">
       {
         errorMessage && (
-          <div class="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-xl flex items-center animate-fade-in">
+          <div class="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-xl flex items-center animate-fade-in shadow-lg">
             <i class="fas fa-exclamation-circle mr-3" /> {errorMessage}
           </div>
         )
       }
       {
         successMessage && (
-          <div class="bg-green-900/50 border border-green-700 text-green-200 px-4 py-3 rounded-xl flex items-center animate-fade-in">
+          <div class="bg-green-900/50 border border-green-700 text-green-200 px-4 py-3 rounded-xl flex items-center animate-fade-in shadow-lg">
             <i class="fas fa-check-circle mr-3" /> {successMessage}
           </div>
         )
@@ -61,165 +92,364 @@ if (!session) {
       {
         isLoading ? (
           <div class="flex justify-center items-center h-64">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500" />
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]" />
           </div>
         ) : (
-          <div class="bg-gray-800/40 rounded-lg border border-white/5 overflow-hidden shadow-2xl">
-            <div class="flex items-center justify-between p-4 bg-gray-900/60 border-b border-white/5">
-              <div class="flex items-center gap-3">
-                <i class="fas fa-gamepad text-amber-500" />
-                <h2 class="text-sm sm:text-base font-black text-white uppercase tracking-[0.2em] italic">
-                  Administración de Ruleta
-                </h2>
-              </div>
-              <span class="text-xs text-gray-400 bg-black/40 px-3 py-1 rounded-full border border-white/5">
-                {gameSessionsData.length} Sesiones
-              </span>
-            </div>
-
-            <div class="overflow-x-auto custom-scrollbar">
-              <table class="min-w-full divide-y divide-white/5">
-                <thead class="bg-black/20">
-                  <tr>
-                    <th
-                      scope="col"
-                      class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest"
-                    >
-                      Jugador / Hash IP
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest"
-                    >
-                      Estado
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-6 py-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest"
-                    >
-                      Control
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-white/5 bg-gray-800/20">
-                  {gameSessionsData.length === 0 ? (
+          <div class="space-y-6">
+            {/* Activos Recientemente */}
+            <details
+              class="group bg-gray-800/40 rounded-lg border border-green-500/30 overflow-hidden shadow-xl"
+              open
+            >
+              <summary class="flex items-center justify-between p-4 bg-gray-900/80 hover:bg-gray-800/80 cursor-pointer transition-colors list-none select-none">
+                <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.8)]" />
+                  <h2 class="text-sm font-black text-green-400 uppercase tracking-widest">
+                    Activos Recientemente (&lt; 1 Hora)
+                  </h2>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-xs font-bold text-green-200 bg-green-900/50 px-3 py-1.5 rounded-full border border-green-500/30">
+                    {recentSessions.length} Jugadores
+                  </span>
+                  <i class="fas fa-chevron-down text-green-500/70 transition-transform duration-300 group-open:-rotate-180" />
+                </div>
+              </summary>
+              <div class="p-0 border-t border-green-500/20 max-h-[500px] overflow-y-auto custom-scrollbar">
+                <table class="min-w-full divide-y divide-white/5">
+                  <thead class="bg-black/40 sticky top-0 backdrop-blur-md z-10">
                     <tr>
-                      <td
-                        colspan="3"
-                        class="px-6 py-12 text-center text-xs text-gray-500 font-medium italic"
-                      >
-                        No hay sesiones registradas.
-                      </td>
+                      <th class="px-5 py-3 text-left text-[10px] font-black text-green-500/70 uppercase tracking-widest w-1/4">
+                        Jugador / IP Hash
+                      </th>
+                      <th class="px-5 py-3 text-left text-[10px] font-black text-green-500/70 uppercase tracking-widest w-1/4">
+                        Actividad Temporal
+                      </th>
+                      <th class="px-5 py-3 text-center text-[10px] font-black text-green-500/70 uppercase tracking-widest w-1/3">
+                        Estado de Recursos
+                      </th>
+                      <th class="px-5 py-3 text-right text-[10px] font-black text-green-500/70 uppercase tracking-widest">
+                        Acciones
+                      </th>
                     </tr>
-                  ) : (
-                    gameSessionsData.map((gs) => {
-                      const lastActive = new Date(gs.last_active || Date.now());
-                      const diffMinutes = (Date.now() - lastActive.getTime()) / 60000;
-                      let statusText = 'Inactivo';
-                      let borderColor = 'border-gray-700/50';
-                      let dotColor = 'bg-gray-600';
-                      let textColor = 'text-gray-500';
-
-                      if (diffMinutes < 60) {
-                        statusText = 'Activo Recientemente';
-                        borderColor =
-                          'border-green-500 shadow-[inset_2px_0_10px_rgba(34,197,94,0.1)]';
-                        dotColor =
-                          'bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]';
-                        textColor = 'text-green-500';
-                      } else if (diffMinutes < 1440) {
-                        statusText = 'Activo Hoy';
-                        borderColor =
-                          'border-amber-500 shadow-[inset_2px_0_10px_rgba(245,158,11,0.1)]';
-                        dotColor = 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]';
-                        textColor = 'text-amber-500';
-                      }
-
-                      return (
-                        <tr
-                          class={`hover:bg-white/5 transition-colors group/row border-l-[3px] ${borderColor}`}
-                          data-hash={gs.ip_hash}
+                  </thead>
+                  <tbody class="divide-y divide-white/5 bg-gray-800/20">
+                    {recentSessions.length === 0 && (
+                      <tr>
+                        <td
+                          colspan="4"
+                          class="px-6 py-6 text-center text-xs text-green-500/50 font-medium italic"
                         >
-                          <td class="px-6 py-4">
-                            <div class="flex flex-col space-y-1">
-                              <div class="flex items-center space-x-2">
-                                <div class="text-sm font-bold text-white char-names-display">
-                                  {gs.character_names || (
-                                    <span class="text-gray-500 italic">Desconocido</span>
-                                  )}
-                                </div>
-                                <div
-                                  class={`w-2 h-2 rounded-full ${dotColor}`}
-                                  title={statusText}
-                                />
-                              </div>
-                              <div class="flex items-center space-x-2">
-                                <div class="text-[10px] text-gray-500 font-mono" title={gs.ip_hash}>
-                                  {gs.ip_hash.substring(0, 16)}...
-                                </div>
-                                <span
-                                  class={`text-[9px] font-black uppercase tracking-tighter ${textColor}`}
-                                >
-                                  {statusText}
-                                </span>
-                              </div>
+                          Sin jugadores recientes.
+                        </td>
+                      </tr>
+                    )}
+                    {recentSessions.map((gs) => (
+                      <tr
+                        class="hover:bg-white/5 transition-colors group/row border-l-[3px] border-green-500"
+                        data-hash={gs.ip_hash}
+                      >
+                        <td class="px-5 py-4">
+                          <div class="flex flex-col space-y-1">
+                            <span class="text-xs font-bold text-white char-names-display uppercase tracking-wider">
+                              {gs.character_names || 'Desconocido'}
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-mono" title={gs.ip_hash}>
+                              {gs.ip_hash.substring(0, 16)}...
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-5 py-4">
+                          <div class="flex flex-col space-y-1">
+                            <span class="text-[10px] text-gray-400">
+                              <i class="far fa-clock mr-1 text-green-500/60" />
+                              {formatDate(gs.last_active)}
+                            </span>
+                            <span class="text-[10px] text-amber-500/70">
+                              <i class="fas fa-ticket-alt mr-1" />
+                              Últ. Ticket:{' '}
+                              <strong class="text-amber-400">{gs.last_gold_claimed} ⚜️</strong>
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-5 py-4">
+                          <div class="flex items-center justify-center space-x-6">
+                            <div class="flex flex-col items-center">
+                              <span class="text-[9px] text-gray-500 uppercase font-bold">
+                                Turnos
+                              </span>
+                              <span class="text-sm text-white font-black credits-display">
+                                {gs.credits}
+                              </span>
                             </div>
-                          </td>
-                          <td class="px-6 py-4">
-                            <div class="flex items-center space-x-3 sm:space-x-6">
-                              <div class="flex flex-col">
-                                <span class="text-[9px] text-gray-500 uppercase font-bold">
-                                  Turnos
-                                </span>
-                                <span class="text-xs text-white font-medium credits-display">
-                                  {gs.credits}
-                                </span>
-                              </div>
-                              <div class="flex flex-col">
-                                <span class="text-[9px] text-amber-500/70 uppercase font-bold">
-                                  Pozo
-                                </span>
-                                <span class="text-xs text-amber-400 font-bold">
-                                  {gs.gold_pool} ⚜️
-                                </span>
-                              </div>
-                              <div class="flex flex-col">
-                                <span class="text-[9px] text-green-500/70 uppercase font-bold">
-                                  Últ. Ticket
-                                </span>
-                                <span class="text-xs text-green-400 font-bold">
-                                  {gs.last_gold_claimed} ⚜️
-                                </span>
-                              </div>
-                              {gs.has_won_choker && (
-                                <div class="flex flex-col">
-                                  <span class="text-[9px] text-purple-500/70 uppercase font-bold">
-                                    Item Legendario
-                                  </span>
-                                  <span class="text-xs text-purple-400 font-bold">
-                                    Gargantilla 📿
-                                  </span>
-                                </div>
-                              )}
+                            <div class="flex flex-col items-center">
+                              <span class="text-[9px] text-amber-500/70 uppercase font-bold">
+                                Pozo
+                              </span>
+                              <span class="text-sm text-amber-400 font-black">
+                                {gs.gold_pool} ⚜️
+                              </span>
                             </div>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right">
-                            <button
-                              type="button"
-                              data-session={JSON.stringify(gs)}
-                              onclick="window.openEditSessionModal(this.dataset.session)"
-                              class="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all shadow-lg shadow-blue-500/10 hover:scale-105 active:scale-95"
-                            >
-                              <i class="fas fa-edit mr-1" /> Editar
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+                            {gs.has_won_choker && (
+                              <div class="flex flex-col items-center ml-2 border border-purple-500/30 bg-purple-900/20 px-2 py-1 rounded">
+                                <span class="text-[9px] text-purple-400 uppercase font-bold">
+                                  <i class="fas fa-gem mr-1" />
+                                  Choker
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap text-right">
+                          <button
+                            type="button"
+                            data-session={JSON.stringify(gs)}
+                            onclick="window.openEditSessionModal(this.dataset.session)"
+                            class="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase tracking-wider rounded transition-all hover:scale-105"
+                          >
+                            <i class="fas fa-edit mr-1" /> Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+
+            {/* Activos Hoy */}
+            <details class="group bg-gray-800/40 rounded-lg border border-amber-500/30 overflow-hidden shadow-xl">
+              <summary class="flex items-center justify-between p-4 bg-gray-900/80 hover:bg-gray-800/80 cursor-pointer transition-colors list-none select-none">
+                <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]" />
+                  <h2 class="text-sm font-black text-amber-400 uppercase tracking-widest">
+                    Activos Hoy (&lt; 24 Horas)
+                  </h2>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-xs font-bold text-amber-200 bg-amber-900/50 px-3 py-1.5 rounded-full border border-amber-500/30">
+                    {todaySessions.length} Jugadores
+                  </span>
+                  <i class="fas fa-chevron-down text-amber-500/70 transition-transform duration-300 group-open:-rotate-180" />
+                </div>
+              </summary>
+              <div class="p-0 border-t border-amber-500/20 max-h-[500px] overflow-y-auto custom-scrollbar">
+                <table class="min-w-full divide-y divide-white/5">
+                  <thead class="bg-black/40 sticky top-0 backdrop-blur-md z-10">
+                    <tr>
+                      <th class="px-5 py-3 text-left text-[10px] font-black text-amber-500/70 uppercase tracking-widest w-1/4">
+                        Jugador / IP Hash
+                      </th>
+                      <th class="px-5 py-3 text-left text-[10px] font-black text-amber-500/70 uppercase tracking-widest w-1/4">
+                        Actividad Temporal
+                      </th>
+                      <th class="px-5 py-3 text-center text-[10px] font-black text-amber-500/70 uppercase tracking-widest w-1/3">
+                        Estado de Recursos
+                      </th>
+                      <th class="px-5 py-3 text-right text-[10px] font-black text-amber-500/70 uppercase tracking-widest">
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-white/5 bg-gray-800/20">
+                    {todaySessions.length === 0 && (
+                      <tr>
+                        <td
+                          colspan="4"
+                          class="px-6 py-6 text-center text-xs text-amber-500/50 font-medium italic"
+                        >
+                          Sin jugadores activos hoy.
+                        </td>
+                      </tr>
+                    )}
+                    {todaySessions.map((gs) => (
+                      <tr
+                        class="hover:bg-white/5 transition-colors group/row border-l-[3px] border-amber-500"
+                        data-hash={gs.ip_hash}
+                      >
+                        <td class="px-5 py-4">
+                          <div class="flex flex-col space-y-1">
+                            <span class="text-xs font-bold text-white char-names-display uppercase tracking-wider">
+                              {gs.character_names || 'Desconocido'}
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-mono" title={gs.ip_hash}>
+                              {gs.ip_hash.substring(0, 16)}...
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-5 py-4">
+                          <div class="flex flex-col space-y-1">
+                            <span class="text-[10px] text-gray-400">
+                              <i class="far fa-clock mr-1 text-amber-500/60" />
+                              {formatDate(gs.last_active)}
+                            </span>
+                            <span class="text-[10px] text-amber-500/70">
+                              <i class="fas fa-ticket-alt mr-1" />
+                              Últ. Ticket:{' '}
+                              <strong class="text-amber-400">{gs.last_gold_claimed} ⚜️</strong>
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-5 py-4">
+                          <div class="flex items-center justify-center space-x-6">
+                            <div class="flex flex-col items-center">
+                              <span class="text-[9px] text-gray-500 uppercase font-bold">
+                                Turnos
+                              </span>
+                              <span class="text-sm text-white font-black credits-display">
+                                {gs.credits}
+                              </span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                              <span class="text-[9px] text-amber-500/70 uppercase font-bold">
+                                Pozo
+                              </span>
+                              <span class="text-sm text-amber-400 font-black">
+                                {gs.gold_pool} ⚜️
+                              </span>
+                            </div>
+                            {gs.has_won_choker && (
+                              <div class="flex flex-col items-center ml-2 border border-purple-500/30 bg-purple-900/20 px-2 py-1 rounded">
+                                <span class="text-[9px] text-purple-400 uppercase font-bold">
+                                  <i class="fas fa-gem mr-1" />
+                                  Choker
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap text-right">
+                          <button
+                            type="button"
+                            data-session={JSON.stringify(gs)}
+                            onclick="window.openEditSessionModal(this.dataset.session)"
+                            class="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase tracking-wider rounded transition-all hover:scale-105"
+                          >
+                            <i class="fas fa-edit mr-1" /> Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+
+            {/* Inactivos */}
+            <details class="group bg-gray-800/40 rounded-lg border border-gray-600/30 overflow-hidden shadow-xl">
+              <summary class="flex items-center justify-between p-4 bg-gray-900/80 hover:bg-gray-800/80 cursor-pointer transition-colors list-none select-none">
+                <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-gray-600" />
+                  <h2 class="text-sm font-black text-gray-400 uppercase tracking-widest">
+                    Inactivos (&gt; 24 Horas)
+                  </h2>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="text-xs font-bold text-gray-300 bg-gray-800/50 px-3 py-1.5 rounded-full border border-gray-600/30">
+                    {inactiveSessions.length} Jugadores
+                  </span>
+                  <i class="fas fa-chevron-down text-gray-500/70 transition-transform duration-300 group-open:-rotate-180" />
+                </div>
+              </summary>
+              <div class="p-0 border-t border-gray-600/20 max-h-[500px] overflow-y-auto custom-scrollbar">
+                <table class="min-w-full divide-y divide-white/5">
+                  <thead class="bg-black/40 sticky top-0 backdrop-blur-md z-10">
+                    <tr>
+                      <th class="px-5 py-3 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest w-1/4">
+                        Jugador / IP Hash
+                      </th>
+                      <th class="px-5 py-3 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest w-1/4">
+                        Actividad Temporal
+                      </th>
+                      <th class="px-5 py-3 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest w-1/3">
+                        Estado de Recursos
+                      </th>
+                      <th class="px-5 py-3 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                        Acciones
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-white/5 bg-gray-800/20">
+                    {inactiveSessions.length === 0 && (
+                      <tr>
+                        <td
+                          colspan="4"
+                          class="px-6 py-6 text-center text-xs text-gray-500/50 font-medium italic"
+                        >
+                          Sin jugadores inactivos.
+                        </td>
+                      </tr>
+                    )}
+                    {inactiveSessions.map((gs) => (
+                      <tr
+                        class="hover:bg-white/5 transition-colors group/row border-l-[3px] border-gray-700"
+                        data-hash={gs.ip_hash}
+                      >
+                        <td class="px-5 py-4">
+                          <div class="flex flex-col space-y-1">
+                            <span class="text-xs font-bold text-gray-300 char-names-display uppercase tracking-wider">
+                              {gs.character_names || 'Desconocido'}
+                            </span>
+                            <span class="text-[10px] text-gray-600 font-mono" title={gs.ip_hash}>
+                              {gs.ip_hash.substring(0, 16)}...
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-5 py-4">
+                          <div class="flex flex-col space-y-1">
+                            <span class="text-[10px] text-gray-400">
+                              <i class="far fa-clock mr-1 text-gray-500/60" />
+                              {formatDate(gs.last_active)}
+                            </span>
+                            <span class="text-[10px] text-gray-500">
+                              <i class="fas fa-ticket-alt mr-1" />
+                              Últ. Ticket:{' '}
+                              <strong class="text-amber-500/50">{gs.last_gold_claimed} ⚜️</strong>
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-5 py-4">
+                          <div class="flex items-center justify-center space-x-6 opacity-70">
+                            <div class="flex flex-col items-center">
+                              <span class="text-[9px] text-gray-500 uppercase font-bold">
+                                Turnos
+                              </span>
+                              <span class="text-sm text-gray-300 font-black credits-display">
+                                {gs.credits}
+                              </span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                              <span class="text-[9px] text-gray-500 uppercase font-bold">Pozo</span>
+                              <span class="text-sm text-amber-500/70 font-black">
+                                {gs.gold_pool} ⚜️
+                              </span>
+                            </div>
+                            {gs.has_won_choker && (
+                              <div class="flex flex-col items-center ml-2 border border-purple-500/30 bg-purple-900/20 px-2 py-1 rounded">
+                                <span class="text-[9px] text-purple-400 uppercase font-bold">
+                                  <i class="fas fa-gem mr-1" />
+                                  Choker
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap text-right">
+                          <button
+                            type="button"
+                            data-session={JSON.stringify(gs)}
+                            onclick="window.openEditSessionModal(this.dataset.session)"
+                            class="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase tracking-wider rounded transition-all hover:scale-105"
+                          >
+                            <i class="fas fa-edit mr-1" /> Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
           </div>
         )
       }
@@ -229,20 +459,26 @@ if (!session) {
   {/* Edit Session Modal */}
   <div
     id="edit-session-modal"
-    class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
   >
-    <div class="bg-gray-800 rounded-md shadow-2xl max-w-lg w-full border border-gray-700">
-      <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <i class="fas fa-gamepad text-amber-500"></i>
-          <h2 class="text-xl font-bold text-white">Editar Sesión</h2>
+    <div
+      class="bg-gray-900 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] max-w-lg w-full border border-gray-700/50 overflow-hidden relative"
+    >
+      <div
+        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600"
+      >
+      </div>
+      <div class="p-5 border-b border-gray-800 flex justify-between items-center bg-gray-900/80">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-gamepad text-amber-500 text-xl"></i>
+          <h2 class="text-lg font-black tracking-widest uppercase text-white">Editar Sesión</h2>
         </div>
         <button
           type="button"
           onclick="window.closeEditSessionModal()"
-          class="text-gray-400 hover:text-white transition-colors"
+          class="text-gray-500 hover:text-white transition-colors p-1"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
             ><path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -251,55 +487,77 @@ if (!session) {
           >
         </button>
       </div>
-      <form id="edit-session-form" class="p-5 space-y-4">
+      <form id="edit-session-form" class="p-6 space-y-5 bg-gray-800/20">
         <input type="hidden" name="ip_hash" id="edit-session-hash" />
-        <div>
-          <label class="block text-xs font-medium text-gray-400 mb-1">IP Hash / ID</label>
-          <input
-            type="text"
-            id="edit-session-hash-display"
-            disabled
-            class="w-full px-3 py-2 text-sm bg-gray-900 border border-gray-700 rounded-md text-gray-500 font-mono"
-          />
+
+        <div class="bg-black/30 p-4 rounded-lg border border-white/5 space-y-4">
+          <div>
+            <label
+              class="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1.5"
+              >Identificador Único (IP Hash)</label
+            >
+            <input
+              type="text"
+              id="edit-session-hash-display"
+              disabled
+              class="w-full px-4 py-2.5 text-xs bg-gray-900/80 border border-gray-700/50 rounded-md text-gray-500 font-mono tracking-wider opacity-70"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-[10px] font-black uppercase tracking-widest text-amber-500/80 mb-1.5"
+              >Nombre de Personaje(s)</label
+            >
+            <input
+              type="text"
+              name="character_names"
+              id="edit-session-chars"
+              placeholder="Ej: Arthas, Jaina"
+              class="w-full px-4 py-2.5 text-sm bg-gray-900 border border-amber-500/30 rounded-md text-white font-medium focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-[10px] font-black uppercase tracking-widest text-green-500/80 mb-1.5"
+              >Turnos Disponibles (Créditos)</label
+            >
+            <input
+              type="number"
+              name="credits"
+              id="edit-session-credits"
+              min="0"
+              class="w-full px-4 py-2.5 text-sm bg-gray-900 border border-green-500/30 rounded-md text-white font-black focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all outline-none"
+            />
+          </div>
         </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-400 mb-1"
-            >Nombre Personaje(s) Principal</label
-          >
-          <input
-            type="text"
-            name="character_names"
-            id="edit-session-chars"
-            placeholder="Ej: Arthas, Jaina"
-            class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-          />
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-400 mb-1">Turnos (Creditos)</label>
-          <input
-            type="number"
-            name="credits"
-            id="edit-session-credits"
-            min="0"
-            class="w-full px-3 py-2 text-sm bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-          />
-        </div>
-        <div class="flex justify-end space-x-2 pt-4">
+
+        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-800 mt-2">
           <button
             type="button"
             onclick="window.closeEditSessionModal()"
-            class="px-5 py-2 text-sm font-bold tracking-widest uppercase text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors border border-gray-600 shadow-md"
-            >Cancelar</button
+            class="px-5 py-2.5 text-[11px] font-bold tracking-[0.2em] uppercase text-gray-400 hover:text-white bg-transparent hover:bg-gray-800 rounded-lg transition-all border border-gray-700 hover:border-gray-500"
           >
+            Cancelar
+          </button>
           <button
             type="submit"
-            class="px-5 py-2 text-sm font-black tracking-widest uppercase bg-amber-600 hover:bg-amber-700 text-white rounded-md transition-colors border border-amber-500 shadow-lg shadow-amber-900/30"
-            >Guardar</button
+            class="px-6 py-2.5 text-[11px] font-black tracking-[0.2em] uppercase bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white rounded-lg transition-all shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-0.5 active:translate-y-0"
           >
+            Guardar Cambios
+          </button>
         </div>
       </form>
     </div>
   </div>
+
+  <style>
+    details > summary {
+      list-style: none; /* Hide default triangle for standard browsers */
+    }
+    details > summary::-webkit-details-marker {
+      display: none; /* Hide default triangle for WebKit browsers */
+    }
+  </style>
 
   <script is:inline>
     window.openEditSessionModal = function (sessionData) {
@@ -316,10 +574,13 @@ if (!session) {
 
     function showLiveToast(message, isError = false) {
       const div = document.createElement('div');
-      div.className = `fixed bottom-4 right-4 ${isError ? 'bg-red-600 border-red-500' : 'bg-green-600 border-green-500'} border text-white px-6 py-3 rounded-lg shadow-2xl font-bold animate-fade-in z-[100] flex items-center`;
-      div.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-3 text-xl"></i> ${message}`;
+      div.className = `fixed bottom-6 right-6 ${isError ? 'bg-red-900 border-red-500 text-red-100' : 'bg-green-900 border-green-500 text-green-100'} border-2 px-6 py-4 rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.5)] font-bold animate-fade-in z-[100] flex items-center min-w-[300px]`;
+      div.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle text-red-500' : 'fa-check-circle text-green-500'} mr-4 text-2xl drop-shadow-md"></i> <span class="tracking-wide">${message}</span>`;
       document.body.appendChild(div);
-      setTimeout(() => div.remove(), 3500);
+      setTimeout(() => {
+        div.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+        setTimeout(() => div.remove(), 500);
+      }, 3500);
     }
 
     document.getElementById('edit-session-form').addEventListener('submit', async function (e) {
@@ -342,7 +603,7 @@ if (!session) {
           if (row) {
             if (data.character_names !== undefined) {
               row.querySelector('.char-names-display').innerHTML =
-                data.character_names || '<span class="text-gray-500 italic">Desconocido</span>';
+                data.character_names || 'Desconocido';
             }
             if (data.credits !== undefined) {
               row.querySelector('.credits-display').textContent = data.credits;
