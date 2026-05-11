@@ -297,11 +297,11 @@ const PAYPAL_CLIENT_ID = import.meta.env.PAYPAL_CLIENT_ID || 'sb';
 
     // Game Logic
     const SYMBOLS = [
-      { id: 'skull', icon: '💀', weight: 60, name: 'MALDICIÓN' }, 
-      { id: 'gold_small', icon: '⚜️', weight: 30, name: 'MONEDA' }, 
-      { id: 'gold_bag', icon: '💰', weight: 8, name: 'BOLSA' }, 
-      { id: 'chest', icon: '📦', weight: 0.8, name: 'COFRE' }, 
-      { id: 'choker', icon: '📿', weight: 0.2, name: 'GARGANTILLA' }, 
+      { id: 'skull', icon: '💀', weight: 65, name: 'MALDICIÓN' }, 
+      { id: 'gold_small', icon: '⚜️', weight: 28, name: 'MONEDA' }, 
+      { id: 'gold_bag', icon: '💰', weight: 5.5, name: 'BOLSA' }, 
+      { id: 'chest', icon: '📦', weight: 0.4, name: 'COFRE' }, 
+      { id: 'choker', icon: '📿', weight: 0.1, name: 'GARGANTILLA' }, 
       { id: 'thief', icon: '🗡️', weight: 1.0, name: 'PÍCARO' } 
     ];
 
@@ -1343,8 +1343,8 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
       const reel = document.getElementById(reelId);
       
       // Calculate strip size
-      const totalItems = 50; 
-      const finalIndex = 45; // Must be large enough to spin for a while
+      const totalItems = 60; 
+      const finalIndex = 55; // Must be large enough to spin for a while
 
       // Create new strip content
       reel.innerHTML = '';
@@ -1353,7 +1353,13 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
          if (i === finalIndex) {
              sym = finalSymbol;
          } else {
-             sym = getRandomSymbol();
+             // Estrategia de ilusión: en los últimos símbolos antes del final, 
+             // aumentar artificialmente la aparición de la gargantilla para dar tensión.
+             if (i > finalIndex - 8 && i < finalIndex && Math.random() > 0.6) {
+               sym = SYMBOLS.find(s => s.id === 'choker') || getRandomSymbol();
+             } else {
+               sym = getRandomSymbol();
+             }
          }
          
          const div = createSymbolElement(sym);
@@ -1370,16 +1376,10 @@ Comparte el ticket generado en el grupo de [WhatsApp](https://chat.whatsapp.com/
       // Force reflow
       void reel.offsetWidth;
       
-      // Animate to center the final symbol
-      // The strip is inside a container of height H.
-      // Each item is height H.
-      // To show item i, we translate by -i * 100% of item height.
-      // But since we are translating the strip relative to its own height (which is totalItems * H),
-      // we need to translate by - (i / totalItems) * 100%.
-      
       const percentage = (finalIndex / totalItems) * 100;
       
-      reel.style.transition = `transform ${duration}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
+      // Tono de éxito: curva de desaceleración más dramática al final (cubic-bezier)
+      reel.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0, 0.15, 1)`;
       reel.style.transform = `translateY(-${percentage}%)`;
       
       setTimeout(() => {
